@@ -1,0 +1,584 @@
+<title>The Slop Dossier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap">
+
+<style>
+:root{
+  --ground:#F2F3EF;
+  --panel:#FFFFFF;
+  --panel-2:#E9EBE4;
+  --line:#D5D8CE;
+  --line-soft:#E3E5DC;
+  --ink:#12161C;
+  --ink-2:#3D4550;
+  --muted:#6A7381;
+  --amber:#A96A00;
+  --amber-bg:#F7E9CC;
+  --cyan:#0B7D73;
+  --cyan-bg:#D7EDEA;
+  --alarm:#C0292E;
+  --alarm-bg:#F7DEDE;
+  --shadow:0 1px 2px rgba(18,22,28,.07), 0 8px 24px -12px rgba(18,22,28,.18);
+  --radius:4px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0A0D14;
+    --panel:#131926;
+    --panel-2:#1B2333;
+    --line:#28324A;
+    --line-soft:#1E273A;
+    --ink:#E4EAF4;
+    --ink-2:#B9C4D6;
+    --muted:#7E8CA5;
+    --amber:#FFB020;
+    --amber-bg:#2C2211;
+    --cyan:#35D6C8;
+    --cyan-bg:#0F2C2C;
+    --alarm:#FF6166;
+    --alarm-bg:#2E1417;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0A0D14;
+  --panel:#131926;
+  --panel-2:#1B2333;
+  --line:#28324A;
+  --line-soft:#1E273A;
+  --ink:#E4EAF4;
+  --ink-2:#B9C4D6;
+  --muted:#7E8CA5;
+  --amber:#FFB020;
+  --amber-bg:#2C2211;
+  --cyan:#35D6C8;
+  --cyan-bg:#0F2C2C;
+  --alarm:#FF6166;
+  --alarm-bg:#2E1417;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box;}
+body{
+  background:var(--ground);
+  color:var(--ink-2);
+  font-family:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  margin:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:940px;margin:0 auto;padding:0 20px 96px;}
+
+h1,h2,h3,h4{font-family:"Bricolage Grotesque","Instrument Sans",system-ui,sans-serif;color:var(--ink);text-wrap:balance;margin:0;line-height:1.1;}
+p{margin:0;}
+a{color:var(--cyan);text-decoration:none;border-bottom:1px solid color-mix(in srgb, var(--cyan) 35%, transparent);}
+a:hover{border-bottom-color:var(--cyan);}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:2px;}
+
+.eyebrow{
+  font-family:"JetBrains Mono",ui-monospace,monospace;
+  font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);
+}
+
+/* ---------- marquee header ---------- */
+.marquee{
+  border-bottom:1px solid var(--line);
+  padding:56px 0 34px;
+  display:flex;flex-direction:column;gap:18px;
+}
+.bulbs{display:flex;gap:7px;align-items:center;}
+.bulb{width:7px;height:7px;border-radius:50%;background:var(--amber);opacity:.28;}
+.bulb.on{opacity:1;box-shadow:0 0 10px color-mix(in srgb, var(--amber) 60%, transparent);}
+.marquee h1{
+  font-size:clamp(38px,8.5vw,74px);
+  font-weight:800;
+  font-variation-settings:"wdth" 92;
+  letter-spacing:-.025em;
+}
+.marquee h1 em{font-style:normal;color:var(--amber);}
+.lede{font-size:clamp(16px,2.2vw,19px);color:var(--ink-2);max-width:62ch;}
+
+/* ---------- stat strip ---------- */
+.stats{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:1px;background:var(--line);border:1px solid var(--line);
+  margin-top:8px;border-radius:var(--radius);overflow:hidden;
+}
+.stat{background:var(--panel);padding:16px 18px;display:flex;flex-direction:column;gap:5px;}
+.stat .k{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.stat .v{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:25px;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.05;}
+.stat .v.hl{color:var(--amber);}
+.stat .n{font-size:12.5px;color:var(--muted);line-height:1.4;}
+
+/* ---------- sections ---------- */
+section{margin-top:64px;}
+.shead{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+.shead h2{font-size:clamp(25px,4.4vw,34px);font-weight:800;letter-spacing:-.02em;}
+.shead p{color:var(--muted);max-width:66ch;font-size:15.5px;}
+
+/* ---------- teardown grid ---------- */
+.grid9{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:12px;}
+.sys{
+  background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--radius);
+  padding:16px 17px;display:flex;flex-direction:column;gap:7px;
+}
+.sys h4{font-size:16px;font-weight:800;letter-spacing:-.01em;}
+.sys p{font-size:14px;color:var(--muted);line-height:1.52;}
+
+.pull{
+  margin-top:24px;background:var(--amber-bg);border:1px solid color-mix(in srgb, var(--amber) 32%, transparent);
+  border-radius:var(--radius);padding:20px 22px;display:flex;flex-direction:column;gap:10px;
+}
+.pull p{font-size:15.5px;color:var(--ink-2);}
+.pull strong{color:var(--ink);}
+.pull code{
+  font-family:"JetBrains Mono",ui-monospace,monospace;font-size:13px;font-weight:700;
+  background:color-mix(in srgb, var(--amber) 20%, transparent);color:var(--ink);
+  padding:2px 6px;border-radius:3px;
+}
+
+/* ---------- policy band ---------- */
+.policy{
+  background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--alarm);
+  border-radius:var(--radius);padding:24px 24px;display:flex;flex-direction:column;gap:16px;
+}
+.policy h3{font-size:19px;font-weight:800;}
+.rules{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:11px;}
+.rules li{display:flex;gap:11px;font-size:15px;line-height:1.55;}
+.rules .mark{
+  flex:none;font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;
+  padding:2px 7px;border-radius:3px;height:fit-content;margin-top:2px;letter-spacing:.06em;
+}
+.mark.no{background:var(--alarm-bg);color:var(--alarm);}
+.mark.ok{background:var(--cyan-bg);color:var(--cyan);}
+
+/* ---------- game cards ---------- */
+.game{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  margin-top:20px;overflow:hidden;box-shadow:var(--shadow);
+}
+.game-top{
+  background:var(--panel-2);border-bottom:1px solid var(--line);
+  padding:20px 24px;display:flex;flex-wrap:wrap;gap:14px 22px;align-items:baseline;justify-content:space-between;
+}
+.game-id{display:flex;flex-direction:column;gap:4px;}
+.game-id h3{font-size:clamp(24px,4.6vw,33px);font-weight:800;font-variation-settings:"wdth" 90;letter-spacing:-.02em;}
+.game-id .tag{font-size:14.5px;color:var(--muted);font-style:italic;}
+.meterwrap{display:flex;align-items:center;gap:9px;}
+.meterwrap .lbl{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.meter{display:flex;gap:3px;}
+.meter i{width:15px;height:9px;background:var(--line);border-radius:1px;display:block;}
+.meter i.f{background:var(--amber);}
+
+.game-body{padding:24px;display:flex;flex-direction:column;gap:24px;}
+
+.clip{border-left:3px solid var(--amber);padding:2px 0 2px 16px;display:flex;flex-direction:column;gap:7px;}
+.clip .t{
+  font-family:"Bricolage Grotesque",sans-serif;font-weight:600;
+  font-size:clamp(17px,2.9vw,21px);color:var(--ink);line-height:1.35;text-wrap:balance;
+}
+
+.block{display:flex;flex-direction:column;gap:9px;}
+.block h4{font-size:12px;}
+.loop{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;}
+.loop li{
+  font-size:15px;line-height:1.55;padding-left:17px;position:relative;color:var(--ink-2);
+}
+.loop li::before{
+  content:"";position:absolute;left:0;top:9px;width:6px;height:6px;
+  background:var(--cyan);border-radius:1px;
+}
+.loop strong{color:var(--ink);}
+
+.scroll{overflow-x:auto;border:1px solid var(--line-soft);border-radius:var(--radius);}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:14px;}
+thead th{
+  font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--muted);text-align:left;padding:11px 14px;background:var(--panel-2);
+  border-bottom:1px solid var(--line);font-weight:700;white-space:nowrap;
+}
+tbody td{padding:11px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top;line-height:1.5;color:var(--ink-2);}
+tbody tr:last-child td{border-bottom:none;}
+td.price{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums;}
+td.prod{color:var(--ink);font-weight:500;}
+tr.star td{background:var(--amber-bg);}
+tr.star td.prod{color:var(--ink);font-weight:600;}
+
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;}
+.note{background:var(--panel-2);border-radius:var(--radius);padding:15px 17px;display:flex;flex-direction:column;gap:6px;}
+.note p{font-size:14px;color:var(--muted);line-height:1.52;}
+.note strong{color:var(--ink);font-weight:600;}
+
+/* ---------- build order ---------- */
+.steps{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;}
+.steps li{background:var(--panel);padding:18px 20px;display:flex;gap:16px;align-items:flex-start;}
+.steps .num{
+  flex:none;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:13px;
+  color:var(--ground);background:var(--amber);width:26px;height:26px;border-radius:3px;
+  display:grid;place-items:center;margin-top:1px;
+}
+.steps .txt{display:flex;flex-direction:column;gap:4px;}
+.steps h4{font-size:16px;font-weight:800;}
+.steps p{font-size:14.5px;color:var(--muted);line-height:1.55;}
+.steps .when{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--cyan);letter-spacing:.05em;}
+
+/* ---------- sources ---------- */
+.src{margin-top:64px;border-top:1px solid var(--line);padding-top:22px;display:flex;flex-direction:column;gap:10px;}
+.src p{font-size:13.5px;color:var(--muted);line-height:1.75;}
+.src a{font-size:13.5px;}
+
+@media (max-width:560px){
+  .wrap{padding:0 15px 72px;}
+  .game-body{padding:18px;}
+  .game-top{padding:17px 18px;}
+  .policy{padding:19px;}
+}
+
+@keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+.marquee,section{animation:rise .5s ease-out both;}
+section:nth-of-type(2){animation-delay:.04s;}
+section:nth-of-type(3){animation-delay:.08s;}
+@media (prefers-reduced-motion:reduce){
+  .marquee,section{animation:none;}
+}
+</style>
+
+<div class="wrap">
+
+<header class="marquee">
+  <div class="bulbs" aria-hidden="true">
+    <span class="bulb on"></span><span class="bulb"></span><span class="bulb on"></span>
+    <span class="bulb on"></span><span class="bulb"></span><span class="bulb on"></span>
+  </div>
+  <h1>Three slop games<br>worth <em>building</em></h1>
+  <p class="lede">A teardown of the ball-drop game that's printing money, the nine-system engine underneath it, the 2026 policy rules that constrain it — and three concepts that reuse the same backend with three different viral money-shots.</p>
+</header>
+
+<section>
+  <div class="shead">
+    <span class="eyebrow">Target</span>
+    <h2>What 150k Robux a day actually is</h2>
+    <p>Work the number backwards first, because it sets the CCU target — and the target is a top-few-hundred game, not a top-ten game. That's reachable by one person.</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><span class="k">Net Robux / day</span><span class="v">150,000</span><span class="n">Creator keeps 70%</span></div>
+    <div class="stat"><span class="k">Gross player spend</span><span class="v">214,000</span><span class="n">Roblox takes 30% first</span></div>
+    <div class="stat"><span class="k">DevEx @ $0.0038</span><span class="v hl">$570</span><span class="n">Per day, standard rate</span></div>
+    <div class="stat"><span class="k">DevEx @ $0.0054</span><span class="v hl">$810</span><span class="n">US 18+ verified rate</span></div>
+    <div class="stat"><span class="k">DAU needed</span><span class="v">36–71k</span><span class="n">At 3–6 R$ ARPDAU</span></div>
+    <div class="stat"><span class="k">Concurrent players</span><span class="v">3.5–7k</span><span class="n">At ~10:1 DAU:CCU</span></div>
+  </div>
+  <div class="pull">
+    <span class="eyebrow">The revenue stream nobody builds for</span>
+    <p><strong>Creator Rewards</strong> pays roughly <code>5 R$/day</code> per "Active Spender" who plays 10+ minutes — but only for the <strong>first three experiences they open that day</strong>. So two design consequences, both free money: build a reason to be the <strong>first</strong> thing they open (offline earnings that cap, a daily chest, a claim streak), and a reason to stay <strong>past minute ten</strong> (a chest that unlocks at 10:00, a session-length luck ramp). An idle-friendly game collects this on top of gamepass revenue. A twitchy PvP game mostly doesn't.</p>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="eyebrow">Teardown</span>
+    <h2>Why the ball-drop game works</h2>
+    <p>Strip the theme off and it's nine systems. Every one is a retention or monetization surface, and not one of them is hard to build.</p>
+  </div>
+  <div class="grid9">
+    <div class="sys"><h4>2–5 second core action</h4><p>Drop → land → number pops. Short enough to be a six-second clip, long enough to feel like an event.</p></div>
+    <div class="sys"><h4>Two RNG layers</h4><p>Micro (every drop pays) plus macro (1-in-7.91B collectible). Short-term dopamine, long-term chase.</p></div>
+    <div class="sys"><h4>Exponential currency</h4><p>K → M → B → T → Qa. Numbers inflate so progress always feels fast, even when it isn't.</p></div>
+    <div class="sys"><h4>A ~50-node skill tree</h4><p>The tree screenshot <em>is</em> the marketing. Turns "buy upgrade" into "build a strategy".</p></div>
+    <div class="sys"><h4>Rebirth</h4><p>Wipes progress, multiplies output. Converts a finished player back into a new player.</p></div>
+    <div class="sys"><h4>Index / collection</h4><p>The only system that retains players who have already maxed everything else.</p></div>
+    <div class="sys"><h4>Passives &amp; offline income</h4><p>The D1 engine — and D1/D7 return behavior is exactly what 2026 discovery ranks on.</p></div>
+    <div class="sys"><h4>Overlapping timers</h4><p>Mystery event 6:05. Luck x25 1:12. Tickets x2 5:26. You can never cleanly leave.</p></div>
+    <div class="sys"><h4>Auto-everything</h4><p>Auto-spin, auto-drop. Removing the gameplay <em>increases</em> retention — and sells as a pass.</p></div>
+  </div>
+  <div class="pull">
+    <span class="eyebrow">The smartest thing in those screenshots</span>
+    <p><code>ADD 3 MINUTES — R$45</code> — a micro-priced, infinitely repeatable product that extends a <strong>server-wide</strong> jackpot timer. It converts because it's cheap, because it's sold at a moment of urgency, and because <strong>the whole server watches you do it</strong>. That's status, not a purchase. The pattern to copy across all three games: the payer isn't buying power, they're buying the removal of a wait, or a visible moment in front of other people.</p>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="eyebrow">Constraints</span>
+    <h2>The rules you build around</h2>
+    <p>Not optional, and the most common reason a first game gets moderated into the ground after it starts working.</p>
+  </div>
+  <div class="policy">
+    <h3>Simulated gambling is banned. Chance-based rewards are not.</h3>
+    <ul class="rules">
+      <li><span class="mark no">NO</span><span>Wagering currency on an outcome where the stake can be lost. No bet-size input, no poker, no blackjack, no roulette-with-bets. Unplayable casino <em>scenery</em> is still fine.</span></li>
+      <li><span class="mark ok">OK</span><span>A chance-based <strong>reward</strong>. If the action is free — or costs a non-purchasable, regenerating resource — and <em>always</em> returns something, it's a reward mechanic, not a wager.</span></li>
+      <li><span class="mark ok">DO</span><span>Run <strong>two currencies</strong>: a regenerating, non-purchasable resource you <em>act</em> with, and a separate currency you <em>earn</em>. Never let a player spend earned currency for a chance at more earned currency.</span></li>
+      <li><span class="mark ok">DO</span><span>Never debit a persistent wallet on a loss. Risk only unbanked, in-run progress.</span></li>
+      <li><span class="mark ok">DO</span><span>Frame every loss <strong>diegetically</strong> — the floor collapses, the guard catches you, the ball misses. Never "you lost your bet".</span></li>
+      <li><span class="mark no">REQ</span><span><strong>Paid random items must disclose odds.</strong> Since the global rollout in June 2026, every paid random outcome needs each result's probability shown as a percentage summing to exactly 100%, before purchase — including anything bought with in-game currency that Robux can buy, and including how a luck potion or luck pass numerically shifts the odds. Build the disclosure popup as a reusable component on day one and route every crate, egg, capsule and boost through it.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="eyebrow">Concept 1 of 3 · the flagship</span>
+    <h2>The three games</h2>
+    <p>All three run on the same backend. They differ in the six-second clip they generate — which is the only thing that decides whether you get discovered at all.</p>
+  </div>
+
+  <article class="game">
+    <div class="game-top">
+      <div class="game-id">
+        <h3>PUSH A FORTUNE</h3>
+        <span class="tag">Coin pusher + the full luck engine</span>
+      </div>
+      <div class="meterwrap">
+        <span class="lbl">Build effort</span>
+        <span class="meter" role="img" aria-label="Build effort: 3 out of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i></span>
+      </div>
+    </div>
+    <div class="game-body">
+      <div class="clip">
+        <span class="eyebrow">The six-second clip</span>
+        <p class="t">A forty-coin avalanche pouring off the ledge in slow motion — with a rare capsule tipping over right at the end.</p>
+      </div>
+
+      <div class="block">
+        <h4 class="eyebrow">Why this one</h4>
+        <p style="font-size:15px;line-height:1.6;">Coin pushers already exist on Roblox and they're all toys — no rebirth, no luck stat, no index, no persistence. The arcade psychology is the most proven in the world: <strong style="color:var(--ink)">the near-miss is built into the physics</strong>, because there is always a coin teetering. Nobody has bolted the 2026 luck engine onto it, so you aren't fighting a dominant #1.</p>
+      </div>
+
+      <div class="block">
+        <h4 class="eyebrow">Core loop</h4>
+        <ul class="loop">
+          <li><strong>Tokens</strong> regenerate — +1 per 3s, cap 50, accrues offline. Not purchasable, which is precisely what keeps the game policy-clean.</li>
+          <li>Drop tokens onto the shelf. The pusher slides on a 2.2s cycle. Coins fall off the front edge into <strong>Cash</strong>.</li>
+          <li>Rare <strong>Prize Capsules</strong> spawn on the shelf. Push one off the ledge to roll an Index collectible.</li>
+          <li>The pile <strong>persists across sessions</strong> — serialize ~120 coin positions. You log back in and it's exactly where you left it. Your progress lives in the world instead of in a number, which is an unusually strong return hook.</li>
+          <li>A shared <strong>MEGA PUSHER</strong> in the plaza: everyone feeds one machine, everyone watches one jackpot meter, payout splits by contribution. A whale's spending becomes physically visible to the entire server.</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4 class="eyebrow">Monetization</h4>
+        <div class="scroll"><table>
+          <thead><tr><th>Product</th><th>Price</th><th>Type</th><th>Why it converts</th></tr></thead>
+          <tbody>
+            <tr class="star"><td class="prod">SHAKE THE MACHINE</td><td class="price">35 R$</td><td>Dev product, 1 / 5 min</td><td>The killer. Sold at the exact second a coin is teetering on the edge.</td></tr>
+            <tr><td class="prod">Golden Token — heavy, plows the pile</td><td class="price">25 / 199</td><td>Dev product (×1 / ×10)</td><td>Impulse buy with instant spectacle.</td></tr>
+            <tr><td class="prod">Auto-Drop</td><td class="price">199 R$</td><td>Gamepass</td><td>Converts the whole game into an idle game.</td></tr>
+            <tr><td class="prod">2× Cash / 2× Luck</td><td class="price">149 R$ ea</td><td>Gamepass</td><td>The standard pair. Always sells.</td></tr>
+            <tr><td class="prod">+Token cap &amp; regen</td><td class="price">99 R$</td><td>Gamepass</td><td>Targets the AFK crowd directly.</td></tr>
+            <tr><td class="prod">VIP — everything + shelf skin</td><td class="price">499 R$</td><td>Gamepass</td><td>Top of the price ladder.</td></tr>
+            <tr><td class="prod">Starter Pack</td><td class="price">99 R$</td><td>First 24h only</td><td>Limited-time offers convert around 2× permanent ones.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="notes">
+        <div class="note"><span class="eyebrow">The one hard part</span><p><strong>Physics on mobile.</strong> Hard-cap coins per machine at ~120 parts and absorb the oldest into pile value; drive the pusher with TweenService/CFrame rather than a physics constraint so it stays deterministic; simple cylinder coins with tuned CustomPhysicalProperties; one mega-pusher per server, not per player.</p></div>
+        <div class="note"><span class="eyebrow">Policy</span><p><strong>Clean.</strong> Tokens regenerate and can't be bought, every drop returns value, and the only paid random surface is the capsule roll — which routes through the odds popup.</p></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="game">
+    <div class="game-top">
+      <div class="game-id">
+        <h3>ROLL A GIANT</h3>
+        <span class="tag">Katamari on Roblox, with theft drama</span>
+      </div>
+      <div class="meterwrap">
+        <span class="lbl">Build effort</span>
+        <span class="meter" role="img" aria-label="Build effort: 4 out of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i></span>
+      </div>
+    </div>
+    <div class="game-body">
+      <div class="clip">
+        <span class="eyebrow">The six-second clip</span>
+        <p class="t">You roll over an entire building — then eat another player, and their whole ball joins yours.</p>
+      </div>
+
+      <div class="block">
+        <h4 class="eyebrow">Why this one</h4>
+        <p style="font-size:15px;line-height:1.6;">Roblox has no serious katamari, and the mechanic is proven at enormous scale on mobile. More importantly, <strong style="color:var(--ink)">theft drama is the strongest viral engine on Roblox right now</strong> — the entire "Steal a ___" wave runs on it. This makes theft physical and spectacular instead of a UI interaction. It also needs no art budget: the money-shot is <em>scale</em>, which is free.</p>
+      </div>
+
+      <div class="block">
+        <h4 class="eyebrow">Core loop</h4>
+        <ul class="loop">
+          <li>Three-minute rounds, 12 players, one compact city arena around 300×300 studs.</li>
+          <li>Touch anything at or below your absorb tier and it sticks. You grow.</li>
+          <li>At <strong>1.25× another player's mass</strong> you can absorb <em>them</em> and take their mass. That's the clip, the rage-quit, and the reason they re-queue.</li>
+          <li>Round ends, mass converts to Cash at a multiplier, leaderboard moment.</li>
+          <li>The <strong>lobby holds the entire luck engine</strong> — upgrades, rebirth, index, quests. Rounds generate the content; the lobby does the retention and the monetization.</li>
+          <li><strong>Round-based scoping is the trick that makes this buildable:</strong> props reset every round, so there's no world persistence, no streaming, and no save complexity in the arena at all.</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4 class="eyebrow">Monetization</h4>
+        <div class="scroll"><table>
+          <thead><tr><th>Product</th><th>Price</th><th>Type</th><th>Why it converts</th></tr></thead>
+          <tbody>
+            <tr class="star"><td class="prod">GROWTH SERUM — +50% size, rest of round</td><td class="price">45 R$</td><td>Dev product</td><td>Sold in the two seconds before a bigger player eats you.</td></tr>
+            <tr><td class="prod">Head Start — spawn larger</td><td class="price">149 R$</td><td>Gamepass</td><td>Fixes the single worst part of the experience.</td></tr>
+            <tr><td class="prod">Magnet radius</td><td class="price">199 R$</td><td>Gamepass</td><td>Pure convenience — draws no pay-to-win complaints.</td></tr>
+            <tr><td class="prod">2× Mass / 2× Cash</td><td class="price">149 R$ ea</td><td>Gamepass</td><td>The standard pair.</td></tr>
+            <tr><td class="prod">Ball skins &amp; auras</td><td class="price">Index rolls</td><td>Paid random — <em>show odds</em></td><td>Cosmetic, so cheap to produce, policy-safe, and flexed in every single round.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="notes">
+        <div class="note"><span class="eyebrow">The one hard part</span><p><strong>Welding hundreds of parts to a rolling ball.</strong> Keep only the ~60 most recent absorbed props visually welded and let everything else become size alone; use Model:ScaleTo(); server owns mass, client owns the visual sticking; pool and respawn props per round so nothing leaks.</p></div>
+        <div class="note"><span class="eyebrow">Policy</span><p><strong>Clean.</strong> No wagering anywhere in the design, and the only paid-random surface is cosmetics.</p></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="game">
+    <div class="game-top">
+      <div class="game-id">
+        <h3>THE VAULT</h3>
+        <span class="tag">Press-your-luck — cheapest to build, loudest clips</span>
+      </div>
+      <div class="meterwrap">
+        <span class="lbl">Build effort</span>
+        <span class="meter" role="img" aria-label="Build effort: 1 out of 5"><i class="f"></i><i></i><i></i><i></i><i></i></span>
+      </div>
+    </div>
+    <div class="game-body">
+      <div class="clip">
+        <span class="eyebrow">The six-second clip — you want both kinds</span>
+        <p class="t">The x900 cash-out. And the run that dies at x899. Loss clips travel further than win clips.</p>
+      </div>
+
+      <div class="block">
+        <h4 class="eyebrow">Why this one</h4>
+        <p style="font-size:15px;line-height:1.6;">The highest emotional amplitude per line of code on this list. No physics, no map, no combat — one room prefab, three doors, a multiplier counter and a particle burst. <strong style="color:var(--ink)">A working version is a weekend;</strong> everything else is the shared engine you already built.</p>
+      </div>
+
+      <div class="block">
+        <h4 class="eyebrow">Core loop</h4>
+        <ul class="loop">
+          <li>Entering is <strong>free</strong>. You descend floors.</li>
+          <li>Each floor offers three doors. Behind them: a multiplier bump, a bonus, or the <strong>ALARM</strong>.</li>
+          <li>Multipliers compound against your run haul. <strong>Bank</strong> at any moment and it goes to your wallet.</li>
+          <li>Alarm means caught — the run's haul is gone, and <strong>your wallet is never touched</strong>.</li>
+          <li>Deeper floors pay fatter multipliers at a higher alarm rate. The luck stat shifts door odds. Rare loot on floors feeds the Index.</li>
+          <li><strong>Daily Vault</strong> — one free run per day at a 5× base. That single feature is the "be their first game of the day" hook, which is also what farms Creator Rewards.</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4 class="eyebrow">Monetization</h4>
+        <div class="scroll"><table>
+          <thead><tr><th>Product</th><th>Price</th><th>Type</th><th>Why it converts</th></tr></thead>
+          <tbody>
+            <tr class="star"><td class="prod">SAVE MY RUN</td><td class="price">49 → 99 → 199</td><td>Dev product, escalating in-run</td><td>Sold at peak emotional pain. The best-converting product type that exists.</td></tr>
+            <tr><td class="prod">2× Haul</td><td class="price">149 R$</td><td>Gamepass</td><td>The standard.</td></tr>
+            <tr><td class="prod">Luck — shifts door odds</td><td class="price">149 R$</td><td>Gamepass — <em>disclose odds impact</em></td><td>Always sells; the numeric disclosure is mandatory.</td></tr>
+            <tr><td class="prod">Extra free daily run</td><td class="price">99 R$</td><td>Gamepass</td><td>Cheap, and the value recurs every day.</td></tr>
+            <tr><td class="prod">Auto-bank at chosen multiplier</td><td class="price">99 R$</td><td>Gamepass</td><td>Sells to cautious players and quietly enables idling.</td></tr>
+            <tr><td class="prod">VIP</td><td class="price">499 R$</td><td>Gamepass</td><td>Top of the ladder.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="notes">
+        <div class="note"><span class="eyebrow">The one hard part</span><p><strong>There isn't one.</strong> This is the lowest-effort build on the list by a wide margin — which is exactly why it should ship first.</p></div>
+        <div class="note"><span class="eyebrow">Policy — needs care, and the care is easy</span><p>Entry is free, so there is no stake. Never debit the persistent wallet, never offer a bet-size selector, and present the loss as <strong>being caught by security</strong> rather than losing a wager. Under those rules this is a roguelike run — the same as dropping carried loot on death in any dungeon crawler.</p></div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="eyebrow">Foundation</span>
+    <h2>Build the engine once</h2>
+    <p>All three games are the same backend with a different three-second action bolted on top. Build this first and each additional game costs weeks instead of months.</p>
+  </div>
+  <div class="grid9">
+    <div class="sys"><h4>ProfileStore saves</h4><p>Session locking, no data loss. No exceptions and no homemade DataStore wrapper.</p></div>
+    <div class="sys"><h4>Big-number module</h4><p>Mantissa + exponent. You pass 2<sup>53</sup> fast, and native Luau numbers silently corrupt currency once you hit quadrillions.</p></div>
+    <div class="sys"><h4>Server-authoritative RNG</h4><p>The client never rolls, never decides a payout, never reports a result. It requests; the server rolls; the client animates what it's told.</p></div>
+    <div class="sys"><h4>Rate-limited remotes</h4><p>Uncapped RemoteEvents are how games in this genre get gutted within a week of getting popular.</p></div>
+    <div class="sys"><h4>Content as data</h4><p>Upgrades, rarities, zones and index entries live in module tables, so a content update ships in ten minutes — which is what holds the algorithm.</p></div>
+    <div class="sys"><h4>Odds-disclosure component</h4><p>One reusable popup, wired into every random purchase in every game. Build it before you need it.</p></div>
+    <div class="sys"><h4>Mobile-first HUD</h4><p>Most of your players are on phones. Design at phone size, check thumb reach, then scale up — never the reverse.</p></div>
+    <div class="sys"><h4>Full-server playtest</h4><p>On a mid-range phone, at max players, before launch. This is where the physics budget actually gets decided.</p></div>
+    <div class="sys"><h4>Launch loop</h4><p>3–5 TikToks a day, money-shot in the first half second, flat specific promise as the overlay. Codes with every update. Near-daily updates for two months.</p></div>
+  </div>
+  <div class="pull">
+    <span class="eyebrow">One thing about discovery</span>
+    <p>2026 discovery ranks <strong>return behavior</strong> — D1 and D7 — not CCU and not session length. Offline income, daily chests and streaks aren't retention nice-to-haves, they are literally the ranking input. Sponsored ads only <em>seed</em> that signal: you pay to get the first players in, and their D1/D7 and payer conversion is what the algorithm then promotes on. Micro-influencers at 10k–50k followers consistently beat big creators on ROI in this genre.</p>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="eyebrow">Sequence</span>
+    <h2>What to build, in what order</h2>
+    <p>This one <em>is</em> a sequence — each step exists to de-risk the next.</p>
+  </div>
+  <ol class="steps">
+    <li>
+      <span class="num">1</span>
+      <span class="txt">
+        <span class="when">~2 WEEKS</span>
+        <h4>Build the shared engine</h4>
+        <p>Saves, big numbers, upgrades, rebirth, index, offline income, odds popup, mobile HUD. Nothing player-facing yet.</p>
+      </span>
+    </li>
+    <li>
+      <span class="num">2</span>
+      <span class="txt">
+        <span class="when">~1 WEEK ON TOP</span>
+        <h4>Ship THE VAULT first</h4>
+        <p>The cheapest possible test of the engine, the marketing pipeline and your update cadence — with real revenue and the loudest organic clips. Learn on the game you can afford to have fail.</p>
+      </span>
+    </li>
+    <li>
+      <span class="num">3</span>
+      <span class="txt">
+        <span class="when">~3–4 WEEKS</span>
+        <h4>Then PUSH A FORTUNE as the flagship</h4>
+        <p>Best long-term retention of the three — persistent pile, a genuine idle loop, ASMR-adjacent watchability — and the least credible competition. This is the one aimed at holding 5k CCU.</p>
+      </span>
+    </li>
+    <li>
+      <span class="num">4</span>
+      <span class="txt">
+        <span class="when">ONLY IF FUNDED</span>
+        <h4>ROLL A GIANT last</h4>
+        <p>Highest ceiling, highest build cost, and the only one whose retention depends on a live player population already existing. Let the first two pay for it.</p>
+      </span>
+    </li>
+  </ol>
+</section>
+
+<div class="src">
+  <span class="eyebrow">Sources</span>
+  <p>
+    <a href="https://www.pcgamesn.com/ball-game/codes">Ball Game — PCGamesN</a> ·
+    <a href="https://www.pockettactics.com/ball-game-codes">Pocket Tactics</a> ·
+    <a href="https://progameguides.com/roblox/ball-game-codes/">Pro Game Guides</a> ·
+    <a href="https://rohire.dev/blog/2026-devex-cheat-sheet">2026 DevEx cheat sheet</a> ·
+    <a href="https://en.help.roblox.com/hc/en-us/articles/13061189551124-Developer-Exchange-Help-and-Information-Page">DevEx help</a> ·
+    <a href="https://rolearn.dev/insights/roblox-game-discovery-algorithm-2026/">Discovery algorithm 2026</a> ·
+    <a href="https://bloxg.com/guides/roblox-marketing">Roblox marketing guide</a> ·
+    <a href="https://rolearn.dev/insights/roblox-creator-rewards-payout-guide/">Creator Rewards payouts</a> ·
+    <a href="https://create.roblox.com/docs/creator-rewards">Creator Rewards docs</a> ·
+    <a href="https://about.roblox.com/community-standards">Community Standards</a> ·
+    <a href="https://create.roblox.com/docs/production/monetization/paid-random-items">Paid random items policy</a> ·
+    <a href="https://www.techtimes.com/articles/319148/20260626/koreas-loot-box-rules-push-roblox-disclose-item-odds-worldwide.htm">Korea loot-box rules go global</a> ·
+    <a href="https://medium.com/@andy.a.g/the-complete-guide-to-monetizing-a-roblox-game-in-2026-c5e915a7c778">Monetization guide 2026</a> ·
+    <a href="https://www.robloxdesk.com/most-profitable-roblox-game-genres-2026/">Most profitable genres</a> ·
+    <a href="https://kitsblox.com/blog/popular-roblox-game-genres-2026">Genre trends 2026</a>
+  </p>
+  <p style="font-size:12.5px;">Revenue figures are a back-of-envelope model from public DevEx rates and typical genre ARPDAU, not measured data from any specific game.</p>
+</div>
+
+</div>
