@@ -244,6 +244,21 @@ section:nth-of-type(3){animation-delay:.08s;}
 @media (prefers-reduced-motion:reduce){
   .marquee,section{animation:none;}
 }
+
+.verdict{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.07em;
+  padding:3px 7px;border-radius:3px;white-space:nowrap;display:inline-block;}
+.v-open{background:var(--cyan-bg);color:var(--cyan);}
+.v-warn{background:var(--amber-bg);color:var(--amber);}
+.v-avoid{background:var(--alarm-bg);color:var(--alarm);}
+.amend{background:var(--panel-2);border-left:3px solid var(--amber);border-radius:var(--radius);
+  padding:18px 20px;display:flex;flex-direction:column;gap:11px;}
+.amend p{font-size:14.5px;line-height:1.6;color:var(--ink-2);}
+.amend strong{color:var(--ink);}
+.rubric{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;}
+.rubric li{background:var(--panel);padding:14px 18px;display:flex;gap:14px;align-items:flex-start;font-size:15px;line-height:1.55;}
+.rubric .tick{flex:none;color:var(--cyan);font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:700;margin-top:3px;}
+.rubric strong{color:var(--ink);}
 </style>
 
 <div class="wrap">
@@ -254,7 +269,7 @@ section:nth-of-type(3){animation-delay:.08s;}
     <span class="bulb on"></span><span class="bulb"></span><span class="bulb on"></span>
   </div>
   <h1>Three slop games<br>worth <em>building</em></h1>
-  <p class="lede">A teardown of the ball-drop game that's printing money, the nine-system engine underneath it, the 2026 policy rules that constrain it — and three concepts that reuse the same backend with three different viral money-shots.</p>
+  <p class="lede">A teardown of the ball-drop game that's printing money, the nine-system engine underneath it, the 2026 policy rules that constrain it — and three concepts that reuse the same backend — plus a second round of ideas, a saturation map of what’s already dead, and the rubric to kill your own ideas fast.</p>
 </header>
 
 <section>
@@ -494,6 +509,166 @@ section:nth-of-type(3){animation-delay:.08s;}
   </article>
 </section>
 
+
+<section>
+  <div class="shead">
+    <span class="eyebrow">Round 2 &middot; after PUSH A FORTUNE was picked</span>
+    <h2>More ideas — and four to avoid</h2>
+    <p>Every mechanic below was saturation-checked before being recommended, including the ones that turned out to be dead. The avoid list is the more valuable half.</p>
+  </div>
+
+  <div class="scroll"><table>
+    <thead><tr><th>Mechanic</th><th>Verdict</th><th>Evidence</th></tr></thead>
+    <tbody>
+      <tr class="star"><td class="prod">Coin pusher</td><td><span class="verdict v-open">OPEN</span></td><td>Still the standout after round 2. Existing Roblox pushers are toys — no rebirth, no luck stat, no index, no persistence. The good version genuinely doesn't exist.</td></tr>
+      <tr><td class="prod">Launch / fling distance</td><td><span class="verdict v-warn">HOT WAVE</span></td><td>Surging in 2026, not open. Chicken Rocket: 2.67M visits, ~432 CCU, 97.5% rating, 43k upvotes. Launch! (Moneybag Games) in beta and climbing. No entrenched #1 yet.</td></tr>
+      <tr><td class="prod">Playable arcade tycoon</td><td><span class="verdict v-warn">CROWDED</span></td><td>Build an Arcade (25M+ visits) and Arcade Tycoon own the <em>builder</em> framing — but machines there are furniture that prints money. The playable-machine angle is open.</td></tr>
+      <tr><td class="prod">Bowling / knockdown</td><td><span class="verdict v-warn">FRAGMENTED</span></td><td>KingPin, Bowling Simulator, Ball Throwing Simulator — several attempts, none broke out. Money-shot isn't novel enough for TikTok.</td></tr>
+      <tr><td class="prod">Stacking / tower height</td><td><span class="verdict v-warn">FRAGMENTED</span></td><td>Many small games, no mega-hit, weak money-shot.</td></tr>
+      <tr><td class="prod">Claw machine</td><td><span class="verdict v-avoid">AVOID</span></td><td>Claw Machine Master: 8.4M+ visits, 800+ plushies, 4 worlds. Plus Claw Machine Simulator (RB Battles), Claw Machine Arcade, Tokyo Claw Machine. Someone already shipped the luck-engine version.</td></tr>
+      <tr><td class="prod">Crusher / hydraulic press</td><td><span class="verdict v-avoid">AVOID</span></td><td>Car Crushers 2: 1.31B visits, ~3k CCU. You'd be launching straight into a mega-incumbent.</td></tr>
+      <tr><td class="prod">Vacuum / suck-up</td><td><span class="verdict v-avoid">AVOID</span></td><td>Commodity space — dozens of near-identical clones including brainrot tie-ins. Nothing to differentiate on.</td></tr>
+      <tr><td class="prod">Domino chain reaction</td><td><span class="verdict v-avoid">AVOID</span></td><td>Domino Chaos already ships the exact concept — cash per domino toppled, upgrades, trails, skins, billed as "the most satisfying experience on Roblox".</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="pull" style="margin-top:20px;">
+    <span class="eyebrow">Why the avoid list matters more</span>
+    <p>Claw, crusher, vacuum and dominoes all <strong>sound</strong> like great picks. All four are already occupied, and all four would have been three wasted weeks each. Check saturation before you fall in love with a mechanic — it takes ten minutes and it's the highest-return thing you can do.</p>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="eyebrow">The rubric</span>
+    <h2>Why the pusher was the right favourite</h2>
+    <p>Score any machine idea out of five. The pusher takes all five, which is exactly why it stood out. Anything below four isn't worth building — use this to kill your own ideas fast.</p>
+  </div>
+  <ol class="rubric">
+    <li><span class="tick">01</span><span><strong>Built-in near-miss.</strong> The machine generates tension for free, with zero design work. There is always a coin teetering.</span></li>
+    <li><span class="tick">02</span><span><strong>Progress lives in the 3D world.</strong> A pile you can see and film, not a number in a HUD. This doubles as the return hook.</span></li>
+    <li><span class="tick">03</span><span><strong>Idle-able.</strong> Auto-drop turns it into an idle game — which is what farms Creator Rewards and D1 retention.</span></li>
+    <li><span class="tick">04</span><span><strong>Readable on a phone in one frame.</strong> A TikTok viewer understands it instantly, with no context and no sound.</span></li>
+    <li><span class="tick">05</span><span><strong>Cheap.</strong> One machine. No map, no combat, no live player population required to be fun.</span></li>
+  </ol>
+  <div class="amend" style="margin-top:18px;">
+    <span class="eyebrow">Scoring the rest</span>
+    <p>Bowling scores 3 — near-miss yes, world-progress no. Vacuum scores 2. Launcher scores 4 (near-miss on the zone gate, world-progress via the track, very idle-able, very cheap — but it loses a point because the format is already contested).</p>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="eyebrow">Concept &middot; the contested one</span>
+    <h2>FLING IT</h2>
+    <p>Launch-distance incremental. Entering a surging genre, not an empty one.</p>
+  </div>
+  <article class="game">
+    <div class="game-top">
+      <div class="game-id">
+        <h3>FLING IT</h3>
+        <span class="tag">Rising wave, no entrenched #1</span>
+      </div>
+      <div class="meterwrap">
+        <span class="lbl">Build effort</span>
+        <span class="meter" role="img" aria-label="Build effort: 2 out of 5"><i class="f"></i><i class="f"></i><i></i><i></i><i></i></span>
+      </div>
+    </div>
+    <div class="game-body">
+      <div class="clip">
+        <span class="eyebrow">The six-second clip</span>
+        <p class="t">The distance counter screaming upward as you smash through a zone gate at 400M studs and the screen flips to an entirely new biome.</p>
+      </div>
+
+      <div class="amend">
+        <span class="eyebrow">Correction — read this before the pitch</span>
+        <p>My first pass called this an open niche. <strong>It isn't.</strong> Launcher sims are actively surging on Roblox in 2026 — Chicken Rocket (2.67M visits, ~432 CCU, 97.5% rating) and Launch! by Moneybag Games (in beta, climbing) are both live right now.</p>
+        <p>That changes the framing, but it arguably <em>improves</em> the case:</p>
+        <p>· <strong>A rising wave with no entrenched #1 beats a genuinely empty niche.</strong> Empty niches are usually empty because the format doesn't retain. This one demonstrably does.<br>
+        · <strong>The audience is already educated</strong> — you don't have to teach TikTok what a launcher is, which is the expensive part of any new format.<br>
+        · <strong>The gap is the engine, not the mechanic.</strong> Chicken Rocket is physics-chaos plus items and skins; Launch! is straight progression. Neither runs the full luck engine — 1-in-a-billion index chases, rebirth tiers, passives, server events, an odds-disclosed gacha.<br>
+        · <strong>Chicken Rocket's 12.27-minute average session is the proof point that matters</strong> — it clears the 10-minute Creator Rewards bar comfortably, confirming the launcher session shape fits this monetization model.</p>
+        <p><strong>The cost of entry:</strong> you're racing active competitors instead of walking into an empty room. Speed and differentiation matter far more here than on the pusher. Only take this one if you can ship in weeks and hold an update cadence.</p>
+      </div>
+
+      <div class="block">
+        <h4 class="eyebrow">Core loop</h4>
+        <ul class="loop">
+          <li>One launch: aim, power, fire — then 20–40 seconds of flight, bouncing, boosting and breaking through gates.</li>
+          <li>Distance converts to Cash. Cash buys launch power, bounce, boost fuel, glide and magnet.</li>
+          <li><strong>Zone gates</strong> every X studs. Each one you break unlocks a biome permanently, so <strong>the track itself is your progress bar</strong> — visible, filmable world-progress.</li>
+          <li><strong>The near-miss is free:</strong> landing 200 studs short of the next gate is agonising, and it happens constantly.</li>
+          <li>Rebirth resets upgrades but permanently multiplies distance and unlocks the next launcher tier — slingshot, cannon, railgun, orbital.</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4 class="eyebrow">Monetization</h4>
+        <div class="scroll"><table>
+          <thead><tr><th>Product</th><th>Price</th><th>Type</th><th>Why it converts</th></tr></thead>
+          <tbody>
+            <tr class="star"><td class="prod">BOOST MID-FLIGHT</td><td class="price">25 R$</td><td>Dev product, repeatable</td><td>Sold in the two seconds where you can see you're about to fall short of a gate. Same emotional slot as SHAKE THE MACHINE.</td></tr>
+            <tr><td class="prod">Auto-Launch</td><td class="price">199 R$</td><td>Gamepass</td><td>Turns it into a true idle game.</td></tr>
+            <tr><td class="prod">2× Distance / 2× Cash</td><td class="price">149 R$ ea</td><td>Gamepass</td><td>The standard pair.</td></tr>
+            <tr><td class="prod">Starting Height</td><td class="price">149 R$</td><td>Gamepass</td><td>Skips the least fun part of every run.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="notes">
+        <div class="note"><span class="eyebrow">The one hard part</span><p><strong>Don't simulate the flight.</strong> Fake it with a tuned velocity curve rather than real physics — deterministic, mobile-cheap, and far easier to balance. One long track plus parallax biomes.</p></div>
+        <div class="note"><span class="eyebrow">Policy</span><p><strong>Clean.</strong> Launching is free and always returns distance. The only paid-random surface is the index gacha, which routes through the odds popup.</p></div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="eyebrow">Concept &middot; the leverage play</span>
+    <h2>THE ARCADE</h2>
+    <p>Not a different game — the expansion path for PUSH A FORTUNE, and the highest-leverage move on this whole document.</p>
+  </div>
+  <div class="policy" style="border-left-color:var(--cyan);">
+    <h3>Ship the pusher. Then add machines to the same lobby, one per update.</h3>
+    <p style="font-size:15px;line-height:1.6;">Every new machine shares one <strong style="color:var(--ink)">Ticket</strong> currency and one prize counter, so it deepens the existing economy instead of splitting it. It gets its own launch wave of TikToks, because it's a brand new money-shot. It costs a fraction of a new game, because saves, big numbers, rebirth, index, luck and the odds popup already exist. And it gives lapsed players a reason to return that isn't "the number is bigger now".</p>
+    <ol class="steps" style="margin-top:4px;">
+      <li><span class="num">1</span><span class="txt"><h4>Coin pusher</h4><p>The flagship. Ships first, carries the launch.</p></span></li>
+      <li><span class="num">2</span><span class="txt"><h4>The Pop</h4><p>A balloon pump. Each pump multiplies the payout and the balloon visibly strains. Bank, or keep pumping. The best near-miss animation in the building — and about two days of work.</p></span></li>
+      <li><span class="num">3</span><span class="txt"><h4>Skee-ball / roller</h4><p>Timing-bar based: stop a moving bar in the green, chain "PERFECT" hits for a multiplier. Timing bars are nearly free to build and produce a near-miss on every single input.</p></span></li>
+      <li><span class="num">4</span><span class="txt"><h4>The Drop</h4><p>Your reference game's mechanic — but as one machine among many rather than the whole product.</p></span></li>
+      <li><span class="num">5</span><span class="txt"><h4>Mega Pusher</h4><p>The shared server machine, run as a scheduled live spectator event.</p></span></li>
+    </ol>
+    <p style="font-size:15px;line-height:1.6;"><strong style="color:var(--ink)">Why this beats building a second game:</strong> a second game splits your marketing, your update cadence and your player base. A second machine compounds all three.</p>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="eyebrow">Two more concepts</span>
+    <h2>If you want a separate title anyway</h2>
+  </div>
+  <div class="grid9">
+    <div class="sys"><h4>PLAYABLE ARCADE TYCOON <span class="verdict v-warn">CROWDED</span></h4><p><strong>Clip:</strong> a walk-through of an arcade stacked wall-to-wall with glowing machines, ending on the owner playing the one that just hit a jackpot.</p><p>Build an Arcade and Arcade Tycoon own the builder framing — but their machines are furniture that prints money. Nobody has made them <strong>playable</strong> with real RNG behind them. Tycoon has perfect offline income, which is what the algorithm and Creator Rewards both pay for. Effort 3/5. Only build it if the playable hook is the centrepiece, not a bolt-on.</p></div>
+    <div class="sys"><h4>DEEPER <span class="verdict v-open">CHEAP</span></h4><p><strong>Clip:</strong> a mine cart accelerating into a blur as depth and multiplier climb together — then a triumphant brake, or a wall.</p><p>THE VAULT with motion. Same press-your-luck maths, far better clips: a static room of doors films badly, but speed, blur and rising numbers are legible on a phone in one frame. Brake to bank, crash to lose the run's haul (never the wallet). Effort 2/5 — a procedural track, a speed curve, one cart.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="eyebrow">Highest return</span>
+    <h2>Five upgrades to the pusher worth more than any new game</h2>
+    <p>If you only take one thing from round 2, take this section rather than a new concept.</p>
+  </div>
+  <ol class="steps">
+    <li><span class="num">1</span><span class="txt"><h4>Make rebirth change the machine's physical scale</h4><p>Don't just multiply a number — go tabletop pusher, warehouse pusher, stadium pusher, planet pusher. Rebirth stops being a menu action and becomes a money-shot generator, and every tier is a fresh TikTok.</p></span></li>
+    <li><span class="num">2</span><span class="txt"><h4>A prize room other players can walk through</h4><p>Your Index becomes a physical room friends can visit. Collection turns into social flex — the strongest retention force on the platform — and it costs almost nothing to build.</p></span></li>
+    <li><span class="num">3</span><span class="txt"><h4>Add The Pop as machine #2</h4><p>Two days of work, a completely different money-shot, and it deepens the same ticket economy rather than competing with it.</p></span></li>
+    <li><span class="num">4</span><span class="txt"><h4>One Ticket currency across every machine</h4><p>This is what turns a pile of minigames into an arcade. It's the difference between an expansion and a distraction.</p></span></li>
+    <li><span class="num">5</span><span class="txt"><h4>Run the Mega Pusher as a scheduled live event</h4><p>Not an always-on feature — a countdown the whole server gathers for. Scheduled events are the single best D1 mechanism, because they give players a specific time to come back to.</p></span></li>
+  </ol>
+</section>
+
 <section>
   <div class="shead">
     <span class="eyebrow">Foundation</span>
@@ -576,7 +751,11 @@ section:nth-of-type(3){animation-delay:.08s;}
     <a href="https://www.techtimes.com/articles/319148/20260626/koreas-loot-box-rules-push-roblox-disclose-item-odds-worldwide.htm">Korea loot-box rules go global</a> ·
     <a href="https://medium.com/@andy.a.g/the-complete-guide-to-monetizing-a-roblox-game-in-2026-c5e915a7c778">Monetization guide 2026</a> ·
     <a href="https://www.robloxdesk.com/most-profitable-roblox-game-genres-2026/">Most profitable genres</a> ·
-    <a href="https://kitsblox.com/blog/popular-roblox-game-genres-2026">Genre trends 2026</a>
+    <a href="https://kitsblox.com/blog/popular-roblox-game-genres-2026">Genre trends 2026</a> ·
+    <a href="https://www.rolimons.com/game/74920783799551">Chicken Rocket — Rolimon’s</a> ·
+    <a href="https://earnaldo.com/blog/launch-vs-fling-things-and-people">Launch vs Fling Things</a> ·
+    <a href="https://www.rolimons.com/game/111090582734476">Claw Machine Master — Rolimon’s</a> ·
+    <a href="https://roblox.fandom.com/wiki/Car_Crushers_Community/Car_Crushers_2_-_Physics_Simulation">Car Crushers 2</a>
   </p>
   <p style="font-size:12.5px;">Revenue figures are a back-of-envelope model from public DevEx rates and typical genre ARPDAU, not measured data from any specific game.</p>
 </div>

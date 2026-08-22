@@ -305,3 +305,149 @@ ranking input.
 - [Roblox Community Standards](https://about.roblox.com/community-standards) · [Paid random items policy](https://create.roblox.com/docs/production/monetization/paid-random-items) · [Korea loot-box rules push global odds disclosure — TechTimes](https://www.techtimes.com/articles/319148/20260626/koreas-loot-box-rules-push-roblox-disclose-item-odds-worldwide.htm)
 - [Monetizing a Roblox game in 2026 — Medium](https://medium.com/@andy.a.g/the-complete-guide-to-monetizing-a-roblox-game-in-2026-c5e915a7c778) · [Most profitable genres — RobloxDesk](https://www.robloxdesk.com/most-profitable-roblox-game-genres-2026/)
 - [Roblox genre trends 2026 — KitsBlox](https://kitsblox.com/blog/popular-roblox-game-genres-2026) · [Creator landscape 2026 — RoLearn](https://rolearn.dev/trend-reports/roblox-content-creator-landscape-2026/)
+
+---
+
+# Round 2 — more ideas, and the ones to avoid
+
+Written after PUSH A FORTUNE was picked as the favourite. Every mechanic below was
+saturation-checked before being recommended, including the ones that turned out to be dead.
+
+## The saturation map
+
+| Mechanic | Verdict | Evidence |
+|---|---|---|
+| **Coin pusher** | **OPEN** | Still the standout after round 2. Existing Roblox pushers are toys — no rebirth, no luck stat, no index, no persistence. Confirmed: the good version doesn't exist. |
+| **Launch / fling distance** | **HOT WAVE — no entrenched #1** | Corrected after a bad first read. Launcher sims are *surging* on Roblox in 2026, not open: Chicken Rocket (The Woods Company) has 2.67M visits, ~432 CCU, a 97.5% rating and 43k upvotes; Launch! (Moneybag Games) is in beta and climbing. Nobody owns the ceiling yet. |
+| Playable arcade tycoon | Crowded, differentiable | Build an Arcade (25M+ visits) and Arcade Tycoon are *builders* — machines generate passive income but you don't play them. The playable-machine angle is open. |
+| Bowling / knockdown | Fragmented | KingPin, Bowling Simulator, Ball Throwing Simulator — several attempts, none broke out. Money-shot isn't novel enough for TikTok. |
+| Stacking / tower height | Fragmented | Many small games, no mega-hit, weak money-shot. |
+| **Claw machine** | **AVOID** | Claw Machine Master: 8.4M+ visits, 800+ plushies, 4 worlds. Plus Claw Machine Simulator (RB Battles), Claw Machine Arcade, Tokyo Claw Machine. Entrenched, and someone already shipped exactly the luck-engine version. |
+| **Crusher / hydraulic press** | **AVOID** | Car Crushers 2: 1.31B visits, ~3k CCU. You would be launching into a mega-incumbent. |
+| **Vacuum / suck-up** | **AVOID** | Commodity space — dozens of near-identical clones including brainrot tie-ins. Nothing to differentiate on. |
+| **Domino chain reaction** | **AVOID** | Domino Chaos already ships the exact concept: cash per domino toppled, upgrades, trails, skins, "most satisfying experience on Roblox". |
+
+The avoid list matters more than the idea list. Claw, crusher, vacuum and dominoes all *sound*
+like great picks and all four would have been three wasted weeks.
+
+## The rubric — why the pusher is the right favourite
+
+Score any machine idea out of 5. The pusher scores 5/5, which is why it stood out:
+
+1. **Built-in near-miss** — the machine generates tension for free, with no design work. There is always a coin teetering.
+2. **Progress lives in the 3D world** — a pile you can see and film, not a number in a HUD. This is also the return hook.
+3. **Idle-able** — auto-drop turns it into an idle game, which is what farms Creator Rewards and D1.
+4. **Readable on a phone in one frame** — a TikTok viewer understands it instantly with no context.
+5. **Cheap** — one machine, no map, no combat, no live population needed.
+
+Anything scoring below 4 isn't worth building. Bowling scores 3 (near-miss yes, world-progress no).
+Vacuum scores 2. Use this to kill your own ideas fast.
+
+---
+
+## New concept — FLING IT
+*Launch-distance incremental. Entering a surging genre, not an empty one.*
+
+**The clip:** the distance counter screaming upward as you smash through a zone gate at 400M studs and the screen shifts to a whole new biome.
+
+**Read this first — the honest framing.** My first pass called this an open niche. It isn't.
+Launcher sims are one of the genres actively surging on Roblox in 2026: **Chicken Rocket**
+(2.67M visits, ~432 CCU, 97.5% rating, 43k upvotes) and **Launch!** by Moneybag Games (in
+beta, climbing) are both live right now.
+
+That changes the recommendation, but it doesn't kill it — arguably it improves it:
+
+- **A rising wave with no entrenched #1 beats a genuinely empty niche.** Empty niches are
+  usually empty because the format doesn't retain. This one is demonstrably retaining.
+- **The audience is already educated.** You don't have to teach TikTok what a launcher is,
+  which is the expensive part of launching any new format.
+- **The specific gap is the engine, not the mechanic.** Chicken Rocket is physics-chaos plus
+  items and skins; Launch! is straight progression. Neither runs the full luck engine —
+  1-in-a-billion index chases, rebirth tiers, passives, server events, an odds-disclosed
+  gacha. That's what PUSH A FORTUNE would bring to the format.
+- **Chicken Rocket's 12.27 minute average session is the proof point that matters.** It clears
+  the 10-minute Creator Rewards bar comfortably, which confirms the launcher session shape is
+  the right one for this monetization model.
+
+**The cost of entering:** you're racing active competitors instead of walking into an empty
+room, so speed and differentiation matter far more here than on the pusher. Only take this
+one if you can ship in weeks and commit to the update cadence.
+
+**Core loop**
+- One launch: aim, power, fire. Then 20–40s of flight — bouncing, boosting, breaking through gates.
+- Distance converts to Cash. Cash buys launch power, bounce, boost fuel, glide, magnet.
+- **Zone gates** every X studs: each one you break unlocks a new biome permanently, so the track itself is your progress bar — visible, filmable world-progress.
+- **Near-miss is free:** landing 200 studs short of the next gate is agonising and happens constantly.
+- Rebirth resets upgrades but permanently multiplies distance and unlocks the next launcher tier (slingshot → cannon → railgun → orbital).
+- Rare mid-flight pickups feed the Index.
+
+**Killer product:** `BOOST MID-FLIGHT — 25 R$`, repeatable, sold in the two seconds where you can see you're about to fall short of a gate. Same emotional slot as SHAKE THE MACHINE.
+
+**Other monetization:** Auto-Launch (199) · 2× Distance / 2× Cash (149 ea) · Starting Height (149) · VIP (499).
+
+**Effort: 2/5.** One long track, a velocity curve, and parallax biomes. No physics simulation needed — fake the flight entirely with a tuned curve so it's deterministic and mobile-cheap.
+
+---
+
+## New concept — THE ARCADE
+*Not a different game. The expansion path for PUSH A FORTUNE — and the highest-leverage move available.*
+
+Ship the pusher. Then add machines to the same lobby, one per content update. Every new machine:
+
+- shares one **Ticket** currency and one **prize counter**, so it deepens the existing economy instead of splitting it;
+- gets its own launch wave of TikToks, because it's a brand new money-shot;
+- costs a fraction of a new game, because saves, big numbers, rebirth, index, luck and the odds popup are already built;
+- gives lapsed players a reason to come back that isn't "number is bigger now".
+
+**Machine menu, in build order:**
+1. **Coin pusher** — the flagship, ships first.
+2. **The Pop** — a balloon pump. Each pump multiplies the payout, and the balloon visibly strains. Bank or keep pumping. Press-your-luck with the best near-miss animation in the building, and it's maybe two days of work.
+3. **Skee-ball / roller** — timing-bar based. A moving bar you stop in the green zone; "PERFECT" hits chain a multiplier. Timing bars are nearly free to build and generate near-miss on every single input.
+4. **The Drop** — your reference game's mechanic, but as *one machine among many* rather than the whole product.
+5. **Mega Pusher** — the shared server machine, as a live spectator event.
+
+**Why this beats building a second game:** a second game splits your marketing, your update cadence and your player base. A second machine compounds all three.
+
+---
+
+## New concept — PLAYABLE ARCADE TYCOON
+*Own the arcade. Machines earn while you're offline — and you can actually play them.*
+
+**The clip:** a walk-through of an arcade stacked wall-to-wall with glowing machines, ending on the owner playing the one that just hit a jackpot.
+
+**The gap:** Build an Arcade (25M+ visits) and Arcade Tycoon already own the *builder* framing — but in those games machines are furniture that prints money. Nobody has made the machines **playable** with real RNG loops behind them. Tycoon is one of Roblox's most durable genres and it has perfect offline income, which is exactly what the discovery algorithm and Creator Rewards both pay for.
+
+**Loop:** place machines → they earn passively (including offline) → play any machine yourself for a much higher rate → cash funds better machines → expand the building → prestige into a bigger venue.
+
+**Monetization:** the tycoon standards convert reliably — 2× Income (149), Auto-Collect (199), instant-build skips (dev product, repeatable), exclusive machine skins, VIP (499).
+
+**Effort: 3/5.** Grid placement, an offline-income tick, and one playable machine to start. Reuses everything from the pusher.
+
+**Caveat, stated plainly:** this is the most crowded room on the list. Only build it if the playable-machine hook is genuinely the centrepiece, not a bolt-on.
+
+---
+
+## New concept — DEEPER
+*THE VAULT with motion. Same press-your-luck maths, far better clips.*
+
+**The clip:** a mine cart accelerating into a blur as the depth counter and multiplier climb together — then either a triumphant brake, or a wall.
+
+**Why:** the press-your-luck loop is the cheapest high-emotion mechanic there is, but a static room full of doors films badly. Put it on rails and every run becomes watchable. Speed, motion blur and rising numbers are what make a six-second clip legible on a phone.
+
+**Loop:** ride down, depth multiplies your haul, brake to bank at any moment, crash and lose the run's haul (never your wallet). Depth zones change biome so progress is visible. Luck shifts obstacle density.
+
+**Monetization:** `SAVE MY RUN` at 49→99→199 escalating in-run, plus 2× Haul (149), Luck (149), Auto-Brake at a chosen multiplier (99).
+
+**Effort: 2/5.** A procedural track, a speed curve and one cart model.
+
+**Policy:** identical rules to THE VAULT — free entry, no stake, wallet never debited, and the loss is a crash, not a lost bet.
+
+---
+
+## Five upgrades to PUSH A FORTUNE worth more than any new game
+
+1. **Make rebirth change the machine's physical scale.** Don't just multiply a number — go tabletop pusher → warehouse pusher → stadium pusher → planet pusher. Rebirth becomes a money-shot generator instead of a menu action, and every tier is a fresh TikTok.
+2. **A prize room other players can walk through.** Your Index becomes a physical room in the world that friends can visit. Collection turns into social flex, which is the strongest retention force on the platform, and it costs almost nothing to build.
+3. **Add The Pop as machine #2.** Two days of work, a completely different money-shot, and it deepens the same ticket economy.
+4. **One Ticket currency across every machine.** This is what turns a pile of minigames into an arcade, and it's the difference between an expansion and a distraction.
+5. **Run the Mega Pusher as a scheduled live event.** Not an always-on feature — a countdown the whole server gathers for. Scheduled events are the single best D1 mechanism, because they give players a specific time to come back to.
