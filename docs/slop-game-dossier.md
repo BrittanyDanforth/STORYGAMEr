@@ -451,3 +451,62 @@ Ship the pusher. Then add machines to the same lobby, one per content update. Ev
 3. **Add The Pop as machine #2.** Two days of work, a completely different money-shot, and it deepens the same ticket economy.
 4. **One Ticket currency across every machine.** This is what turns a pile of minigames into an arcade, and it's the difference between an expansion and a distraction.
 5. **Run the Mega Pusher as a scheduled live event.** Not an always-on feature — a countdown the whole server gathers for. Scheduled events are the single best D1 mechanism, because they give players a specific time to come back to.
+
+
+---
+
+# Round 3 — make it walk-around
+
+The reference game is a *screen game*: you sit in a menu, there's no avatar, nobody can see
+you. That's the cheap, fast lane — and it isn't the lane the durable money is in.
+
+## The platform pays for co-play, not for mechanics
+
+- Roblox ranks **retention and co-play** above almost everything else. As the trade write-ups
+  put it: *an empty city full of friends beats a packed dungeon full of strangers, every time.*
+- Social hangouts sustain **45+ minute sessions**. People stay for friends, not mechanics —
+  and session length clears the 10-minute Creator Rewards bar with room to spare.
+- The top-grossing games — Brookhaven, Adopt Me, Pet Simulator — are **all walk-around social
+  worlds**. Screen games make good money fast; walkable ones make more money for longer.
+
+**PUSH A FORTUNE was already designed this way.** The plaza, the Mega Pusher everyone gathers
+at, the prize room friends walk through — that's the walk-around layer, and it's the structural
+edge it already had over the game you were looking at.
+
+## The pattern: the hub wraps the screen game
+
+You don't replace the tight 3-second loop. You wrap it.
+
+| | Reference game | The arcade |
+|---|---|---|
+| Modes | One: machine view | Two: hub + machine view |
+| Avatar | None | You stand at the machine, visible to everyone |
+| Exit from the loop | Boredom | Walk out into the hub |
+| What it buys | The clip, the conversion moment | ...plus session length, social proof, flex, a reason to return |
+
+**The technique is trivial.** Walk up to a machine and the camera tweens into it: set
+`Camera.CameraType = Enum.CameraType.Scriptable`, `TweenService` the camera `CFrame` to a mount
+part on the machine over ~0.6s, and on exit tween back and restore `Custom`. Your avatar stays
+standing there the whole time, so **everyone walking past sees you playing it** — which is
+exactly what the reference game can never have.
+
+## What the hub buys you, concretely
+
+1. **Your pile becomes status.** The persistent coin pile stops being private progress and becomes something others walk past and judge.
+2. **The prize room is a place.** Your Index becomes a room friends physically walk through. Collection turns into flex.
+3. **The Mega Pusher gets a crowd.** A server event people *gather at* hits differently from a progress bar. Whale spending becomes public theatre.
+4. **Sessions get long enough to pay.** Hangout behaviour pushes past the 10-minute Creator Rewards bar without the player grinding for it.
+5. **Unlocks become rooms.** A new machine tier is a wing you walk into, not a menu row.
+6. **Rebirth becomes spatial.** Combined with scaling the machine physically: tabletop → warehouse → stadium. The venue changes around you.
+
+## The three costs, stated honestly
+
+- **Perf.** Physics machines *plus* avatars on mobile is a real budget problem. Only simulate
+  coins on machines with a player at them; freeze the rest to a static mesh and resume on
+  approach. Distance-cull aggressively. This decides your machine count per room.
+- **Cost.** A hub is real work the reference game didn't have to do — but **keep it small**.
+  One arcade room, not a city. Walk-around does not mean open world, and a tight room full of
+  people beats a big map that feels abandoned.
+- **Risk.** Walk-around games feel dead at low CCU, and you launch at low CCU. Mitigate with
+  **small servers (12–16)** so they always look full, and put machines close together so the
+  few players present are visible to each other.
