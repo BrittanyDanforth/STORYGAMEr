@@ -11,23 +11,33 @@ Design research and buildable code for a Roblox coin-pusher luck game.
   generate a working, moving machine in about ten seconds. Generated from the module,
   so the two can't drift apart.
 
-## Running it
+## Running it — step by step
 
-**Fastest look:** open Studio → View → Command Bar → paste the entire contents of
-`scripts/command-bar-build.lua` → Enter. A cabinet appears at the origin, the pusher
-starts cycling, and coins rain in so you can watch the pile build and the ledge pay out.
+**Important: the ModuleScript alone does nothing.** A ModuleScript is a library; it only
+runs when something `require`s it. If you put the module in ReplicatedStorage, press
+Play, and nothing appears — that's why. You need both objects below.
 
-**In a real place:** put `src/PusherMachine.luau` in `ReplicatedStorage` as a
-ModuleScript named `PusherMachine`, then:
+**Path A — the real setup (two objects):**
 
-```lua
-local PusherMachine = require(game.ReplicatedStorage.PusherMachine)
+1. In the Explorer, hover **ReplicatedStorage** → **+** → **ModuleScript**. Rename it
+   exactly `PusherMachine`. Delete its placeholder contents and paste in all of
+   `src/PusherMachine.luau`.
+2. Hover **ServerScriptService** → **+** → **Script** (a regular Script — *not* a
+   LocalScript, *not* another ModuleScript). Delete its placeholder contents and paste
+   in all of `scripts/ServerInit.server.lua`.
+3. Press **Play**. The cabinet builds at the origin, the pusher starts cycling, and
+   tokens rain in.
 
-local machine = PusherMachine.build(CFrame.new(0, 0, 0))
-machine.Parent = workspace
-PusherMachine.start(machine)        -- begin the push cycle
-PusherMachine.dropCoin(machine, 2)  -- drop a token, offset 2 studs right
-```
+**Path B — zero setup (10 seconds):** open **View → Command Bar**, paste the entire
+contents of `scripts/command-bar-build.lua` into the command bar (the one-line text box
+at the bottom — not into any script), press Enter. Same machine, no objects needed.
+Note the command bar builds it at edit time, so the pusher only cycles and coins only
+fall once you press Play.
+
+**If it still doesn't work**, open **View → Output** and read the red line — it names
+the script and line number. The two classic mistakes: the ModuleScript isn't named
+exactly `PusherMachine` (the runner waits forever on `WaitForChild`), or the runner was
+pasted into a LocalScript/ModuleScript instead of a Script (it never executes).
 
 Every dimension lives in the `CFG` table at the top of the module. Edit and rebuild.
 
