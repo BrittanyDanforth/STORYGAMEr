@@ -51,7 +51,7 @@ local CFG = {
 	colBody    = Color3.fromRGB(24, 28, 44),
 	colBody2   = Color3.fromRGB(34, 40, 62),   -- lighter panel tone
 	colDark    = Color3.fromRGB(15, 17, 26),   -- kick plate / screens
-	colDeck    = Color3.fromRGB(58, 66, 92),   -- steel-blue playfield
+	colDeck    = Color3.fromRGB(82, 94, 126),   -- steel-blue playfield
 	colGold    = Color3.fromRGB(255, 190, 60),
 	colGoldDim = Color3.fromRGB(122, 92, 34),  -- unlit bulbs
 	colTeal    = Color3.fromRGB(64, 230, 214),
@@ -84,10 +84,11 @@ local FLAT = CFrame.Angles(0, 0, math.rad(90))
 -- Deterministic pseudo-random for the decorative pile, so every build (and every
 -- offline render) produces the same machine.
 local function makeRng(seed)
-	local state = seed
+	local state = seed % 2147483647
+	if state == 0 then state = 1 end
 	return function()
-		state = (state * 1103515245 + 12345) % 2147483648
-		return state / 2147483648
+		state = (state * 16807) % 2147483647
+		return state / 2147483647
 	end
 end
 
@@ -130,15 +131,15 @@ function PusherMachine.build(originCFrame, name)
 	-- Kick plinth the whole cabinet sits on, in the darkest tone.
 	newPart({
 		Name = "Plinth",
-		Size = Vector3.new(14.8, 1.0, 16.6),
+		Size = Vector3.new(16.0, 1.0, 17.4),
 		CFrame = at(0, 0.5, -0.3),
 		Color = CFG.colDark,
 	}, cabinet)
 
 	-- Teal underglow skirting the plinth. This is most of the "arcade floor" look.
-	neonStrip(Vector3.new(14.2, 0.18, 0.18), at(0, 0.14, -8.7), CFG.colTeal)
+	neonStrip(Vector3.new(15.6, 0.18, 0.18), at(0, 0.96, -9.02), CFG.colTeal)
 	for _, side in ipairs({ -1, 1 }) do
-		neonStrip(Vector3.new(0.18, 0.18, 16.2), at(side * 7.45, 0.14, -0.3), CFG.colTeal)
+		neonStrip(Vector3.new(0.18, 0.18, 17.2), at(side * 8.02, 0.96, -0.3), CFG.colTeal)
 	end
 
 	-- Body block under the deck, behind the tray.
@@ -160,15 +161,15 @@ function PusherMachine.build(originCFrame, name)
 		Shape = "Wedge",
 		Size = Vector3.new(9.6, 0.9, 3.0),
 		CFrame = at(0, 1.45, -6.5),
-		Color = CFG.colBody2,
+		Color = Color3.fromRGB(74, 56, 34),
 		Material = Enum.Material.Metal,
 	}, cabinet)
 
 	for _, side in ipairs({ -1, 1 }) do
 		newPart({
 			Name = "TrayCheek",
-			Size = Vector3.new(1.4, 3.2, 3.2),
-			CFrame = at(side * 5.5, 2.6, -6.6),
+			Size = Vector3.new(1.9, 3.2, 3.2),
+			CFrame = at(side * 5.75, 2.6, -6.6),
 			Color = CFG.colBody,
 		}, cabinet)
 	end
@@ -176,18 +177,18 @@ function PusherMachine.build(originCFrame, name)
 	-- Gold lip across the tray front, and a header over the mouth with teal trim.
 	newPart({
 		Name = "TrayLip",
-		Size = Vector3.new(10.4, 0.5, 0.4),
+		Size = Vector3.new(13.4, 0.5, 0.4),
 		CFrame = at(0, 1.25, -8.2),
 		Color = CFG.colGold,
 		Material = Enum.Material.Metal,
 	}, cabinet)
 	newPart({
 		Name = "TrayHeader",
-		Size = Vector3.new(10.4, 0.8, 0.6),
+		Size = Vector3.new(13.4, 0.8, 0.6),
 		CFrame = at(0, 4.3, -8.0),
 		Color = CFG.colBody,
 	}, cabinet)
-	neonStrip(Vector3.new(9.8, 0.15, 0.15), at(0, 3.85, -8.1), CFG.colGold)
+	neonStrip(Vector3.new(12.8, 0.15, 0.15), at(0, 3.85, -8.1), CFG.colMagenta)
 
 	-- Warm light spilling out of the tray mouth.
 	local trayLightHost = newPart({
@@ -196,9 +197,10 @@ function PusherMachine.build(originCFrame, name)
 		CFrame = at(0, 2.9, -6.4),
 		Transparency = 1, CanCollide = false, CanQuery = false,
 	}, cabinet)
+	neonStrip(Vector3.new(9.6, 0.1, 0.1), at(0, 4.1, -6.3), CFG.colGold)
 	local trayLight = Instance.new("PointLight")
 	trayLight.Color = Color3.fromRGB(255, 186, 110)
-	trayLight.Brightness = 1.6
+	trayLight.Brightness = 3.0
 	trayLight.Range = 7
 	trayLight.Parent = trayLightHost
 
@@ -220,23 +222,36 @@ function PusherMachine.build(originCFrame, name)
 		Color = CFG.colBody2,
 	}, cabinet)
 
-	-- Big glowing DROP button, tilted to match the panel slope.
+	-- Big glowing DROP button: dark bezel, magenta halo, gold dome with its own light.
 	local buttonTilt = CFrame.Angles(math.rad(-18), 0, 0)
 	newPart({
-		Name = "ButtonRing",
+		Name = "ButtonBezel",
 		Shape = Enum.PartType.Cylinder,
-		Size = Vector3.new(0.3, 2.3, 2.3),
-		CFrame = at(0, 5.92, -8.15) * buttonTilt * FLAT,
+		Size = Vector3.new(0.3, 2.7, 2.7),
+		CFrame = at(0, 5.9, -8.15) * buttonTilt * FLAT,
 		Color = CFG.colDark,
 	}, cabinet)
 	newPart({
-		Name = "DropButton",
+		Name = "ButtonHalo",
 		Shape = Enum.PartType.Cylinder,
-		Size = Vector3.new(0.55, 1.8, 1.8),
-		CFrame = at(0, 6.06, -8.15) * buttonTilt * FLAT,
+		Size = Vector3.new(0.14, 2.05, 2.05),
+		CFrame = at(0, 6.02, -8.15) * buttonTilt * FLAT,
+		Color = CFG.colMagenta,
+		Material = Enum.Material.Neon,
+	}, cabinet)
+	local dome = newPart({
+		Name = "DropButton",
+		Shape = Enum.PartType.Ball,
+		Size = Vector3.new(1.5, 1.5, 1.5),
+		CFrame = at(0, 6.12, -8.15),
 		Color = CFG.colGold,
 		Material = Enum.Material.Neon,
 	}, cabinet)
+	local domeLight = Instance.new("PointLight")
+	domeLight.Color = CFG.colGold
+	domeLight.Brightness = 1.2
+	domeLight.Range = 4
+	domeLight.Parent = dome
 
 	-- Token slot detail on the flat front of the panel.
 	newPart({
@@ -262,21 +277,21 @@ function PusherMachine.build(originCFrame, name)
 
 		newPart({
 			Name = "SideShell",
-			Size = Vector3.new(0.5, 11.6, 14.6),
-			CFrame = at(side * 6.95, 6.8, 0.4),
+			Size = Vector3.new(0.5, 11.6, 16.4),
+			CFrame = at(side * 6.95, 6.8, -0.5),
 			Color = CFG.colBody,
 		}, cabinet)
 		-- Two-tone lower panel + gold pinstripe running the side.
 		newPart({
 			Name = "SidePanelLow",
-			Size = Vector3.new(0.54, 3.6, 14.6),
-			CFrame = at(side * 6.96, 2.8, 0.4),
+			Size = Vector3.new(0.9, 4.5, 16.4),
+			CFrame = at(side * 6.95, 3.25, -0.5),
 			Color = CFG.colDark,
 		}, cabinet)
 		newPart({
 			Name = "Pinstripe",
-			Size = Vector3.new(0.12, 0.28, 14.2),
-			CFrame = at(side * 7.28, 5.1, 0.4),
+			Size = Vector3.new(0.12, 0.28, 16.0),
+			CFrame = at(side * 7.26, 5.9, -0.5),
 			Color = CFG.colGold,
 			Material = Enum.Material.Metal,
 			CanCollide = false,
@@ -315,13 +330,20 @@ function PusherMachine.build(originCFrame, name)
 
 	-- Magenta accent columns flanking the screen.
 	for _, side in ipairs({ -1, 1 }) do
-		neonStrip(Vector3.new(0.25, 6.5, 0.15), at(side * 5.9, 8.3, 6.75), CFG.colMagenta)
+		neonStrip(Vector3.new(0.5, 6.5, 0.2), at(side * 5.9, 8.3, 6.55), CFG.colMagenta)
 	end
 
 	newPart({
 		Name = "Roof",
 		Size = Vector3.new(15.0, 0.7, 16.2),
 		CFrame = at(0, 13.0, -0.4),
+		Color = CFG.colBody,
+	}, cabinet)
+	newPart({
+		Name = "RoofCap",
+		Shape = "Wedge",
+		Size = Vector3.new(15.0, 1.5, 6.0),
+		CFrame = at(0, 14.1, -5.3),
 		Color = CFG.colBody,
 	}, cabinet)
 	newPart({
@@ -336,8 +358,8 @@ function PusherMachine.build(originCFrame, name)
 	-- Cool wash over the playfield from under the roof.
 	local roofLight = Instance.new("SurfaceLight")
 	roofLight.Face = Enum.NormalId.Bottom
-	roofLight.Color = Color3.fromRGB(220, 235, 255)
-	roofLight.Brightness = 1.1
+	roofLight.Color = Color3.fromRGB(170, 220, 235)
+	roofLight.Brightness = 0.7
 	roofLight.Range = 12
 	roofLight.Parent = cabinet:FindFirstChild("Roof")
 
@@ -350,9 +372,9 @@ function PusherMachine.build(originCFrame, name)
 		Name = "Glass",
 		Size = Vector3.new(11.8, 6.5, 0.22),
 		CFrame = at(0, 9.4, -7.3, CFrame.Angles(math.rad(10.6), 0, 0)),
-		Color = Color3.fromRGB(170, 225, 235),
-		Material = Enum.Material.Glass,
-		Transparency = 0.72,
+		Color = Color3.fromRGB(150, 210, 225),
+		Material = Enum.Material.SmoothPlastic,
+		Transparency = 0.8,
 	}, cabinet)
 
 	----------------------------------------------------------------------------
@@ -363,6 +385,12 @@ function PusherMachine.build(originCFrame, name)
 		Name = "Marquee",
 		Size = Vector3.new(13.0, 3.2, 0.9),
 		CFrame = at(0, 15.0, -7.9),
+		Color = CFG.colBody2,
+	}, cabinet)
+	newPart({
+		Name = "MarqueeBase",
+		Size = Vector3.new(13.0, 0.5, 2.2),
+		CFrame = at(0, 13.3, -7.6),
 		Color = CFG.colBody2,
 	}, cabinet)
 	local marqueeGui = Instance.new("SurfaceGui")
@@ -388,8 +416,8 @@ function PusherMachine.build(originCFrame, name)
 		newPart({
 			Name = "MarqueeCap",
 			Shape = Enum.PartType.Cylinder,
-			Size = Vector3.new(0.9, 3.9, 3.9),
-			CFrame = at(side * 6.75, 15.0, -7.9),
+			Size = Vector3.new(0.9, 3.2, 3.2),
+			CFrame = at(side * 6.05, 15.0, -7.9, CFrame.Angles(0, math.rad(90), 0)),
 			Color = CFG.colGold,
 			Material = Enum.Material.Neon,
 			CanCollide = false,
@@ -404,7 +432,7 @@ function PusherMachine.build(originCFrame, name)
 			Shape = Enum.PartType.Ball,
 			Size = Vector3.new(0.45, 0.45, 0.45),
 			CFrame = at(-5.6 + i * 1.4, 16.75, -8.5),
-			Color = lit and CFG.colGold or CFG.colGoldDim,
+			Color = lit and Color3.fromRGB(255, 242, 200) or CFG.colBody,
 			Material = lit and Enum.Material.Neon or Enum.Material.SmoothPlastic,
 			CanCollide = false,
 		}, cabinet)
@@ -420,6 +448,18 @@ function PusherMachine.build(originCFrame, name)
 	-- Playfield
 	----------------------------------------------------------------------------
 
+	local fieldLightHost = newPart({
+		Name = "FieldLightHost",
+		Size = Vector3.new(0.4, 0.4, 0.4),
+		CFrame = at(0, 9.5, -2),
+		Transparency = 1, CanCollide = false, CanQuery = false,
+	}, playfield)
+	local fieldLight = Instance.new("PointLight")
+	fieldLight.Color = Color3.fromRGB(255, 200, 120)
+	fieldLight.Brightness = 2.2
+	fieldLight.Range = 12
+	fieldLight.Parent = fieldLightHost
+
 	-- Low friction so the pile slides forward instead of grinding to a halt.
 	newPart({
 		Name = "Deck",
@@ -430,16 +470,24 @@ function PusherMachine.build(originCFrame, name)
 		CustomPhysicalProperties = PhysicalProperties.new(1, 0.25, 0, 1, 1),
 	}, playfield)
 
-	-- Gold edge on the payout ledge, and a teal "win line" inlaid in the deck.
+	newPart({
+		Name = "ChuteBack",
+		Size = Vector3.new(10.4, 3.4, 0.2),
+		CFrame = at(0, 2.8, -5.12),
+		Color = CFG.colDark,
+	}, cabinet)
+	neonStrip(Vector3.new(12, 0.12, 0.12), at(0, 4.42, -5.06), CFG.colGold, playfield)
+
+	-- Gold edge on the payout ledge, and a magenta "win line" inlaid in the deck.
 	newPart({
 		Name = "LedgeEdge",
 		Size = Vector3.new(12, 0.18, 0.3),
 		CFrame = at(0, 4.95, -4.95),
 		Color = CFG.colGold,
-		Material = Enum.Material.Metal,
+		Material = Enum.Material.Neon,
 		CanCollide = false,
 	}, playfield)
-	neonStrip(Vector3.new(12, 0.06, 0.2), at(0, 5.03, -3.6), CFG.colTeal, playfield)
+	neonStrip(Vector3.new(12, 0.06, 0.15), at(0, 5.03, -3.6), CFG.colMagenta, playfield)
 
 	-- Interior side walls that keep the pile on the deck, with teal top trim.
 	for _, side in ipairs({ -1, 1 }) do
@@ -473,11 +521,11 @@ function PusherMachine.build(originCFrame, name)
 		Anchored = false,
 		Size = Vector3.new(CFG.pusherSize.X, CFG.pusherSize.Y, 0.25),
 		CFrame = at(0, CFG.deckTop + 0.05 + CFG.pusherSize.Y / 2, frontZ - 0.1),
-		Color = CFG.colDeck,
+		Color = CFG.colGold,
 		Material = Enum.Material.Metal,
 	}, playfield)
 	local lip = neonStrip(
-		Vector3.new(CFG.pusherSize.X, 0.14, 0.14),
+		Vector3.new(CFG.pusherSize.X, 0.32, 0.32),
 		at(0, CFG.deckTop + 0.05 + CFG.pusherSize.Y, frontZ - 0.1),
 		CFG.colTeal, playfield)
 	lip.Anchored = false
@@ -486,6 +534,18 @@ function PusherMachine.build(originCFrame, name)
 		weld.Part0 = pusher
 		weld.Part1 = attachedPart
 		weld.Parent = pusher
+	end
+
+	for _, side in ipairs({ -1, 1 }) do
+		newPart({
+			Name = "PistonRod",
+			Shape = Enum.PartType.Cylinder,
+			Size = Vector3.new(3.2, 0.35, 0.35),
+			CFrame = at(side * 4.5, 6.2, 6.4) * CFrame.Angles(0, math.rad(90), 0),
+			Color = CFG.colGold,
+			Material = Enum.Material.Metal,
+			CanCollide = false,
+		}, playfield)
 	end
 
 	local body = cabinet:FindFirstChild("Body")
@@ -527,7 +587,7 @@ function PusherMachine.build(originCFrame, name)
 	newPart({
 		Name = "DropZone",
 		Size = Vector3.new(11, 0.4, 1.5),
-		CFrame = at(0, CFG.deckTop + 4, CFG.deckBack - 0.75),
+		CFrame = at(0, CFG.deckTop + 4, CFG.pusherRestZ - CFG.pusherSize.Z / 2 - 1),
 		Transparency = 1, CanCollide = false,
 	}, playfield)
 
@@ -551,12 +611,12 @@ function PusherMachine.build(originCFrame, name)
 
 	-- Base layer, biased toward the ledge where a real pile builds up.
 	local count = 0
-	while count < 26 do
+	while count < 55 do
 		local z = -4.5 + 5.6 * (rng() ^ 1.6)
 		local x = (rng() * 2 - 1) * 5.1
 		local ok = true
 		for _, p in ipairs(placed) do
-			if (p[1] - x) ^ 2 + (p[2] - z) ^ 2 < 0.85 then ok = false break end
+			if (p[1] - x) ^ 2 + (p[2] - z) ^ 2 < 0.55 then ok = false break end
 		end
 		if ok then
 			placed[#placed + 1] = { x, z }
@@ -574,6 +634,21 @@ function PusherMachine.build(originCFrame, name)
 			CFrame.Angles(tilt, rng() * math.pi, 0) * FLAT)
 	end
 
+	-- Third layer plus vertical stacks so gold visibly crests above the ledge line.
+	for i = 1, 8 do
+		local src = placed[1 + math.floor(rng() * 30)]
+		scatterCoin(src[1] + (rng() - 0.5) * 0.5, CFG.deckTop + 0.62, src[2] + (rng() - 0.5) * 0.5,
+			CFrame.Angles((rng() - 0.5) * math.rad(18), rng() * math.pi, 0) * FLAT)
+	end
+	for stackIndex = 1, 5 do
+		local sx2 = (rng() * 2 - 1) * 4.4
+		local sz2 = -4.3 + rng() * 2.2
+		for k = 0, 2 + math.floor(rng() * 3) do
+			scatterCoin(sx2, CFG.deckTop + 0.13 + 0.26 * k, sz2,
+				CFrame.Angles(0, rng() * math.pi, 0) * FLAT)
+		end
+	end
+
 	-- The tease: coins hanging over the ledge, mid-teeter.
 	for _, x in ipairs({ -2.6, 0.9, 3.4 }) do
 		scatterCoin(x, CFG.deckTop + 0.10, -5.05,
@@ -582,18 +657,28 @@ function PusherMachine.build(originCFrame, name)
 
 	-- A few winnings already in the tray (tilted with the tray slope).
 	for i = 1, 7 do
-		scatterCoin((rng() * 2 - 1) * 4.2, 1.95 - rng() * 0.25, -5.9 - rng() * 1.4,
+		local zc = -5.9 - rng() * 1.4
+		scatterCoin((rng() * 2 - 1) * 4.2, 1.0 + 0.9 * ((zc + 8.0) / 3.0) + 0.14, zc,
 			CFrame.Angles(math.rad(-15), rng() * math.pi, 0) * FLAT)
 	end
 
-	-- Two prize capsules nestled in the pile.
-	for _, cap in ipairs({ { 2.2, -1.6, CFG.colMagenta }, { -3.6, 0.8, CFG.colTeal } }) do
+	-- Two prize capsules nestled in the pile: solid shell, glowing equator seam.
+	for _, cap in ipairs({ { 2.2, -1.6 }, { -3.6, 0.8 } }) do
 		newPart({
 			Name = "DecorCapsule",
 			Shape = Enum.PartType.Ball,
 			Size = Vector3.new(CFG.capsuleSize, CFG.capsuleSize, CFG.capsuleSize),
 			CFrame = at(cap[1], CFG.deckTop + 0.85, cap[2]),
-			Color = cap[3],
+			Color = CFG.colMagenta,
+			Material = Enum.Material.SmoothPlastic,
+			CanCollide = false,
+		}, folders.Decor)
+		newPart({
+			Name = "DecorCapsuleRing",
+			Shape = Enum.PartType.Cylinder,
+			Size = Vector3.new(0.16, 1.75, 1.75),
+			CFrame = at(cap[1], CFG.deckTop + 0.85, cap[2]) * FLAT,
+			Color = CFG.colMagenta,
 			Material = Enum.Material.Neon,
 			CanCollide = false,
 		}, folders.Decor)
@@ -634,7 +719,9 @@ function PusherMachine.build(originCFrame, name)
 
 	newPart({
 		Name = "Coin",
-		Anchored = false,
+		Anchored = true,
+		CanCollide = false,
+		CFrame = at(0, -50, 0),
 		Shape = Enum.PartType.Cylinder,
 		Size = Vector3.new(CFG.coinThickness, CFG.coinDiameter, CFG.coinDiameter),
 		Color = CFG.colGold,
@@ -645,7 +732,9 @@ function PusherMachine.build(originCFrame, name)
 
 	newPart({
 		Name = "Capsule",
-		Anchored = false,
+		Anchored = true,
+		CanCollide = false,
+		CFrame = at(0, -50, 0),
 		Shape = Enum.PartType.Ball,
 		Size = Vector3.new(CFG.capsuleSize, CFG.capsuleSize, CFG.capsuleSize),
 		Color = CFG.colMagenta,
@@ -692,6 +781,8 @@ local function spawnFrom(model, templateName, xOffset, rot)
 	local item = template:Clone()
 	item.Name = templateName
 	item.CFrame = dropZone.CFrame * CFrame.new(xOffset or 0, 0, 0) * (rot or CFrame.new())
+	item.Anchored = false
+	item.CanCollide = true
 	item.Parent = model
 	return item
 end

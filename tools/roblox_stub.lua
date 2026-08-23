@@ -37,7 +37,10 @@ CF.__index = CF
 local function cfnew(px, py, pz, r)
 	return setmetatable({ p = { px, py, pz }, r = r or { 1, 0, 0, 0, 1, 0, 0, 0, 1 } }, CF)
 end
-function CFrame.new(x, y, z) return cfnew(x or 0, y or 0, z or 0) end
+function CFrame.new(x, y, z)
+	if type(x) == "table" then return cfnew(x.X, x.Y, x.Z) end
+	return cfnew(x or 0, y or 0, z or 0)
+end
 local function matmul(a, b)
 	local c = {}
 	for i = 0, 2 do
@@ -111,7 +114,12 @@ PhysicalProperties = { new = function(...) return { ... } end }
 UDim2 = { fromScale = function(x, y) return { x, y } end }
 TweenInfo = { new = function(...) return { ... } end }
 
-task = { spawn = function() end, wait = function() end }
+local function runThunk(fn, ...)
+	local co = coroutine.create(fn)
+	local ok, err = coroutine.resume(co, ...)
+	if not ok then error(err, 0) end
+end
+task = { spawn = runThunk, defer = runThunk, wait = function() coroutine.yield() end }
 
 game = {}
 function game:GetService(_)
@@ -134,6 +142,7 @@ Obj.__index = function(t, k)
 	local methods = rawget(Obj, "methods")
 	if methods[k] then return methods[k] end
 	local props = rawget(t, "__props")
+	if k == "Position" and props.CFrame then return props.CFrame.Position end
 	if props[k] ~= nil then return props[k] end
 	for _, child in ipairs(rawget(t, "__children")) do
 		if child.__props.Name == k then return child end
@@ -141,6 +150,13 @@ Obj.__index = function(t, k)
 	return nil
 end
 Obj.__newindex = function(t, k, v)
+	if k == "Position" then
+		local props = rawget(t, "__props")
+		local cf = props.CFrame
+		props.CFrame = cf and setmetatable({ p = { v.X, v.Y, v.Z }, r = cf.r }, getmetatable(cf))
+			or CFrame.new(v.X, v.Y, v.Z)
+		return
+	end
 	if k == "Parent" then
 		local old = rawget(t, "__parent")
 		if old then

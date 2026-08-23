@@ -70,7 +70,7 @@ def part_verts_faces(p):
         ring0, ring1 = [], []
         for i in range(n):
             a = 2*math.pi*i/n
-            y, z = math.cos(a)*sy, math.sin(a)*sz
+            rr = min(sy, sz); y, z = math.cos(a)*rr, math.sin(a)*rr
             ring0.append(xf((-sx, y, z)))
             ring1.append(xf((sx, y, z)))
         faces = [ring0[::-1], ring1]
@@ -132,7 +132,7 @@ def render(parts, out_path, front=False):
         alpha = 1.0 - float(p["transparency"])
         if p["shape"] == "Ball":
             c = cam.project(tuple(p["pos"]))
-            rad = p["size"][0]/2 * cam.F / c[2]
+            rad = min(p["size"])/2 * cam.F / c[2]
             draw_list.append((c[2], "ball", (c, rad, p, neon)))
             continue
         faces = part_verts_faces(p)

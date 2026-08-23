@@ -1,6 +1,7 @@
 -- dump_parts.lua — build the machine headlessly and emit part geometry as JSON.
 -- Usage: lua5.1 tools/dump_parts.lua > /path/parts.json  (run from repo root)
 
+os.setlocale("C", "numeric")
 dofile("tools/roblox_stub.lua")
 local M = dofile("src/PusherMachine.luau")
 
