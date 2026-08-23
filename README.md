@@ -31,6 +31,24 @@ PusherMachine.dropCoin(machine, 2)  -- drop a token, offset 2 studs right
 
 Every dimension lives in the `CFG` table at the top of the module. Edit and rebuild.
 
+## Seeing it without Studio
+
+The repo carries its own preview pipeline so the cabinet can be designed and reviewed
+headlessly:
+
+```
+lua5.1 tools/dump_parts.lua > parts.json          # runs the real builder against a Roblox stub
+python3 tools/render_preview.py parts.json hero.png        # shaded 3/4 view
+python3 tools/render_preview.py parts.json front.png front  # straight-on view
+```
+
+`tools/roblox_stub.lua` mocks just enough of the Roblox API (Instance tree, CFrame math,
+Enums) to execute `PusherMachine.build()` outside Studio; the renderer draws the captured
+geometry with flat shading, neon glow and glass transparency. Renders of the current
+geometry live in `docs/pusher-hero.png` and `docs/pusher-front.png`. Two known renderer
+approximations: glow bleeds through walls (Neon doesn't emit light in Studio), and
+SurfaceGui text draws on top rather than being occluded.
+
 ## What can be built from primitives, and what can't
 
 **No modelling tool needed — all of this is boxes, cylinders and spheres:**
