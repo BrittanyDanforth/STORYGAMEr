@@ -1,6 +1,6 @@
 --[[
 	ServerInit v6 — builds the machine and owns the whole game loop:
-	persistence (PlayerData), the upgrade tree + thrones, Meteor Rush
+	persistence (PlayerData), the upgrade tree + thrones, Meteor Rain
 	(internals keep their fever* names), auto-roll/auto-drop, Star Dust +
 	fusion (with forge locks), daily Galaxy missions (CLAIMED via ClaimQuest,
 	connected-loop phase), DAY STREAK + PLAYTIME claims, leaderboards
@@ -1300,7 +1300,7 @@ zoneRemote.OnServerEvent:Connect(function(player, zoneIndex)
 end)
 
 --------------------------------------------------------------------------------
--- Meteor Rush (fever internals keep their names): trigger, meteor shower,
+-- Meteor Rain (fever internals keep their names): trigger, meteor shower,
 -- and the Galaxy Chest at fever end
 --------------------------------------------------------------------------------
 
@@ -1344,7 +1344,7 @@ end
 
 -- Meter freezes at 100, the global window opens (FeverBy BEFORE FeverUntil,
 -- protocol §6.3), the pusher speeds up, and meteors rain. The chest is owed
--- at fever end (chestQueue). `purchased` marks the INSTANT METEOR RUSH
+-- at fever end (chestQueue). `purchased` marks the INSTANT METEOR RAIN
 -- product for the restricted-region chest-roll substitution.
 local function triggerFever(player, purchased)
 	local get = getterOf(player)
@@ -1359,7 +1359,7 @@ local function triggerFever(player, purchased)
 	end
 	player:SetAttribute("FeverMeter", GameConfig.Fever.meterMax) -- frozen at 100
 	player:SetAttribute("FeverCount", (player:GetAttribute("FeverCount") or 0) + 1)
-	bumpDaily(player, 3, 1) -- START A METEOR RUSH
+	bumpDaily(player, 3, 1) -- START A METEOR RAIN
 	checkAchievements(player)
 	local wasActive = feverActive()
 	remotes:SetAttribute("FeverBy", player.Name)
@@ -2126,7 +2126,7 @@ local function grantStarterPack(player, doc)
 	grantBall(player, planet, specialTier(planet))
 end
 
--- METEOR RUSH FOR EVERYONE: the buyer triggers a full rush (window, meter
+-- METEOR RAIN FOR EVERYONE: the buyer triggers a full rush (window, meter
 -- freeze, meteor shower) and EVERY other online loaded player is owed a
 -- Galaxy Chest at rush end too.
 local function grantSrvRush(player, _doc)
@@ -2139,7 +2139,7 @@ local function grantSrvRush(player, _doc)
 			chestQueue[plr] = { purchased = false, keepMeter = true }
 		end
 	end
-	announceBoost(player, "METEOR RUSH FOR THIS SERVER")
+	announceBoost(player, "METEOR RAIN FOR THIS SERVER")
 end
 
 local PRODUCT_GRANT_FNS = {
@@ -2160,7 +2160,7 @@ local PRODUCT_GRANT_FNS = {
 	end,
 	RushNow = function(player, _doc)
 		triggerFever(player, true)
-		announceBoost(player, "INSTANT METEOR RUSH")
+		announceBoost(player, "INSTANT METEOR RAIN")
 	end,
 	PotBoost = function(player, _doc)
 		local product = productByKey("PotBoost")
@@ -2177,7 +2177,7 @@ local PRODUCT_GRANT_FNS = {
 		grantTimedBoost(player, "TixBoost", "TixBoostUntil", tix.mag, tix.duration)
 		grantTimedBoost(player, "LuckBoost", "LuckBoostUntil", luck.mag, luck.duration)
 		triggerFever(player, true)
-		announceBoost(player, "MEGA BUNDLE — 3X TIX + 1000X LUCK + RUSH")
+		announceBoost(player, "MEGA BUNDLE — 3X TIX + 1000X LUCK + RAIN")
 	end,
 	SrvLuck100 = function(player, _doc)
 		refuseIfRestricted(player)
@@ -2504,13 +2504,19 @@ task.spawn(function()
 				local get = getterOf(player)
 
 				-- Comet meter flush: capped per second, scaled by Fever
-				-- Charge, ONE attribute write; 100 triggers the fever.
+				-- Charge, ONE attribute write; meterMax triggers the fever.
 				-- Frozen (no fill) while the player rides their own fever.
+				-- The cap RATE-LIMITS instead of discarding: a 10-fill core
+				-- collect drains in over several seconds, so aiming for the
+				-- middle finally outfills grinding the rims. Meter runs
+				-- fractional; the client's %d display floors it.
 				local pendingFill = feverPending[player] or 0
-				feverPending[player] = 0
-				if not chestQueue[player] and pendingFill > 0 then
+				if chestQueue[player] then
+					feverPending[player] = 0 -- frozen while riding their own rain
+				elseif pendingFill > 0 then
 					local gain = math.min(pendingFill, GameConfig.Fever.fillCapPerSec)
-					gain = math.floor(gain * (1 + GameConfig.statTotal(get, "feverFillPct")) + 0.5)
+					feverPending[player] = pendingFill - gain
+					gain = gain * (1 + GameConfig.statTotal(get, "feverFillPct"))
 					local meter = player:GetAttribute("FeverMeter") or 0
 					local newMeter = math.min(GameConfig.Fever.meterMax, meter + gain)
 					if newMeter ~= meter then

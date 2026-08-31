@@ -136,12 +136,12 @@ GameConfig.UpgradeTree = {
 		desc = "+2 Star Dust per offline hour per level" },
 
 	-- ===================== METEOR (W spoke) =====================
-	{ id = "UpFeverCharge", name = "Rush Charge", branch = "METEOR", maxLv = 6, base = 800, ratio = 1.9,
+	{ id = "UpFeverCharge", name = "Rain Charge", branch = "METEOR", maxLv = 6, base = 800, ratio = 1.9,
 		effect = { key = "feverFillPct", perLv = 0.05 }, requires = {}, pos = { x = 735, y = 590 },
 		desc = "Rush meter fills +5% faster per level" },
 	{ id = "UpFeverDur", name = "Rush Duration", branch = "METEOR", maxLv = 6, base = 2500, ratio = 2.0,
 		effect = { key = "feverDurAdd", perLv = 1.5 }, requires = { { id = "UpFeverCharge", lv = 3 } }, pos = { x = 585, y = 625 },
-		desc = "+1.5s Meteor Rush per level" },
+		desc = "+1.5s Meteor Rain per level" },
 	{ id = "UpMeteorCount", name = "Meteor Count", branch = "METEOR", maxLv = 5, base = 4000, ratio = 2.0,
 		effect = { key = "meteorCoinsAdd", perLv = 2 }, requires = { { id = "UpFeverDur", lv = 2 } }, gate = { rebirth = 2 }, pos = { x = 440, y = 570 },
 		desc = "+2 meteor coins per rush per level" },
@@ -198,7 +198,7 @@ GameConfig.UpgradeTree = {
 		desc = "Every COMMON in a row (max 25) adds +1% roll luck per level. Resets on a RARE+" },
 	{ id = "UpFeverFortune", name = "Fever Fortune", branch = "LUCK", maxLv = 5, base = 250000, ratio = 2.0,
 		effect = { key = "feverLuckAdd", perLv = 0.30 }, requires = { { id = "UpDryShield", lv = 2 } }, gate = { rebirth = 6 }, pos = { x = 1760, y = 205 },
-		desc = "+30% luck per level, only while METEOR RUSH is running" },
+		desc = "+30% luck per level, only while METEOR RAIN is running" },
 	{ id = "UpPityFocus", name = "Pity Focus", branch = "LUCK", maxLv = 5, base = 900000, ratio = 2.1,
 		effect = { key = "pityLimitAdd", perLv = -2 }, requires = { { id = "UpPityBoost", lv = 5 } }, gate = { rebirth = 7 }, pos = { x = 1720, y = 585 },
 		desc = "Guaranteed ULTRA RARE+ comes 2 rolls sooner per level (50 down to 40)" },
@@ -437,7 +437,7 @@ GameConfig.JackpotCore = {
 		coreStrike = 0.60, discovery = 2.5, forge = 4, streak = 5 },
 	capDropPerSec = 0.20, -- server-wide, flushed by the 1s heartbeat
 	capHitsPerSec = 0.60,
-	feverChargeMult = 2, -- METEOR RUSH doubles charge (before caps)
+	feverChargeMult = 2, -- METEOR RAIN doubles charge (before caps)
 	windowSec = 22,
 	windowHits = 8,
 	sharePct = 0.08, -- each center hit during a window drains this much pot
@@ -451,11 +451,17 @@ GameConfig.JackpotCore = {
 
 GameConfig.Fever = {
 	meterMax = 100,
-	-- meter fill: per-drop + per-collect by lane (1..7 = 1X 3X 10X JACKPOT 10X 3X 1X)
-	fillPerDrop = 0.5,
-	fillByLane = { 1, 2, 4, 25, 4, 2, 1 },
-	fillCapsuleBonus = 5,
-	fillCapPerSec = 8, -- hard server cap; excess discarded
+	-- Meter fill, RETUNED: METEOR RAIN is an EVENT, not background noise.
+	-- Old values (0.5/drop, cap 8/s) fired a rain every ~15-25s of play —
+	-- the announcement banner never stopped. Target now: ~2-3 minutes of
+	-- ACTIVE play per rain, with the center lanes carrying the meter (a
+	-- core-area collect is worth many rim collects, and the cap RATE-LIMITS
+	-- the drain instead of discarding it, so aiming center genuinely pays).
+	fillPerDrop = 0.12,
+	-- per-collect by lane (1..7 physical = 3X 10X 25X JACKPOT 25X 10X 3X)
+	fillByLane = { 0.3, 0.6, 1.5, 10, 1.5, 0.6, 0.3 },
+	fillCapsuleBonus = 3,
+	fillCapPerSec = 2, -- server cap per second; excess CARRIES (rate limit, not a discard)
 	durationBase = 20, -- + feverDurAdd
 	speedMult = 1.5, -- pusher SpeedMult during fever
 	payoutMult = 2, -- everyone's payouts while fever active
@@ -516,7 +522,7 @@ GameConfig.Daily = {
 	missions = { -- CLAIMED via ClaimQuest(i); tickets credited SCALED, dust flat
 		{ id = "d_drop", label = "DROP 25 PLANETS", statAttr = "DailyM1", goal = 25, tickets = 100, dust = 10 },
 		{ id = "d_lane3", label = "HIT THE 10X LANE", statAttr = "DailyM2", goal = 3, tickets = 150, dust = 15 },
-		{ id = "d_fever", label = "START A METEOR RUSH", statAttr = "DailyM3", goal = 1, tickets = 200, dust = 20 },
+		{ id = "d_fever", label = "START A METEOR RAIN", statAttr = "DailyM3", goal = 1, tickets = 200, dust = 20 },
 	},
 	-- All-3 chest = ClaimQuest(4): needs r1..r3 REACHED; pays this (tickets
 	-- SCALED, dust flat) and carries the constellation star + prize-at-7.
@@ -594,18 +600,18 @@ GameConfig.Products = {
 	{ key = "Luck3500", id = 0, robux = 399, kind = "boost", boost = "luck", mag = 3500, duration = 30,
 		name = "3500X LUCK — 30 SEC", label = "YOU ONLY" },
 	{ key = "RushNow", id = 0, robux = 79, kind = "boost",
-		name = "INSTANT METEOR RUSH", label = "YOU ONLY" },
+		name = "INSTANT METEOR RAIN", label = "YOU ONLY" },
 	{ key = "PotBoost", id = 0, robux = 49, kind = "boost", amount = 5000,
 		name = "JACKPOT +5,000", label = "THIS SERVER'S POT" },
 	{ key = "MegaPack", id = 0, robux = 249, kind = "boost",
-		name = "MEGA BUNDLE", label = "3X TIX + 1000X LUCK + RUSH" },
+		name = "MEGA BUNDLE", label = "3X TIX + 1000X LUCK + RAIN" },
 	-- SERVER-WIDE repeatables ---------------------------------------------
 	{ key = "SrvLuck100", id = 0, robux = 149, kind = "server", boost = "luck", mag = 100, duration = 90,
 		name = "100X LUCK FOR THE SERVER — 90 SEC", label = "EVERYONE IN THIS SERVER" },
 	{ key = "SrvTix2x", id = 0, robux = 129, kind = "server", boost = "tix", mag = 2, duration = 600,
 		name = "2X TICKETS FOR THE SERVER — 10 MIN", label = "EVERYONE IN THIS SERVER" },
 	{ key = "SrvRush", id = 0, robux = 99, kind = "server",
-		name = "METEOR RUSH FOR EVERYONE", label = "EVERYONE IN THIS SERVER" },
+		name = "METEOR RAIN FOR EVERYONE", label = "EVERYONE IN THIS SERVER" },
 	-- DURABLES / one-time -------------------------------------------------
 	{ key = "Starter", id = 0, robux = 49, kind = "onetime",
 		name = "STARTER GALAXY PACK", label = "ONE-TIME",
@@ -625,8 +631,8 @@ GameConfig.Achievements = {
 	{ id = "Ultra", icon = "crown", name = "Ultra Find", desc = "Pull an ULTRA RARE planet", stat = "BestTier", need = 3, reward = 100 },
 	{ id = "Legend", icon = "crown", name = "Legendary", desc = "Pull a LEGENDARY planet", stat = "BestTier", need = 4, reward = 400 },
 	{ id = "Earn1k", icon = "ticket", name = "Ticket Baron", desc = "Earn 1,000 tickets", stat = "TotalEarned", need = 1000, reward = 250 },
-	{ id = "Fever1", icon = "star", name = "Comet Rider", desc = "Start a Meteor Rush", stat = "FeverCount", need = 1, reward = 150 },
-	{ id = "Fever25", icon = "star", name = "Fever Dream", desc = "Start 25 Meteor Rushes", stat = "FeverCount", need = 25, reward = 1000 },
+	{ id = "Fever1", icon = "star", name = "Comet Rider", desc = "Start a Meteor Rain", stat = "FeverCount", need = 1, reward = 150 },
+	{ id = "Fever25", icon = "star", name = "Fever Dream", desc = "Start 25 Meteor Rains", stat = "FeverCount", need = 25, reward = 1000 },
 	{ id = "Rebirth1", icon = "crown", name = "Reborn", desc = "Rebirth once", stat = "Rebirth", need = 1, reward = 500 },
 	{ id = "Rebirth10", icon = "crown", name = "Galaxy Brain", desc = "Rebirth 10 times", stat = "Rebirth", need = 10, reward = 5000 },
 }
@@ -686,7 +692,7 @@ function GameConfig.computeLuck(get)
 end
 
 -- Roll luck: computeLuck plus the ROLL branch bonus. Used by rollOnce AND the Index.
--- feverOn: pass whether METEOR RUSH is running (server: feverActive();
+-- feverOn: pass whether METEOR RAIN is running (server: feverActive();
 -- client: its fever mirror) so Fever Fortune only counts during the rush.
 -- The stack/streak attrs (MomentumStacks / CommonStreak) are display mirrors
 -- maintained by the server's roll resolver — same numbers both sides.

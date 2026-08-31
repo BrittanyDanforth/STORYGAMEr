@@ -929,7 +929,7 @@ local UI_100X = "rbxassetid://86853115177635"
 -- so the odds you see are the odds you roll.
 local function currentLuck()
 	-- feverOn mirrors the server's feverActive() — Fever Fortune counts
-	-- only while METEOR RUSH runs, in the display AND the roll.
+	-- only while METEOR RAIN runs, in the display AND the roll.
 	local feverOn = remotes
 		and (remotes:GetAttribute("FeverUntil") or 0) > workspace:GetServerTimeNow()
 	return GameConfig.computeRollLuck(attrGet, feverOn)
@@ -4768,9 +4768,9 @@ function renderPage()
 		local NAMES = {
 			Tix2x15 = "2X TICKETS", Tix3x15 = "3X TICKETS",
 			Luck100 = "100X LUCK", Luck1000 = "1000X LUCK", Luck3500 = "3500X LUCK",
-			RushNow = "METEOR RUSH NOW", PotBoost = "JACKPOT +5,000",
+			RushNow = "METEOR RAIN NOW", PotBoost = "JACKPOT +5,000",
 			MegaPack = "MEGA BUNDLE", SrvLuck100 = "SERVER 100X LUCK",
-			SrvTix2x = "SERVER 2X TICKETS", SrvRush = "SERVER METEOR RUSH",
+			SrvTix2x = "SERVER 2X TICKETS", SrvRush = "SERVER METEOR RAIN",
 		}
 		local PRICES = { Tix2x15 = 39, Tix3x15 = 79, Luck100 = 99, Luck1000 = 199,
 			Luck3500 = 399, RushNow = 79, PotBoost = 49, MegaPack = 249,
@@ -4945,7 +4945,7 @@ function renderPage()
 			{ key = "Tix3x15", pill = PILLS.Tix3x15, price = PRICES.Tix3x15,
 				desc = "Every ticket pays TRIPLE." },
 			{ key = "RushNow", pill = PILLS.RushNow, price = PRICES.RushNow,
-				desc = "Starts a METEOR RUSH right now." },
+				desc = "Starts a METEOR RAIN right now." },
 			{ key = "PotBoost", pill = PILLS.PotBoost, price = PRICES.PotBoost,
 				desc = "Adds 5,000 to the jackpot — everyone sees it." },
 		})
@@ -4953,7 +4953,7 @@ function renderPage()
 			luckCard("Luck100", "Rarer planets, WAY more often — for a short time.")
 			luckCard("Luck1000", "Rarer planets, WAY more often — for a short time.")
 			luckCard("Luck3500", "Rarer planets, WAY more often — for a short time.")
-			luckCard("MegaPack", "3X tickets + 1000X luck + a METEOR RUSH — all at once.")
+			luckCard("MegaPack", "3X tickets + 1000X luck + a METEOR RAIN — all at once.")
 		end
 
 		-- §4d stacking footnote: a real info row, 12px, kid words.
@@ -4990,7 +4990,7 @@ function renderPage()
 		-- (the 7px scope tag is dead), pill, full-width 44px button.
 		for _, def in ipairs({
 			{ key = "SrvTix2x", desc = "Doubled tickets for every player here." },
-			{ key = "SrvRush", desc = "A METEOR RUSH + chest for everyone online." },
+			{ key = "SrvRush", desc = "A METEOR RAIN + chest for everyone online." },
 		}) do
 			local row = makeRow(144)
 			row.BackgroundColor3 = Color3.fromRGB(14, 30, 36)
@@ -5379,7 +5379,11 @@ end
 		line.BorderSizePixel = 0
 		line.ZIndex = 21
 		line.Parent = treeCanvas
-		table.insert(treeLinks, { frame = line, fromId = fromId, throneLv = throneLv })
+		-- Endpoints kept for the pan-time cull: ROTATED frames escape
+		-- ClipsDescendants (Roblox renders rotated gui outside clips), so
+		-- these lines used to smear across the whole screen while panning.
+		table.insert(treeLinks, { frame = line, fromId = fromId, throneLv = throneLv,
+			ax = ax, ay = ay, bx = bx, by = by })
 		return line
 	end
 
@@ -5696,6 +5700,30 @@ end
 		return x, y
 	end
 
+	-- ROTATED frames escape ClipsDescendants, so the link lines painted
+	-- outside the panel while panning. Cull instead of clip: a line renders
+	-- only while its segment's box overlaps the visible window (+margin so
+	-- ends never pop mid-screen). ~85 links, cheap enough to run per pan step.
+	local function updateLineCulling()
+		local scaleNow = math.max(hudScale.Scale, 0.01)
+		local clipW = canvasClip.AbsoluteSize.X / scaleNow
+		local clipH = canvasClip.AbsoluteSize.Y / scaleNow
+		local px = treeCanvas.Position.X.Offset
+		local py = treeCanvas.Position.Y.Offset
+		local margin = 60
+		for _, link in ipairs(treeLinks) do
+			local x0 = math.min(link.ax, link.bx) * treeZoom + px
+			local x1 = math.max(link.ax, link.bx) * treeZoom + px
+			local y0 = math.min(link.ay, link.by) * treeZoom + py
+			local y1 = math.max(link.ay, link.by) * treeZoom + py
+			link.frame.Visible = x1 > -margin and x0 < clipW + margin
+				and y1 > -margin and y0 < clipH + margin
+		end
+	end
+	-- One hook covers drags, zooms, centering AND tweens mid-flight.
+	treeCanvas:GetPropertyChangedSignal("Position"):Connect(updateLineCulling)
+	canvasClip:GetPropertyChangedSignal("AbsoluteSize"):Connect(updateLineCulling)
+
 	-- Zoom about the clip center so the view doesn't lurch.
 	local function setTreeZoom(newZoom)
 		newZoom = math.clamp(newZoom, 0.55, 1.25)
@@ -5800,8 +5828,14 @@ end
 		if not treeCentered then
 			treeCentered = true
 			task.defer(function()
+				-- Open READABLE: a touch zoomed-in on the START hub, so the
+				-- first look is the ring of buyable nodes, not the whole map.
+				setTreeZoom(1.15)
 				centerCanvasOn(hub.x, hub.y, false)
+				updateLineCulling()
 			end)
+		else
+			task.defer(updateLineCulling)
 		end
 	end
 	S.updateTreeStates()
@@ -5814,7 +5848,7 @@ end)()
 -- ribbons, and a bottom YOUR PLANETS strip (virtualized, 2D sprites) as the
 -- selector. Exactly 2 animated ViewportFrames per render. Remotes keep their
 -- names — CombineBall/CombineAll/CraftCopy/ToggleLock — FORGE is user-facing
--- copy only (METEOR RUSH precedent).
+-- copy only (METEOR RAIN precedent).
 -- (The QuestChip used to live here; it is DEAD — its job moved to the DAILY
 -- rail button's badge + REWARD READY subline.)
 --------------------------------------------------------------------------------
@@ -7426,13 +7460,13 @@ end)()
 			color = UI_GOLD, timer = "90 SEC BOOST" },
 		Tix2x15 = { rig = ticketRig, scale = ticketScale, name = "2X TICKETS",
 			color = UI_GREEN, timer = "15 MIN" },
-		RushNow = { rig = cometRig, scale = cometScale, name = "METEOR RUSH",
+		RushNow = { rig = cometRig, scale = cometScale, name = "METEOR RAIN",
 			color = Color3.fromRGB(255, 180, 90) },
 		SrvLuck100 = { rig = planetRig, scale = planetScale, name = "SERVER LUCK",
 			color = SRV_TINTS.SrvLuck100, timer = "90 SEC" },
 		SrvTix2x = { rig = planetRig, scale = planetScale, name = "SERVER TICKETS",
 			color = SRV_TINTS.SrvTix2x, timer = "10 MIN" },
-		SrvRush = { rig = planetRig, scale = planetScale, name = "SERVER RUSH",
+		SrvRush = { rig = planetRig, scale = planetScale, name = "SERVER RAIN",
 			color = SRV_TINTS.SrvRush },
 	}
 
@@ -7968,7 +8002,7 @@ local aimNdcX = 0
 	cometIcon.ImageColor3 = Color3.fromRGB(255, 220, 140)
 	cometIcon.ZIndex = 14
 	cometIcon.Parent = feverPill
-	local feverLabel = label(feverPill, "METEOR RUSH 0%", 13, Color3.fromRGB(255, 244, 225), Enum.Font.GothamBlack)
+	local feverLabel = label(feverPill, "METEOR RAIN 0%", 13, Color3.fromRGB(255, 244, 225), Enum.Font.GothamBlack)
 	feverLabel.Position = UDim2.new(0, 28, 0, 0)
 	feverLabel.Size = UDim2.new(1, -30, 1, 0)
 	feverLabel.TextStrokeTransparency = 0.5
@@ -7988,7 +8022,7 @@ local aimNdcX = 0
 	dropLip.ZIndex = 9
 	dropLip.Parent = dropCluster
 	pixelPlate(dropLip, Color3.fromRGB(30, 104, 46), 9, "btn", 5)
-	-- Fever rim: invisible until METEOR RUSH, then the state machine below
+	-- Fever rim: invisible until METEOR RAIN, then the state machine below
 	-- pulses it gold around the whole control.
 	local dropStroke = stroke(dropLip, Color3.new(0, 0, 0), 2.4, 1)
 	local dropButton = Instance.new("TextButton")
@@ -8041,21 +8075,41 @@ local aimNdcX = 0
 			Enum.EasingDirection.Out), { Scale = 1 }):Play()
 	end
 
+	-- Pill row: the toggles live in ONE auto-centered strip under the button,
+	-- styled as mini pixel bricks so they read as part of the same molded
+	-- control cluster — the old flat ovals looked bolted on and sat
+	-- off-center whenever only one of them was visible.
+	local pillRow = Instance.new("Frame")
+	pillRow.AnchorPoint = Vector2.new(0.5, 0)
+	pillRow.Position = UDim2.new(0.5, 0, 0, 96)
+	pillRow.Size = UDim2.new(1, 0, 0, 34 + TOUCH)
+	pillRow.BackgroundTransparency = 1
+	pillRow.ZIndex = 11
+	pillRow.Parent = dropCluster
+	local pillLayout = Instance.new("UIListLayout")
+	pillLayout.FillDirection = Enum.FillDirection.Horizontal
+	pillLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	pillLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+	pillLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	pillLayout.Padding = UDim.new(0, 8)
+	pillLayout.Parent = pillRow
+
 	-- AUTO pill (auto-drop): only shown once the node or the durable product
 	-- unlocks it; toggles the server's own drop loop.
-	-- Directly UNDER the drop button (owner order: findable, not tucked away).
-	-- RIGHT half of the pill row now — the SWEEP toggle takes the left half.
 	local autoDropPill = Instance.new("TextButton")
-	autoDropPill.AnchorPoint = Vector2.new(0, 0)
-	autoDropPill.Position = UDim2.new(0.5, 3, 0, 96)
+	autoDropPill.LayoutOrder = 2
 	autoDropPill.Size = UDim2.fromOffset(160, 30 + TOUCH)
-	autoDropPill.BorderSizePixel = 0
-	autoDropPill.Font = Enum.Font.GothamBlack
-	autoDropPill.TextSize = 12
+	autoDropPill.BackgroundTransparency = 1
+	autoDropPill.Text = ""
+	autoDropPill.AutoButtonColor = false
 	autoDropPill.Visible = false
 	autoDropPill.ZIndex = 11
-	autoDropPill.Parent = dropCluster
-	corner(autoDropPill, 10)
+	autoDropPill.Parent = pillRow
+	local autoDropFace = pixelPlate(autoDropPill, Color3.fromRGB(60, 62, 80), 11, "btn", 2)
+	local autoDropLabel = label(autoDropPill, "", 13, UI_SUB, Enum.Font.GothamBlack)
+	autoDropLabel.Size = UDim2.new(1, -8, 1, 0)
+	autoDropLabel.Position = UDim2.new(0, 4, 0, 0)
+	autoDropLabel.ZIndex = 13
 	local function autoDropUnlocked()
 		return (player:GetAttribute("UpAutoDrop") or 0) > 0
 			or player:GetAttribute("AutoDropOwned") == true
@@ -8070,23 +8124,23 @@ local aimNdcX = 0
 			autoDropPill.Visible = true
 			autoDropPill.Size = UDim2.fromOffset(160, 30 + TOUCH)
 			local on = player:GetAttribute("AutoDropOn") == true
-			autoDropPill.Text = on and "AUTO DROP: ON" or "AUTO DROP: OFF"
-			autoDropPill.TextSize = 13
-			autoDropPill.BackgroundColor3 = on and UI_GREEN or Color3.fromRGB(60, 62, 80)
-			autoDropPill.TextColor3 = on and Color3.new(1, 1, 1) or UI_SUB
-			autoDropPill.TextStrokeColor3 = Color3.fromRGB(18, 74, 34)
-			autoDropPill.TextStrokeTransparency = on and 0.3 or 1
+			autoDropLabel.Text = on and "AUTO DROP: ON" or "AUTO DROP: OFF"
+			autoDropLabel.TextSize = 13
+			autoDropFace.ImageColor3 = pixelTint(on and UI_GREEN or Color3.fromRGB(60, 62, 80))
+			autoDropLabel.TextColor3 = on and Color3.new(1, 1, 1) or UI_SUB
+			autoDropLabel.TextStrokeColor3 = Color3.fromRGB(18, 74, 34)
+			autoDropLabel.TextStrokeTransparency = on and 0.3 or 1
 		elseif S.productConfigured("AutoDropPass") then
 			autoDropOffering = true
 			autoDropPill.Visible = true
 			autoDropPill.Size = UDim2.fromOffset(172, 30 + TOUCH)
 			local prod = S.productInfo("AutoDropPass")
-			autoDropPill.Text = "AUTO DROP — R$" .. ((prod and prod.robux) or 169)
-			autoDropPill.TextSize = 12
-			autoDropPill.BackgroundColor3 = Color3.fromRGB(52, 40, 14)
-			autoDropPill.TextColor3 = UI_GOLD
-			autoDropPill.TextStrokeColor3 = Color3.fromRGB(60, 40, 10)
-			autoDropPill.TextStrokeTransparency = 0.3
+			autoDropLabel.Text = "AUTO DROP — R$" .. ((prod and prod.robux) or 169)
+			autoDropLabel.TextSize = 12
+			autoDropFace.ImageColor3 = pixelTint(Color3.fromRGB(52, 40, 14))
+			autoDropLabel.TextColor3 = UI_GOLD
+			autoDropLabel.TextStrokeColor3 = Color3.fromRGB(60, 40, 10)
+			autoDropLabel.TextStrokeTransparency = 0.3
 		else
 			autoDropOffering = false
 			autoDropPill.Visible = false
@@ -8110,25 +8164,29 @@ local aimNdcX = 0
 	end
 	refreshAutoDropPill()
 
-	-- SWEEP QUICK pill: free timing toggle, left twin of the AUTO pill.
+	-- SWEEP QUICK pill: free timing toggle, left slot of the pill row.
 	-- 1.6x sweep = tighter timing but faster lane coverage — player's call.
 	local sweepPill = Instance.new("TextButton")
-	sweepPill.AnchorPoint = Vector2.new(1, 0)
-	sweepPill.Position = UDim2.new(0.5, -3, 0, 96)
+	sweepPill.LayoutOrder = 1
 	sweepPill.Size = UDim2.fromOffset(140, 30 + TOUCH)
-	sweepPill.BorderSizePixel = 0
-	sweepPill.Font = Enum.Font.GothamBlack
-	sweepPill.TextSize = 13
+	sweepPill.BackgroundTransparency = 1
+	sweepPill.Text = ""
+	sweepPill.AutoButtonColor = false
 	sweepPill.ZIndex = 11
-	sweepPill.Parent = dropCluster
-	corner(sweepPill, 10)
+	sweepPill.Parent = pillRow
+	local sweepFace = pixelPlate(sweepPill, Color3.fromRGB(74, 78, 98), 11, "btn", 2)
+	local sweepLabel = label(sweepPill, "", 13, UI_SUB, Enum.Font.GothamBlack)
+	sweepLabel.Size = UDim2.new(1, -8, 1, 0)
+	sweepLabel.Position = UDim2.new(0, 4, 0, 0)
+	sweepLabel.ZIndex = 13
 	local function refreshSweepPill()
 		local quick = player:GetAttribute("SweepQuick") == true
-		sweepPill.Text = quick and "SWEEP: QUICK!" or "SWEEP: STEADY"
-		sweepPill.BackgroundColor3 = quick and UI_GREEN or Color3.fromRGB(60, 62, 80)
-		sweepPill.TextColor3 = quick and Color3.new(1, 1, 1) or UI_SUB
-		sweepPill.TextStrokeColor3 = Color3.fromRGB(18, 74, 34)
-		sweepPill.TextStrokeTransparency = quick and 0.3 or 1
+		sweepLabel.Text = quick and "SWEEP: QUICK!" or "SWEEP: STEADY"
+		sweepFace.ImageColor3 = pixelTint(quick
+			and Color3.fromRGB(58, 186, 214) or Color3.fromRGB(74, 78, 98))
+		sweepLabel.TextColor3 = quick and Color3.new(1, 1, 1) or Color3.fromRGB(196, 202, 222)
+		sweepLabel.TextStrokeColor3 = Color3.fromRGB(14, 58, 70)
+		sweepLabel.TextStrokeTransparency = quick and 0.25 or 1
 	end
 	sweepPill.MouseButton1Click:Connect(function()
 		local enabled = not (player:GetAttribute("SweepQuick") == true)
@@ -8168,7 +8226,7 @@ local aimNdcX = 0
 		TweenService:Create(feverFill, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
 			{ Size = UDim2.new(meter / 100, 0, 1, 0) }):Play()
 		if meter >= 100 then
-			feverLabel.Text = "RUSH READY!"
+			feverLabel.Text = "RAIN READY!"
 			if not readyPulseFill then
 				feverFill.BackgroundColor3 = Color3.fromRGB(255, 210, 90)
 				readyPulseFill = TweenService:Create(feverFill,
@@ -8183,11 +8241,58 @@ local aimNdcX = 0
 		else
 			stopReadyPulse()
 			feverFill.BackgroundColor3 = Color3.fromRGB(255, 120, 40)
-			feverLabel.Text = ("METEOR RUSH %d%%"):format(meter)
+			-- floor: the server meter runs fractional since the carry-cap change
+			feverLabel.Text = ("METEOR RAIN %d%%"):format(math.floor(meter))
 		end
 	end
 	player:GetAttributeChangedSignal("FeverMeter"):Connect(refreshFeverPill)
 	refreshFeverPill()
+
+	-- METEOR RAIN cosmetics: gold streaks rain down the screen while the
+	-- window runs — the event is NAMED rain, so it visibly rains. Pure
+	-- screen-space (no physics), self-destroying, skipped for Reduced Motion.
+	local meteorToken = 0
+	local function startMeteorRain()
+		meteorToken += 1
+		if S.reducedMotion then return end
+		local token = meteorToken
+		task.spawn(function()
+			while token == meteorToken and feverActiveNow and gui.Parent do
+				local s = math.max(hudScale.Scale, 0.01)
+				local vpW = camera.ViewportSize.X / s
+				local vpH = camera.ViewportSize.Y / s
+				local size = math.random(18, 34)
+				local head = Instance.new("ImageLabel")
+				head.Image = STAR_ART
+				head.BackgroundTransparency = 1
+				head.ImageColor3 = Color3.fromRGB(255, 200, 90)
+				head.AnchorPoint = Vector2.new(0.5, 0.5)
+				head.Rotation = 24
+				head.Size = UDim2.fromOffset(size, size)
+				local x = math.random(math.floor(vpW * 0.2), math.floor(vpW * 1.05))
+				head.Position = UDim2.fromOffset(x, -40)
+				head.ZIndex = 9 -- over the world, under every HUD control
+				head.Parent = gui
+				local tail = Instance.new("ImageLabel")
+				tail.Image = STAR_ART
+				tail.BackgroundTransparency = 1
+				tail.ImageColor3 = Color3.fromRGB(255, 240, 190)
+				tail.ImageTransparency = 0.55
+				tail.AnchorPoint = Vector2.new(0.5, 0.5)
+				tail.Position = UDim2.new(0.5, 12, 0.5, -14)
+				tail.Size = UDim2.fromOffset(math.floor(size * 0.55), math.floor(size * 0.55))
+				tail.ZIndex = 9
+				tail.Parent = head
+				local dur = math.random(90, 130) / 100
+				TweenService:Create(head, TweenInfo.new(dur, Enum.EasingStyle.Linear), {
+					Position = UDim2.fromOffset(x - math.random(90, 160), vpH + 80),
+					ImageTransparency = 0.25,
+				}):Play()
+				task.delay(dur, function() head:Destroy() end)
+				task.wait(math.random(25, 45) / 100)
+			end
+		end)
+	end
 
 	local function enterFever(now)
 		feverActiveNow = true
@@ -8203,10 +8308,12 @@ local aimNdcX = 0
 			{ Thickness = 4 })
 		dropStrokePulse:Play()
 		setDropTint(Color3.fromRGB(120, 220, 110))
+		startMeteorRain()
 	end
 
 	local function exitFever()
 		feverActiveNow = false
+		meteorToken += 1 -- stops the rain loop on its next beat
 		if dropStrokePulse then
 			dropStrokePulse:Cancel()
 			dropStrokePulse = nil
@@ -8226,7 +8333,7 @@ local aimNdcX = 0
 			if not feverActiveNow then enterFever(serverNow) end
 			local remain = activeUntil - serverNow
 			feverFill.Size = UDim2.new(math.clamp(remain / feverTotal, 0, 1), 0, 1, 0)
-			feverLabel.Text = ("METEOR RUSH 0:%02d"):format(math.max(0, math.ceil(remain)))
+			feverLabel.Text = ("METEOR RAIN 0:%02d"):format(math.max(0, math.ceil(remain)))
 			return true
 		elseif feverActiveNow then
 			exitFever()
@@ -8365,7 +8472,7 @@ local aimNdcX = 0
 			float.BackgroundTransparency = 1
 			float.Font = Enum.Font.GothamBlack
 			float.AnchorPoint = Vector2.new(0.5, 1)
-			float.Size = UDim2.fromOffset(240, 36)
+			float.Size = UDim2.fromOffset(320, 52)
 			float.TextStrokeColor3 = Color3.new(0, 0, 0)
 			float.TextStrokeTransparency = 0.25
 			float.Visible = false
@@ -8382,11 +8489,11 @@ local aimNdcX = 0
 		local multText = (mult and mult > 0) and ("x" .. mult) or laneSpec.text
 		if isJackpot then
 			float.Text = (mult and mult > 0) and ("JACKPOT x" .. mult) or "JACKPOT"
-			float.TextSize = 30
+			float.TextSize = 42
 			float.TextColor3 = Color3.fromRGB(255, 226, 140)
 		else
 			float.Text = multText
-			float.TextSize = 22
+			float.TextSize = 30
 			float.TextColor3 = laneSpec.color
 		end
 		-- AbsolutePosition is post-HudScale screen pixels; offsets in gui are
@@ -8396,29 +8503,33 @@ local aimNdcX = 0
 		local cx, cy
 		if cluster then
 			cx = (cluster.AbsolutePosition.X + cluster.AbsoluteSize.X / 2) / s
-			cy = cluster.AbsolutePosition.Y / s - 6
+			cy = cluster.AbsolutePosition.Y / s - 10
 		else
 			cx = camera.ViewportSize.X / 2 / s
 			cy = camera.ViewportSize.Y * 0.7 / s
 		end
-		cx += math.random(-28, 28)
+		cx += math.random(-36, 36)
 		float.Position = UDim2.fromOffset(cx, cy)
+		float.Rotation = math.random(-7, 7)
 		float.TextTransparency = 0
-		float.TextStrokeTransparency = 0.25
-		entry.scale.Scale = 0.5
+		float.TextStrokeTransparency = 0.2
+		entry.scale.Scale = 0.35
 		float.Visible = true
-		-- Pop, then rise + fade; a new tween on the same property cancels the
-		-- old one, so a reused pooled label just restarts cleanly.
+		-- Big pop, then a long drifting rise that straightens out as it fades
+		-- — reads as a chunky prize tag, not a debug print. A new tween on the
+		-- same property cancels the old one, so a reused pooled label just
+		-- restarts cleanly.
 		TweenService:Create(entry.scale,
-			TweenInfo.new(0.15, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
-			{ Scale = 1 }):Play()
+			TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+			{ Scale = isJackpot and 1.15 or 1 }):Play()
 		if not S.reducedMotion then
 			TweenService:Create(float,
-				TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-				{ Position = UDim2.fromOffset(cx, cy - 46) }):Play()
+				TweenInfo.new(1.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+				{ Position = UDim2.fromOffset(cx + math.random(-30, 30), cy - 96),
+					Rotation = 0 }):Play()
 		end
 		TweenService:Create(float,
-			TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+			TweenInfo.new(1.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
 			{ TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
 	end
 
@@ -8441,8 +8552,11 @@ local aimNdcX = 0
 			if not laneSpec then return end
 
 			-- The cabinet is shared: lane flashes are for everyone, but the
-			-- payout floater is personal — only the piece's owner floats it.
-			if ownerId == player.UserId then
+			-- payout floater is personal — only the piece's owner floats it,
+			-- and only for the BIG moments (10X+, surges, jackpots). Floating
+			-- every 3X collect buried the highs in constant small popups.
+			if ownerId == player.UserId
+				and (isJackpot or (tonumber(mult) or 0) >= 10) then
 				spawnPayoutFloater(laneSpec, isJackpot, mult)
 			end
 
@@ -9268,8 +9382,18 @@ end)()
 
 	if feverBlastRemote then
 		feverBlastRemote.OnClientEvent:Connect(function(byName)
-			goldFlash()
-			showCelebration("METEOR RUSH!", (byName or "Someone") .. " set it off — x2 for everyone!")
+			-- Full banner + flash only for the player who set it off; everyone
+			-- else gets a toast — the serverwide announcement was firing the
+			-- big celebration at the whole server every few minutes.
+			if byName == player.Name then
+				goldFlash()
+				showCelebration("METEOR RAIN!", "You set it off — x2 for everyone!")
+			else
+				pushToast{
+					text = ((byName or "Someone") .. " STARTED METEOR RAIN — x2 FOR EVERYONE!"),
+					accent = Color3.fromRGB(255, 170, 80),
+				}
+			end
 		end)
 	end
 
