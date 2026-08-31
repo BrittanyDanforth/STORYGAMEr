@@ -2515,7 +2515,10 @@ task.spawn(function()
 					feverPending[player] = 0 -- frozen while riding their own rain
 				elseif pendingFill > 0 then
 					local gain = math.min(pendingFill, GameConfig.Fever.fillCapPerSec)
-					feverPending[player] = pendingFill - gain
+					-- Bank at most ~15s of trailing fill: the meter should lag
+					-- ACTIVE play a little, not fire a rain half a minute after
+					-- the player walked away.
+					feverPending[player] = math.min(pendingFill - gain, 30)
 					gain = gain * (1 + GameConfig.statTotal(get, "feverFillPct"))
 					local meter = player:GetAttribute("FeverMeter") or 0
 					local newMeter = math.min(GameConfig.Fever.meterMax, meter + gain)

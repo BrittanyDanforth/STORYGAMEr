@@ -5737,6 +5737,9 @@ end
 		treeZoomInst.Scale = newZoom
 		local x, y = clampCanvas(clipW / 2 - cx * newZoom, clipH / 2 - cy * newZoom)
 		treeCanvas.Position = UDim2.fromOffset(x, y)
+		-- Direct call: a zoom at a clamp corner can leave Position unchanged,
+		-- so the Position signal alone would miss the wider visible window.
+		updateLineCulling()
 	end
 
 	local treeDragging = false
@@ -8082,7 +8085,7 @@ local aimNdcX = 0
 	local pillRow = Instance.new("Frame")
 	pillRow.AnchorPoint = Vector2.new(0.5, 0)
 	pillRow.Position = UDim2.new(0.5, 0, 0, 96)
-	pillRow.Size = UDim2.new(1, 0, 0, 34 + TOUCH)
+	pillRow.Size = UDim2.new(1, 0, 0, 30 + TOUCH)
 	pillRow.BackgroundTransparency = 1
 	pillRow.ZIndex = 11
 	pillRow.Parent = dropCluster
@@ -8091,14 +8094,14 @@ local aimNdcX = 0
 	pillLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	pillLayout.VerticalAlignment = Enum.VerticalAlignment.Center
 	pillLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	pillLayout.Padding = UDim.new(0, 8)
+	pillLayout.Padding = UDim.new(0, 6)
 	pillLayout.Parent = pillRow
 
 	-- AUTO pill (auto-drop): only shown once the node or the durable product
 	-- unlocks it; toggles the server's own drop loop.
 	local autoDropPill = Instance.new("TextButton")
 	autoDropPill.LayoutOrder = 2
-	autoDropPill.Size = UDim2.fromOffset(160, 30 + TOUCH)
+	autoDropPill.Size = UDim2.fromOffset(152, 30 + TOUCH)
 	autoDropPill.BackgroundTransparency = 1
 	autoDropPill.Text = ""
 	autoDropPill.AutoButtonColor = false
@@ -8122,7 +8125,7 @@ local aimNdcX = 0
 		if autoDropUnlocked() then
 			autoDropOffering = false
 			autoDropPill.Visible = true
-			autoDropPill.Size = UDim2.fromOffset(160, 30 + TOUCH)
+			autoDropPill.Size = UDim2.fromOffset(152, 30 + TOUCH)
 			local on = player:GetAttribute("AutoDropOn") == true
 			autoDropLabel.Text = on and "AUTO DROP: ON" or "AUTO DROP: OFF"
 			autoDropLabel.TextSize = 13
@@ -8133,7 +8136,7 @@ local aimNdcX = 0
 		elseif S.productConfigured("AutoDropPass") then
 			autoDropOffering = true
 			autoDropPill.Visible = true
-			autoDropPill.Size = UDim2.fromOffset(172, 30 + TOUCH)
+			autoDropPill.Size = UDim2.fromOffset(158, 30 + TOUCH)
 			local prod = S.productInfo("AutoDropPass")
 			autoDropLabel.Text = "AUTO DROP — R$" .. ((prod and prod.robux) or 169)
 			autoDropLabel.TextSize = 12
@@ -8148,7 +8151,10 @@ local aimNdcX = 0
 	end
 	autoDropPill.MouseButton1Click:Connect(function()
 		if autoDropOffering then
-			S.promptProduct("AutoDropPass", autoDropPill)
+			-- The label is the SOON-flash target now: the pill's own Text is
+			-- empty and sits under the pixel face, so promptProduct's fallback
+			-- would flash invisibly if the id ever unconfigures mid-session.
+			S.promptProduct("AutoDropPass", autoDropLabel)
 			return
 		end
 		local enabled = not (player:GetAttribute("AutoDropOn") == true)
@@ -8168,7 +8174,7 @@ local aimNdcX = 0
 	-- 1.6x sweep = tighter timing but faster lane coverage — player's call.
 	local sweepPill = Instance.new("TextButton")
 	sweepPill.LayoutOrder = 1
-	sweepPill.Size = UDim2.fromOffset(140, 30 + TOUCH)
+	sweepPill.Size = UDim2.fromOffset(132, 30 + TOUCH)
 	sweepPill.BackgroundTransparency = 1
 	sweepPill.Text = ""
 	sweepPill.AutoButtonColor = false
