@@ -107,6 +107,10 @@ local bound = {
 local firstBind = true
 
 local function bindMachine(machine)
+	-- Rebind the palette FIRST so everything a bind caches derives from the
+	-- zone's theme — CFG stayed the raw zone-1 DEFAULTS and repainted themed
+	-- cabinets in zone 1's ambers.
+	CFG = PusherMachine.themedConfigFor((remotes and remotes:GetAttribute("Zone")) or 1)
 	local state = {
 		machine = machine,
 		chaseL = {}, chaseR = {}, trayLeds = {}, bulbs = {},
@@ -979,8 +983,11 @@ end
 -- the legally-required numbers are identical to the old string rows.
 local function boostDisclosureLines(mag)
 	local luck = currentLuck()
-	local base = PusherMachine.planetChances(luck, currentBoostMag())
-	local boosted = PusherMachine.planetChances(luck, mag)
+	-- Legally load-bearing: this disclosure must match the server's roll
+	-- table EXACTLY — DEEP LUCK weight mods included, both columns.
+	local mods = currentMods()
+	local base = PusherMachine.planetChances(luck, currentBoostMag(), mods)
+	local boosted = PusherMachine.planetChances(luck, mag, mods)
 	local rows = {}
 	for _, row in ipairs({ { 3, "ULTRA+" }, { 4, "LEGENDARY+" }, { 5, "SECRET" } }) do
 		local before = tierPlusOneIn(base, row[1])
@@ -1376,7 +1383,10 @@ local function buildReelTiles(wonName, wonTier)
 				or PusherMachine.findSpec(wonName, tonumber(wonTier))
 			if not spec then
 				warn("[Roller] won spec missing from catalog: " .. tostring(wonName) .. "|" .. tostring(wonTier))
-				spec = { n = tostring(wonName), t = tonumber(wonTier) or 1, b = { r = 200, g = 200, b = 210 } }
+				-- Degrade, don't error: catalog-shaped stand-in (b is a
+				-- 1-based RGB array like every Planets entry, no rg) so
+				-- makePlanetIcon renders a plain grey orb.
+				spec = { n = tostring(wonName), t = tonumber(wonTier) or 1, b = { 200, 200, 210 } }
 			end
 		end
 		if not spec then
@@ -1692,6 +1702,15 @@ do
 	autoSub.TextStrokeTransparency = 0.15
 	autoSub.ZIndex = 15
 	local function restyleAutoPill()
+		-- Locked until the first manual roll (the server refuses auto-rolls
+		-- while TutorialDone is unset) — never claim ON under that gate.
+		if player:GetAttribute("TutorialDone") ~= true then
+			autoPlate.ImageColor3 = pixelTint(Color3.fromRGB(104, 108, 126))
+			autoIcon.ImageColor3 = Color3.fromRGB(30, 32, 42)
+			autoTitle.TextStrokeColor3 = Color3.fromRGB(20, 22, 30)
+			autoSub.TextStrokeColor3 = Color3.fromRGB(20, 22, 30)
+			return
+		end
 		if S.autoRollOn() then
 			autoPlate.ImageColor3 = pixelTint(UI_GREEN)
 			autoIcon.ImageColor3 = Color3.fromRGB(16, 64, 30)
@@ -1705,6 +1724,9 @@ do
 		end
 	end
 	autoBtn.MouseButton1Click:Connect(function()
+		-- Locked pill is inert: while the tutorial gate holds, a tap must not
+		-- invisibly arm/disarm auto-roll under the "ROLL ONCE TO UNLOCK" text.
+		if player:GetAttribute("TutorialDone") ~= true then return end
 		local enabled = not S.autoRollOn()
 		if setToggleRemote then setToggleRemote:FireServer("AutoRoll", enabled) end
 		-- Optimistic restyle; the replicated attribute confirms it.
@@ -1716,6 +1738,10 @@ do
 
 	-- Replaces the old timer ring on the 0.1s cosmetic cadence.
 	function S.updateAutoRollBar()
+		if player:GetAttribute("TutorialDone") ~= true then
+			autoSub.Text = "ROLL ONCE TO UNLOCK"
+			return
+		end
 		local interval = GameConfig.autoRollInterval(attrGet)
 		if S.autoRollOn() then
 			local now = workspace:GetServerTimeNow()
@@ -1726,6 +1752,11 @@ do
 			autoSub.Text = ("OFF — EVERY %ds"):format(math.floor(interval + 0.5))
 		end
 	end
+	-- Flips live off the first manual roll — no rejoin needed.
+	player:GetAttributeChangedSignal("TutorialDone"):Connect(function()
+		restyleAutoPill()
+		S.updateAutoRollBar()
+	end)
 end
 
 -- Pity strip: rolls until an ULTRA RARE+ is guaranteed.
@@ -2018,6 +2049,11 @@ if jackpotHitRemote then
 			TweenService:Create(jackBadge, TweenInfo.new(0.5), { ImageTransparency = 1 }):Play()
 			task.delay(0.6, function() jackBanner:Destroy() end)
 		end)
+		-- Strike while the fanfare is hot: pitch the matching luck offer —
+		-- personal luck to the winner, server luck to everyone watching.
+		if S.pitchOffer then
+			S.pitchOffer(winnerName == player.Name and "Luck100" or "SrvLuck100")
+		end
 	end)
 end
 
@@ -2055,6 +2091,10 @@ do
 			}
 			local key = name .. "|" .. (tier or 1)
 			pullCounts[key] = (pullCounts[key] or 0) + 1
+			-- A tier-4 pull is the "I could get luckier" moment — pitch luck.
+			if won.tier >= 4 and S.pitchOffer then
+				S.pitchOffer("Luck100")
+			end
 			if won.auto then
 				-- Cross-guard (loop-forge §4): auto rolls also never start while
 				-- the forge cinematic is celebrating — they queue (newest wins)
@@ -2272,7 +2312,10 @@ do
 			pendingRoll = nil
 			if not won then
 				-- No result inside 8s: un-spin cleanly. NEVER fake a reveal.
-				spinning = false
+				-- concludeRoll (not a bare spinning=false) so an auto roll
+				-- that queued during the dead wait plays now instead of
+				-- surfacing as a stale reveal minutes later.
+				concludeRoll()
 				return
 			end
 			buildReelTiles(won.name, won.tier)
@@ -2761,7 +2804,7 @@ end
 -- Any planet with a forge affordable (FORGE badge + link rows).
 local function anyForgeReady()
 	for _, entry in ipairs(ownedBalls) do
-		local req = GameConfig.Fusion.reqByTier[entry.t] or 10
+		local req = GameConfig.forgeReq(attrGet, entry.t) or 10
 		if (entry.c or 0) >= req or (entry.f1 or 0) >= req then return true end
 	end
 	return false
@@ -2785,6 +2828,15 @@ end
 -- ============================ DAILY PAGE ================================
 
 local function renderDailyPage()
+	-- Ticket labels show what a claim actually pays: the server credits
+	-- through creditTickets' persistent chain (zone/throne/tree/rebirth/
+	-- attr/group = GameConfig.ticketScale), not the raw table value. Labels
+	-- may still UNDERSTATE during fever/paid boosts (those stack on top at
+	-- credit time) — never overstate. Dust stays flat.
+	local function scaledTix(base)
+		local zone = (remotes and remotes:GetAttribute("Zone")) or 1
+		return math.floor((base or 0) * GameConfig.ticketScale(attrGet, zone))
+	end
 	panelTitle.Text = "DAILY"
 	pillTabBar({
 		{ id = "quests", label = "QUESTS" },
@@ -2851,7 +2903,7 @@ local function renderDailyPage()
 			nameLabel.TextXAlignment = Enum.TextXAlignment.Left
 			nameLabel.ZIndex = 22
 			local rewardLabel = label(row,
-				("+%d TIX · +%d DUST"):format(mission.tickets or 0, mission.dust or 0),
+				("+%s TIX · +%d DUST"):format(formatCommas(scaledTix(mission.tickets)), mission.dust or 0),
 				12, UI_SUB, Enum.Font.GothamBold)
 			rewardLabel.Position = UDim2.new(0, 46, 0, 26)
 			rewardLabel.Size = UDim2.new(1, -180, 0, 14)
@@ -2909,8 +2961,9 @@ local function renderDailyPage()
 			nameLabel.TextXAlignment = Enum.TextXAlignment.Left
 			nameLabel.ZIndex = 22
 			local subLabel = label(row,
-				("+%d TIX · +%d DUST · +%d STAR"):format(
-					DAILY_CHEST.tickets or 300, DAILY_CHEST.dust or 40, DAILY_CHEST.stars or 1),
+				("+%s TIX · +%d DUST · +%d STAR"):format(
+					formatCommas(scaledTix(DAILY_CHEST.tickets or 300)),
+					DAILY_CHEST.dust or 40, DAILY_CHEST.stars or 1),
 				12, UI_SUB, Enum.Font.GothamBold)
 			subLabel.Position = UDim2.new(0, 56, 0, 32)
 			subLabel.Size = UDim2.new(1, -190, 0, 14)
@@ -3167,7 +3220,7 @@ local function renderDailyPage()
 				end
 				ic.ZIndex = 23
 				ic.Parent = card
-				local amount = label(card, tostring(dayCfg.tickets or 0), 12,
+				local amount = label(card, formatCommas(scaledTix(dayCfg.tickets)), 12,
 					isToday and UI_TEXT or UI_SUB, Enum.Font.GothamBold)
 				amount.AnchorPoint = Vector2.new(0.5, 1)
 				amount.Position = UDim2.new(0.5, 0, 1, -4)
@@ -3288,8 +3341,9 @@ local function renderDailyPage()
 		claimRow.BackgroundTransparency = 1
 		local claim = makeClaimButton(claimRow, UDim2.new(1, 0, 0, 44), UDim2.new(0, 0, 0, 2))
 		if nextReadyIdx then
-			claim.setState("ready", ("CLAIM +%d TIX · +%d DUST"):format(
-				PLAY_CFG.tickets[nextReadyIdx] or 0, PLAY_CFG.dust[nextReadyIdx] or 0))
+			claim.setState("ready", ("CLAIM +%s TIX · +%d DUST"):format(
+				formatCommas(scaledTix(PLAY_CFG.tickets[nextReadyIdx])),
+				PLAY_CFG.dust[nextReadyIdx] or 0))
 			local idx = nextReadyIdx
 			claim.btn.MouseButton1Click:Connect(function()
 				if claimPlaytimeRemote then
@@ -3567,7 +3621,9 @@ function renderPage()
 		-- Shared fusion + odds context for both tabs and the detail view.
 		-- Odds always take BOTH the free luck scalar and the paid boost
 		-- magnitude (§1) — the odds you see are the odds you roll.
-		local reqByTier = GameConfig.Fusion.reqByTier
+		-- Forge Mastery discounts recipes: effective req comes from
+		-- GameConfig.forgeReq so counts/gates here match the server consume.
+		local function reqOf(tier) return GameConfig.forgeReq(attrGet, tier) or 10 end
 		local formNames = GameConfig.FormNames
 		local equippedKey = player:GetAttribute("EquippedBall") or "Bubblegum|1"
 		local equippedForm = player:GetAttribute("EquippedForm") or 0
@@ -3590,14 +3646,14 @@ function renderPage()
 		-- 1 feeds CELESTIAL), have, req — nil when nothing is brewing.
 		local function nextFusion(entry, tier)
 			if not entry then return nil end
-			local req = reqByTier[tier] or 10
+			local req = reqOf(tier)
 			local c, f1 = countsOf(entry)
 			if f1 >= c and f1 > 0 then return 1, f1, req end
 			if c > 0 then return 0, c, req end
 			return nil
 		end
 		local function canCombine(entry, tier)
-			local req = reqByTier[tier] or 10
+			local req = reqOf(tier)
 			local c, f1 = countsOf(entry)
 			return c >= req or f1 >= req
 		end
@@ -3621,7 +3677,7 @@ function renderPage()
 			local tierInfo = PusherMachine.Tiers[dTier] or PusherMachine.Tiers[1]
 			local entry = invByKey[detailKey]
 			local discovered = entry ~= nil
-			local req = reqByTier[dTier] or 10
+			local req = reqOf(dTier)
 			local c, f1, f2 = countsOf(entry)
 			local formCounts = { [0] = c, [1] = f1, [2] = f2 }
 			local formUnlocked = { [0] = discovered, [1] = f1 > 0, [2] = f2 > 0 }
@@ -5047,6 +5103,11 @@ function renderPage()
 		shopHeader("Ticket Rewards", UI_GOLD)
 
 		-- §4f JOIN THE GROUP claim banner (+25% luck & +25% tickets, forever).
+		-- Hidden until GameConfig.GroupId is set (the server fails the claim
+		-- closed outside Studio at 0 — never show a button that does nothing).
+		if player:GetAttribute("GroupPerk") == true
+			or (GameConfig.GroupId or 0) > 0
+			or RunService:IsStudio() then
 		local banner = makeRow(84)
 		banner.BackgroundColor3 = Color3.fromRGB(30, 27, 44)
 		stroke(banner, UI_GOLD, 1.8, 0.3)
@@ -5080,6 +5141,7 @@ function renderPage()
 				if remote then remote:FireServer() end
 			end)
 		end
+		end -- §4f GroupId gate
 
 		-- Permanent multipliers, paid in tickets (defs from GameConfig).
 		for _, card in ipairs(GameConfig.Perks) do
@@ -6065,7 +6127,9 @@ end)()
 	-- Closest pending forge for an entry: fromForm, have, req.
 	local function nextForge(entry, tier)
 		if not entry then return nil end
-		local req = GameConfig.Fusion.reqByTier[tier] or 10
+		-- Effective req (Forge Mastery discount) — same read the server's
+		-- doCombine consumes, or a bought discount is unusable here.
+		local req = GameConfig.forgeReq(attrGet, tier) or 10
 		local c, f1 = countsOf(entry)
 		if f1 >= c and f1 > 0 then return 1, f1, req end
 		if c > 0 then return 0, c, req end
@@ -6073,7 +6137,7 @@ end)()
 	end
 	local function entryForgeable(entry)
 		if not entry then return false end
-		local req = GameConfig.Fusion.reqByTier[entry.t] or 10
+		local req = GameConfig.forgeReq(attrGet, entry.t) or 10
 		return (entry.c or 0) >= req or (entry.f1 or 0) >= req
 	end
 	local function isLocked(entry)
@@ -6169,7 +6233,7 @@ end)()
 			tierInfo = PusherMachine.Tiers[dTier] or PusherMachine.Tiers[1]
 			ec, ef1, ef2 = countsOf(entry)
 			bestOwnedForm = ef2 > 0 and 2 or (ef1 > 0 and 1 or 0)
-			req = GameConfig.Fusion.reqByTier[dTier] or 10
+			req = GameConfig.forgeReq(attrGet, dTier) or 10
 			fromForm, have = nextForge(entry, dTier)
 			basePay = tierInfo.payout
 		end
@@ -7498,6 +7562,21 @@ end)()
 		hideOffer()
 	end
 
+	-- Contextual pitch: a big moment (jackpot fanfare, tier-4 pull) jumps the
+	-- rotation straight to the offer that matches it. Respects dismissal +
+	-- eligibility, and at most one contextual jump per 90s — hype, not spam.
+	local lastContextPitch = 0
+	function S.pitchOffer(key)
+		if dismissed then return end
+		if not eligible(key) then return end
+		if os.clock() - lastContextPitch < 90 then return end
+		local idx = table.find(OFFER_KEYS, key)
+		if not idx then return end
+		lastContextPitch = os.clock()
+		offerIndex = idx - 1 -- showNextOffer advances first, so it lands on key
+		showNextOffer()
+	end
+
 	local function buyCurrent()
 		if currentKey then S.promptProduct(currentKey, pricePill) end
 	end
@@ -7526,7 +7605,9 @@ end)()
 	end)
 
 	task.spawn(function()
-		task.wait(4) -- let the HUD settle before the first pitch
+		-- Let a new player fall in love with the machine before the first
+		-- pitch; conversion beats annoyance.
+		task.wait(45)
 		while not dismissed and featured.Parent do
 			showNextOffer()
 			task.wait(30)
@@ -7777,17 +7858,14 @@ end)()
 -- These cross into the cosmetic Heartbeat loop at the bottom of the
 -- file, so they live outside the input section block.
 local mouthPulseAt = -10
-local gamepadAimX = 0 -- stick-integrated virtual cursor X in [-1, 1]
+-- Retired aim state: the carriage sweeps on its own now (timing game) — no
+-- reader is left, but the declarations stay so stragglers resolve harmlessly.
+local gamepadAimX = 0
 local gamepadStickX = 0
--- The HELD aim, in NDC [-1, 1]. The Heartbeat updates it only while the
--- cursor/touch is over the play area (not the rails or the button cluster),
--- so walking the mouse down to the DROP button doesn't re-center the shot.
--- Drops fire ONLY from the DROP button (owner order: no click-anywhere).
 local aimNdcX = 0
 
 ;(function() -- section scope: own register budget (main chunk hit Luau's 200-local cap live)
 	local lastDrop = 0
-	local DROP_COOLDOWN = 0.2
 	local hintFaded = false
 
 	-- Static, input-adaptive aim hint (no more per-frame docking to the old
@@ -7807,7 +7885,7 @@ local aimNdcX = 0
 	hintIcon.Visible = false
 	hintIcon.ZIndex = 10
 	hintIcon.Parent = hint
-	local hintText = label(hint, "AIM WITH YOUR CURSOR  —  PRESS DROP PLANET", 16,
+	local hintText = label(hint, "TIME THE SWEEP — HOLD DROP OR SPACE FOR RAPID FIRE", 16,
 		Color3.fromRGB(235, 240, 255), Enum.Font.GothamMedium)
 	hintText.Size = UDim2.fromScale(1, 1)
 	hintText.TextTransparency = 0.15
@@ -7821,13 +7899,13 @@ local aimNdcX = 0
 			end)
 			hintIcon.Image = (ok and image) or ""
 			hintIcon.Visible = ok and image ~= nil and image ~= ""
-			hintText.Text = "AIM WITH LEFT STICK  —  SELECT DROP PLANET"
+			hintText.Text = "WATCH THE SWEEP — PRESS TO DROP"
 		elseif touchDevice or lastInput == Enum.UserInputType.Touch then
 			hintIcon.Visible = false
-			hintText.Text = "TOUCH THE MACHINE TO AIM  —  TAP DROP PLANET"
+			hintText.Text = "TAP DROP WHEN IT LINES UP — HOLD FOR RAPID FIRE"
 		else
 			hintIcon.Visible = false
-			hintText.Text = "AIM WITH YOUR CURSOR  —  PRESS DROP PLANET"
+			hintText.Text = "TIME THE SWEEP — HOLD DROP OR SPACE FOR RAPID FIRE"
 		end
 	end
 	UserInputService.LastInputTypeChanged:Connect(updateHint)
@@ -7966,9 +8044,10 @@ local aimNdcX = 0
 	-- AUTO pill (auto-drop): only shown once the node or the durable product
 	-- unlocks it; toggles the server's own drop loop.
 	-- Directly UNDER the drop button (owner order: findable, not tucked away).
+	-- RIGHT half of the pill row now — the SWEEP toggle takes the left half.
 	local autoDropPill = Instance.new("TextButton")
-	autoDropPill.AnchorPoint = Vector2.new(0.5, 0)
-	autoDropPill.Position = UDim2.new(0.5, 0, 0, 96)
+	autoDropPill.AnchorPoint = Vector2.new(0, 0)
+	autoDropPill.Position = UDim2.new(0.5, 3, 0, 96)
 	autoDropPill.Size = UDim2.fromOffset(160, 30 + TOUCH)
 	autoDropPill.BorderSizePixel = 0
 	autoDropPill.Font = Enum.Font.GothamBlack
@@ -8030,6 +8109,36 @@ local aimNdcX = 0
 		remotes:GetAttributeChangedSignal("PId_AutoDropPass"):Connect(refreshAutoDropPill)
 	end
 	refreshAutoDropPill()
+
+	-- SWEEP QUICK pill: free timing toggle, left twin of the AUTO pill.
+	-- 1.6x sweep = tighter timing but faster lane coverage — player's call.
+	local sweepPill = Instance.new("TextButton")
+	sweepPill.AnchorPoint = Vector2.new(1, 0)
+	sweepPill.Position = UDim2.new(0.5, -3, 0, 96)
+	sweepPill.Size = UDim2.fromOffset(140, 30 + TOUCH)
+	sweepPill.BorderSizePixel = 0
+	sweepPill.Font = Enum.Font.GothamBlack
+	sweepPill.TextSize = 13
+	sweepPill.ZIndex = 11
+	sweepPill.Parent = dropCluster
+	corner(sweepPill, 10)
+	local function refreshSweepPill()
+		local quick = player:GetAttribute("SweepQuick") == true
+		sweepPill.Text = quick and "SWEEP: QUICK!" or "SWEEP: STEADY"
+		sweepPill.BackgroundColor3 = quick and UI_GREEN or Color3.fromRGB(60, 62, 80)
+		sweepPill.TextColor3 = quick and Color3.new(1, 1, 1) or UI_SUB
+		sweepPill.TextStrokeColor3 = Color3.fromRGB(18, 74, 34)
+		sweepPill.TextStrokeTransparency = quick and 0.3 or 1
+	end
+	sweepPill.MouseButton1Click:Connect(function()
+		local enabled = not (player:GetAttribute("SweepQuick") == true)
+		if setToggleRemote then setToggleRemote:FireServer("SweepQuick", enabled) end
+		-- Optimistic, same pattern as AutoDrop; the replicated attr confirms.
+		player:SetAttribute("SweepQuick", enabled)
+		refreshSweepPill()
+	end)
+	player:GetAttributeChangedSignal("SweepQuick"):Connect(refreshSweepPill)
+	refreshSweepPill()
 
 	-- Fever pill state machine. The meter tween owns the pill while idle; the
 	-- cosmetic Heartbeat owns it while a fever window is running.
@@ -8237,7 +8346,80 @@ local aimNdcX = 0
 	local laneHits = { 0, 0, 0, 0, 0, 0, 0 }
 	local function laneHitText(count)
 		if count > 9999 then return "9999+" end
-		return "×" .. count
+		-- "N HITS", never "×N" — next to the lane signs a "×" tally read as a
+		-- payout multiplier.
+		return count .. " HITS"
+	end
+
+	-- Payout floaters: "x12" pops off the drop cluster on every slot hit —
+	-- the one moment a surged lane's LIVE multiplier (the server sends it)
+	-- is actually shown on screen. Pooled, max 6 in flight.
+	local FLOATER_MAX = 6
+	local floaterPool = {}
+	local floaterNext = 0
+	local function spawnPayoutFloater(laneSpec, isJackpot, mult)
+		floaterNext = floaterNext % FLOATER_MAX + 1
+		local entry = floaterPool[floaterNext]
+		if not entry then
+			local float = Instance.new("TextLabel")
+			float.BackgroundTransparency = 1
+			float.Font = Enum.Font.GothamBlack
+			float.AnchorPoint = Vector2.new(0.5, 1)
+			float.Size = UDim2.fromOffset(240, 36)
+			float.TextStrokeColor3 = Color3.new(0, 0, 0)
+			float.TextStrokeTransparency = 0.25
+			float.Visible = false
+			float.ZIndex = 41
+			float.Parent = gui
+			local floatScale = Instance.new("UIScale")
+			floatScale.Parent = float
+			entry = { label = float, scale = floatScale }
+			floaterPool[floaterNext] = entry
+		end
+		local float = entry.label
+		-- Surged mult when the server sent one; a 0 (overload-window hit)
+		-- falls back to the lane's printed sign.
+		local multText = (mult and mult > 0) and ("x" .. mult) or laneSpec.text
+		if isJackpot then
+			float.Text = (mult and mult > 0) and ("JACKPOT x" .. mult) or "JACKPOT"
+			float.TextSize = 30
+			float.TextColor3 = Color3.fromRGB(255, 226, 140)
+		else
+			float.Text = multText
+			float.TextSize = 22
+			float.TextColor3 = laneSpec.color
+		end
+		-- AbsolutePosition is post-HudScale screen pixels; offsets in gui are
+		-- pre-scale, so divide back out (goldBurst's idiom).
+		local s = math.max(hudScale.Scale, 0.01)
+		local cluster = S.dropCluster
+		local cx, cy
+		if cluster then
+			cx = (cluster.AbsolutePosition.X + cluster.AbsoluteSize.X / 2) / s
+			cy = cluster.AbsolutePosition.Y / s - 6
+		else
+			cx = camera.ViewportSize.X / 2 / s
+			cy = camera.ViewportSize.Y * 0.7 / s
+		end
+		cx += math.random(-28, 28)
+		float.Position = UDim2.fromOffset(cx, cy)
+		float.TextTransparency = 0
+		float.TextStrokeTransparency = 0.25
+		entry.scale.Scale = 0.5
+		float.Visible = true
+		-- Pop, then rise + fade; a new tween on the same property cancels the
+		-- old one, so a reused pooled label just restarts cleanly.
+		TweenService:Create(entry.scale,
+			TweenInfo.new(0.15, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+			{ Scale = 1 }):Play()
+		if not S.reducedMotion then
+			TweenService:Create(float,
+				TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+				{ Position = UDim2.fromOffset(cx, cy - 46) }):Play()
+		end
+		TweenService:Create(float,
+			TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+			{ TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
 	end
 
 	-- Flash a header part to its FlashColor attr (fallback: the lane color) and
@@ -8254,9 +8436,15 @@ local aimNdcX = 0
 	end
 
 	if slotHitRemote then
-		slotHitRemote.OnClientEvent:Connect(function(lane, isJackpot)
+		slotHitRemote.OnClientEvent:Connect(function(lane, isJackpot, mult, ownerId)
 			local laneSpec = PAYOUT_LANES[lane]
 			if not laneSpec then return end
+
+			-- The cabinet is shared: lane flashes are for everyone, but the
+			-- payout floater is personal — only the piece's owner floats it.
+			if ownerId == player.UserId then
+				spawnPayoutFloater(laneSpec, isJackpot, mult)
+			end
 
 			-- (a) Mobile-fallback screen segment flash (only while the bar shows).
 			local seg = payoutSegs[lane]
@@ -8489,15 +8677,25 @@ local aimNdcX = 0
 		end)
 	end
 
-	-- Core drop path, in NDC space. The 4.15 scale is THE shared aim constant
-	-- (carriage follow + server clamp).
-	local function requestDropNdc(ndcX)
+	-- Core drop path. The sweep is deterministic from server time, so the
+	-- client samples the SAME position the carriage draw and the server's
+	-- validation clamp compute — dropping is pure timing.
+	local function requestDrop()
 		local now = os.clock()
-		if now - lastDrop < DROP_COOLDOWN then return end
+		-- Same formula the server enforces — Drop Speed tree nodes change the
+		-- real manual rate. Quick Charge mirror: the server halves inside the
+		-- post-big-hit window; the client can't see that stamp, so an owner of
+		-- the perk gets the halved gate always — early sends outside the real
+		-- window are silently absorbed by the server's own cooldown gate.
+		local cooldown = GameConfig.dropCooldown(attrGet)
+		if GameConfig.statTotal(attrGet, "quickChargeSec") > 0 then
+			cooldown = cooldown * 0.5
+		end
+		if now - lastDrop < cooldown then return end
 		lastDrop = now
 
-		-- Screen-right is world -X under this camera, hence the negation.
-		local xOffset = -math.clamp(ndcX, -1, 1) * 4.15
+		local xOffset = GameConfig.sweepX(workspace:GetServerTimeNow(),
+			player:GetAttribute("SweepQuick") == true)
 
 		if dropRemote then
 			dropRemote:FireServer(xOffset)
@@ -8527,14 +8725,48 @@ local aimNdcX = 0
 	-- close buttons, or on empty screen space reach NOTHING that drops.
 	local function fireDrop()
 		S.dropButtonPunch()
-		requestDropNdc(aimNdcX)
+		requestDrop()
 	end
 	dropButton.Activated:Connect(fireDrop)
 	S.fireDrop = fireDrop -- shared with nothing today; kept for the button only
 
+	-- HOLD = rapid fire: while the button or Space is held, a task loop
+	-- attempts a drop every ~0.05s — the cooldown gate inside requestDrop
+	-- paces it to the player's real rate (Drop Speed nodes genuinely speed
+	-- this up). The button punch is throttled to ~4x/sec so the cluster
+	-- doesn't vibrate at max rate. The loop kills itself on release, when
+	-- any page/panel opens (same guards as Space), and when the gui dies.
+	local holdActive = false
+	local function stopHold()
+		holdActive = false
+	end
+	local function startHold()
+		if holdActive then return end
+		holdActive = true
+		task.spawn(function()
+			local lastPunch = 0
+			while holdActive and gui.Parent do
+				if S.treePage.Visible then break end
+				if S.forgePage and S.forgePage.Visible then break end
+				if panel.Visible then break end
+				requestDrop()
+				local now = os.clock()
+				if now - lastPunch >= 0.25 then
+					lastPunch = now
+					S.dropButtonPunch()
+				end
+				task.wait(0.05)
+			end
+			holdActive = false
+		end)
+	end
+	dropButton.MouseButton1Down:Connect(startHold)
+	dropButton.MouseButton1Up:Connect(stopHold)
+	dropButton.MouseLeave:Connect(stopHold)
+
 	-- SPACE stays as a deliberate keyboard accelerator for the button — never
 	-- while typing, never while any page/panel is open (no drops underneath
-	-- another interface).
+	-- another interface). Holding it rapid-fires like holding the button.
 	UserInputService.InputBegan:Connect(function(input, gameProcessed)
 		if gameProcessed then return end
 		if input.KeyCode ~= Enum.KeyCode.Space then return end
@@ -8543,16 +8775,10 @@ local aimNdcX = 0
 		if S.forgePage and S.forgePage.Visible then return end
 		if panel.Visible then return end
 		fireDrop()
+		startHold()
 	end)
-
-	-- Gamepad stick keeps AIMING only (integrated in the Heartbeat); dropping
-	-- requires selecting and activating the DROP button.
-	UserInputService.InputChanged:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.Gamepad1
-			and input.KeyCode == Enum.KeyCode.Thumbstick1 then
-			local x = input.Position.X
-			gamepadStickX = math.abs(x) > 0.15 and x or 0
-		end
+	UserInputService.InputEnded:Connect(function(input)
+		if input.KeyCode == Enum.KeyCode.Space then stopHold() end
 	end)
 end)()
 
@@ -8852,37 +9078,127 @@ end)()
 -- Toasts + celebration banners (fever / chest / daily / throne / offline)
 --------------------------------------------------------------------------------
 
--- Small top-center toast pill; stacks are rare enough that overlap is fine.
+-- Top-center toast rail: one UIListLayout stack, so burst claims (claim-all
+-- sprees, mission+star+chest landing together) queue instead of overlapping.
 ;(function() -- section scope: own register budget (main chunk hit Luau's 200-local cap live)
-	local function showToast(text, accentColor)
+	local toastRail = Instance.new("Frame")
+	toastRail.Name = "ToastRail"
+	toastRail.AnchorPoint = Vector2.new(0.5, 0)
+	toastRail.Position = UDim2.new(0.5, 0, 0, 208)
+	toastRail.Size = UDim2.fromOffset(360, 0)
+	toastRail.AutomaticSize = Enum.AutomaticSize.Y
+	toastRail.BackgroundTransparency = 1
+	toastRail.ZIndex = 42
+	toastRail.Parent = gui
+	local railLayout = Instance.new("UIListLayout")
+	railLayout.FillDirection = Enum.FillDirection.Vertical
+	railLayout.Padding = UDim.new(0, 6)
+	railLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	railLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	railLayout.Parent = toastRail
+
+	-- Live-plate registry, oldest first. Each entry owns its own deadline so
+	-- coalescing merges can extend a plate's life without a global timer.
+	local liveToasts = {}
+	local toastOrder = 0
+
+	local function killToast(entry, quick)
+		if entry.dying then return end
+		entry.dying = true
+		for i, e in ipairs(liveToasts) do
+			if e == entry then table.remove(liveToasts, i) break end
+		end
+		local dur = quick and 0.15 or 0.4
+		-- The rail's layout owns the holder; the plate slides inside it.
+		if not quick and not S.reducedMotion then
+			TweenService:Create(entry.plate, TweenInfo.new(dur, Enum.EasingStyle.Quad),
+				{ Position = UDim2.new(0.5, 0, 0, -20), BackgroundTransparency = 1 }):Play()
+		else
+			TweenService:Create(entry.plate, TweenInfo.new(dur), { BackgroundTransparency = 1 }):Play()
+		end
+		TweenService:Create(entry.textLabel, TweenInfo.new(dur), { TextTransparency = 1 }):Play()
+		task.delay(dur + 0.1, function() entry.holder:Destroy() end)
+	end
+
+	local function armToast(entry)
+		local gen = entry.gen
+		task.delay(entry.deadline - os.clock(), function()
+			if entry.gen == gen and not entry.dying then killToast(entry, false) end
+		end)
+	end
+
+	-- opts = { text, accent, key, tickets, dust }. Same-key plates younger
+	-- than 1.6s absorb the new claim instead of spawning a sibling.
+	local function pushToast(opts)
+		local now = os.clock()
+		if opts.key then
+			for _, entry in ipairs(liveToasts) do
+				if entry.key == opts.key and not entry.dying and now - entry.born < 1.6 then
+					entry.claims += 1
+					entry.tickets += opts.tickets or 0
+					entry.dust += opts.dust or 0
+					entry.textLabel.Text = ("%d REWARDS CLAIMED  +%s TIX  +%s DUST")
+						:format(entry.claims, shortValue(entry.tickets), shortValue(entry.dust))
+					entry.scale.Scale = 0.92
+					TweenService:Create(entry.scale, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+						{ Scale = 1 }):Play()
+					entry.deadline = now + 2.6
+					entry.gen += 1
+					armToast(entry)
+					return
+				end
+			end
+		end
+		-- Cap at 3 live plates: a 4th evicts the oldest with a quick fade.
+		if #liveToasts >= 3 then
+			killToast(liveToasts[1], true)
+		end
+		toastOrder += 1
+		local holder = Instance.new("Frame")
+		holder.Size = UDim2.fromOffset(340, 40)
+		holder.BackgroundTransparency = 1
+		holder.LayoutOrder = toastOrder
+		holder.ZIndex = 42
+		holder.Parent = toastRail
+		local accent = opts.accent or UI_GOLD
 		local toast = Instance.new("Frame")
 		toast.AnchorPoint = Vector2.new(0.5, 0)
-		toast.Position = UDim2.new(0.5, 0, 0, 208)
-		toast.Size = UDim2.fromOffset(340, 40)
+		toast.Position = UDim2.new(0.5, 0, 0, 0)
+		toast.Size = UDim2.fromScale(1, 1)
 		toast.BackgroundColor3 = UI_BG
 		toast.BackgroundTransparency = 0.08
 		toast.BorderSizePixel = 0
 		toast.ZIndex = 42
-		toast.Parent = gui
+		toast.Parent = holder
 		corner(toast, 12)
-		stroke(toast, accentColor or UI_GOLD, 1.6, 0.25)
-		local toastText = label(toast, text, 14, accentColor or UI_GOLD, Enum.Font.GothamBlack)
+		stroke(toast, accent, 1.6, 0.25)
+		local plateScale = Instance.new("UIScale")
+		plateScale.Parent = toast
+		local toastText = label(toast, opts.text, 14, accent, Enum.Font.GothamBlack)
 		toastText.Size = UDim2.new(1, -16, 1, 0)
 		toastText.Position = UDim2.new(0, 8, 0, 0)
 		toastText.ZIndex = 43
-		toast.Position = UDim2.new(0.5, 0, 0, 188)
-		TweenService:Create(toast, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
-			{ Position = UDim2.new(0.5, 0, 0, 208) }):Play()
-		task.delay(2.6, function()
-			TweenService:Create(toast, TweenInfo.new(0.4, Enum.EasingStyle.Quad),
-				{ Position = UDim2.new(0.5, 0, 0, 188), BackgroundTransparency = 1 }):Play()
-			TweenService:Create(toastText, TweenInfo.new(0.4), { TextTransparency = 1 }):Play()
-			task.delay(0.5, function() toast:Destroy() end)
-		end)
+		local entry = {
+			holder = holder, plate = toast, textLabel = toastText, scale = plateScale,
+			key = opts.key, born = now, deadline = now + 2.6, gen = 0, dying = false,
+			claims = 1, tickets = opts.tickets or 0, dust = opts.dust or 0,
+		}
+		table.insert(liveToasts, entry)
+		if not S.reducedMotion then
+			toast.Position = UDim2.new(0.5, 0, 0, -20)
+			TweenService:Create(toast, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+				{ Position = UDim2.new(0.5, 0, 0, 0) }):Play()
+		end
+		armToast(entry)
+	end
+
+	-- Legacy signature, kept for every existing caller (S.showToast included).
+	local function showToast(text, accentColor)
+		pushToast{ text = text, accent = accentColor }
 	end
 
 	-- Jackpot-banner-pattern celebration plate for the bigger moments.
-	local function showCelebration(titleText, subText)
+	local function playCelebration(titleText, subText)
 		local banner = Instance.new("ImageLabel")
 		banner.Image = UI_PLATE
 		banner.ScaleType = Enum.ScaleType.Slice
@@ -8926,6 +9242,30 @@ end)()
 		end)
 	end
 
+	-- Celebration FIFO: one banner at a time. Queue caps at 3 (drop-newest
+	-- beyond that); an exact back-to-back duplicate is skipped outright.
+	local celebrationBusy = false
+	local celebrationCurrent = nil
+	local celebrationQueue = {}
+	local function showCelebration(titleText, subText)
+		if celebrationBusy then
+			local prev = celebrationQueue[#celebrationQueue] or celebrationCurrent
+			if prev and prev[1] == titleText and prev[2] == subText then return end
+			if #celebrationQueue >= 3 then return end
+			table.insert(celebrationQueue, { titleText, subText })
+			return
+		end
+		celebrationBusy = true
+		celebrationCurrent = { titleText, subText }
+		playCelebration(titleText, subText)
+		task.delay(3.55, function() -- 0.35 in + 3 hold + fade-out overlap
+			celebrationBusy = false
+			celebrationCurrent = nil
+			local nextUp = table.remove(celebrationQueue, 1)
+			if nextUp then showCelebration(nextUp[1], nextUp[2]) end
+		end)
+	end
+
 	if feverBlastRemote then
 		feverBlastRemote.OnClientEvent:Connect(function(byName)
 			goldFlash()
@@ -8949,12 +9289,15 @@ end)()
 		end)
 	end
 
+	-- The claim family shares key="claim": a claim-all spree coalesces into
+	-- one growing "N REWARDS CLAIMED" plate instead of a stack of plates.
 	if dailyToastRemote then
-		dailyToastRemote.OnClientEvent:Connect(function(kind, tickets, dust)
+		dailyToastRemote.OnClientEvent:Connect(function(kind, tickets, dust, extra)
 			if kind == "mission" then
-				showToast(("MISSION COMPLETE!  +%d TIX  +%d DUST"):format(tickets or 0, dust or 0))
+				pushToast{ key = "claim", tickets = tickets or 0, dust = dust or 0,
+					text = ("MISSION COMPLETE!  +%d TIX  +%d DUST"):format(tickets or 0, dust or 0) }
 			elseif kind == "star" then
-				showToast("DAILY STAR EARNED!  +1 " .. STAR_GLYPH)
+				pushToast{ key = "claim", text = "DAILY STAR EARNED!  +1 " .. STAR_GLYPH }
 			elseif kind == "prize" then
 				if (dust or 0) > 0 then
 					showToast(("CONSTELLATION COMPLETE!  +%d DUST"):format(dust),
@@ -8963,6 +9306,28 @@ end)()
 					showCelebration("CONSTELLATION COMPLETE!",
 						GameConfig.Daily.rewardName .. " UNLOCKED!")
 				end
+			elseif kind == "chest" then
+				pushToast{ key = "claim", tickets = tickets or 0, dust = dust or 0,
+					accent = Color3.fromRGB(196, 130, 255),
+					-- "BONUS CHEST", matching the daily page's own row label —
+					-- "GALAXY CHEST" is the fever chest's celebration name.
+					text = ("BONUS CHEST!  +%d TIX  +%d DUST"):format(tickets or 0, dust or 0) }
+			elseif kind == "playtime" then
+				pushToast{ key = "claim", tickets = tickets or 0, dust = dust or 0,
+					text = ("PLAYTIME REWARD!  +%d TIX  +%d DUST"):format(tickets or 0, dust or 0) }
+			elseif kind == "product" then
+				goldFlash()
+				showCelebration("PURCHASE ACTIVE!",
+					(extra and tostring(extra):upper()) or "THANK YOU!")
+			end
+		end)
+	end
+
+	-- Zone gate/throttle denials come back on the SelectZone remote.
+	if zoneRemote then
+		zoneRemote.OnClientEvent:Connect(function(kind, msg)
+			if kind == "denied" and msg then
+				pushToast{ text = msg, accent = Color3.fromRGB(226, 90, 90) }
 			end
 		end)
 	end
@@ -9198,7 +9563,7 @@ end)()
 			and Color3.fromRGB(spec.rg.c[1], spec.rg.c[2], spec.rg.c[3])
 			or (spec and Color3.fromRGB(spec.b[1], spec.b[2], spec.b[3])) or UI_GOLD
 		local stage2 = newForm >= 2
-		local req = GameConfig.Fusion.reqByTier[tier] or 10
+		local req = GameConfig.forgeReq(attrGet, tier) or 10
 		-- First copy of this form for this planet? (InvSync may land either
 		-- side of CombineDone: <=1 owned counts as first-time.)
 		local firstTime
@@ -9754,6 +10119,7 @@ end)()
 	local feverPaintTimer = 0
 	local feverPrevLit = 0
 	local feverCascade = false
+	local feverTubePart = nil -- cached FeverTube sibling; revalidated on rebind
 
 	-- JACKPOT CORE anticipation (§B): at >= 6 lit ChargeSegs the core breathes
 	-- (CoreLight 1.5<->3.0 + orb color pulsing toward white at 1 Hz); the
@@ -9875,11 +10241,6 @@ end)()
 	RunService.Heartbeat:Connect(function(dt)
 		local t = os.clock()
 
-		-- Gamepad aim integrates the stick into the shared virtual cursor.
-		if gamepadStickX ~= 0 then
-			gamepadAimX = math.clamp(gamepadAimX + gamepadStickX * dt * 1.6, -1, 1)
-		end
-
 		-- pairs, not ipairs: a streaming hole in these name-indexed arrays would
 		-- make ipairs silently stop, freezing every segment past the hole.
 		-- The jackpot celebration (§B) slams both columns to full via the stamp.
@@ -9947,33 +10308,17 @@ end)()
 			end
 		end
 
-		-- Dropper carriage follows the aim (screen-right = world -X). Absolute
+		-- Dropper carriage rides the deterministic sweep (timing game): the
+		-- same closed form the drop request samples and the server's clamp
+		-- recomputes, from shared server time — zero sync traffic. Absolute
 		-- per-part writes from build-stamped offsets: every part is re-seated
 		-- every single frame, so a part that streamed in after the bind — or was
 		-- displaced by anything at all — heals on the next frame. (PivotTo moved
 		-- by delta and permanently stranded late streamers: THAT was the tear.)
 		if bound.carriage and bound.carriage.Parent and bound.carriageRest then
-			-- Aim-hold: the held aim only updates while the cursor/last touch
-			-- is over the PLAY AREA — moving down to press DROP PLANET (or
-			-- over the side rails) keeps the carriage where it was aimed.
-			if UserInputService:GetLastInputType() == Enum.UserInputType.Gamepad1 then
-				aimNdcX = gamepadAimX
-			else
-				local viewport = camera.ViewportSize
-				local mouse = UserInputService:GetMouseLocation()
-				local sNow = math.max(hudScale.Scale, 0.01)
-				local inPlayArea = mouse.Y < viewport.Y - 150 * sNow
-					and mouse.X > 200 * sNow
-					and mouse.X < viewport.X - 210 * sNow
-				if inPlayArea then
-					aimNdcX = math.clamp((mouse.X / math.max(viewport.X, 1)) * 2 - 1, -1, 1)
-				end
-			end
-			local ndcX = aimNdcX
-			-- 4.15 keeps the head's outer edge clear of the DropperHanger uprights
-			-- at x ±4.91 (head half-width 0.75: 4.15 + 0.75 = 4.90).
-			local targetX = math.clamp(-ndcX * 4.15, -4.15, 4.15)
-			dropperX = dropperX + (targetX - dropperX) * math.min(dt * 10, 1)
+			local quick = player:GetAttribute("SweepQuick") == true
+			local targetX = GameConfig.sweepX(workspace:GetServerTimeNow(), quick)
+			dropperX = targetX -- the sine IS the easing; no lerp lag on a timing game
 			local carriageTarget = bound.carriageRest * CFrame.new(dropperX, 0, 0)
 			for _, piece in ipairs(bound.carriage:GetChildren()) do
 				local ro = piece:GetAttribute("RO")
@@ -10159,6 +10504,24 @@ end)()
 				end
 			end
 			feverPrevLit = lit
+
+			-- Fever comet rides the fill: the builder welds it at the tube top
+			-- forever. No RO/rest stamp exists for this part, so lerp along
+			-- the tube part's own axis (its Size.Y spans bottom -> top through
+			-- its CFrame), with a small lead so the comet heads the column.
+			-- An active fever window parks it at the top while the tube
+			-- strobes full.
+			local comet = bound.feverComet
+			if comet and comet.Parent then
+				if not (feverTubePart and feverTubePart.Parent == comet.Parent) then
+					feverTubePart = comet.Parent:FindFirstChild("FeverTube")
+				end
+				if feverTubePart then
+					local frac = feverOn and 1 or lit / 20
+					comet.CFrame = feverTubePart.CFrame
+						* CFrame.new(0, feverTubePart.Size.Y * (frac - 0.5) + 0.34, 0)
+				end
+			end
 		end
 	end)
 end)()

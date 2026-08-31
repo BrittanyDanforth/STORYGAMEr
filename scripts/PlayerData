@@ -327,24 +327,33 @@ function PlayerData.snapshot(player, invMap, treeMap, baseDoc, sessionStart)
 end
 
 -- UpdateAsync with the saveIndex guard. reason: "leave"|"auto"|"close"|"receipt".
+-- Returns false when nothing durable was written: no store, DataStore error
+-- after retries, or the guard aborted (a newer session owns the data).
 function PlayerData.save(userId, doc, reason)
 	if not store then
 		return false
 	end
 	local key = "p" .. userId
 	for attempt = 1, 3 do
+		local aborted = false
 		local ok, err = pcall(function()
 			store:UpdateAsync(key, function(stored)
 				-- Clobber guard: a newer session already wrote a higher index;
 				-- abort so we never roll it back.
 				if stored and stored.meta and stored.meta.saveIndex
 					and stored.meta.saveIndex >= doc.meta.saveIndex then
+					aborted = true
 					return nil
 				end
 				return doc
 			end)
 		end)
 		if ok then
+			if aborted then
+				-- No retry: the stored index can only grow, so this save is dead.
+				warn("[PlayerData] save aborted (stale saveIndex, " .. reason .. ")")
+				return false
+			end
 			return true
 		end
 		warn("[PlayerData] save failed (" .. reason .. ", attempt " .. attempt .. "): " .. tostring(err))

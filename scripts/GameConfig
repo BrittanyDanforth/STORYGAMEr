@@ -353,6 +353,20 @@ function GameConfig.rebirthTicketMult(n)
 	return 1 + 0.75 * n
 end
 
+-- The PERSISTENT ticket multiplier a raw reward is scaled by: zone x throne
+-- x tree x rebirth x TicketMult attr x group perk. Transient terms (fever,
+-- timed boosts, the 2x pass) stay in creditTickets on top of this — labels
+-- use this so a claim never pays LESS than its label.
+function GameConfig.ticketScale(get, zoneIndex)
+	local throne = GameConfig.throneOf(get("ThroneLevel") or 0)
+	return (GameConfig.Zones.mults[zoneIndex] or 1)
+		* (throne and throne.tixMult or 1)
+		* GameConfig.ticketTreeMult(get)
+		* GameConfig.rebirthTicketMult(get("Rebirth") or 0)
+		* (get("TicketMult") or 1)
+		* (get("GroupPerk") and 1.25 or 1)
+end
+
 -- ========================================================================
 -- ROLLER / FEVER / DUST / FUSION / DAILY / OFFLINE
 -- ========================================================================
@@ -363,6 +377,25 @@ GameConfig.Roll = {
 	pityLimit = 50,
 	pityMinTier = 3, -- ULTRA RARE+ guaranteed at pity
 }
+
+-- ======================================================================
+-- DROPPER SWEEP — the carriage sweeps on rails by itself; dropping is a
+-- TIMING game. Deterministic from server time + the player's own
+-- SweepQuick attribute, so the client draw, the server's validation
+-- clamp, and server-side auto-drop all agree without any sync traffic.
+-- Per-player: each client draws the carriage from ITS OWN attributes.
+-- ======================================================================
+GameConfig.Sweep = {
+	limit = 4.15, -- carriage travel (head edge clears the hanger uprights at +-4.91)
+	period = 5.2, -- seconds per full left-right-left cycle at STEADY
+	quickMult = 1.6, -- QUICK mode: faster sweep, tighter timing, faster lane coverage
+	tolerance = 1.2, -- server accepts a drop this far from its own sample (latency slack)
+}
+function GameConfig.sweepX(now, quick)
+	local s = GameConfig.Sweep
+	local period = s.period / (quick and s.quickMult or 1)
+	return s.limit * math.sin((now % period) / period * 2 * math.pi)
+end
 
 -- ========================================================================
 -- DYNAMIC LANES / MUTATION DECK / JACKPOT CORE (server-authoritative)
@@ -448,6 +481,19 @@ GameConfig.Fusion = {
 	reqByTier = { 10, 10, 7, 5, 3 }, -- COMMON..SECRET, per fusion stage
 }
 
+-- Effective copies needed for one fusion step: Forge Mastery (forgeReqAdd,
+-- survives Rebirth) discounts COMMON/RARE recipes only, floor 8. Server
+-- doCombine/CombineAll AND every client forge surface must use this — the
+-- button, the count label and the actual consume can never disagree.
+function GameConfig.forgeReq(get, tier)
+	local req = GameConfig.Fusion.reqByTier[tier]
+	if not req then return nil end
+	if get and tier <= 2 then
+		req = math.max(8, req + GameConfig.statTotal(get, "forgeReqAdd"))
+	end
+	return req
+end
+
 -- Star Dust sink: craft +1 BASE copy of any DISCOVERED planet.
 GameConfig.DustCraft = {
 	costByTier = { 25, 75, 300, 1500, 6000 }, -- COMMON..SECRET
@@ -520,6 +566,10 @@ GameConfig.Offline = {
 -- PRODUCTS / ACHIEVEMENTS / PERKS
 -- ========================================================================
 
+-- Your Roblox group id. 0 = no group yet: the JOIN GROUP reward card hides
+-- and the server refuses the claim (fail closed outside Studio).
+GameConfig.GroupId = 0
+
 -- Product ladder (phase 2, wholesale). Live dev-product ids come from
 -- attributes on PusherRemotes named "PId_<key>" (int, 0 = unconfigured ->
 -- client renders "SOON"). kind: "boost" = personal repeatable, "server" =
@@ -528,38 +578,41 @@ GameConfig.Offline = {
 -- Stacking (server-enforced): same-type boosts never multiply — strongest
 -- magnitude wins; buying the SAME magnitude extends, a DIFFERENT one
 -- replaces. The Tickets2x durable pass multiplies ON TOP of ticket boosts.
+-- Live dev-product ids get pasted into each entry's id field after creating
+-- them in the Creator Dashboard; the server publishes them to the PId_<key>
+-- attributes at boot. id = 0 keeps that surface in its "SOON" state.
 GameConfig.Products = {
 	-- PERSONAL repeatables ------------------------------------------------
-	{ key = "Tix2x15", robux = 39, kind = "boost", boost = "tix", mag = 2, duration = 900,
+	{ key = "Tix2x15", id = 0, robux = 39, kind = "boost", boost = "tix", mag = 2, duration = 900,
 		name = "2X TICKETS — 15 MIN", label = "YOU ONLY" },
-	{ key = "Tix3x15", robux = 79, kind = "boost", boost = "tix", mag = 3, duration = 900,
+	{ key = "Tix3x15", id = 0, robux = 79, kind = "boost", boost = "tix", mag = 3, duration = 900,
 		name = "3X TICKETS — 15 MIN", label = "YOU ONLY" },
-	{ key = "Luck100", robux = 99, kind = "boost", boost = "luck", mag = 100, duration = 90,
+	{ key = "Luck100", id = 0, robux = 99, kind = "boost", boost = "luck", mag = 100, duration = 90,
 		name = "100X LUCK — 90 SEC", label = "YOU ONLY" },
-	{ key = "Luck1000", robux = 199, kind = "boost", boost = "luck", mag = 1000, duration = 60,
+	{ key = "Luck1000", id = 0, robux = 199, kind = "boost", boost = "luck", mag = 1000, duration = 60,
 		name = "1000X LUCK — 60 SEC", label = "YOU ONLY" },
-	{ key = "Luck3500", robux = 399, kind = "boost", boost = "luck", mag = 3500, duration = 30,
+	{ key = "Luck3500", id = 0, robux = 399, kind = "boost", boost = "luck", mag = 3500, duration = 30,
 		name = "3500X LUCK — 30 SEC", label = "YOU ONLY" },
-	{ key = "RushNow", robux = 79, kind = "boost",
+	{ key = "RushNow", id = 0, robux = 79, kind = "boost",
 		name = "INSTANT METEOR RUSH", label = "YOU ONLY" },
-	{ key = "PotBoost", robux = 49, kind = "boost", amount = 5000,
+	{ key = "PotBoost", id = 0, robux = 49, kind = "boost", amount = 5000,
 		name = "JACKPOT +5,000", label = "THIS SERVER'S POT" },
-	{ key = "MegaPack", robux = 249, kind = "boost",
+	{ key = "MegaPack", id = 0, robux = 249, kind = "boost",
 		name = "MEGA BUNDLE", label = "3X TIX + 1000X LUCK + RUSH" },
 	-- SERVER-WIDE repeatables ---------------------------------------------
-	{ key = "SrvLuck100", robux = 149, kind = "server", boost = "luck", mag = 100, duration = 90,
+	{ key = "SrvLuck100", id = 0, robux = 149, kind = "server", boost = "luck", mag = 100, duration = 90,
 		name = "100X LUCK FOR THE SERVER — 90 SEC", label = "EVERYONE IN THIS SERVER" },
-	{ key = "SrvTix2x", robux = 129, kind = "server", boost = "tix", mag = 2, duration = 600,
+	{ key = "SrvTix2x", id = 0, robux = 129, kind = "server", boost = "tix", mag = 2, duration = 600,
 		name = "2X TICKETS FOR THE SERVER — 10 MIN", label = "EVERYONE IN THIS SERVER" },
-	{ key = "SrvRush", robux = 99, kind = "server",
+	{ key = "SrvRush", id = 0, robux = 99, kind = "server",
 		name = "METEOR RUSH FOR EVERYONE", label = "EVERYONE IN THIS SERVER" },
 	-- DURABLES / one-time -------------------------------------------------
-	{ key = "Starter", robux = 49, kind = "onetime",
+	{ key = "Starter", id = 0, robux = 49, kind = "onetime",
 		name = "STARTER GALAXY PACK", label = "ONE-TIME",
 		tickets = 1500, dust = 150, planet = "Gilded Terra" },
-	{ key = "Tickets2xPass", robux = 249, kind = "durable",
+	{ key = "Tickets2xPass", id = 0, robux = 249, kind = "durable",
 		name = "2X TICKETS FOREVER", label = "PERMANENT" },
-	{ key = "AutoDropPass", robux = 169, kind = "durable",
+	{ key = "AutoDropPass", id = 0, robux = 169, kind = "durable",
 		name = "AUTO DROP", label = "PERMANENT" },
 }
 

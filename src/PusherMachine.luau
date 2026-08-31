@@ -4224,4 +4224,15 @@ end
 
 PusherMachine.Config = DEFAULTS
 
+-- Themed palette for a zone index (1-based, clamped). The client rebinds its
+-- CFG to this on every zone switch so cosmetics repaint in the ZONE's colors,
+-- not zone 1's ambers (PusherMachine.Config stays the raw DEFAULTS). Same
+-- resolution the builder uses: the zone index IS the Themes index.
+function PusherMachine.themedConfigFor(zoneIndex)
+	if type(zoneIndex) ~= "number" or not PusherMachine.Themes[zoneIndex] then
+		zoneIndex = 1
+	end
+	return themedConfig(zoneIndex)
+end
+
 return PusherMachine

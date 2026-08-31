@@ -28,6 +28,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local MarketplaceService = game:GetService("MarketplaceService")
 local PolicyService = game:GetService("PolicyService")
 local DataStoreService = game:GetService("DataStoreService")
+local RunService = game:GetService("RunService")
 
 local PusherMachine = require(ReplicatedStorage:WaitForChild("PusherMachine"))
 local GameConfig = require(ReplicatedStorage:WaitForChild("GameConfig"))
@@ -82,8 +83,8 @@ local leaderboardSyncRemote = makeRemote("LeaderboardSync") -- S->ALL (+once to 
 local laneMutateRemote = makeRemote("LaneMutate") -- S->ALL: lane mutation / jackpot window choreography
 
 -- Folder attributes the client reads: global fever window, server-wide boost
--- windows, and one dev-product id per ladder key: "PId_<key>" (0 =
--- unconfigured -> client renders "SOON").
+-- windows, and one dev-product id per ladder key: "PId_<key>" — published
+-- from GameConfig.Products (id 0 = unconfigured -> client renders "SOON").
 remotes:SetAttribute("FeverUntil", 0)
 remotes:SetAttribute("FeverBy", "")
 remotes:SetAttribute("SrvLuckMag", 0)
@@ -91,7 +92,7 @@ remotes:SetAttribute("SrvLuckUntil", 0)
 remotes:SetAttribute("SrvTixMag", 0)
 remotes:SetAttribute("SrvTixUntil", 0)
 for _, product in ipairs(GameConfig.Products) do
-	remotes:SetAttribute("PId_" .. product.key, 0)
+	remotes:SetAttribute("PId_" .. product.key, product.id or 0)
 end
 
 --------------------------------------------------------------------------------
@@ -307,6 +308,9 @@ end
 local function saveAfterClaim(player, reason)
 	local doc = docByPlayer[player]
 	if not doc or saving[player] then return end
+	-- A fresh fallback doc must never overwrite the real account; the
+	-- client already shows PROGRESS WON'T SAVE.
+	if player:GetAttribute("DataLoadFailed") == true then return end
 	local snapshot = PlayerData.snapshot(player, invByPlayer[player],
 		treeByPlayer[player], doc, sessionStartAt[player])
 	local userId = player.UserId
@@ -588,7 +592,7 @@ local function ownerOf(piece)
 		local player = Players:GetPlayerByUserId(userId)
 		if player then return player end
 	end
-	return firstPlayer()
+	return nil -- house pieces (and departed owners) pay nobody
 end
 
 -- Phase-continuous pusher speed change (protocol §3.1): bank the cycles
@@ -603,6 +607,24 @@ local function setPusherSpeed(machine, mult)
 	machine:SetAttribute("SpeedCycles0", c0 + (now - at) * m / cycle)
 	machine:SetAttribute("SpeedMultAt", now)
 	machine:SetAttribute("SpeedMult", mult)
+end
+
+-- Jackpot pot authority lives HERE, not in the machine: zone rebuilds
+-- destroy the model (and its JackpotValue IntValue), and the pot — paid
+-- PotBoost credit included — must survive that. The IntValue is only the
+-- replicated mirror the client odometer reads.
+local potValue = nil -- workspace IntValue mirror, re-seeded on rebuild
+local potAmount = nil -- authoritative; nil until the first machine build seeds it
+
+local function getPot()
+	return potAmount
+end
+
+local function setPot(v)
+	potAmount = v
+	if potValue then
+		potValue.Value = v
+	end
 end
 
 --------------------------------------------------------------------------------
@@ -644,7 +666,6 @@ end
 local function fireLaneEvent(kind, id, lanes, old, new, dur, hitsLeft, byName)
 	laneState.seq += 1
 	local nowT = workspace:GetServerTimeNow()
-	local jv = current.machine and current.machine:FindFirstChild("JackpotValue")
 	local payload = {
 		seq = laneState.seq, kind = kind, id = id, lanes = lanes,
 		old = old, new = new,
@@ -652,7 +673,7 @@ local function fireLaneEvent(kind, id, lanes, old, new, dur, hitsLeft, byName)
 		expiresAt = dur and (nowT + dur) or 0,
 		rewindEndAt = dur and (nowT + dur + GameConfig.Lanes.rewindSec) or 0,
 		hitsLeft = hitsLeft or 0,
-		pot = jv and jv.Value or 0,
+		pot = getPot() or 0,
 		byName = byName or "", serverNow = nowT,
 	}
 	laneMutateRemote:FireAllClients(payload)
@@ -960,7 +981,6 @@ local function wireCollector(machine)
 	local burstHost = machine.FX:FindFirstChild("PayBurstHost")
 	local burst = burstHost and burstHost:FindFirstChild("PayBurst")
 	local clink = burstHost and burstHost:FindFirstChild("Clink")
-	local jackpotValue = machine:FindFirstChild("JackpotValue")
 
 	local conn = collector.Touched:Connect(function(hit)
 		if hit.Parent ~= machine then return end
@@ -1010,9 +1030,13 @@ local function wireCollector(machine)
 		local jackpotHit = false
 		local windowPay = nil
 		local baseAmount = amount
+		-- House/orphaned pieces never enter the window: an ownerless coin
+		-- must not drain the pot, burn hitsLeft, or broadcast a "?" jackpot —
+		-- it falls through to the ordinary resting-sign payment below.
 		if logical == 3 and (jp.state == "active" or jp.state == "overload")
 			and nowT <= jp.windowUntil + GameConfig.Lanes.rewindSec
-			and jp.hitsLeft > 0 then
+			and jp.hitsLeft > 0
+			and owner ~= nil and hit:GetAttribute("OwnerId") ~= nil then
 			local C = GameConfig.JackpotCore
 			if jp.state == "overload" then
 				-- COSMIC OVERLOAD: flat x1000 through the normal chain.
@@ -1022,22 +1046,20 @@ local function wireCollector(machine)
 			elseif coreStrike then
 				-- GRAND SLAM: the remaining pot (amplified), never less than
 				-- what the resting sign would have paid.
-				local prize = math.max(jackpotValue and jackpotValue.Value or 0, mult * baseAmount)
+				local prize = math.max(getPot() or 0, mult * baseAmount)
 				if get then
 					prize = math.floor(prize * (1 + GameConfig.statTotal(get, "jackpotAmpPct")))
 				end
 				windowPay = prize
-				if jackpotValue then jackpotValue.Value = C.potSeed end
+				setPot(C.potSeed)
 				jackpotHit = true
 				jp.hitsLeft = 0
 			else
 				-- Pot share per center hit; the odometer visibly bleeds.
 				local share = math.max(C.shareMin,
-					math.floor((jackpotValue and jackpotValue.Value or 0) * C.sharePct))
+					math.floor((getPot() or 0) * C.sharePct))
 				windowPay = math.max(share, mult * baseAmount)
-				if jackpotValue then
-					jackpotValue.Value = math.max(C.potSeed, jackpotValue.Value - share)
-				end
+				setPot(math.max(C.potSeed, (getPot() or 0) - share))
 				jackpotHit = true
 				jp.hitsLeft -= 1
 			end
@@ -1106,8 +1128,9 @@ local function wireCollector(machine)
 		end
 
 		if not jackpotHit then
-			-- Third arg = the honest multiplier paid (floaters/tallies).
-			slotRemote:FireAllClients(lane, false, mult)
+			-- Third arg = the honest multiplier paid (floaters/tallies);
+			-- fourth = whose piece, so only the owner's client floats it.
+			slotRemote:FireAllClients(lane, false, mult, owner and owner.UserId or nil)
 		end
 		if eventDoublePay then amount = amount * 2 end
 
@@ -1125,7 +1148,8 @@ local function wireCollector(machine)
 					owner:SetAttribute("BestDrop", shown)
 				end
 			end
-			slotRemote:FireAllClients(lane, true, jp.state == "overload" and 1000 or 0)
+			slotRemote:FireAllClients(lane, true, jp.state == "overload" and 1000 or 0,
+				owner and owner.UserId or nil)
 			paidRemote:FireAllClients(shown)
 			jackpotRemote:FireAllClients(owner and owner.Name or "?", shown)
 			if burst then burst:Emit(60) end
@@ -1140,9 +1164,9 @@ local function wireCollector(machine)
 		end
 		-- Mini Pot: a 10X hit can skim 10% of the pot, flat (pot untouched,
 		-- no JackpotHit fanfare — just the CoinPaid feed).
-		if (lane == 2 or lane == 6) and get and jackpotValue then
+		if (lane == 2 or lane == 6) and get and getPot() then
 			if math.random() < GameConfig.statTotal(get, "miniPotPct") then
-				local skim = math.floor(jackpotValue.Value * 0.1)
+				local skim = math.floor(getPot() * 0.1)
 				if skim > 0 then
 					creditTickets(owner, skim, true)
 					paidRemote:FireAllClients(skim)
@@ -1154,10 +1178,10 @@ local function wireCollector(machine)
 			clink.PlaybackSpeed = 0.9 + math.random() * 0.25
 			clink:Play()
 		end
-		if jackpotValue then
+		if getPot() then
 			-- Pot feed slowed 25x: the odometer now IS the prize (windows
 			-- drain it via shares; grand slams reseed it).
-			jackpotValue.Value += math.max(1, math.floor(amount))
+			setPot(getPot() + math.max(1, math.floor(amount)))
 		end
 		local credited = creditTickets(owner, amount)
 		-- BestDrop = biggest single credited collect from the player's own piece.
@@ -1194,6 +1218,7 @@ local function teardownMachine()
 		current.machine:Destroy()
 		current.machine = nil
 	end
+	potValue = nil -- mirror died with the model; potAmount carries the pot
 	liveCoins = {}
 end
 
@@ -1210,6 +1235,14 @@ local function setupMachine(zoneIndex)
 	end
 	PusherMachine.seedPile(machine, 32 + seedExtra, 1)
 	current.machine = machine
+	-- Pot authority: the first build's seed becomes the truth; every later
+	-- rebuild writes the surviving pot back into the fresh mirror.
+	potValue = machine:FindFirstChild("JackpotValue")
+	if potAmount == nil then
+		potAmount = potValue and potValue.Value or 0
+	elseif potValue then
+		potValue.Value = potAmount
+	end
 	current.stopDrive = PusherMachine.start(machine)
 	wireCollector(machine)
 	-- A rebuild mid-fever must keep the sped-up pusher.
@@ -1235,18 +1268,30 @@ for _, child in ipairs(workspace:GetChildren()) do
 end
 
 local zoneSwitchAt = 0
+local repaintRankBoard -- forward: the leaderboard section assigns it
 
 zoneRemote.OnServerEvent:Connect(function(player, zoneIndex)
 	zoneIndex = tonumber(zoneIndex)
 	if not zoneIndex or zoneIndex ~= zoneIndex then return end
 	zoneIndex = math.clamp(math.floor(zoneIndex), 1, ZONE_COUNT)
-	if (player:GetAttribute("Rebirth") or 0) < (GameConfig.Zones.reqs[zoneIndex] or 0) then return end
-	if zoneIndex == currentZone then return end
+	-- Denials answer back — the client toasts the reason.
+	local req = GameConfig.Zones.reqs[zoneIndex] or 0
+	if (player:GetAttribute("Rebirth") or 0) < req then
+		zoneRemote:FireClient(player, "denied", "NEEDS " .. req .. " REBIRTHS")
+		return
+	end
+	if zoneIndex == currentZone then return end -- already there: stay silent
 	local now = os.clock()
-	if now - zoneSwitchAt < 3 then return end
+	if now - zoneSwitchAt < 3 then
+		zoneRemote:FireClient(player, "denied", "ZONE JUST SWITCHED — ONE SEC")
+		return
+	end
 	zoneSwitchAt = now
 	teardownMachine()
 	setupMachine(zoneIndex)
+	-- The rebuild replaced ArcadeRoom's RankBoard: repaint from the cache
+	-- now instead of leaving it blank until the next 90s tick.
+	if repaintRankBoard then repaintRankBoard() end
 	for _, plr in ipairs(Players:GetPlayers()) do
 		if docByPlayer[plr] then
 			checkThrones(plr)
@@ -1433,7 +1478,14 @@ dropRemote.OnServerEvent:Connect(function(player, xOffset)
 
 	xOffset = tonumber(xOffset) or 0
 	if xOffset ~= xOffset then xOffset = 0 end -- NaN guard; clamp passes NaN through
-	xOffset = math.clamp(xOffset, -4.4, 4.4)
+	-- The client aims by TIMING a shared deterministic sweep — the server
+	-- clamps to its own sample so an exploiter cannot place drops, only
+	-- time them.
+	local quick = player:GetAttribute("SweepQuick") == true
+	local sx = GameConfig.sweepX(workspace:GetServerTimeNow(), quick)
+	local s = GameConfig.Sweep
+	xOffset = math.clamp(xOffset, sx - s.tolerance, sx + s.tolerance)
+	xOffset = math.clamp(xOffset, -s.limit, s.limit)
 	doDrop(player, xOffset)
 	-- Twin/Triple Drop: the whole volley re-fires (staggered so the live-cap
 	-- absorb path digests each wave). Extra volleys do NOT tick the mutation
@@ -1551,6 +1603,8 @@ setToggleRemote.OnServerEvent:Connect(function(player, key, value)
 		player:SetAttribute("AutoRoll", value == true)
 	elseif key == "AutoDrop" then
 		player:SetAttribute("AutoDropOn", value == true)
+	elseif key == "SweepQuick" then
+		player:SetAttribute("SweepQuick", value == true)
 	end
 end)
 
@@ -1647,7 +1701,9 @@ combineAllRemote.OnServerEvent:Connect(function(player, name, tier, fromForm)
 	local inv = invByPlayer[player]
 	local entry = inv and inv[invKey(name, tier)]
 	if not entry then return end
-	local req = GameConfig.Fusion.reqByTier[tier]
+	-- Effective recipe size — Forge Mastery included, same req doCombine
+	-- consumes, or the equipped-form guard below stops the bulk one short.
+	local req = GameConfig.forgeReq(getterOf(player), tier)
 	if not req then return end
 	local field = (fromForm == 0) and "c" or "f1"
 	local newForm = nil
@@ -1757,10 +1813,7 @@ local function submitBoards(player)
 	for _, def in ipairs(LB_DEFS) do
 		local value = math.clamp(math.floor(tonumber(player:GetAttribute(def.attr)) or 0), 0, 2 ^ 62)
 		if not sent or sent[def.board] ~= value then
-			if sent then
-				sent[def.board] = value
-			end
-			table.insert(writes, { store = lbStores[def.board], value = value })
+			table.insert(writes, { board = def.board, store = lbStores[def.board], value = value })
 		end
 	end
 	if #writes == 0 then return end
@@ -1770,7 +1823,13 @@ local function submitBoards(player)
 			local ok, err = pcall(function()
 				write.store:SetAsync(key, write.value)
 			end)
-			if not ok then
+			if ok then
+				-- Record only AFTER the write lands: a throttled SetAsync
+				-- must not silence this stat for the rest of the session.
+				if sent then
+					sent[write.board] = write.value
+				end
+			else
 				lbStudioCheck(err)
 				if not lbStores then return end
 			end
@@ -1819,6 +1878,14 @@ local function updateRankBoard()
 	end
 end
 
+-- Zone-switch hook (forward local up top): only worth a repaint once the
+-- reader task has actually filled the cache.
+repaintRankBoard = function()
+	if #lbCache.earned > 0 then
+		updateRankBoard()
+	end
+end
+
 -- One reader task: 90s cadence, skipped on an empty server. GetSorted budget
 -- 3 per 90s = 2/min vs 5+2P/min — holds from P=1 (loop-final §E). Names:
 -- online short-circuit to DisplayName, cold misses staggered 0.1s, cached
@@ -1859,12 +1926,16 @@ task.spawn(function()
 								local ok, fetched = pcall(function()
 									return Players:GetNameFromUserIdAsync(row.userId)
 								end)
-								name = ok and fetched or "?"
+								-- A failed lookup stays UNcached — the next
+								-- 90s cycle retries instead of freezing "?".
+								name = ok and fetched or nil
 								task.wait(0.1) -- stagger cold lookups
 							end
-							lbNameCache[row.userId] = name
+							if name then
+								lbNameCache[row.userId] = name
+							end
 						end
-						row.name = name
+						row.name = name or "?" -- render-only fallback
 					end
 				end
 				local parts = {}
@@ -1912,17 +1983,20 @@ spinRemote.OnServerEvent:Connect(function(player)
 	player:SetAttribute("LuckBoostUntil", workspace:GetServerTimeNow() + 93)
 end)
 
--- Shop: JOIN THE GROUP claim (+25% luck & +25% tickets forever). GroupId is
--- read from the remotes folder attribute; while unset (pre-publish) the
--- claim is honor-system so it can be playtested.
+-- Shop: JOIN THE GROUP claim (+25% luck & +25% tickets forever). GroupId
+-- comes from GameConfig; while unconfigured (0) the claim only works in
+-- Studio playtests — live it fails closed (a free perk with no group to
+-- join would be handed out to anyone who fires the remote).
 claimGroupRemote.OnServerEvent:Connect(function(player)
 	if player:GetAttribute("GroupPerk") then return end
-	local groupId = remotes:GetAttribute("GroupId") or 0
+	local groupId = GameConfig.GroupId or 0
 	if groupId > 0 then
 		local ok, inGroup = pcall(function()
 			return player:IsInGroup(groupId)
 		end)
 		if not (ok and inGroup) then return end
+	elseif not RunService:IsStudio() then
+		return -- fail closed: no group configured, not a playtest
 	end
 	player:SetAttribute("GroupPerk", true)
 end)
@@ -2090,10 +2164,8 @@ local PRODUCT_GRANT_FNS = {
 	end,
 	PotBoost = function(player, _doc)
 		local product = productByKey("PotBoost")
-		local jackpotValue = current.machine and current.machine:FindFirstChild("JackpotValue")
-		if jackpotValue then
-			jackpotValue.Value += (product and product.amount or 5000)
-		end
+		-- Paid credit lands on the authority — a zone rebuild can't eat it.
+		setPot((getPot() or 0) + (product and product.amount or 5000))
 		announceBoost(player, "JACKPOT +5,000 FOR THIS SERVER")
 	end,
 	MegaPack = function(player, _doc)
@@ -2135,6 +2207,12 @@ MarketplaceService.ProcessReceipt = function(receiptInfo)
 	if not player then return Enum.ProductPurchaseDecision.NotProcessedYet end
 	local doc = docByPlayer[player]
 	if not doc then return Enum.ProductPurchaseDecision.NotProcessedYet end
+	-- A fresh fallback doc must never overwrite the real account: don't
+	-- grant into data that can't save — the purchase retries after a
+	-- healthy load instead of vanishing.
+	if player:GetAttribute("DataLoadFailed") == true then
+		return Enum.ProductPurchaseDecision.NotProcessedYet
+	end
 	-- Idempotency: receipt history rides the doc (no separate store).
 	for _, purchaseId in ipairs(doc.meta.receipts) do
 		if purchaseId == receiptInfo.PurchaseId then
@@ -2142,17 +2220,31 @@ MarketplaceService.ProcessReceipt = function(receiptInfo)
 		end
 	end
 	-- Resolve the grant at call time — PId_<key> attrs may be set post-boot.
-	local grantFn = nil
+	local grantFn, matched = nil, nil
 	for _, product in ipairs(GameConfig.Products) do
 		local id = remotes:GetAttribute("PId_" .. product.key) or 0
 		if id ~= 0 and id == receiptInfo.ProductId then
 			grantFn = PRODUCT_GRANT_FNS[product.key]
+			matched = product
 			break
 		end
 	end
 	if not grantFn then return Enum.ProductPurchaseDecision.NotProcessedYet end
-	local ok = pcall(grantFn, player, doc)
-	if not ok then return Enum.ProductPurchaseDecision.NotProcessedYet end
+	local ok, err = pcall(grantFn, player, doc)
+	if not ok then
+		-- Restricted-region refusal is PERMANENT for this player:
+		-- NotProcessedYet would redeliver forever (charged, granted
+		-- nothing, repeatedly). Client + server both prevent the prompt
+		-- in the first place — this is the last-resort stop.
+		if string.find(tostring(err), "PaidRandomRestricted", 1, true) then
+			warn(("receipt %s for restricted player %d swallowed (PaidRandomRestricted)")
+				:format(tostring(receiptInfo.PurchaseId), receiptInfo.PlayerId))
+			return Enum.ProductPurchaseDecision.PurchaseGranted
+		end
+		return Enum.ProductPurchaseDecision.NotProcessedYet
+	end
+	-- PURCHASE ACTIVE moment: toast before the save so it lands instantly.
+	dailyToastRemote:FireClient(player, "product", 0, 0, matched.name)
 	table.insert(doc.meta.receipts, receiptInfo.PurchaseId)
 	if #doc.meta.receipts > 50 then table.remove(doc.meta.receipts, 1) end
 	local snapshot = PlayerData.snapshot(player, invByPlayer[player],
@@ -2169,6 +2261,11 @@ end
 --------------------------------------------------------------------------------
 
 local function initPlayer(player)
+	-- A leave-then-rejoin in the same server must re-arm the shutdown save:
+	-- clear the stale leave markers before anything else.
+	leftSaved[player.UserId] = nil
+	saving[player] = nil
+
 	-- §6.1 step 1: static session attrs first (before any yield). Boosts are
 	-- session-only: LuckBoost is a magnitude (100/1000/3500, 0 = none).
 	player:SetAttribute("LuckBoost", 0)
@@ -2280,7 +2377,10 @@ end
 -- clear session tables (protocol §6.2 — the snapshot needs the inventory).
 Players.PlayerRemoving:Connect(function(player)
 	local doc = docByPlayer[player]
-	if doc and not saving[player] then
+	-- DataLoadFailed: a fresh fallback doc must never overwrite the real
+	-- account (the client already shows PROGRESS WON'T SAVE).
+	if doc and not saving[player]
+		and player:GetAttribute("DataLoadFailed") ~= true then
 		saving[player] = true -- never cleared: autosave skips leavers
 		submitBoards(player) -- final board write (values read synchronously)
 		local snapshot = PlayerData.snapshot(player, invByPlayer[player],
@@ -2288,7 +2388,13 @@ Players.PlayerRemoving:Connect(function(player)
 		local userId = player.UserId
 		task.spawn(function()
 			PlayerData.save(userId, snapshot, "leave")
-			leftSaved[userId] = true
+			-- Only stamp "already saved" if they have NOT rejoined this
+			-- server while the save was in flight (retries span seconds) —
+			-- otherwise BindToClose would skip their whole new session.
+			local back = Players:GetPlayerByUserId(userId)
+			if not (back and docByPlayer[back]) then
+				leftSaved[userId] = true
+			end
 		end)
 	end
 	invByPlayer[player] = nil
@@ -2312,6 +2418,8 @@ task.spawn(function()
 		task.wait(10)
 		for _, player in ipairs(Players:GetPlayers()) do
 			if docByPlayer[player] and not saving[player]
+				-- fallback doc: never overwrite the real account
+				and player:GetAttribute("DataLoadFailed") ~= true
 				and os.time() >= (nextAutoSaveAt[player] or math.huge) then
 				nextAutoSaveAt[player] = os.time() + 120 + player.UserId % 31
 				submitBoards(player) -- leaderboard piggyback (dirty-checked)
@@ -2330,7 +2438,9 @@ game:BindToClose(function()
 	local pending = 0
 	for _, player in ipairs(Players:GetPlayers()) do
 		local doc = docByPlayer[player]
-		if doc and not saving[player] and not leftSaved[player.UserId] then
+		if doc and not saving[player] and not leftSaved[player.UserId]
+			-- fallback doc: never overwrite the real account
+			and player:GetAttribute("DataLoadFailed") ~= true then
 			saving[player] = true
 			pending += 1
 			local snapshot = PlayerData.snapshot(player, invByPlayer[player],
@@ -2429,7 +2539,10 @@ task.spawn(function()
 					local due = math.floor((os.clock() - lastAt) / interval)
 					if due > 0 then
 						for _ = 1, math.min(due, 3) do
-							doDrop(player, (math.random() * 2 - 1) * 3.5)
+							-- Hands-free drops fall where that player's
+							-- carriage visibly is (shared sweep).
+							doDrop(player, GameConfig.sweepX(workspace:GetServerTimeNow(),
+								player:GetAttribute("SweepQuick") == true))
 							-- Auto volleys are legit volleys: they charge the
 							-- core and tick the mutation cadence like manual.
 							coreChargeAdd(player, GameConfig.JackpotCore.charge.drop, "drop")
@@ -2504,10 +2617,8 @@ end)
 task.spawn(function()
 	while true do
 		task.wait(2 + math.random() * 3)
-		local machine = current.machine
-		local jackpotValue = machine and machine:FindFirstChild("JackpotValue")
-		if jackpotValue then
-			jackpotValue.Value += math.random(1, 13)
+		if current.machine and getPot() then
+			setPot(getPot() + math.random(1, 13))
 		end
 	end
 end)
@@ -2594,7 +2705,10 @@ task.spawn(function()
 						if not child:GetAttribute("Paid") then
 							child:SetAttribute("Paid", true)
 							local rescue = child:GetAttribute("Payout") or 1
-							creditTickets(ownerOf(child), rescue)
+							local rescuer = ownerOf(child)
+							if rescuer then -- house pieces pay nobody
+								creditTickets(rescuer, rescue)
+							end
 							paidRemote:FireAllClients(rescue)
 						end
 						child:Destroy()
@@ -2639,7 +2753,10 @@ task.spawn(function()
 									if not child:GetAttribute("Paid") then
 										child:SetAttribute("Paid", true)
 										local rescue = child:GetAttribute("Payout") or 1
-										creditTickets(ownerOf(child), rescue)
+										local rescuer = ownerOf(child)
+										if rescuer then -- house pieces pay nobody
+											creditTickets(rescuer, rescue)
+										end
 										paidRemote:FireAllClients(rescue)
 									end
 									child:Destroy()
