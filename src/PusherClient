@@ -10301,19 +10301,20 @@ end)()
 		invDirty.Event:Connect(veteranCheck)
 	end
 
-	-- The pointer: dark pill + gold bobbing arrow on the target-facing edge.
+	-- The pointer: dark PIXEL BRICK + gold bobbing arrow on the target-facing
+	-- edge — same nine-slice plate as every other control, hard corners (the
+	-- first pass was a rounded pill and read as pasted-on next to the bricks).
 	-- Active stays false everywhere except SKIP — the coach never eats input.
 	local coach = Instance.new("Frame")
 	coach.Name = "TutorialCoach"
-	coach.Size = UDim2.fromOffset(260, 34)
-	coach.BackgroundColor3 = UI_BG
+	coach.Size = UDim2.fromOffset(270, 38)
+	coach.BackgroundTransparency = 1
 	coach.BorderSizePixel = 0
 	coach.Visible = false
 	coach.ZIndex = 38
 	coach.Active = false
 	coach.Parent = gui
-	corner(coach, 10)
-	stroke(coach, UI_GOLD, 1.6, 0.25)
+	pixelPlate(coach, Color3.fromRGB(26, 27, 40), 38, "btn", 3)
 
 	local arrow = Instance.new("ImageLabel")
 	arrow.Image = UI_ARROW
@@ -10323,10 +10324,12 @@ end)()
 	arrow.ZIndex = 39
 	arrow.Parent = coach
 
-	local msg = label(coach, "", 15, UI_TEXT, Enum.Font.GothamBlack)
+	local msg = label(coach, "", 15, Color3.new(1, 1, 1), Enum.Font.GothamBlack)
 	msg.Position = UDim2.fromOffset(12, 0)
 	msg.Size = UDim2.new(1, -56, 1, 0)
 	msg.TextXAlignment = Enum.TextXAlignment.Left
+	msg.TextStrokeColor3 = Color3.fromRGB(10, 11, 18)
+	msg.TextStrokeTransparency = 0.2
 	-- Scaled with a floor, luckState's idiom: step copy varies and must
 	-- never paint past the pill edge.
 	msg.TextScaled = true
@@ -10387,19 +10390,29 @@ end)()
 	-- The step ladder, top to bottom — first unmet step wins. Returns
 	-- (target, text); nil text means the tutorial is OVER (vs a nil target
 	-- with text, which is a not-yet-built S handle and just hides a tick).
+	-- A roll step must never nag an unpressable button: while the roll
+	-- cooldown runs, the copy counts it down instead of shouting ROLL.
+	local function rollAwaited(readyText)
+		local wait = (attrGet("NextRollAt") or 0) - workspace:GetServerTimeNow()
+		if wait > 0.5 then
+			return ("GET READY — ROLL IN %ds!"):format(math.ceil(wait))
+		end
+		return readyText
+	end
+
 	local function currentStep()
 		if (attrGet("TotalDrops") or 0) < 1 then
 			return S.dropCluster, "TAP DROP PLANET — TIME THE SWEEP!"
 		end
 		if attrGet("TutorialDone") ~= true then
-			return S.spinButton, "NOW ROLL YOUR FIRST PLANET — FREE!"
+			return S.spinButton, rollAwaited("NOW ROLL YOUR FIRST PLANET — FREE!")
 		end
 		if attrGet("FreeSpinUsed") ~= true then
 			return S.luckPill, "CLAIM YOUR FREE 100X LUCK!"
 		end
 		if rolledDuringBoost == false and (attrGet("LuckBoost") or 0) > 0
 			and (attrGet("LuckBoostUntil") or 0) > workspace:GetServerTimeNow() then
-			return S.spinButton, "ROLL AGAIN — 100X LUCKIER!"
+			return S.spinButton, rollAwaited("ROLL AGAIN — 100X LUCKIER!")
 		end
 		if ownsAnyForm1() ~= true and forgedOnce ~= true then
 			return S.forgeNavBtn, "FORGE 10 INTO 1 ASCENDED!"
@@ -10439,26 +10452,31 @@ end)()
 			coach.Visible = false -- not laid out yet
 			return
 		end
-		-- AbsolutePosition is post-HudScale screen pixels; offsets in gui are
-		-- pre-scale, so divide back out (goldBurst's idiom). Side comes from
-		-- where the target sits: left rail -> pill to its RIGHT, right rail
-		-- (FORGE brick) -> pill to its LEFT (off-screen otherwise), centre
-		-- band (DROP cluster) -> pill ABOVE.
+		-- AbsolutePosition is post-HudScale screen pixels IN INSET SPACE, and
+		-- this gui has IgnoreGuiInset, so its own origin sits at (0, -inset):
+		-- convert into gui-local design units by subtracting gui's origin
+		-- FIRST, then divide the HudScale back out. (Skipping the subtraction
+		-- floated the whole coach ~36px off its target on the live build.)
 		local s = math.max(hudScale.Scale, 0.01)
+		local og = gui.AbsolutePosition
 		local vp = camera.ViewportSize
+		local tx = (ap.X - og.X) / s
+		local ty = (ap.Y - og.Y) / s
+		local tw = asz.X / s
+		local th = asz.Y / s
 		local cx = ap.X + asz.X / 2
 		if cx >= vp.X * 0.6 then
 			setArrowMode("leftOf")
 			coach.AnchorPoint = Vector2.new(1, 0.5)
-			coach.Position = UDim2.fromOffset(ap.X / s - 32, (ap.Y + asz.Y / 2) / s)
+			coach.Position = UDim2.fromOffset(tx - 32, ty + th / 2)
 		elseif cx <= vp.X * 0.4 then
 			setArrowMode("rightOf")
 			coach.AnchorPoint = Vector2.new(0, 0.5)
-			coach.Position = UDim2.fromOffset((ap.X + asz.X) / s + 32, (ap.Y + asz.Y / 2) / s)
+			coach.Position = UDim2.fromOffset(tx + tw + 32, ty + th / 2)
 		else
 			setArrowMode("above")
 			coach.AnchorPoint = Vector2.new(0.5, 1)
-			coach.Position = UDim2.fromOffset(cx / s, ap.Y / s - 32)
+			coach.Position = UDim2.fromOffset(tx + tw / 2, ty - 32)
 		end
 		msg.Text = text
 		coach.Visible = true

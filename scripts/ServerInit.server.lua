@@ -2022,6 +2022,10 @@ spinRemote.OnServerEvent:Connect(function(player)
 	player:SetAttribute("LuckBoost", 100)
 	-- 3s of reel theater + 90s of boost.
 	player:SetAttribute("LuckBoostUntil", workspace:GetServerTimeNow() + 93)
+	-- The claim flows STRAIGHT into the boosted roll: waiting out a roll
+	-- cooldown while a 90s boost burns down is the worst feeling in the
+	-- funnel (and the tutorial's ROLL AGAIN step must be pressable now).
+	player:SetAttribute("NextRollAt", workspace:GetServerTimeNow())
 end)
 
 -- Shop: JOIN THE GROUP claim (+25% luck & +25% tickets forever). GroupId
