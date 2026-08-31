@@ -1,0 +1,680 @@
+--[[
+	GameConfig — single source of truth for ALL shared game data + formulas.
+	ModuleScript in ReplicatedStorage, required by ServerInit (authoritative)
+	and PusherClient (display). PLAIN LUA ONLY: no `+=`, no `continue` — this
+	file may be executed by the offline theme-lab pipeline alongside
+	PusherMachine.luau.
+
+	Contract doc: docs/specs/final-contract.md. Do not re-declare any of these
+	tables elsewhere — the whole point is that client and server can never
+	drift again.
+]]
+
+local GameConfig = {}
+
+-- ========================================================================
+-- UPGRADE TREE
+-- Node contract:
+--   id       = player attribute name (int level, absent = 0)
+--   cost(lv) = math.floor(base * ratio^lv + 0.5), lv = CURRENT level
+--   effect   = { key, perLv } -> server contribution = perLv * lv
+--   requires = { {id, lv}, ... } -> node renders as "?" until ALL satisfied
+--   gate     = { rebirth = N } or { zone = N } -> visible but locked until met
+--   pos      = px on the 1400x900 pannable canvas (START hub at 700,450)
+-- ========================================================================
+
+-- Canvas grew 1820x1400 -> 2100x1480 for the DROP LAB / DEEP LUCK /
+-- COLLECTION / LANES & CORE expansion regions (right and down only, so
+-- every existing node keeps its position).
+GameConfig.TreeCanvas = { w = 2100, h = 1480, start = { x = 910, y = 585 } }
+
+GameConfig.UpgradeTree = {
+	-- ===================== LUCK (NW spoke) =====================
+	{ id = "UpLuck1", name = "Luck I", branch = "LUCK", maxLv = 10, base = 40, ratio = 1.6,
+		effect = { key = "luckAdd", perLv = 0.10 }, requires = {}, pos = { x = 780, y = 480 },
+		desc = "+10% rare-planet roll weight per level" },
+	{ id = "UpLuck2", name = "Luck II", branch = "LUCK", maxLv = 10, base = 2500, ratio = 1.6,
+		effect = { key = "luckAdd", perLv = 0.20 }, requires = { { id = "UpLuck1", lv = 5 } }, gate = { rebirth = 2 }, pos = { x = 650, y = 385 },
+		desc = "+20% rare-planet roll weight per level" },
+	{ id = "UpLuck3", name = "Luck III", branch = "LUCK", maxLv = 10, base = 150000, ratio = 1.65,
+		effect = { key = "luckAdd", perLv = 0.35 }, requires = { { id = "UpLuck2", lv = 5 } }, gate = { rebirth = 5 }, pos = { x = 520, y = 285 },
+		desc = "+35% rare-planet roll weight per level" },
+	{ id = "UpLuck4", name = "Luck IV", branch = "LUCK", maxLv = 10, base = 20000000, ratio = 1.7,
+		effect = { key = "luckAdd", perLv = 0.55 }, requires = { { id = "UpLuck3", lv = 5 } }, gate = { rebirth = 10 }, pos = { x = 390, y = 190 },
+		desc = "+55% rare-planet roll weight per level" },
+	{ id = "UpLuck5", name = "Luck V", branch = "LUCK", maxLv = 10, base = 2000000000, ratio = 1.75,
+		effect = { key = "luckAdd", perLv = 0.80 }, requires = { { id = "UpLuck4", lv = 5 } }, gate = { rebirth = 18 }, pos = { x = 260, y = 90 },
+		desc = "+80% rare-planet roll weight per level" },
+	{ id = "UpLucky10", name = "Lucky 10", branch = "LUCK", maxLv = 1, base = 1000, ratio = 1,
+		effect = { key = "luckAdd", perLv = 0.10 }, requires = { { id = "UpLuck1", lv = 3 } }, pos = { x = 505, y = 430 },
+		desc = "One-shot +10% luck, forever this rebirth" },
+	{ id = "UpLucky100", name = "Lucky 100", branch = "LUCK", maxLv = 1, base = 250000, ratio = 1,
+		effect = { key = "luckAdd", perLv = 1.0 }, requires = { { id = "UpLuck2", lv = 3 } }, gate = { rebirth = 4 }, pos = { x = 375, y = 330 },
+		desc = "One-shot +100% luck" },
+	{ id = "UpLucky1000", name = "Lucky 1000", branch = "LUCK", maxLv = 1, base = 50000000, ratio = 1,
+		effect = { key = "luckAdd", perLv = 10.0 }, requires = { { id = "UpLuck3", lv = 3 } }, gate = { rebirth = 10 }, pos = { x = 245, y = 235 },
+		desc = "One-shot +1000% luck" },
+	{ id = "UpLucky5000", name = "Lucky 5000", branch = "LUCK", maxLv = 1, base = 20000000000, ratio = 1,
+		effect = { key = "luckAdd", perLv = 50.0 }, requires = { { id = "UpLuck4", lv = 3 } }, gate = { rebirth = 20 }, pos = { x = 115, y = 135 },
+		desc = "One-shot +5000% luck" },
+	{ id = "UpDupRoll", name = "Duplicate Roll", branch = "LUCK", maxLv = 5, base = 8000, ratio = 2.5,
+		effect = { key = "dupRollPct", perLv = 0.02 }, requires = { { id = "UpLuck2", lv = 1 } }, gate = { rebirth = 3 }, pos = { x = 655, y = 220 },
+		desc = "+2% chance per level that a roll rolls again free" },
+
+	-- ===================== DROPPERS (N spoke) =====================
+	{ id = "UpMultiDrop1", name = "Multi Drop I", branch = "DROPPERS", maxLv = 2, base = 300, ratio = 4.0,
+		effect = { key = "dropCountAdd", perLv = 1 }, requires = {}, pos = { x = 910, y = 440 },
+		desc = "+1 planet per drop" },
+	{ id = "UpDropSpeed1", name = "Drop Speed I", branch = "DROPPERS", maxLv = 4, base = 80, ratio = 2.2,
+		effect = { key = "dropCooldownAdd", perLv = -0.015 }, requires = { { id = "UpMultiDrop1", lv = 1 } }, pos = { x = 830, y = 320 },
+		desc = "-0.015s drop cooldown per level" },
+	{ id = "UpQuickCharge", name = "Quick Charge", branch = "DROPPERS", maxLv = 3, base = 1200, ratio = 2.0,
+		effect = { key = "quickChargeSec", perLv = 1.0 }, requires = { { id = "UpMultiDrop1", lv = 1 } }, pos = { x = 1010, y = 330 },
+		desc = "Half cooldown for 1s per level after a 10X or JACKPOT" },
+	{ id = "UpDropSpeed2", name = "Drop Speed II", branch = "DROPPERS", maxLv = 4, base = 50000, ratio = 2.4,
+		effect = { key = "dropCooldownAdd", perLv = -0.010 }, requires = { { id = "UpDropSpeed1", lv = 4 } }, gate = { rebirth = 4 }, pos = { x = 810, y = 100 },
+		desc = "-0.010s drop cooldown per level" },
+	{ id = "UpMultiDrop2", name = "Multi Drop II", branch = "DROPPERS", maxLv = 2, base = 1000000, ratio = 5.0,
+		effect = { key = "dropCountAdd", perLv = 1 }, requires = { { id = "UpDropSpeed2", lv = 2 } }, gate = { rebirth = 6 }, pos = { x = 915, y = 210 },
+		desc = "+1 planet per drop" },
+	{ id = "UpAutoDrop", name = "Auto Drop", branch = "DROPPERS", maxLv = 1, base = 250000, ratio = 1,
+		effect = { key = "autoDrop", perLv = 1 }, requires = { { id = "UpQuickCharge", lv = 3 } }, gate = { rebirth = 8 }, pos = { x = 1025, y = 115 },
+		desc = "The dropper drops for you" },
+	{ id = "UpCapsuleChance", name = "Capsule Call", branch = "DROPPERS", maxLv = 5, base = 5000, ratio = 2.2,
+		effect = { key = "capsulePct", perLv = 0.01 }, requires = { { id = "UpQuickCharge", lv = 2 } }, gate = { rebirth = 3 }, pos = { x = 1130, y = 230 },
+		desc = "+1% chance per level a drop also calls a prize capsule" },
+
+	-- ===================== ROLL (NE spoke) =====================
+	{ id = "UpRollSpeed1", name = "Roll Speed I", branch = "ROLL", maxLv = 4, base = 500, ratio = 2.0,
+		effect = { key = "autoRollAdd", perLv = -1.5 }, requires = {}, pos = { x = 1055, y = 490 },
+		desc = "-1.5s auto-roll timer per level" },
+	{ id = "UpRollLuck1", name = "Roll Luck I", branch = "ROLL", maxLv = 5, base = 1500, ratio = 2.0,
+		effect = { key = "rollLuckPct", perLv = 0.05 }, requires = { { id = "UpRollSpeed1", lv = 2 } }, pos = { x = 1175, y = 390 },
+		desc = "+5% roll luck per level" },
+	{ id = "UpPityBoost", name = "Pity Boost", branch = "ROLL", maxLv = 5, base = 3000, ratio = 2.0,
+		effect = { key = "pityLuckPct", perLv = 0.002 }, requires = { { id = "UpRollLuck1", lv = 2 } }, gate = { rebirth = 2 }, pos = { x = 1300, y = 490 },
+		desc = "Every pity point adds luck (+0.2% each per level)" },
+	{ id = "UpRollSpeed2", name = "Roll Speed II", branch = "ROLL", maxLv = 4, base = 200000, ratio = 2.2,
+		effect = { key = "autoRollAdd", perLv = -1.5 }, requires = { { id = "UpRollLuck1", lv = 3 } }, gate = { rebirth = 6 }, pos = { x = 1300, y = 290 },
+		desc = "-1.5s auto-roll timer per level" },
+	{ id = "UpRollLuck2", name = "Roll Luck II", branch = "ROLL", maxLv = 5, base = 5000000, ratio = 2.2,
+		effect = { key = "rollLuckPct", perLv = 0.08 }, requires = { { id = "UpRollSpeed2", lv = 2 }, { id = "UpPityBoost", lv = 3 } }, gate = { rebirth = 10 }, pos = { x = 1425, y = 390 },
+		desc = "+8% roll luck per level" },
+	{ id = "UpDustRefine", name = "Dust Refinery", branch = "ROLL", maxLv = 5, base = 20000, ratio = 2.0,
+		effect = { key = "dustPct", perLv = 0.10 }, requires = { { id = "UpRollSpeed2", lv = 1 } }, gate = { rebirth = 5 }, pos = { x = 1425, y = 195 },
+		desc = "+10% Star Dust from duplicates and chests per level" },
+
+	-- ===================== TICKETS (E spoke) =====================
+	{ id = "UpTickets1", name = "Tickets I", branch = "TICKETS", maxLv = 10, base = 120, ratio = 1.8,
+		effect = { key = "ticketPct1", perLv = 0.05 }, requires = {}, pos = { x = 1060, y = 610 },
+		desc = "+5% tickets per level" },
+	{ id = "UpGoldenRim", name = "Golden Rim", branch = "TICKETS", maxLv = 5, base = 400, ratio = 2.5,
+		effect = { key = "houseCoinValueAdd", perLv = 1 }, requires = { { id = "UpTickets1", lv = 3 } }, pos = { x = 1200, y = 550 },
+		desc = "House coins pay +1 per level" },
+	{ id = "UpGoldRush", name = "Gold Rush", branch = "TICKETS", maxLv = 5, base = 900, ratio = 2.2,
+		effect = { key = "houseCoinCountAdd", perLv = 6 }, requires = { { id = "UpTickets1", lv = 5 } }, pos = { x = 1200, y = 695 },
+		desc = "+6 house coins kept on the deck per level" },
+	{ id = "UpTickets2", name = "Tickets II", branch = "TICKETS", maxLv = 10, base = 25000, ratio = 1.8,
+		effect = { key = "ticketPct2", perLv = 0.08 }, requires = { { id = "UpGoldenRim", lv = 2 } }, gate = { rebirth = 4 }, pos = { x = 1345, y = 625 },
+		desc = "+8% tickets per level" },
+	{ id = "UpHouseTix", name = "House Payday", branch = "TICKETS", maxLv = 5, base = 15000, ratio = 2.0,
+		effect = { key = "houseCoinPct", perLv = 0.20 }, requires = { { id = "UpTickets2", lv = 3 } }, gate = { rebirth = 4 }, pos = { x = 1490, y = 550 },
+		desc = "House coins pay +20% more per level" },
+	{ id = "UpTickets3", name = "Tickets III", branch = "TICKETS", maxLv = 10, base = 50000000, ratio = 1.85,
+		effect = { key = "ticketPct3", perLv = 0.12 }, requires = { { id = "UpTickets2", lv = 5 } }, gate = { rebirth = 10 }, pos = { x = 1490, y = 695 },
+		desc = "+12% tickets per level" },
+
+	-- ===================== OFFLINE (SE spoke) =====================
+	{ id = "UpOffDur", name = "Offline Duration", branch = "OFFLINE", maxLv = 8, base = 2000, ratio = 1.7,
+		effect = { key = "offlineCapHoursAdd", perLv = 0.5 }, requires = {}, gate = { rebirth = 1 }, pos = { x = 1060, y = 765 },
+		desc = "+30 min offline earning cap per level" },
+	{ id = "UpOffRate", name = "Offline Boost", branch = "OFFLINE", maxLv = 10, base = 1500, ratio = 1.8,
+		effect = { key = "offlineRateAdd", perLv = 0.05 }, requires = { { id = "UpOffDur", lv = 1 } }, gate = { rebirth = 1 }, pos = { x = 1200, y = 850 },
+		desc = "+5% offline earning rate per level" },
+	{ id = "UpOffDust", name = "Dream Dust", branch = "OFFLINE", maxLv = 5, base = 100000, ratio = 2.0,
+		effect = { key = "offlineDustPerHour", perLv = 2 }, requires = { { id = "UpOffRate", lv = 4 } }, gate = { rebirth = 6 }, pos = { x = 1345, y = 935 },
+		desc = "+2 Star Dust per offline hour per level" },
+
+	-- ===================== METEOR (W spoke) =====================
+	{ id = "UpFeverCharge", name = "Rush Charge", branch = "METEOR", maxLv = 6, base = 800, ratio = 1.9,
+		effect = { key = "feverFillPct", perLv = 0.05 }, requires = {}, pos = { x = 735, y = 590 },
+		desc = "Rush meter fills +5% faster per level" },
+	{ id = "UpFeverDur", name = "Rush Duration", branch = "METEOR", maxLv = 6, base = 2500, ratio = 2.0,
+		effect = { key = "feverDurAdd", perLv = 1.5 }, requires = { { id = "UpFeverCharge", lv = 3 } }, pos = { x = 585, y = 625 },
+		desc = "+1.5s Meteor Rush per level" },
+	{ id = "UpMeteorCount", name = "Meteor Count", branch = "METEOR", maxLv = 5, base = 4000, ratio = 2.0,
+		effect = { key = "meteorCoinsAdd", perLv = 2 }, requires = { { id = "UpFeverDur", lv = 2 } }, gate = { rebirth = 2 }, pos = { x = 440, y = 570 },
+		desc = "+2 meteor coins per rush per level" },
+	{ id = "UpFeverLoot", name = "Rush Loot", branch = "METEOR", maxLv = 5, base = 6000, ratio = 2.0,
+		effect = { key = "chestBonusPct", perLv = 0.10 }, requires = { { id = "UpFeverDur", lv = 3 } }, gate = { rebirth = 3 }, pos = { x = 435, y = 720 },
+		desc = "Galaxy Chest pays +10% per level" },
+	{ id = "UpCometChain", name = "Comet Chain", branch = "METEOR", maxLv = 4, base = 2000000, ratio = 2.5,
+		effect = { key = "feverCarryPct", perLv = 0.05 }, requires = { { id = "UpMeteorCount", lv = 3 }, { id = "UpFeverLoot", lv = 2 } }, gate = { rebirth = 8 }, pos = { x = 290, y = 635 },
+		desc = "Meter restarts +5% full per level after a rush" },
+
+	-- ===================== SPECIAL (SW spoke) =====================
+	{ id = "UpGoldPlanet", name = "Gold Planet", branch = "SPECIAL", maxLv = 1, base = 2000, ratio = 1,
+		effect = { key = "grantPlanet", perLv = 1, planet = "Gilded Terra" }, requires = {}, pos = { x = 760, y = 710 },
+		desc = "Unlock the Gilded Terra planet (pays 12)" },
+	{ id = "UpStarterPile", name = "Starter Pile", branch = "SPECIAL", maxLv = 3, base = 8000, ratio = 2.0,
+		effect = { key = "seedPileAdd", perLv = 8 }, requires = { { id = "UpGoldPlanet", lv = 1 } }, gate = { rebirth = 2 }, pos = { x = 620, y = 795 },
+		desc = "+8 coins seeded on the deck per level after zone/rebirth" },
+	{ id = "UpJackpotAmp", name = "Jackpot Amplifier", branch = "SPECIAL", maxLv = 5, base = 10000, ratio = 2.2,
+		effect = { key = "jackpotAmpPct", perLv = 0.10 }, requires = { { id = "UpGoldPlanet", lv = 1 } }, gate = { rebirth = 4 }, pos = { x = 760, y = 880 },
+		desc = "Jackpots pay +10% per level" },
+	{ id = "UpDoubleJackpot", name = "Double Jackpot", branch = "SPECIAL", maxLv = 1, base = 150000, ratio = 1,
+		effect = { key = "jackpotCooldownMult", perLv = -0.5 }, requires = { { id = "UpJackpotAmp", lv = 2 } }, gate = { rebirth = 5 }, pos = { x = 620, y = 960 },
+		desc = "Jackpot lockout halved (60s to 30s)" },
+	{ id = "UpMiniPot", name = "Mini Pot", branch = "SPECIAL", maxLv = 3, base = 250000, ratio = 2.5,
+		effect = { key = "miniPotPct", perLv = 0.02 }, requires = { { id = "UpDoubleJackpot", lv = 1 } }, gate = { rebirth = 6 }, pos = { x = 760, y = 1045 },
+		desc = "10X hits have +2% chance per level to skim 10% of the pot" },
+	{ id = "UpDiamondPlanet", name = "Diamond Planet", branch = "SPECIAL", maxLv = 1, base = 5000000, ratio = 1,
+		effect = { key = "grantPlanet", perLv = 1, planet = "Diamond Nova" }, requires = { { id = "UpStarterPile", lv = 1 } }, gate = { rebirth = 8 }, pos = { x = 475, y = 880 },
+		desc = "Unlock the Diamond Nova planet (pays 50)" },
+
+	-- ===================== DROP LAB (N strip; long-session drop tech) =====================
+	{ id = "UpAutoTempo", name = "Auto Tempo", branch = "DROPPERS", maxLv = 5, base = 400000, ratio = 2.0,
+		effect = { key = "autoDropRateAdd", perLv = -0.1 }, requires = { { id = "UpAutoDrop", lv = 1 } }, gate = { rebirth = 8 }, pos = { x = 1150, y = 60 },
+		desc = "Auto Drop drops faster: 1.5x cooldown down to 1.0x at max" },
+	{ id = "UpTwinDrop", name = "Twin Drop", branch = "DROPPERS", maxLv = 5, base = 1500000, ratio = 2.2,
+		effect = { key = "twinDropPct", perLv = 0.02 }, requires = { { id = "UpMultiDrop2", lv = 1 } }, gate = { rebirth = 6 }, pos = { x = 1270, y = 125 },
+		desc = "+2% chance per level your whole drop fires TWICE" },
+	{ id = "UpHeavyCore", name = "Heavy Core", branch = "DROPPERS", maxLv = 5, base = 2000000, ratio = 2.0,
+		effect = { key = "heavyPct", perLv = 0.02 }, requires = { { id = "UpTwinDrop", lv = 2 } }, gate = { rebirth = 7 }, pos = { x = 1390, y = 60 },
+		desc = "+2% chance per level a drop is HEAVY: 2.5x mass, shoves the pile (same payout)" },
+	{ id = "UpCometCall", name = "Comet Planet", branch = "DROPPERS", maxLv = 4, base = 5000000, ratio = 2.2,
+		effect = { key = "cometPct", perLv = 0.01 }, requires = { { id = "UpHeavyCore", lv = 2 } }, gate = { rebirth = 7 }, pos = { x = 1630, y = 60 },
+		desc = "+1% chance per level a drop is a COMET: collecting it super-charges the jackpot core" },
+	{ id = "UpTripleDrop", name = "Triple Drop", branch = "DROPPERS", maxLv = 4, base = 1500000000, ratio = 2.5,
+		effect = { key = "tripleDropPct", perLv = 0.01 }, requires = { { id = "UpTwinDrop", lv = 5 } }, gate = { rebirth = 20 }, pos = { x = 1510, y = 125 },
+		desc = "+1% chance per level your whole drop fires THREE times" },
+
+	-- ===================== DEEP LUCK (NE block; honest odds, shown live) =====================
+	{ id = "UpMomentum", name = "Lucky Momentum", branch = "LUCK", maxLv = 5, base = 30000, ratio = 2.0,
+		effect = { key = "momentumPct", perLv = 0.02 }, requires = { { id = "UpPityBoost", lv = 2 } }, pos = { x = 1600, y = 515 },
+		desc = "Rolls within 45s chain a stack (max 5). Each stack = +2% roll luck per level" },
+	{ id = "UpDryShield", name = "Dry Streak Shield", branch = "LUCK", maxLv = 5, base = 60000, ratio = 1.9,
+		effect = { key = "dryLuckPct", perLv = 0.01 }, requires = { { id = "UpDustRefine", lv = 1 } }, gate = { rebirth = 5 }, pos = { x = 1620, y = 255 },
+		desc = "Every COMMON in a row (max 25) adds +1% roll luck per level. Resets on a RARE+" },
+	{ id = "UpFeverFortune", name = "Fever Fortune", branch = "LUCK", maxLv = 5, base = 250000, ratio = 2.0,
+		effect = { key = "feverLuckAdd", perLv = 0.30 }, requires = { { id = "UpDryShield", lv = 2 } }, gate = { rebirth = 6 }, pos = { x = 1760, y = 205 },
+		desc = "+30% luck per level, only while METEOR RUSH is running" },
+	{ id = "UpPityFocus", name = "Pity Focus", branch = "LUCK", maxLv = 5, base = 900000, ratio = 2.1,
+		effect = { key = "pityLimitAdd", perLv = -2 }, requires = { { id = "UpPityBoost", lv = 5 } }, gate = { rebirth = 7 }, pos = { x = 1720, y = 585 },
+		desc = "Guaranteed ULTRA RARE+ comes 2 rolls sooner per level (50 down to 40)" },
+	{ id = "UpDiversifier", name = "Dupe Diversifier", branch = "LUCK", maxLv = 5, base = 1000000, ratio = 2.0,
+		effect = { key = "dupRerollPct", perLv = 0.04 }, requires = { { id = "UpMomentum", lv = 2 } }, gate = { rebirth = 8 }, pos = { x = 1740, y = 460 },
+		desc = "+4% chance per level a duplicate becomes a SAME-RARITY planet you don't own yet" },
+	{ id = "UpRareMagnet", name = "Rare Magnet", branch = "LUCK", maxLv = 6, base = 2000000, ratio = 1.8,
+		effect = { key = "rareMagnetPct", perLv = 0.10 }, requires = { { id = "UpDryShield", lv = 3 } }, gate = { rebirth = 9 }, pos = { x = 1740, y = 330 },
+		desc = "COMMONs crowd the roll 10% less per level - EVERY rare tier's odds go up" },
+	{ id = "UpScout", name = "Star Scout", branch = "LUCK", maxLv = 5, base = 1500000, ratio = 2.0,
+		effect = { key = "scoutPct", perLv = 0.15 }, requires = { { id = "UpRareMagnet", lv = 2 } }, gate = { rebirth = 9 }, pos = { x = 1880, y = 270 },
+		desc = "Planets you HAVEN'T discovered get +15% roll weight per level" },
+	{ id = "UpLegendRes", name = "Legend Resonance", branch = "LUCK", maxLv = 6, base = 40000000, ratio = 1.9,
+		effect = { key = "deepResonancePct", perLv = 0.15 }, requires = { { id = "UpRareMagnet", lv = 3 } }, gate = { rebirth = 12 }, pos = { x = 1880, y = 400 },
+		desc = "+15% roll weight per level for LEGENDARY and SECRET only" },
+	{ id = "UpRollLuck3", name = "Roll Luck III", branch = "LUCK", maxLv = 5, base = 800000000, ratio = 2.2,
+		effect = { key = "rollLuckPct", perLv = 0.12 }, requires = { { id = "UpRollLuck2", lv = 3 } }, gate = { rebirth = 15 }, pos = { x = 1580, y = 385 },
+		desc = "+12% roll luck per level" },
+
+	-- ===================== LANES & CORE (S block; the living machine) =====================
+	{ id = "UpCoreConduct", name = "Core Conductor", branch = "LANES", maxLv = 6, base = 60000, ratio = 1.9,
+		effect = { key = "coreChargePct", perLv = 0.15 }, requires = { { id = "UpJackpotAmp", lv = 1 } }, gate = { rebirth = 4 }, pos = { x = 1080, y = 1020 },
+		desc = "Your collects charge the jackpot core +15% faster per level" },
+	{ id = "UpNearMiss", name = "Near-Miss Charge", branch = "LANES", maxLv = 5, base = 150000, ratio = 2.0,
+		effect = { key = "nearMissPct", perLv = 0.2 }, requires = { { id = "UpCoreConduct", lv = 2 } }, gate = { rebirth = 5 }, pos = { x = 1220, y = 1090 },
+		desc = "25X hits right beside the core charge it +20% more per level" },
+	{ id = "UpKeepCharge", name = "Charge Keeper", branch = "LANES", maxLv = 5, base = 400000, ratio = 2.0,
+		effect = { key = "keepChargePct", perLv = 0.06 }, requires = { { id = "UpCoreConduct", lv = 3 } }, gate = { rebirth = 6 }, pos = { x = 1100, y = 1180 },
+		desc = "After a JACKPOT window, the core keeps +6% of its charge per level" },
+	{ id = "UpSurgeFreq", name = "Surge Frequency", branch = "LANES", maxLv = 6, base = 300000, ratio = 1.9,
+		effect = { key = "mutStartAdd", perLv = -1 }, requires = { { id = "UpCoreConduct", lv = 1 } }, gate = { rebirth = 5 }, pos = { x = 1530, y = 1110 },
+		desc = "Lane surprises need 1 less drop per level to start rolling" },
+	{ id = "UpSurgeDur", name = "Surge Duration", branch = "LANES", maxLv = 6, base = 350000, ratio = 1.9,
+		effect = { key = "mutDurAdd", perLv = 1.5 }, requires = { { id = "UpCoreConduct", lv = 1 } }, gate = { rebirth = 5 }, pos = { x = 1390, y = 1180 },
+		desc = "Lane changes YOU trigger last +1.5s per level" },
+	{ id = "UpOpenWindow", name = "Open Window", branch = "LANES", maxLv = 5, base = 2000000, ratio = 2.0,
+		effect = { key = "coolingAdd", perLv = -4 }, requires = { { id = "UpSurgeDur", lv = 2 } }, gate = { rebirth = 8 }, pos = { x = 1530, y = 1250 },
+		desc = "The jackpot core cools 4s faster per level after a window" },
+	{ id = "UpOuterCharge", name = "OUTER CHARGE", branch = "LANES", maxLv = 1, base = 30000000, ratio = 1,
+		effect = { key = "outerCharge", perLv = 1 }, requires = { { id = "UpKeepCharge", lv = 2 } }, gate = { rebirth = 9 }, pos = { x = 1250, y = 1290 },
+		resetsOnRebirth = false,
+		desc = "UNLOCK: both 3X lanes can turn 10X, and outer hits charge the core DOUBLE. Survives Rebirth" },
+	{ id = "UpTwinSurge", name = "TWIN SURGE", branch = "LANES", maxLv = 1, base = 150000000, ratio = 1,
+		effect = { key = "twinSurge", perLv = 1 }, requires = { { id = "UpSurgeFreq", lv = 3 }, { id = "UpSurgeDur", lv = 3 } }, gate = { rebirth = 12 }, pos = { x = 1670, y = 1040 },
+		resetsOnRebirth = false,
+		desc = "UNLOCK: BOTH 10X lanes can turn 25X together. Survives Rebirth" },
+	{ id = "UpOverloadLab", name = "Overload Lab", branch = "LANES", maxLv = 3, base = 300000000, ratio = 2.4,
+		effect = { key = "ovPityAdd", perLv = -3 }, requires = { { id = "UpOpenWindow", lv = 2 }, { id = "UpNearMiss", lv = 3 } }, gate = { rebirth = 14 }, pos = { x = 1670, y = 1330 },
+		desc = "COSMIC OVERLOAD guaranteed 3 jackpots sooner per level (25 down to 16)" },
+
+	-- ===================== COLLECTION (E block) =====================
+	{ id = "UpDustMill", name = "Dust Mill", branch = "COLLECTION", maxLv = 5, base = 120000, ratio = 2.0,
+		effect = { key = "dustPct", perLv = 0.10 }, requires = {}, gate = { rebirth = 5 }, pos = { x = 1720, y = 700 },
+		desc = "+10% Star Dust from duplicates and chests per level" },
+	{ id = "UpFinderFee", name = "Finder's Fee", branch = "COLLECTION", maxLv = 5, base = 200000, ratio = 2.0,
+		effect = { key = "finderTixPer", perLv = 15 }, requires = { { id = "UpDustMill", lv = 1 } }, gate = { rebirth = 5 }, pos = { x = 1850, y = 760 },
+		desc = "First-ever discovery pays bonus tickets: 15 per level x the planet's payout" },
+	{ id = "UpForgeEff", name = "Forge Mastery", branch = "COLLECTION", maxLv = 2, base = 25000000, ratio = 3.0,
+		effect = { key = "forgeReqAdd", perLv = -1 }, requires = { { id = "UpDustMill", lv = 3 } }, gate = { rebirth = 9 }, pos = { x = 1720, y = 840 },
+		resetsOnRebirth = false,
+		desc = "Fusing COMMON and RARE planets needs 1 less copy per level. Survives Rebirth" },
+	{ id = "UpFormCharge", name = "Ascended Core", branch = "COLLECTION", maxLv = 5, base = 60000000, ratio = 2.0,
+		effect = { key = "formChargePct", perLv = 0.10 }, requires = { { id = "UpForgeEff", lv = 1 } }, gate = { rebirth = 11 }, pos = { x = 1850, y = 900 },
+		desc = "ASCENDED collects charge the core +10% per level; CELESTIAL double that" },
+}
+
+-- Branch section labels for the tree canvas.
+GameConfig.TreeBranchLabels = {
+	{ name = "LUCK", pos = { x = 390, y = 40 } },
+	{ name = "DROPPERS", pos = { x = 990, y = 40 } },
+	{ name = "ROLL", pos = { x = 1380, y = 145 } },
+	{ name = "TICKETS", pos = { x = 1545, y = 610 } },
+	{ name = "OFFLINE", pos = { x = 1415, y = 850 } },
+	{ name = "METEOR", pos = { x = 300, y = 535 } },
+	{ name = "SPECIAL PLANETS", pos = { x = 430, y = 1105 } },
+	{ name = "DROP LAB", pos = { x = 1270, y = 30 } },
+	{ name = "DEEP LUCK", pos = { x = 1990, y = 150 } },
+	{ name = "COLLECTION", pos = { x = 1990, y = 700 } },
+	{ name = "LANES & CORE", pos = { x = 1560, y = 960 } },
+}
+
+-- (TreeCanvas is defined once at the top of the file — grew to 2100x1480.)
+
+-- Center spine milestones: auto-claimed the moment the rebirth gate is met.
+-- PERMANENT (survive rebirth). Mults REPLACE (best owned wins), never stack.
+-- Single player attribute: ThroneLevel (0-5).
+GameConfig.Spine = {
+	-- 150px pitch: throne hex (110) + reward text + gate pill fit with air.
+	{ level = 1, id = "ThroneWood", name = "Wooden Seat", gate = { rebirth = 2 }, tixMult = 2, luckMult = 1, dustMult = 1, pos = { x = 910, y = 690 }, desc = "2x TICKETS FOREVER" },
+	{ level = 2, id = "ThroneStone", name = "Stone Throne", gate = { rebirth = 9 }, tixMult = 3, luckMult = 1, dustMult = 1, pos = { x = 910, y = 840 }, desc = "3x TICKETS FOREVER" },
+	{ level = 3, id = "ThroneGilded", name = "Gilded Throne", gate = { rebirth = 12 }, tixMult = 3, luckMult = 3, dustMult = 1, pos = { x = 910, y = 990 }, desc = "3x LUCK FOREVER" },
+	{ level = 4, id = "ThroneRoyal", name = "Royal Throne", gate = { rebirth = 15 }, tixMult = 4, luckMult = 3, dustMult = 1, pos = { x = 910, y = 1140 }, desc = "4x TICKETS FOREVER" },
+	{ level = 5, id = "ThroneRadiant", name = "Radiant Throne", gate = { rebirth = 25 }, tixMult = 5, luckMult = 3, dustMult = 2, pos = { x = 910, y = 1290 }, desc = "5x TICKETS + 2x DUST FOREVER" },
+}
+
+-- id -> node lookup (built once).
+GameConfig.TreeById = {}
+for i = 1, #GameConfig.UpgradeTree do
+	local node = GameConfig.UpgradeTree[i]
+	GameConfig.TreeById[node.id] = node
+end
+
+function GameConfig.treeCost(node, lv)
+	return math.floor(node.base * node.ratio ^ lv + 0.5)
+end
+
+-- ========================================================================
+-- ZONES / REBIRTH
+-- ========================================================================
+
+GameConfig.Zones = {
+	reqs = { 0, 1, 2, 4, 6, 9, 13, 18 }, -- rebirths required per zone index
+	mults = { 1, 2, 4, 8, 16, 32, 64, 128 }, -- ticket multiplier per zone
+}
+
+GameConfig.MaxRebirth = 50
+GameConfig.RebirthBase = 2000
+GameConfig.RebirthBands = { -- step s (1-based) uses the first band with s <= maxStep
+	{ maxStep = 1, ratio = 2.5 },
+	{ maxStep = 5, ratio = 3.5 },
+	{ maxStep = 10, ratio = 2.6 },
+	{ maxStep = 18, ratio = 1.7 },
+	{ maxStep = 25, ratio = 1.4 },
+	{ maxStep = 35, ratio = 1.2 },
+	{ maxStep = 49, ratio = 1.28 },
+}
+GameConfig.RebirthCosts = {} -- [n+1] = cost to rebirth when Rebirth == n
+do
+	local cost = GameConfig.RebirthBase
+	for s = 0, GameConfig.MaxRebirth - 1 do
+		GameConfig.RebirthCosts[s + 1] = math.floor(cost + 0.5)
+		local r = 1.28
+		for i = 1, #GameConfig.RebirthBands do
+			local band = GameConfig.RebirthBands[i]
+			if (s + 1) <= band.maxStep then
+				r = band.ratio
+				break
+			end
+		end
+		cost = cost * r
+	end
+end
+
+function GameConfig.rebirthCost(n)
+	if n >= GameConfig.MaxRebirth then
+		return nil -- maxed out
+	end
+	return GameConfig.RebirthCosts[n + 1]
+end
+
+function GameConfig.rebirthTicketMult(n)
+	return 1 + 0.75 * n
+end
+
+-- ========================================================================
+-- ROLLER / FEVER / DUST / FUSION / DAILY / OFFLINE
+-- ========================================================================
+
+GameConfig.Roll = {
+	autoInterval = 20, -- seconds; reduced by autoRollAdd; floor minInterval
+	minInterval = 8,
+	pityLimit = 50,
+	pityMinTier = 3, -- ULTRA RARE+ guaranteed at pity
+}
+
+-- ========================================================================
+-- DYNAMIC LANES / MUTATION DECK / JACKPOT CORE (server-authoritative)
+-- 5 logical lanes ride the 7 physical signs: physical 3/4/5 (both 25X
+-- flankers + the pin-gated core) form ONE center lane, the "triptych".
+-- JACKPOT is a CHARGED STATE of the center, not a permanent sign.
+-- ========================================================================
+
+GameConfig.Lanes = {
+	baseMults = { 3, 10, 25, 10, 3 }, -- logical L1..L5; CENTER rests at 25X
+	physicalToLogical = { 1, 2, 3, 3, 3, 4, 5 },
+	logicalToSigns = { { 1 }, { 2 }, { 3, 4, 5 }, { 6 }, { 7 } },
+	rewindSec = 0.45, -- downgrades pay the OLD (higher) mult until expiry+this
+	countUpSecMin = 0.35,
+	countUpSecMax = 0.6,
+}
+
+GameConfig.Mutations = {
+	-- unlock: the mutation only enters the trigger-player's deck once their
+	-- statTotal for that key is > 0 (TWIN SURGE / OUTER CHARGE tree hexes —
+	-- both survive Rebirth).
+	deck = {
+		{ id = "single10", target = "one10", to = 25, weight = 46, dur = 18, cd = 20 },
+		{ id = "double10", target = "both10", to = 25, weight = 18, dur = 12, cd = 60, unlock = "twinSurge" },
+		{ id = "outer3", target = "one3", to = 10, weight = 22, dur = 20, cd = 30 },
+		{ id = "rim3", target = "both3", to = 10, weight = 8, dur = 15, cd = 90, unlock = "outerCharge" },
+		{ id = "prime25", target = "center", to = 50, weight = 5, dur = 10, cd = 150 },
+	},
+	globalCooldown = 25, -- seconds between any two mutations, server-wide
+	pityStart = 20, -- volleys before the roll can fire (mutStartAdd lowers it)
+	pityRamp = 0.025, -- p = pityRamp * (M - start + 1) per volley
+	pityCap = 60, -- guaranteed fire by here (M parks, never resets unfired)
+	dryWeightRamp = 1.35, -- rare-side weights x this per consecutive common
+}
+
+GameConfig.JackpotCore = {
+	meterMax = 100, -- 8 pips x 12.5 CP on the ChargeSeg gauge
+	charge = { drop = 0.04, hit3 = 0.02, hit10 = 0.12, hit25 = 0.15,
+		coreStrike = 0.60, discovery = 2.5, forge = 4, streak = 5 },
+	capDropPerSec = 0.20, -- server-wide, flushed by the 1s heartbeat
+	capHitsPerSec = 0.60,
+	feverChargeMult = 2, -- METEOR RUSH doubles charge (before caps)
+	windowSec = 22,
+	windowHits = 8,
+	sharePct = 0.08, -- each center hit during a window drains this much pot
+	shareMin = 250,
+	coolingSec = 90, -- coolingAdd (Open Window) lowers it, floor 45
+	potSeed = 1000, -- pot reseed after a grand slam
+	overload = { baseChance = 0.02, rampAfter = 10, rampPer = 0.01, pityAt = 25,
+		mult = 1000, windowSec = 10, windowHits = 2,
+		milestones = { 25, 50, 100, 250, 500, 1000 } },
+}
+
+GameConfig.Fever = {
+	meterMax = 100,
+	-- meter fill: per-drop + per-collect by lane (1..7 = 1X 3X 10X JACKPOT 10X 3X 1X)
+	fillPerDrop = 0.5,
+	fillByLane = { 1, 2, 4, 25, 4, 2, 1 },
+	fillCapsuleBonus = 5,
+	fillCapPerSec = 8, -- hard server cap; excess discarded
+	durationBase = 20, -- + feverDurAdd
+	speedMult = 1.5, -- pusher SpeedMult during fever
+	payoutMult = 2, -- everyone's payouts while fever active
+	meteorCoins = 10, -- + meteorCoinsAdd
+	meteorCapsules = 1,
+	meteorOverSec = 6,
+	chest = { -- granted at fever END; F = lifetime FeverCount
+		baseTickets = 40, ticketsPerFever = 15, ticketsFeverCap = 50,
+		baseDust = 5, dustPerFever = 2, dustFeverCap = 60,
+		rarePlusEvery = 5, -- every 5th chest: guaranteed roll minTier 2
+		ultraPlusEvery = 20, -- every 20th: minTier 3 instead
+	},
+}
+
+GameConfig.Dust = {
+	perDupeByTier = { 1, 5, 25, 150, 1000 }, -- COMMON..SECRET per duplicate
+}
+
+-- Fusion (phase 2, replaces dust-evolution): combine reqByTier[t] copies of a
+-- form into ONE copy of the next form (0 BASE -> 1 ASCENDED -> 2 CELESTIAL).
+-- Same requirement for both stages: a SECRET final form is 9 copies total.
+GameConfig.Fusion = {
+	reqByTier = { 10, 10, 7, 5, 3 }, -- COMMON..SECRET, per fusion stage
+}
+
+-- Star Dust sink: craft +1 BASE copy of any DISCOVERED planet.
+GameConfig.DustCraft = {
+	costByTier = { 25, 75, 300, 1500, 6000 }, -- COMMON..SECRET
+}
+
+-- Display prefixes by form (index = form + 1): "ASCENDED CUSTARD" etc.
+GameConfig.FormNames = { "", "ASCENDED", "CELESTIAL" }
+
+-- Payout of a base-payout ball at form 0/1/2.
+function GameConfig.fusionPayout(base, form)
+	if form == 1 then
+		return math.ceil(base * 1.5)
+	elseif form == 2 then
+		return math.ceil(base * 2.5)
+	end
+	return base
+end
+
+GameConfig.Daily = {
+	missions = { -- CLAIMED via ClaimQuest(i); tickets credited SCALED, dust flat
+		{ id = "d_drop", label = "DROP 25 PLANETS", statAttr = "DailyM1", goal = 25, tickets = 100, dust = 10 },
+		{ id = "d_lane3", label = "HIT THE 10X LANE", statAttr = "DailyM2", goal = 3, tickets = 150, dust = 15 },
+		{ id = "d_fever", label = "START A METEOR RUSH", statAttr = "DailyM3", goal = 1, tickets = 200, dust = 20 },
+	},
+	-- All-3 chest = ClaimQuest(4): needs r1..r3 REACHED; pays this (tickets
+	-- SCALED, dust flat) and carries the constellation star + prize-at-7.
+	chest = { tickets = 300, dust = 40, stars = 1 },
+	starsToPrize = 7,
+	prizePlanet = { n = "Constellation Prime", t = 4 }, -- noRoll catalog entry
+	repeatPrizeDust = 2000, -- when the prize planet is already owned
+	rewardName = "CONSTELLATION PRIME",
+}
+
+-- DAY STREAK (connected loop): ClaimStreak once per day (min 20h gap); longer
+-- than breakHours since the last claim restarts the count. The 7 reward slots
+-- loop forever while the COUNT keeps climbing; ticket rewards scale
+-- x(1 + 0.1 * completedWeeks), capped at weekMultCap.
+GameConfig.Streak = {
+	minGapHours = 20, -- earliest next claim after a claim
+	breakHours = 48, -- longer than this since last claim -> streak resets
+	weekMultCap = 3, -- ticket rewards scale x(1 + 0.1*completedWeeks), capped
+	days = { -- tickets credited SCALED (creditTickets, not raw); dust flat
+		{ tickets = 150, dust = 0 },
+		{ tickets = 250, dust = 10 },
+		{ tickets = 400, dust = 25 },
+		{ tickets = 600, dust = 40 },
+		{ tickets = 900, dust = 60, rollMinTier = 2 }, -- guaranteed RARE+ planet
+		{ tickets = 1400, dust = 90 },
+		{ tickets = 2500, dust = 150, rollMinTier = 3 }, -- guaranteed ULTRA RARE+ planet
+	},
+}
+
+-- PLAYTIME milestones (LIFETIME seconds, persisted doc.playtime.total).
+-- Claim state is an int bitfield (bit i-1 = milestone i claimed) mirrored to
+-- the PlayClaimed attr; PlayReady mirrors the claimable set. Tickets credited
+-- SCALED, dust flat (ClaimPlaytime(idx)).
+GameConfig.Playtime = {
+	milestones = { 90, 300, 900, 1800, 3600, 7200, 10800, 14400 },
+	tickets = { 50, 100, 200, 350, 600, 1000, 1500, 2000 },
+	dust = { 5, 10, 20, 35, 60, 90, 120, 150 },
+}
+
+GameConfig.Offline = {
+	baseCapHours = 2, -- + offlineCapHoursAdd (max 6h)
+	baseRateFrac = 0.25, -- + offlineRateAdd (max 0.75)
+	baseTPM = 90, -- unupgraded live throughput baseline, tickets/min
+}
+
+-- ========================================================================
+-- PRODUCTS / ACHIEVEMENTS / PERKS
+-- ========================================================================
+
+-- Product ladder (phase 2, wholesale). Live dev-product ids come from
+-- attributes on PusherRemotes named "PId_<key>" (int, 0 = unconfigured ->
+-- client renders "SOON"). kind: "boost" = personal repeatable, "server" =
+-- whole-server repeatable (honest scope label!), "onetime"/"durable" as
+-- before. boost = "luck"|"tix" carries mag + duration (seconds).
+-- Stacking (server-enforced): same-type boosts never multiply — strongest
+-- magnitude wins; buying the SAME magnitude extends, a DIFFERENT one
+-- replaces. The Tickets2x durable pass multiplies ON TOP of ticket boosts.
+GameConfig.Products = {
+	-- PERSONAL repeatables ------------------------------------------------
+	{ key = "Tix2x15", robux = 39, kind = "boost", boost = "tix", mag = 2, duration = 900,
+		name = "2X TICKETS — 15 MIN", label = "YOU ONLY" },
+	{ key = "Tix3x15", robux = 79, kind = "boost", boost = "tix", mag = 3, duration = 900,
+		name = "3X TICKETS — 15 MIN", label = "YOU ONLY" },
+	{ key = "Luck100", robux = 99, kind = "boost", boost = "luck", mag = 100, duration = 90,
+		name = "100X LUCK — 90 SEC", label = "YOU ONLY" },
+	{ key = "Luck1000", robux = 199, kind = "boost", boost = "luck", mag = 1000, duration = 60,
+		name = "1000X LUCK — 60 SEC", label = "YOU ONLY" },
+	{ key = "Luck3500", robux = 399, kind = "boost", boost = "luck", mag = 3500, duration = 30,
+		name = "3500X LUCK — 30 SEC", label = "YOU ONLY" },
+	{ key = "RushNow", robux = 79, kind = "boost",
+		name = "INSTANT METEOR RUSH", label = "YOU ONLY" },
+	{ key = "PotBoost", robux = 49, kind = "boost", amount = 5000,
+		name = "JACKPOT +5,000", label = "THIS SERVER'S POT" },
+	{ key = "MegaPack", robux = 249, kind = "boost",
+		name = "MEGA BUNDLE", label = "3X TIX + 1000X LUCK + RUSH" },
+	-- SERVER-WIDE repeatables ---------------------------------------------
+	{ key = "SrvLuck100", robux = 149, kind = "server", boost = "luck", mag = 100, duration = 90,
+		name = "100X LUCK FOR THE SERVER — 90 SEC", label = "EVERYONE IN THIS SERVER" },
+	{ key = "SrvTix2x", robux = 129, kind = "server", boost = "tix", mag = 2, duration = 600,
+		name = "2X TICKETS FOR THE SERVER — 10 MIN", label = "EVERYONE IN THIS SERVER" },
+	{ key = "SrvRush", robux = 99, kind = "server",
+		name = "METEOR RUSH FOR EVERYONE", label = "EVERYONE IN THIS SERVER" },
+	-- DURABLES / one-time -------------------------------------------------
+	{ key = "Starter", robux = 49, kind = "onetime",
+		name = "STARTER GALAXY PACK", label = "ONE-TIME",
+		tickets = 1500, dust = 150, planet = "Gilded Terra" },
+	{ key = "Tickets2xPass", robux = 249, kind = "durable",
+		name = "2X TICKETS FOREVER", label = "PERMANENT" },
+	{ key = "AutoDropPass", robux = 169, kind = "durable",
+		name = "AUTO DROP", label = "PERMANENT" },
+}
+
+GameConfig.Achievements = {
+	{ id = "Drops10", icon = "trophy", name = "First Steps", desc = "Drop 10 planets", stat = "TotalDrops", need = 10, reward = 25 },
+	{ id = "Drops100", icon = "trophy", name = "Rainmaker", desc = "Drop 100 planets", stat = "TotalDrops", need = 100, reward = 100 },
+	{ id = "Drops1000", icon = "trophy", name = "Meteor Storm", desc = "Drop 1000 planets", stat = "TotalDrops", need = 1000, reward = 500 },
+	{ id = "Rolls5", icon = "star", name = "Spin Up", desc = "Roll 5 planets", stat = "TotalRolls", need = 5, reward = 25 },
+	{ id = "Rolls25", icon = "star", name = "Collector", desc = "Roll 25 planets", stat = "TotalRolls", need = 25, reward = 150 },
+	{ id = "Ultra", icon = "crown", name = "Ultra Find", desc = "Pull an ULTRA RARE planet", stat = "BestTier", need = 3, reward = 100 },
+	{ id = "Legend", icon = "crown", name = "Legendary", desc = "Pull a LEGENDARY planet", stat = "BestTier", need = 4, reward = 400 },
+	{ id = "Earn1k", icon = "ticket", name = "Ticket Baron", desc = "Earn 1,000 tickets", stat = "TotalEarned", need = 1000, reward = 250 },
+	{ id = "Fever1", icon = "star", name = "Comet Rider", desc = "Start a Meteor Rush", stat = "FeverCount", need = 1, reward = 150 },
+	{ id = "Fever25", icon = "star", name = "Fever Dream", desc = "Start 25 Meteor Rushes", stat = "FeverCount", need = 25, reward = 1000 },
+	{ id = "Rebirth1", icon = "crown", name = "Reborn", desc = "Rebirth once", stat = "Rebirth", need = 1, reward = 500 },
+	{ id = "Rebirth10", icon = "crown", name = "Galaxy Brain", desc = "Rebirth 10 times", stat = "Rebirth", need = 10, reward = 5000 },
+}
+
+GameConfig.Perks = { -- legacy one-time ticket-bought perks (shop)
+	{ id = "Tick2", icon = "ticket", name = "2x Tickets", desc = "Doubles every ticket payout", cost = 400, attr = "TicketMult", value = 2 },
+	{ id = "Luck2", icon = "star", name = "2x Luck", desc = "Doubles your roll luck", cost = 240, attr = "LuckMult", value = 2 },
+}
+
+-- Special non-rollable planets (catalog entries live in PusherMachine.Planets
+-- with noRoll = true; listed here so UIs can label them).
+GameConfig.SpecialPlanets = {
+	{ n = "Gilded Terra", t = 3, source = "GOLD PLANET NODE" },
+	{ n = "Diamond Nova", t = 4, source = "DIAMOND PLANET NODE" },
+	{ n = "Constellation Prime", t = 4, source = "7-STAR CONSTELLATION" },
+}
+
+-- ========================================================================
+-- SHARED FORMULAS
+-- `get(name)` returns the player attribute (or nil). Client passes a getter
+-- over LocalPlayer; server passes one over the Player instance. These are
+-- THE formulas — display and simulation can never disagree.
+-- ========================================================================
+
+-- Sum of perLv * level over all tree nodes with the given effect key.
+function GameConfig.statTotal(get, key)
+	local total = 0
+	for i = 1, #GameConfig.UpgradeTree do
+		local node = GameConfig.UpgradeTree[i]
+		if node.effect and node.effect.key == key then
+			local lv = get(node.id) or 0
+			if lv > 0 then
+				total = total + node.effect.perLv * lv
+			end
+		end
+	end
+	return total
+end
+
+function GameConfig.throneOf(level)
+	return GameConfig.Spine[level] -- nil when level 0
+end
+
+-- FREE luck L (rolls AND index display): tree + pity heat + throne + perks.
+-- The PAID boost is NOT in here any more (phase 2): it is a tier-scoped
+-- magnitude B, read via boostMagOf and passed to rollOnce/planetChances as a
+-- separate argument (PusherMachine caps it per tier).
+function GameConfig.computeLuck(get)
+	local base = 1 + GameConfig.statTotal(get, "luckAdd")
+	local pityPct = GameConfig.statTotal(get, "pityLuckPct")
+	local pityMult = 1 + pityPct * (get("Pity") or 0)
+	local throne = GameConfig.throneOf(get("ThroneLevel") or 0)
+	local throneLuck = throne and throne.luckMult or 1
+	local lm = get("LuckMult") or 1
+	local gp = (get("GroupPerk") and 1.25) or 1
+	return base * pityMult * throneLuck * lm * gp
+end
+
+-- Roll luck: computeLuck plus the ROLL branch bonus. Used by rollOnce AND the Index.
+-- feverOn: pass whether METEOR RUSH is running (server: feverActive();
+-- client: its fever mirror) so Fever Fortune only counts during the rush.
+-- The stack/streak attrs (MomentumStacks / CommonStreak) are display mirrors
+-- maintained by the server's roll resolver — same numbers both sides.
+function GameConfig.computeRollLuck(get, feverOn)
+	return GameConfig.computeLuck(get)
+		* (1 + GameConfig.statTotal(get, "rollLuckPct"))
+		* (1 + GameConfig.statTotal(get, "momentumPct") * (get("MomentumStacks") or 0))
+		* (1 + GameConfig.statTotal(get, "dryLuckPct") * math.min(get("CommonStreak") or 0, 25))
+		* (feverOn and (1 + GameConfig.statTotal(get, "feverLuckAdd")) or 1)
+end
+
+-- Personal paid boost magnitude B (0 = none). LuckBoost stores 100/1000/3500.
+-- Callers take max() with the server-wide SrvLuckMag window themselves
+-- (strongest B wins — same-type boosts never multiply).
+function GameConfig.boostMagOf(get)
+	local untilT = get("LuckBoostUntil") or 0
+	if untilT > workspace:GetServerTimeNow() then
+		return get("LuckBoost") or 0
+	end
+	return 0
+end
+
+-- Product of the three ticket branches: (1+a)(1+b)(1+c).
+function GameConfig.ticketTreeMult(get)
+	return (1 + GameConfig.statTotal(get, "ticketPct1"))
+		* (1 + GameConfig.statTotal(get, "ticketPct2"))
+		* (1 + GameConfig.statTotal(get, "ticketPct3"))
+end
+
+-- Seconds between allowed drops (before the QuickCharge window halving).
+function GameConfig.dropCooldown(get)
+	return math.max(0.10, 0.22 + GameConfig.statTotal(get, "dropCooldownAdd"))
+end
+
+function GameConfig.dropCount(get)
+	return math.min(5, 1 + GameConfig.statTotal(get, "dropCountAdd"))
+end
+
+function GameConfig.autoRollInterval(get)
+	return math.max(GameConfig.Roll.minInterval,
+		GameConfig.Roll.autoInterval + GameConfig.statTotal(get, "autoRollAdd"))
+end
+
+return GameConfig

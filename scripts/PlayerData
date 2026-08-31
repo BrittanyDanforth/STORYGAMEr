@@ -1,0 +1,360 @@
+--[[
+	PlayerData — DataStore persistence for Planet Dropper.
+	ModuleScript in ServerScriptService, required ONLY by ServerInit.
+
+	Design (docs/specs/protocol.md §1, final-contract.md):
+	- Store "PlanetDropper_v1", key "p"..UserId, acquired once in pcall.
+	  Studio without API access -> memory-only, ONE warn, every op no-ops.
+	- All saves via UpdateAsync with a saveIndex clobber guard: a stale
+	  session can never roll back a fresher one (no lock table needed).
+	- doc.v = 2 (phase 2 fusion). MIGRATIONS[1] upgrades v1 evolution docs.
+]]
+
+local DataStoreService = game:GetService("DataStoreService")
+
+local PlayerData = {}
+
+local STORE_NAME = "PlanetDropper_v1"
+local CURRENT_V = 2
+
+local store = nil
+do
+	local ok, s = pcall(function()
+		return DataStoreService:GetDataStore(STORE_NAME)
+	end)
+	if ok then
+		store = s
+	else
+		warn("[PlayerData] DataStore unavailable — running memory-only")
+	end
+end
+
+local warnedLoad = false
+local MIGRATIONS = {} -- [fromVersion] = function(doc) -> doc (MUST bump doc.v)
+
+-- v1 -> v2: evolution becomes fusion. Inventory {n,t,c,e} -> {n,t,c,f1,f2}
+-- (the evolved stage becomes one owned copy of that form); the persisted
+-- product keys pick up their phase-2 uniform names.
+MIGRATIONS[1] = function(doc)
+	local inv = {}
+	for _, entry in ipairs(doc.inv or {}) do
+		local e = entry.e or 0
+		table.insert(inv, {
+			n = entry.n, t = entry.t, c = entry.c or 1,
+			f1 = (e == 1) and 1 or 0,
+			f2 = (e == 2) and 1 or 0,
+		})
+	end
+	doc.inv = inv
+	if doc.meta and doc.meta.products then
+		local products = doc.meta.products
+		local renames = { StarterPack = "Starter", Tickets2x = "Tickets2xPass", AutoDrop = "AutoDropPass" }
+		for old, new in pairs(renames) do
+			if products[old] ~= nil then
+				products[new] = products[old]
+				products[old] = nil
+			end
+		end
+	end
+	doc.v = 2
+	return doc
+end
+
+-- Persisted player attributes (doc.attrs), verbatim names.
+local ATTRS = {
+	{ "Tickets", 0 },
+	{ "Rebirth", 0 },
+	{ "StarDust", 0 },
+	{ "Pity", 0 },
+	{ "FreeSpinUsed", false },
+	{ "EquippedBall", "Bubblegum|1" },
+	{ "EquippedForm", 0 },
+	{ "TotalDrops", 0 },
+	{ "TotalRolls", 0 },
+	{ "TotalEarned", 0 },
+	{ "BestTier", 1 },
+	{ "TicketMult", 1 },
+	{ "LuckMult", 1 },
+	{ "GroupPerk", false },
+	{ "ThroneLevel", 0 },
+	{ "TutorialDone", false },
+	{ "FeverCount", 0 },
+	{ "AutoRoll", true },
+	{ "AutoDropOn", false },
+	{ "JackpotsHit", 0 }, -- connected loop: stats tracked NOW, board next round
+	{ "BestDrop", 0 },
+}
+
+function PlayerData.newDoc()
+	local attrs = {}
+	for _, def in ipairs(ATTRS) do
+		attrs[def[1]] = def[2]
+	end
+	attrs.Ach = {}
+	return {
+		v = CURRENT_V,
+		attrs = attrs,
+		inv = { { n = "Bubblegum", t = 1, c = 1, f1 = 0, f2 = 0, lk = 0 } },
+		tree = {}, -- nodeId -> level (nonzero only)
+		-- p1..p3 are the LEGACY auto-pay flags (kept for old-doc compat);
+		-- r1..r4/c1..c4 = quest goal-REACHED / reward-CLAIMED (connected loop);
+		-- sDay/sLast = DAY STREAK lifetime count + epoch sec of last claim.
+		daily = {
+			stamp = 0, m1 = 0, m2 = 0, m3 = 0,
+			p1 = false, p2 = false, p3 = false, stars = 0,
+			r1 = false, r2 = false, r3 = false, r4 = false,
+			c1 = false, c2 = false, c3 = false, c4 = false,
+			sDay = 0, sLast = 0,
+		},
+		playtime = { total = 0, mask = 0 }, -- lifetime secs + claimed bitfield
+		-- Lane-system pity counters (persisted so rejoining can't reset a
+		-- near-guaranteed mutation or the COSMIC OVERLOAD pity).
+		lane = { mutDrops = 0, mutDry = 0, ovPity = 0 },
+		meta = { lastSeen = 0, totalPlaytime = 0, saveIndex = 0, receipts = {}, products = {} },
+	}
+end
+
+-- Returns (doc, ok). ok=false means load failed and this is a fresh fallback
+-- (caller sets DataLoadFailed so the client can warn "progress won't save").
+function PlayerData.load(userId)
+	if not store then
+		return PlayerData.newDoc(), false
+	end
+	local key = "p" .. userId
+	for attempt = 1, 3 do
+		local ok, data = pcall(function()
+			return store:GetAsync(key)
+		end)
+		if ok then
+			if data == nil then
+				return PlayerData.newDoc(), true -- fresh account
+			end
+			while (data.v or 1) < CURRENT_V do
+				local migrate = MIGRATIONS[data.v or 1]
+				if not migrate then
+					break
+				end
+				data = migrate(data)
+			end
+			-- Backfill any attrs added after this doc was written.
+			for _, def in ipairs(ATTRS) do
+				if data.attrs[def[1]] == nil then
+					data.attrs[def[1]] = def[2]
+				end
+			end
+			data.attrs.Ach = data.attrs.Ach or {}
+			data.daily = data.daily or { stamp = 0, m1 = 0, m2 = 0, m3 = 0, p1 = false, p2 = false, p3 = false, stars = 0 }
+			-- Connected-loop backfill (additive, NO version bump). Quest flags
+			-- seed from the legacy auto-pay p flags so a mid-day migration can
+			-- never double-pay today's missions (paid == claimed): r/c<i> = p<i>,
+			-- and the all-3 chest counts as taken when all three had auto-paid
+			-- (the star for today was already granted under the old flow).
+			local daily = data.daily
+			daily.sDay = daily.sDay or 0
+			daily.sLast = daily.sLast or 0
+			for i = 1, 3 do
+				if daily["r" .. i] == nil then daily["r" .. i] = daily["p" .. i] or false end
+				if daily["c" .. i] == nil then daily["c" .. i] = daily["p" .. i] or false end
+			end
+			if daily.r4 == nil then daily.r4 = (daily.p1 and daily.p2 and daily.p3) or false end
+			if daily.c4 == nil then daily.c4 = daily.r4 end
+			data.playtime = data.playtime or {}
+			data.playtime.total = data.playtime.total or 0
+			data.playtime.mask = data.playtime.mask or 0
+			data.lane = data.lane or {}
+			data.lane.mutDrops = data.lane.mutDrops or 0
+			data.lane.mutDry = data.lane.mutDry or 0
+			data.lane.ovPity = data.lane.ovPity or 0
+			data.meta = data.meta or { lastSeen = 0, totalPlaytime = 0, saveIndex = 0, receipts = {}, products = {} }
+			data.meta.receipts = data.meta.receipts or {}
+			data.meta.products = data.meta.products or {}
+			data.inv = data.inv or {}
+			data.tree = data.tree or {}
+			return data, true
+		end
+		if not warnedLoad then
+			warnedLoad = true
+			warn("[PlayerData] GetAsync failed (attempt " .. attempt .. "): " .. tostring(data))
+		end
+		-- Studio without API access: give up for the whole session, memory-only.
+		if string.find(tostring(data), "Studio", 1, true) then
+			store = nil
+			return PlayerData.newDoc(), false
+		end
+		task.wait(2 ^ (attempt - 1))
+	end
+	return PlayerData.newDoc(), false
+end
+
+-- Writes doc -> player attributes. Does NOT set DataLoaded (ServerInit does,
+-- strictly last). Returns the inventory MAP keyed "name|tier".
+function PlayerData.apply(player, doc)
+	for _, def in ipairs(ATTRS) do
+		player:SetAttribute(def[1], doc.attrs[def[1]])
+	end
+	for id, done in pairs(doc.attrs.Ach) do
+		if done then
+			player:SetAttribute("Ach" .. id, true)
+		end
+	end
+	for nodeId, level in pairs(doc.tree) do
+		if level > 0 then
+			player:SetAttribute(nodeId, level)
+		end
+	end
+	player:SetAttribute("DailyStamp", doc.daily.stamp)
+	player:SetAttribute("DailyM1", doc.daily.m1)
+	player:SetAttribute("DailyM2", doc.daily.m2)
+	player:SetAttribute("DailyM3", doc.daily.m3)
+	player:SetAttribute("DailyStars", doc.daily.stars)
+	-- Connected-loop mirrors: quest ready/claimed flags, streak count, and
+	-- playtime raw totals. StreakReady/PlayReady/IndexFound are COMPUTED by
+	-- ServerInit right after apply (they need GameConfig / the inv map).
+	for i = 1, 4 do
+		player:SetAttribute("DailyR" .. i, doc.daily["r" .. i] == true)
+		player:SetAttribute("DailyC" .. i, doc.daily["c" .. i] == true)
+	end
+	player:SetAttribute("StreakDay", doc.daily.sDay or 0)
+	player:SetAttribute("PlaySecs", (doc.playtime and doc.playtime.total) or 0)
+	player:SetAttribute("PlayClaimed", (doc.playtime and doc.playtime.mask) or 0)
+
+	local invMap = {}
+	local equipped = doc.attrs.EquippedBall
+	local equippedEntry = nil
+	for _, entry in ipairs(doc.inv) do
+		local key = entry.n .. "|" .. entry.t
+		invMap[key] = { n = entry.n, t = entry.t, c = entry.c or 1, f1 = entry.f1 or 0, f2 = entry.f2 or 0, lk = entry.lk or 0 }
+		if key == equipped then
+			equippedEntry = invMap[key]
+		end
+	end
+	-- EquippedForm sanity: never leave a form equipped that the player does
+	-- not own a copy of (fall back to the highest owned form of that ball).
+	local form = doc.attrs.EquippedForm or 0
+	if equippedEntry then
+		local counts = { [0] = equippedEntry.c, [1] = equippedEntry.f1, [2] = equippedEntry.f2 }
+		if (counts[form] or 0) < 1 then
+			if equippedEntry.f2 >= 1 then
+				form = 2
+			elseif equippedEntry.f1 >= 1 then
+				form = 1
+			else
+				form = 0
+			end
+		end
+	else
+		form = 0
+	end
+	player:SetAttribute("EquippedForm", form)
+	return invMap
+end
+
+-- Builds a fresh doc from live state. baseDoc = the doc returned by load()
+-- (ServerInit mutates its .daily paid flags / .meta receipts+products in
+-- place; attrs/inv/tree are re-read from live sources here).
+function PlayerData.snapshot(player, invMap, treeMap, baseDoc, sessionStart)
+	local attrs = {}
+	for _, def in ipairs(ATTRS) do
+		local v = player:GetAttribute(def[1])
+		if v == nil then
+			v = def[2]
+		end
+		attrs[def[1]] = v
+	end
+	attrs.Ach = {}
+	for id, done in pairs(baseDoc.attrs.Ach) do
+		if done then
+			attrs.Ach[id] = true
+		end
+	end
+
+	local inv = {}
+	for _, entry in pairs(invMap or {}) do
+		table.insert(inv, { n = entry.n, t = entry.t, c = entry.c, f1 = entry.f1 or 0, f2 = entry.f2 or 0, lk = entry.lk or 0 })
+	end
+	local tree = {}
+	for nodeId, level in pairs(treeMap or {}) do
+		if level > 0 then
+			tree[nodeId] = level
+		end
+	end
+
+	baseDoc.meta.saveIndex = (baseDoc.meta.saveIndex or 0) + 1
+	return {
+		v = CURRENT_V,
+		attrs = attrs,
+		inv = inv,
+		tree = tree,
+		daily = {
+			stamp = player:GetAttribute("DailyStamp") or 0,
+			m1 = player:GetAttribute("DailyM1") or 0,
+			m2 = player:GetAttribute("DailyM2") or 0,
+			m3 = player:GetAttribute("DailyM3") or 0,
+			p1 = baseDoc.daily.p1 or false,
+			p2 = baseDoc.daily.p2 or false,
+			p3 = baseDoc.daily.p3 or false,
+			stars = player:GetAttribute("DailyStars") or 0,
+			-- Claim gates ride the baseDoc (mutated in place by the claim
+			-- handlers, same p-flag pattern) — NEVER read back from attrs.
+			r1 = baseDoc.daily.r1 or false,
+			r2 = baseDoc.daily.r2 or false,
+			r3 = baseDoc.daily.r3 or false,
+			r4 = baseDoc.daily.r4 or false,
+			c1 = baseDoc.daily.c1 or false,
+			c2 = baseDoc.daily.c2 or false,
+			c3 = baseDoc.daily.c3 or false,
+			c4 = baseDoc.daily.c4 or false,
+			sDay = baseDoc.daily.sDay or 0,
+			sLast = baseDoc.daily.sLast or 0,
+		},
+		playtime = {
+			total = (baseDoc.playtime and baseDoc.playtime.total) or 0,
+			mask = (baseDoc.playtime and baseDoc.playtime.mask) or 0,
+		},
+		lane = {
+			mutDrops = (baseDoc.lane and baseDoc.lane.mutDrops) or 0,
+			mutDry = (baseDoc.lane and baseDoc.lane.mutDry) or 0,
+			ovPity = (baseDoc.lane and baseDoc.lane.ovPity) or 0,
+		},
+		meta = {
+			lastSeen = os.time(),
+			totalPlaytime = (baseDoc.meta.totalPlaytime or 0) + math.max(0, os.time() - (sessionStart or os.time())),
+			saveIndex = baseDoc.meta.saveIndex,
+			receipts = baseDoc.meta.receipts,
+			products = baseDoc.meta.products,
+		},
+	}
+end
+
+-- UpdateAsync with the saveIndex guard. reason: "leave"|"auto"|"close"|"receipt".
+function PlayerData.save(userId, doc, reason)
+	if not store then
+		return false
+	end
+	local key = "p" .. userId
+	for attempt = 1, 3 do
+		local ok, err = pcall(function()
+			store:UpdateAsync(key, function(stored)
+				-- Clobber guard: a newer session already wrote a higher index;
+				-- abort so we never roll it back.
+				if stored and stored.meta and stored.meta.saveIndex
+					and stored.meta.saveIndex >= doc.meta.saveIndex then
+					return nil
+				end
+				return doc
+			end)
+		end)
+		if ok then
+			return true
+		end
+		warn("[PlayerData] save failed (" .. reason .. ", attempt " .. attempt .. "): " .. tostring(err))
+		if string.find(tostring(err), "Studio", 1, true) then
+			store = nil -- Studio without API access: stop trying for the session
+			return false
+		end
+		task.wait(2 ^ (attempt - 1))
+	end
+	return false
+end
+
+return PlayerData
