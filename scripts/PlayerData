@@ -78,6 +78,7 @@ local ATTRS = {
 	{ "GroupPerk", false },
 	{ "ThroneLevel", 0 },
 	{ "TutorialDone", false },
+	{ "TutGift", false },
 	{ "FeverCount", 0 },
 	{ "AutoRoll", true },
 	{ "AutoDropOn", false },

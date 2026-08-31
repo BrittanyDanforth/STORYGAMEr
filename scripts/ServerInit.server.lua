@@ -1557,6 +1557,22 @@ local function resolveRoll(player, isAuto)
 			spec = unowned[math.random(#unowned)]
 		end
 	end
+	-- Tutorial: the FIRST manual roll is deliberately BASIC and deliberately
+	-- UN-boosted — the free 100X is claimed AFTER it, so the boost's roll is
+	-- a separate, visibly better moment; the starter forge gift (performRoll)
+	-- rides this ball. (If 25 tries never hit COMMON the roll stands —
+	-- harmless.)
+	if not isAuto and player:GetAttribute("TutorialDone") ~= true then
+		for _ = 1, 25 do
+			if (spec.t or 1) == 1 then break end
+			-- Bare-table roll: no luck, no boost, no fever, no mods — a
+			-- server-wide 3500X window bought by someone else must not turn
+			-- the tutorial pull rare (COMMON is ~75% per try at base weights,
+			-- so 25 tries never fail in practice).
+			spec, oneIn = PusherMachine.rollOnce(1, nil, 0, nil)
+		end
+		tier = spec.t or 1
+	end
 	player:SetAttribute("Pity", tier >= GameConfig.Roll.pityMinTier and 0 or pity + 1)
 	-- Lucky Momentum + Dry Streak Shield mirrors (read by computeRollLuck on
 	-- the NEXT roll; shown live on the Roll rail).
@@ -1575,6 +1591,7 @@ local function resolveRoll(player, isAuto)
 	end
 	checkAchievements(player)
 	rolledRemote:FireClient(player, spec.n, math.floor(oneIn + 0.5), tier, isAuto, dustGained)
+	return spec
 end
 
 local function performRoll(player, isAuto)
@@ -1583,9 +1600,29 @@ local function performRoll(player, isAuto)
 	if now < (player:GetAttribute("NextRollAt") or 0) then return end
 	local get = getterOf(player)
 	player:SetAttribute("NextRollAt", now + GameConfig.autoRollInterval(get))
-	resolveRoll(player, isAuto)
+	local rolledSpec = resolveRoll(player, isAuto)
 	if not isAuto and not player:GetAttribute("TutorialDone") then
 		player:SetAttribute("TutorialDone", true) -- unlocks auto-roll
+		-- Starter forge gift: enough copies to complete ONE forge recipe of
+		-- the first-rolled ball — the forge step of the tutorial. Granted
+		-- once ever (TutGift persisted). Copies are added directly and
+		-- deliberately WITHOUT dust (grantBall's dust rule is for rolled
+		-- dupes); skipped silently if the entry is missing — never error a
+		-- roll.
+		if player:GetAttribute("TutGift") ~= true and rolledSpec then
+			local tier = rolledSpec.t or 1
+			local inv = invByPlayer[player]
+			local entry = inv and inv[invKey(rolledSpec.n, tier)]
+			local req = GameConfig.forgeReq(get, tier)
+			local need = math.max(0, (req or 10) - (entry and entry.c or 1))
+			if entry and need > 0 then
+				entry.c = entry.c + need
+				syncInv(player)
+				player:SetAttribute("TutGift", true)
+				dailyToastRemote:FireClient(player, "gift", 0, 0,
+					("+%d %s"):format(need, rolledSpec.n))
+			end
+		end
 	end
 	-- Duplicate Roll: one free chained roll, never re-chains.
 	if math.random() < GameConfig.statTotal(get, "dupRollPct") then
@@ -1977,6 +2014,10 @@ end)
 spinRemote.OnServerEvent:Connect(function(player)
 	if not docByPlayer[player] then return end
 	if player:GetAttribute("FreeSpinUsed") then return end
+	-- Tutorial order is authoritative: the free 100X is claimed AFTER the
+	-- first (deliberately un-boosted) roll, so the boost can never burn down
+	-- during the coaching steps or taint the forced-basic pull.
+	if player:GetAttribute("TutorialDone") ~= true then return end
 	player:SetAttribute("FreeSpinUsed", true)
 	player:SetAttribute("LuckBoost", 100)
 	-- 3s of reel theater + 90s of boost.

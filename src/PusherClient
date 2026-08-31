@@ -2389,6 +2389,12 @@ do
 	end
 	luckPill.MouseButton1Click:Connect(function()
 		if not player:GetAttribute("FreeSpinUsed") then
+			-- Server refuses the free claim until the first roll (tutorial
+			-- order) — say so instead of gold-flashing over a silent no-op.
+			if player:GetAttribute("TutorialDone") ~= true then
+				if S.showToast then S.showToast("ROLL A PLANET FIRST — THEN CLAIM!") end
+				return
+			end
 			if spinRemote then spinRemote:FireServer() end
 			goldFlash()
 		else
@@ -9462,6 +9468,12 @@ end)()
 			elseif kind == "playtime" then
 				pushToast{ key = "claim", tickets = tickets or 0, dust = dust or 0,
 					text = ("PLAYTIME REWARD!  +%d TIX  +%d DUST"):format(tickets or 0, dust or 0) }
+			elseif kind == "gift" then
+				-- Tutorial starter gift: the server topped the first-rolled
+				-- ball up to a full forge recipe (extra = "+N NAME").
+				goldFlash()
+				showCelebration("STARTER GIFT!",
+					((extra and tostring(extra)) or "") .. "  —  ENOUGH TO FORGE!")
 			elseif kind == "product" then
 				goldFlash()
 				showCelebration("PURCHASE ACTIVE!",
@@ -10244,6 +10256,250 @@ end)()
 			end
 		end)
 	end
+end)()
+
+--------------------------------------------------------------------------------
+-- Tutorial coach
+--------------------------------------------------------------------------------
+
+;(function() -- section scope: own register budget (main chunk hit Luau's 200-local cap live)
+	-- One floating pointer that walks a brand-new player through the core
+	-- loop: DROP -> ROLL -> CLAIM 100X -> ROLL AGAIN -> FORGE. Every step is
+	-- derived from live state (persisted attributes + the inventory mirror),
+	-- so a rejoin resumes at the right step with no saved cursor. The two
+	-- flags below are the only client-local state — both err toward hiding.
+	local tutorialSkipped = false
+	local rolledDuringBoost = false -- rolled at least once while boosted
+	local forgedOnce = false -- CombineDone fired this session
+
+	-- Any ASCENDED (form-1) yet? Read off the main chunk's inventory mirror
+	-- ({n,t,c,f1,f2} entries from InvSync). A CELESTIAL (f2) counts too —
+	-- forging 10 ASCENDED consumes every f1, and a player that far along
+	-- must never be coached to "forge their first ASCENDED".
+	local function ownsAnyForm1()
+		for _, entry in ipairs(ownedBalls) do
+			if (entry.f1 or 0) > 0 or (entry.f2 or 0) > 0 then return true end
+		end
+		return false
+	end
+
+	-- Veteran gate: the coach exists for genuinely new players only. If the
+	-- persisted flags say the whole loop is behind them AND the first inv
+	-- sync shows an ASCENDED already forged, never show at all.
+	local vetChecked = false
+	local function veteranCheck()
+		if vetChecked then return end
+		vetChecked = true
+		if attrGet("TutorialDone") == true and attrGet("FreeSpinUsed") == true
+			and ownsAnyForm1() then
+			tutorialSkipped = true
+		end
+	end
+	if #ownedBalls > 0 then
+		veteranCheck() -- a sync already landed during an earlier yield
+	else
+		invDirty.Event:Connect(veteranCheck)
+	end
+
+	-- The pointer: dark pill + gold bobbing arrow on the target-facing edge.
+	-- Active stays false everywhere except SKIP — the coach never eats input.
+	local coach = Instance.new("Frame")
+	coach.Name = "TutorialCoach"
+	coach.Size = UDim2.fromOffset(260, 34)
+	coach.BackgroundColor3 = UI_BG
+	coach.BorderSizePixel = 0
+	coach.Visible = false
+	coach.ZIndex = 38
+	coach.Active = false
+	coach.Parent = gui
+	corner(coach, 10)
+	stroke(coach, UI_GOLD, 1.6, 0.25)
+
+	local arrow = Instance.new("ImageLabel")
+	arrow.Image = UI_ARROW
+	arrow.ImageColor3 = UI_GOLD
+	arrow.BackgroundTransparency = 1
+	arrow.Size = UDim2.fromOffset(26, 26)
+	arrow.ZIndex = 39
+	arrow.Parent = coach
+
+	local msg = label(coach, "", 15, UI_TEXT, Enum.Font.GothamBlack)
+	msg.Position = UDim2.fromOffset(12, 0)
+	msg.Size = UDim2.new(1, -56, 1, 0)
+	msg.TextXAlignment = Enum.TextXAlignment.Left
+	-- Scaled with a floor, luckState's idiom: step copy varies and must
+	-- never paint past the pill edge.
+	msg.TextScaled = true
+	msg.ZIndex = 39
+	local msgFit = Instance.new("UITextSizeConstraint")
+	msgFit.MinTextSize = 10
+	msgFit.MaxTextSize = 15
+	msgFit.Parent = msg
+
+	local skipBtn = Instance.new("TextButton")
+	skipBtn.AnchorPoint = Vector2.new(1, 0.5)
+	skipBtn.Position = UDim2.new(1, -6, 0.5, 0)
+	skipBtn.Size = UDim2.fromOffset(38, 22)
+	skipBtn.BackgroundTransparency = 1
+	skipBtn.Text = "SKIP"
+	skipBtn.TextColor3 = UI_SUB
+	skipBtn.TextSize = 11
+	skipBtn.Font = Enum.Font.GothamBold
+	skipBtn.ZIndex = 39
+	skipBtn.Parent = coach
+	skipBtn.MouseButton1Click:Connect(function()
+		tutorialSkipped = true -- session-local: a rejoin resumes the coach
+		coach.Visible = false
+	end)
+
+	-- Arrow home per placement mode (UI_ARROW's base art points RIGHT — the
+	-- reel arrows rotate it 0/180 to grip, FREE AUTO -90 to point up). Bob
+	-- runs +-4px along the pointing axis; S.reducedMotion parks it.
+	local ARROW_SPEC = {
+		above = { anchor = Vector2.new(0.5, 0), pos = UDim2.new(0.5, 0, 1, 4),
+			rot = 90, bob = UDim2.fromOffset(0, 4) },
+		leftOf = { anchor = Vector2.new(0, 0.5), pos = UDim2.new(1, 4, 0.5, 0),
+			rot = 0, bob = UDim2.fromOffset(4, 0) },
+		rightOf = { anchor = Vector2.new(1, 0.5), pos = UDim2.new(0, -4, 0.5, 0),
+			rot = 180, bob = UDim2.fromOffset(-4, 0) },
+	}
+	local arrowMode = nil
+	local bobTween = nil
+	local function setArrowMode(mode)
+		if arrowMode == mode then return end
+		arrowMode = mode
+		local spec = ARROW_SPEC[mode]
+		if bobTween then
+			bobTween:Cancel()
+			bobTween = nil
+		end
+		arrow.AnchorPoint = spec.anchor
+		arrow.Rotation = spec.rot
+		arrow.Position = spec.pos
+		if not S.reducedMotion then
+			bobTween = TweenService:Create(arrow,
+				TweenInfo.new(0.45, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+				{ Position = spec.pos + spec.bob })
+			bobTween:Play()
+		end
+	end
+
+	-- The step ladder, top to bottom — first unmet step wins. Returns
+	-- (target, text); nil text means the tutorial is OVER (vs a nil target
+	-- with text, which is a not-yet-built S handle and just hides a tick).
+	local function currentStep()
+		if (attrGet("TotalDrops") or 0) < 1 then
+			return S.dropCluster, "TAP DROP PLANET — TIME THE SWEEP!"
+		end
+		if attrGet("TutorialDone") ~= true then
+			return S.spinButton, "NOW ROLL YOUR FIRST PLANET — FREE!"
+		end
+		if attrGet("FreeSpinUsed") ~= true then
+			return S.luckPill, "CLAIM YOUR FREE 100X LUCK!"
+		end
+		if rolledDuringBoost == false and (attrGet("LuckBoost") or 0) > 0
+			and (attrGet("LuckBoostUntil") or 0) > workspace:GetServerTimeNow() then
+			return S.spinButton, "ROLL AGAIN — 100X LUCKIER!"
+		end
+		if ownsAnyForm1() ~= true and forgedOnce ~= true then
+			return S.forgeNavBtn, "FORGE 10 INTO 1 ASCENDED!"
+		end
+		return nil, nil
+	end
+
+	local function refresh()
+		if tutorialSkipped then
+			coach.Visible = false
+			return
+		end
+		-- Nothing paints before the doc lands: attributes are nil during the
+		-- DataStore load, which would read as "never dropped" and flash the
+		-- DROP step at every RETURNING player for a few seconds.
+		if attrGet("DataLoaded") ~= true then
+			coach.Visible = false
+			return
+		end
+		local target, text = currentStep()
+		if text == nil then
+			-- They forged (or already owned) an ASCENDED — over for good.
+			tutorialSkipped = true
+			coach.Visible = false
+			return
+		end
+		-- Hide behind any open page — including the forge step the moment
+		-- the forge page itself opens (they found it).
+		if not target or panel.Visible
+			or (S.treePage and S.treePage.Visible)
+			or (S.forgePage and S.forgePage.Visible) then
+			coach.Visible = false
+			return
+		end
+		local ap, asz = target.AbsolutePosition, target.AbsoluteSize
+		if asz.X <= 0 or asz.Y <= 0 then
+			coach.Visible = false -- not laid out yet
+			return
+		end
+		-- AbsolutePosition is post-HudScale screen pixels; offsets in gui are
+		-- pre-scale, so divide back out (goldBurst's idiom). Side comes from
+		-- where the target sits: left rail -> pill to its RIGHT, right rail
+		-- (FORGE brick) -> pill to its LEFT (off-screen otherwise), centre
+		-- band (DROP cluster) -> pill ABOVE.
+		local s = math.max(hudScale.Scale, 0.01)
+		local vp = camera.ViewportSize
+		local cx = ap.X + asz.X / 2
+		if cx >= vp.X * 0.6 then
+			setArrowMode("leftOf")
+			coach.AnchorPoint = Vector2.new(1, 0.5)
+			coach.Position = UDim2.fromOffset(ap.X / s - 32, (ap.Y + asz.Y / 2) / s)
+		elseif cx <= vp.X * 0.4 then
+			setArrowMode("rightOf")
+			coach.AnchorPoint = Vector2.new(0, 0.5)
+			coach.Position = UDim2.fromOffset((ap.X + asz.X) / s + 32, (ap.Y + asz.Y / 2) / s)
+		else
+			setArrowMode("above")
+			coach.AnchorPoint = Vector2.new(0.5, 1)
+			coach.Position = UDim2.fromOffset(cx / s, ap.Y / s - 32)
+		end
+		msg.Text = text
+		coach.Visible = true
+	end
+
+	-- roll2's client-local half: a MANUAL roll landing while the luck boost
+	-- attr is up means they rolled boosted (second listener on the remote —
+	-- fine). Auto-rolls must not count: AutoRoll defaults on and fires within
+	-- ~20s of TutorialDone, which would complete the step for the player.
+	if rolledRemote then
+		rolledRemote.OnClientEvent:Connect(function(_, _, _, isAuto)
+			if not isAuto and (attrGet("LuckBoost") or 0) > 0 then
+				rolledDuringBoost = true
+			end
+		end)
+	end
+	if combineDoneRemote then
+		combineDoneRemote.OnClientEvent:Connect(function()
+			forgedOnce = true
+		end)
+	end
+
+	-- Attribute signals snap the coach to the next step instantly; the slow
+	-- loop below mops up everything else (page toggles, layout, boost expiry).
+	for _, attrName in ipairs({ "TotalDrops", "TutorialDone", "FreeSpinUsed",
+		"LuckBoost", "LuckBoostUntil" }) do
+		player:GetAttributeChangedSignal(attrName):Connect(refresh)
+	end
+	task.spawn(function()
+		while not tutorialSkipped do
+			refresh()
+			task.wait(0.5)
+		end
+		coach.Visible = false
+		-- Retire the bob for good — an infinite tween on an invisible arrow
+		-- would otherwise animate for the rest of the session.
+		if bobTween then
+			bobTween:Cancel()
+			bobTween = nil
+		end
+	end)
 end)()
 
 --------------------------------------------------------------------------------
