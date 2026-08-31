@@ -1122,8 +1122,8 @@ end
 -- Rail bottom order, top to bottom: [reel] [FREE ROLL]
 -- [100X LUCK | FREE AUTO] [pity].
 local luckPill = Instance.new("TextButton")
-luckPill.Position = UDim2.new(0, 12, 1, -110)
-luckPill.Size = UDim2.fromOffset(124, 48)
+luckPill.Position = UDim2.new(0, 12, 1, -114)
+luckPill.Size = UDim2.fromOffset(126, 54)
 luckPill.BackgroundTransparency = 1
 luckPill.Text = ""
 luckPill.ZIndex = 13
@@ -1143,7 +1143,7 @@ do
 	-- unreadable at this size).
 	local luckTitle = label(luckPill, "100X LUCK", 13,
 		Color3.new(1, 1, 1), Enum.Font.FredokaOne)
-	luckTitle.Position = UDim2.new(0, 33, 0, 5)
+	luckTitle.Position = UDim2.new(0, 33, 0, 7)
 	luckTitle.Size = UDim2.new(1, -38, 0, 15)
 	luckTitle.TextXAlignment = Enum.TextXAlignment.Left
 	luckTitle.TextStrokeColor3 = Color3.fromRGB(60, 40, 10)
@@ -1151,13 +1151,21 @@ do
 	luckTitle.ZIndex = 15
 	local luckState = label(luckPill, "CLAIM FREE!", 12,
 		Color3.new(1, 1, 1), Enum.Font.GothamBlack)
-	luckState.Position = UDim2.new(0, 33, 0, 21)
-	luckState.Size = UDim2.new(1, -38, 0, 14)
+	luckState.Position = UDim2.new(0, 33, 0, 25)
+	luckState.Size = UDim2.new(1, -38, 0, 16)
 	luckState.TextXAlignment = Enum.TextXAlignment.Left
+	-- Scaled with a floor: state copy varies ("CLAIM FREE!", cooldowns) and
+	-- must never paint past the brick edge like the live build did.
+	luckState.TextScaled = true
+	local luckStateFit = Instance.new("UITextSizeConstraint")
+	luckStateFit.MinTextSize = 8
+	luckStateFit.MaxTextSize = 12
+	luckStateFit.Parent = luckState
 	luckState.TextStrokeColor3 = Color3.fromRGB(60, 40, 10)
 	luckState.TextStrokeTransparency = 0.15
 	luckState.ZIndex = 15
 	S.luckState = luckState
+	S.luckPill = luckPill -- tutorial coach target
 end
 
 local reelWindow = Instance.new("Frame")
@@ -1643,6 +1651,7 @@ spinButton.MouseButton1Up:Connect(rollBtnRelease)
 spinButton.MouseLeave:Connect(rollBtnRelease)
 
 local rollBreath = nil
+S.spinButton = spinButton -- tutorial coach target
 function S.setRollBreathing(on)
 	if on and not rollBreath then
 		rollBreath = TweenService:Create(rollBreathScale,
@@ -1670,8 +1679,8 @@ end
 do
 	local autoBtn = Instance.new("TextButton")
 	autoBtn.AnchorPoint = Vector2.new(1, 0)
-	autoBtn.Position = UDim2.new(1, -12, 1, -110)
-	autoBtn.Size = UDim2.fromOffset(124, 48)
+	autoBtn.Position = UDim2.new(1, -12, 1, -114)
+	autoBtn.Size = UDim2.fromOffset(126, 54)
 	autoBtn.BackgroundTransparency = 1
 	autoBtn.Text = ""
 	autoBtn.ZIndex = 13
@@ -1689,16 +1698,21 @@ do
 	-- WHITE text with deep strokes both states (owner readability order).
 	local autoTitle = label(autoBtn, "FREE AUTO", 13,
 		Color3.new(1, 1, 1), Enum.Font.FredokaOne)
-	autoTitle.Position = UDim2.new(0, 33, 0, 5)
+	autoTitle.Position = UDim2.new(0, 33, 0, 7)
 	autoTitle.Size = UDim2.new(1, -38, 0, 15)
 	autoTitle.TextXAlignment = Enum.TextXAlignment.Left
 	autoTitle.TextStrokeTransparency = 0.1
 	autoTitle.ZIndex = 15
 	local autoSub = label(autoBtn, "ON", 12,
 		Color3.new(1, 1, 1), Enum.Font.GothamBlack)
-	autoSub.Position = UDim2.new(0, 33, 0, 21)
-	autoSub.Size = UDim2.new(1, -38, 0, 14)
+	autoSub.Position = UDim2.new(0, 33, 0, 25)
+	autoSub.Size = UDim2.new(1, -38, 0, 16)
 	autoSub.TextXAlignment = Enum.TextXAlignment.Left
+	autoSub.TextScaled = true
+	local autoSubFit = Instance.new("UITextSizeConstraint")
+	autoSubFit.MinTextSize = 8
+	autoSubFit.MaxTextSize = 12
+	autoSubFit.Parent = autoSub
 	autoSub.TextStrokeTransparency = 0.15
 	autoSub.ZIndex = 15
 	local function restyleAutoPill()
@@ -1739,7 +1753,7 @@ do
 	-- Replaces the old timer ring on the 0.1s cosmetic cadence.
 	function S.updateAutoRollBar()
 		if player:GetAttribute("TutorialDone") ~= true then
-			autoSub.Text = "ROLL ONCE TO UNLOCK"
+			autoSub.Text = "ROLL TO UNLOCK"
 			return
 		end
 		local interval = GameConfig.autoRollInterval(attrGet)
@@ -7743,6 +7757,9 @@ end)()
 		-- dither rows stay as crisp blocks. The label is a child (not
 		-- button.Text) so plate and text sink together on press.
 		local plate = pixelPlate(button, item.color, 10, "btn", 4)
+		if item.page == "forge" then
+			S.forgeNavBtn = button -- tutorial coach target
+		end
 		local lbl = label(button, item.name, 13, Color3.new(1, 1, 1), Enum.Font.FredokaOne)
 		lbl.Size = UDim2.new(1, -10, 1, -10)
 		lbl.Position = UDim2.fromOffset(5, 3) -- optically centred on the face
