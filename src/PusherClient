@@ -7765,32 +7765,155 @@ end)()
 		return card
 	end
 
+	-- ---- render-time helpers ----
+	-- Tweens a render starts die with it: the next render cancels them all,
+	-- so no infinite pulse outlives its (destroyed) target.
+	local liveTweens = {}
+	local function runTween(target, info, props)
+		local tw = TweenService:Create(target, info, props)
+		table.insert(liveTweens, tw)
+		tw:Play()
+		return tw
+	end
+	-- Slow breathing on ONE property (glows / lips only — never the FORGE
+	-- button itself: the coach measures its AbsoluteSize to aim the
+	-- pointer). S.reducedMotion parks it at `from`.
+	local function breathe(target, prop, from, to, period)
+		target[prop] = from
+		if S.reducedMotion then return end
+		runTween(target, TweenInfo.new(period or 1.1, Enum.EasingStyle.Sine,
+			Enum.EasingDirection.InOut, -1, true), { [prop] = to })
+	end
+	-- Soft radial halo (glowOrb sprite): the light every big planet sits in.
+	local function halo(parent, size, tint, transparency, zindex, pos)
+		local g = Instance.new("ImageLabel")
+		g.Image = ORB_ART
+		g.AnchorPoint = Vector2.new(0.5, 0.5)
+		g.Position = pos or UDim2.fromScale(0.5, 0.5)
+		g.Size = UDim2.fromOffset(size, size)
+		g.ImageColor3 = tint
+		g.ImageTransparency = transparency
+		g.BackgroundTransparency = 1
+		g.ZIndex = zindex
+		g.Parent = parent
+		return g
+	end
+	-- Flat ground shadow under a floating planet (a squashed dark orb).
+	local function floorShadow(parent, w, pos, zindex)
+		local sh = Instance.new("ImageLabel")
+		sh.Image = UI_ORB
+		sh.AnchorPoint = Vector2.new(0.5, 0.5)
+		sh.Position = pos
+		sh.Size = UDim2.fromOffset(w, math.max(6, math.floor(w * 0.22)))
+		sh.ImageColor3 = Color3.new(0, 0, 0)
+		sh.ImageTransparency = 0.62
+		sh.BackgroundTransparency = 1
+		sh.ZIndex = zindex
+		sh.Parent = parent
+		return sh
+	end
+	-- Rounded pill with a bold centered label (tile badges, state chips).
+	local function pill(parent, anchor, pos, w, h, bg, text, textColor, textStroke, zindex, textSize)
+		local f = Instance.new("Frame")
+		f.AnchorPoint = anchor
+		f.Position = pos
+		f.Size = UDim2.fromOffset(w, h)
+		f.BackgroundColor3 = bg
+		f.BorderSizePixel = 0
+		f.ZIndex = zindex
+		f.Parent = parent
+		corner(f, math.floor(h / 2))
+		local l = label(f, text, textSize or 12, textColor, Enum.Font.GothamBlack)
+		l.Size = UDim2.fromScale(1, 1)
+		l.TextStrokeColor3 = textStroke or PLUMTEXT
+		l.TextStrokeTransparency = 0.25
+		l.ZIndex = zindex + 1
+		return f, l
+	end
+	-- Form colour language, page-wide: BASE lavender, ASCENDED pink,
+	-- CELESTIAL gold — the same hue on chips, rays, halos and badges.
+	local FORM_TINT = {
+		[0] = Color3.fromRGB(200, 176, 240),
+		[1] = Color3.fromRGB(255, 120, 210),
+		[2] = UI_GOLD,
+	}
+	local function formTint(f)
+		return FORM_TINT[f or 0] or FORM_TINT[0]
+	end
+	local function formStroke(f)
+		if f == 2 then return GOLDSTROKE end
+		if f == 1 then return Color3.fromRGB(96, 18, 64) end
+		return PLUMTEXT
+	end
+	-- Candy button feel with AutoButtonColor off so the states are ours:
+	-- hover lightens, press darkens + sinks 3px onto its lip, release pops
+	-- back. Returns the state table so a confirm arm can swap st.base.
+	local function candyStates(btn, base, lip)
+		local st = { base = base, pos = btn.Position }
+		local function paint(k)
+			if btn.Active == false then return end
+			if k > 0 then
+				btn.BackgroundColor3 = st.base:Lerp(Color3.new(1, 1, 1), 0.14)
+			elseif k < 0 then
+				btn.BackgroundColor3 = st.base:Lerp(Color3.new(0, 0, 0), 0.18)
+			else
+				btn.BackgroundColor3 = st.base
+			end
+			btn.Position = k < 0 and (st.pos + UDim2.fromOffset(0, 3)) or st.pos
+			if lip then lip.Visible = k >= 0 end
+		end
+		btn.MouseEnter:Connect(function() paint(1) end)
+		btn.MouseLeave:Connect(function() paint(0) end)
+		btn.MouseButton1Down:Connect(function() paint(-1) end)
+		btn.MouseButton1Up:Connect(function() paint(1) end)
+		return st
+	end
+	-- A planet with CELESTIAL copies and nothing else left to forge.
+	local function entryMaxed(e)
+		return e ~= nil and (e.f2 or 0) > 0 and nextForge(e, e.t or 1) == nil
+	end
+
 	function renderForge()
 		if not forgePage.Visible then return end
+		for _, tw in ipairs(liveTweens) do tw:Cancel() end
+		table.clear(liveTweens)
 		local dust = player:GetAttribute("StarDust") or 0
 		dustLabel.Text = formatCommas(dust) .. " DUST"
 		local equippedKey = player:GetAttribute("EquippedBall") or "Bubblegum|1"
 		local equippedForm = player:GetAttribute("EquippedForm") or 0
 
+		-- Layout budget in HUD units (the page lives under hudScale). Three
+		-- shapes: WIDE (laptop / tablet), SHORT (landscape phone: wide but
+		-- only ~460 tall — same three-card row, tighter vertical budget) and
+		-- NARROW (portrait: the cards stack in a scroller over the strip).
 		local s = math.max(hudScale.Scale, 0.01)
 		local wid = forgePage.AbsoluteSize.X / s
-		if wid <= 0 then wid = 1200 end
+		local hgt = forgePage.AbsoluteSize.Y / s
+		if wid <= 0 then wid = 1280 end
+		if hgt <= 0 then hgt = 720 end
 		local narrow = wid < 900
+		local pw, ph
 		if narrow then
 			mainPanel.Size = UDim2.new(1, -16, 1, -20)
+			pw, ph = wid - 16, hgt - 20
 			titleRibbon.Size = UDim2.fromOffset(150, 42)
 			dustPill.Position = UDim2.new(0, 164, 0, -8)
 			dustPill.Size = UDim2.fromOffset(130, 32)
 		else
 			mainPanel.Size = UDim2.new(1, -48, 1, -56)
+			pw, ph = math.min(wid - 48, 1216), math.min(hgt - 56, 656)
 			titleRibbon.Size = UDim2.fromOffset(196, 52)
 			dustPill.Position = UDim2.new(0, 232, 0, -8)
 			dustPill.Size = UDim2.fromOffset(158, 32)
 		end
+		local short = not narrow and ph < 560
+		-- Sub-case: 360p landscape phones (~420 tall) — slimmer strip, smaller art.
+		local tiny = short and ph < 480
 
 		clearPane(content)
 
-		-- Filtered + sorted entry list (forgeable first, tier desc, name asc).
+		-- Filtered + sorted entry list: READY first, then in-progress by
+		-- rarity, MAXED planets last (nothing to do with them here).
 		local entries = {}
 		local searchLower = forgeSearch:lower()
 		for _, entry in ipairs(ownedBalls) do
@@ -7803,19 +7926,24 @@ end)()
 			end
 			if pass then table.insert(entries, entry) end
 		end
+		local function rankOf(e)
+			if entryForgeable(e) then return 0 end
+			if entryMaxed(e) then return 2 end
+			return 1
+		end
 		table.sort(entries, function(a, b)
-			local ar = entryForgeable(a) and 1 or 0
-			local br = entryForgeable(b) and 1 or 0
-			if ar ~= br then return ar > br end
-			if a.t ~= b.t then return a.t > b.t end
+			local ar, br = rankOf(a), rankOf(b)
+			if ar ~= br then return ar < br end
+			local at, bt = a.t or 1, b.t or 1
+			if at ~= bt then return at > bt end
 			return a.n < b.n
 		end)
 		if forgeSelected == nil or invByKey[forgeSelected] == nil then
-			forgeSelected = entries[1] and (entries[1].n .. "|" .. entries[1].t) or nil
+			forgeSelected = entries[1] and (entries[1].n .. "|" .. (entries[1].t or 1)) or nil
 		end
 		local nReady = 0
 		for _, e in ipairs(ownedBalls) do
-			if entryForgeable(e) then nReady = nReady + 1 end
+			if entryForgeable(e) then nReady += 1 end
 		end
 
 		-- Selected entry data.
@@ -7829,7 +7957,7 @@ end)()
 			tierInfo = PusherMachine.Tiers[dTier] or PusherMachine.Tiers[1]
 			ec, ef1, ef2 = countsOf(entry)
 			bestOwnedForm = ef2 > 0 and 2 or (ef1 > 0 and 1 or 0)
-			req = GameConfig.forgeReq(attrGet, dTier) or 10
+			req = math.max(1, GameConfig.forgeReq(attrGet, dTier) or 10)
 			fromForm, have = nextForge(entry, dTier)
 			basePay = tierInfo.payout
 		end
@@ -7846,23 +7974,92 @@ end)()
 		local showFrom = entry and (fromForm or bestOwnedForm) or 0
 		local showNext = math.min(showFrom + 1, 2)
 		local nextCount = showNext == 2 and ef2 or ef1
+		-- The pile the pick card counts: the copies about to forge (or the
+		-- CELESTIAL pile when maxed).
+		local shownHave = fromForm ~= nil and have
+			or (showFrom == 2 and ef2 or (showFrom == 1 and ef1 or ec))
+		local tierColor = tierInfo and tierInfo.color or Color3.fromRGB(176, 186, 202)
+		local nextTint = formTint(showNext)
+		local nextStroke = formStroke(showNext)
+		local payNow = GameConfig.fusionPayout(basePay, showFrom)
+		local payNext = GameConfig.fusionPayout(basePay, showNext)
+		local LAV = Color3.fromRGB(230, 205, 255)
+		local DIM = Color3.fromRGB(196, 184, 214)
+		local GO_GREEN = Color3.fromRGB(76, 205, 100)
+		local GO_LIP = Color3.fromRGB(30, 112, 54)
+		local GO_INK = Color3.fromRGB(18, 74, 34)
+		local ARM_ORANGE = Color3.fromRGB(255, 170, 60)
+		local ARM_INK = Color3.fromRGB(90, 55, 10)
 
-		-- ---- card frames (wide: side by side; narrow: stacked scroll) ----
+		-- ---- geometry (HUD units) ----
+		local C = {}
+		if narrow then
+			C.ribH, C.ribW, C.ribSize, C.top = 28, 168, 13, 20
+			C.nameH, C.nameSize, C.tierH, C.tierW, C.chipH = 22, 17, 28, 176, 52
+			C.headH, C.headSize, C.recipeH, C.trackH, C.trackSize = 22, 18, 14, 26, 15
+			C.goH, C.goSize, C.sideW = 60, 24, 108
+			C.rowY0, C.rowStride, C.craftH = 30, 32, 40
+			C.tileW, C.tileH, C.stride, C.icon, C.pool, C.iconY = 80, 88, 88, 46, 10, 12
+			C.stripY, C.stripH = 36, 94
+		elseif short then
+			C.ribH, C.ribW, C.ribSize, C.top = 26, 150, 12, 16
+			C.nameH, C.nameSize, C.tierH, C.tierW, C.chipH = 20, 16, 26, 160, 46
+			C.headH, C.headSize, C.recipeH, C.trackH, C.trackSize = 20, 17, 13, 24, 14
+			C.goH, C.goSize, C.sideW = 52, 22, tiny and 84 or 92
+			C.rowY0, C.rowStride, C.craftH = 26, 29, 36
+			C.tileW, C.tileH, C.stride, C.icon, C.pool, C.iconY = 80, tiny and 74 or 84, 88, 44, 16, tiny and 8 or 12
+			C.stripY, C.stripH = tiny and 30 or 32, tiny and 78 or 90
+		else
+			C.ribH, C.ribW, C.ribSize, C.top = 36, 200, 14, 24
+			C.nameH, C.nameSize, C.tierH, C.tierW, C.chipH = 26, 22, 36, 216, 72
+			C.headH, C.headSize, C.recipeH, C.trackH, C.trackSize = 26, 22, 16, 32, 18
+			C.goH, C.goSize, C.sideW = 66, 28, 118
+			C.rowY0, C.rowStride, C.craftH = 36, 44, 44
+			C.tileW, C.tileH, C.stride, C.icon, C.pool, C.iconY = 92, 98, 102, 52, 16, 14
+			C.stripY, C.stripH = 40, 112
+		end
+		-- Vertical budget of each card minus its art well / preview.
+		local pickFixed = C.top + 8 + C.nameH + 4 + C.tierH + 10 + C.chipH + 12
+		local resFixed = C.top + 4 + C.headH + C.recipeH + 14 + 8 + C.trackH + 10 + C.goH + 12
+
+		-- ---- card frames (wide/short: one row; narrow: stacked scroll) ----
 		local pickCard, resultCard, infoCard, stripCard
-		local cfg
+		local pickW, resW, infoW, well, preview
 		if not narrow then
-			pickCard = insetCard(content, UDim2.new(0, 20, 0, 54), UDim2.new(0, 320, 0, 404))
-			resultCard = insetCard(content, UDim2.new(0, 356, 0, 54), UDim2.new(0, 460, 0, 404))
-			infoCard = insetCard(content, UDim2.new(0, 832, 0, 54), UDim2.new(0, 360, 0, 404))
-			stripCard = insetCard(content, UDim2.new(0, 20, 1, -176), UDim2.new(1, -40, 0, 160))
-			cfg = {
-				well = 208, portrait = 184, nameY = 234, ribbonY = 262, ribbonW = 216,
-				chipH = 74, rays = 232, resPortrait = 176, captionY = 196, trackY = 218,
-				trackH = 24, payY = 248, oneY = 272, oneH = 62, maxY = 352, maxH = 42,
-				rowH = 38, rowStride = 42, rowY0 = 36, craftH = 44,
-				tileW = 92, tileH = 96, stride = 102, icon = 56, pool = 16,
-				stripY = 40, stripH = 110,
-			}
+			local stripH = short and (tiny and 112 or 128) or 160
+			local stripY = ph - stripH - (short and 10 or 16)
+			local cardY = short and 44 or 54
+			local cardH = stripY - cardY - (short and 10 or 14)
+			local gapA = short and 30 or 40 -- holds the → arrow
+			local gapB = short and 14 or 18
+			local avail = pw - 40 - gapA - gapB
+			pickW = math.floor(avail * 0.27)
+			infoW = math.floor(avail * 0.31)
+			resW = avail - pickW - infoW
+			preview = math.clamp(cardH - resFixed, 60, math.min(resW - 48, 220))
+			well = math.max(60, math.min(pickW - 32, cardH - pickFixed, preview + 24))
+			C.rowStride = math.clamp(math.floor((cardH - C.rowY0 - C.craftH - 22) / 6), 24, 46)
+			pickCard = insetCard(content, UDim2.new(0, 20, 0, cardY), UDim2.new(0, pickW, 0, cardH))
+			resultCard = insetCard(content, UDim2.new(0, 20 + pickW + gapA, 0, cardY),
+				UDim2.new(0, resW, 0, cardH))
+			infoCard = insetCard(content, UDim2.new(0, 20 + pickW + gapA + resW + gapB, 0, cardY),
+				UDim2.new(0, infoW, 0, cardH))
+			stripCard = insetCard(content, UDim2.new(0, 20, 0, stripY), UDim2.new(1, -40, 0, stripH))
+			-- Chunky gold → between YOUR PLANET and IT BECOMES: the flow
+			-- reads left to right before a single word does.
+			local aSize = short and 26 or 34
+			for ai, arrowTint in ipairs({ Color3.fromRGB(60, 40, 10), UI_GOLD }) do
+				local arrow = Instance.new("ImageLabel")
+				arrow.Image = UI_ARROW
+				arrow.AnchorPoint = Vector2.new(0.5, 0.5)
+				arrow.Position = UDim2.new(0, 20 + pickW + gapA / 2 + (ai == 1 and 2 or 0),
+					0, cardY + C.top + math.floor(well / 2) + (ai == 1 and 2 or 0))
+				arrow.Size = UDim2.fromOffset(aSize, aSize)
+				arrow.ImageColor3 = arrowTint
+				arrow.BackgroundTransparency = 1
+				arrow.ZIndex = 27
+				arrow.Parent = content
+			end
 		else
 			stripCard = insetCard(content, UDim2.new(0, 10, 1, -150), UDim2.new(1, -20, 0, 134))
 			local midScroll = Instance.new("ScrollingFrame")
@@ -7876,354 +8073,495 @@ end)()
 			midScroll.ZIndex = 25
 			midScroll.Parent = content
 			local lay = Instance.new("UIListLayout")
-			lay.Padding = UDim.new(0, 10)
+			lay.Padding = UDim.new(0, 14)
 			lay.SortOrder = Enum.SortOrder.LayoutOrder
 			lay.Parent = midScroll
-			resultCard = insetCard(midScroll, UDim2.new(), UDim2.new(1, -8, 0, 340))
+			local pad = Instance.new("UIPadding")
+			pad.PaddingTop = UDim.new(0, 12)
+			pad.Parent = midScroll
+			pickW, resW, infoW = pw - 28, pw - 28, pw - 28
+			preview = math.min(150, resW - 48)
+			well = math.min(preview + 24, pickW - 32)
+			resultCard = insetCard(midScroll, UDim2.new(), UDim2.new(1, -8, 0, resFixed + preview))
 			resultCard.LayoutOrder = 1
-			pickCard = insetCard(midScroll, UDim2.new(), UDim2.new(1, -8, 0, 300))
+			pickCard = insetCard(midScroll, UDim2.new(), UDim2.new(1, -8, 0, pickFixed + well))
 			pickCard.LayoutOrder = 2
-			infoCard = insetCard(midScroll, UDim2.new(), UDim2.new(1, -8, 0, 310))
+			infoCard = insetCard(midScroll, UDim2.new(),
+				UDim2.new(1, -8, 0, C.rowY0 + 6 * C.rowStride + 10 + C.craftH + 12))
 			infoCard.LayoutOrder = 3
-			cfg = {
-				well = 140, portrait = 124, nameY = 156, ribbonY = 178, ribbonW = 190,
-				chipH = 66, rays = 180, resPortrait = 140, captionY = 158, trackY = 178,
-				trackH = 22, payY = 206, oneY = 228, oneH = 56, maxY = 292, maxH = 36,
-				rowH = 34, rowStride = 38, rowY0 = 30, craftH = 40,
-				tileW = 80, tileH = 82, stride = 88, icon = 44, pool = 10,
-				stripY = 36, stripH = 92,
-			}
 		end
+		C.rowH = C.rowStride - 4
 
-		-- -------------------- pickCard: your planet --------------------
-		local portraitWell = Instance.new("Frame")
-		portraitWell.AnchorPoint = Vector2.new(0.5, 0)
-		portraitWell.Position = UDim2.new(0.5, 0, 0, narrow and 14 or 18)
-		portraitWell.Size = UDim2.fromOffset(cfg.well, cfg.well)
-		portraitWell.BackgroundColor3 = DEEPWELL
-		portraitWell.BorderSizePixel = 0
-		portraitWell.ZIndex = 27
-		portraitWell.Parent = pickCard
-		corner(portraitWell, 16)
-		if entry then
-			stroke(portraitWell, tierInfo.color, 3, 0.15)
-			-- ANIMATED VPF #1 of exactly 2 on this page.
-			local view = makePlanetView(portraitWell, dName, dTier, cfg.portrait, 28, true, bestOwnedForm)
-			view.AnchorPoint = Vector2.new(0.5, 0.5)
-			view.Position = UDim2.fromScale(0.5, 0.5)
-			local lockBtn = Instance.new("TextButton")
-			lockBtn.AnchorPoint = Vector2.new(1, 0)
-			lockBtn.Position = UDim2.new(1, -10, 0, 10)
-			lockBtn.Size = UDim2.fromOffset(78, 30)
-			lockBtn.BorderSizePixel = 0
-			lockBtn.Font = Enum.Font.GothamBlack
-			lockBtn.TextSize = 12
-			lockBtn.ZIndex = 29
-			lockBtn.Parent = pickCard
-			corner(lockBtn, 10)
-			if isLocked(entry) then
-				lockBtn.Text = "LOCKED"
-				lockBtn.BackgroundColor3 = Color3.fromRGB(70, 52, 16)
-				lockBtn.TextColor3 = UI_GOLD
-				lockBtn.TextStrokeColor3 = GOLDSTROKE
-				lockBtn.TextStrokeTransparency = 0.15
-				stroke(lockBtn, UI_GOLD, 2, 0.25)
-			else
-				lockBtn.Text = "LOCK"
-				lockBtn.BackgroundColor3 = SOFTBG
-				lockBtn.TextColor3 = Color3.fromRGB(200, 180, 230)
-				stroke(lockBtn, PLUM, 2, 0)
-			end
-			local lockName, lockTier = entry.n, entry.t
-			lockBtn.MouseButton1Click:Connect(function()
-				if toggleLockRemote then
-					toggleLockRemote:FireServer(lockName, lockTier)
-					-- Optimistic flip; InvSync confirms and re-renders.
-					entry.lk = isLocked(entry) and 0 or 1
-					renderForge()
+		-- -------------------- pickCard: YOUR PLANET --------------------
+		do
+			local pr = mkRibbon(pickCard, UDim2.new(0.5, -C.ribW / 2, 0, -14),
+				UDim2.fromOffset(C.ribW, C.ribH), Color3.fromRGB(150, 90, 220),
+				"YOUR PLANET", C.ribSize, PLUMTEXT)
+			pr.ZIndex = 30
+			local wellBox = Instance.new("Frame")
+			wellBox.AnchorPoint = Vector2.new(0.5, 0)
+			wellBox.Position = UDim2.new(0.5, 0, 0, C.top)
+			wellBox.Size = UDim2.fromOffset(well, well)
+			wellBox.BackgroundColor3 = DEEPWELL
+			wellBox.BorderSizePixel = 0
+			wellBox.ZIndex = 27
+			wellBox.Parent = pickCard
+			corner(wellBox, 18)
+			if entry then
+				stroke(wellBox, tierColor, 3, 0.1)
+				-- Light the chamber: rarity halo, form-coloured inner glow,
+				-- floor shadow — the planet floats in light, not on flat plum.
+				halo(wellBox, math.floor(well * 1.12), tierColor, 0.55, 28)
+				if showFrom >= 1 then
+					halo(wellBox, math.floor(well * 0.8), formTint(showFrom), 0.5, 28)
 				end
-			end)
-			local nameLbl = label(pickCard, dName:upper(), narrow and 16 or 20,
-				Color3.new(1, 1, 1), Enum.Font.FredokaOne)
-			nameLbl.Position = UDim2.new(0, 12, 0, cfg.nameY)
-			nameLbl.Size = UDim2.new(1, -24, 0, 24)
-			nameLbl.TextStrokeColor3 = PLUMTEXT
-			nameLbl.TextStrokeTransparency = 0.1
-			nameLbl.TextTruncate = Enum.TextTruncate.AtEnd
-			nameLbl.ZIndex = 28
-			local rr = mkRibbon(pickCard, UDim2.new(0.5, -cfg.ribbonW / 2, 0, cfg.ribbonY),
-				UDim2.fromOffset(cfg.ribbonW, narrow and 30 or 40), tierInfo.color,
-				tierInfo.name, 14, Color3.new(0, 0, 0))
-			rr.ZIndex = 28
-			local formChip = Instance.new("Frame")
-			formChip.AnchorPoint = Vector2.new(0.5, 1)
-			formChip.Position = UDim2.new(0.5, 0, 1, -12)
-			formChip.Size = UDim2.new(1, -24, 0, cfg.chipH)
-			formChip.BackgroundColor3 = CHIPBG
-			formChip.BorderSizePixel = 0
-			formChip.ZIndex = 28
-			formChip.Parent = pickCard
-			corner(formChip, 12)
-			stroke(formChip, PLUM, 2.5, 0)
-			local nextName = maxed and "CELESTIAL — THE FINAL FORM"
-				or ("NEXT FORM: " .. (GameConfig.FormNames[progFrom + 2] or "?"))
-			local chipTop = label(formChip, nextName, 14,
-				maxed and UI_GOLD or Color3.fromRGB(210, 170, 255), Enum.Font.GothamBlack)
-			chipTop.Position = UDim2.new(0, 12, 0, 8)
-			chipTop.Size = UDim2.new(1, -24, 0, 18)
-			chipTop.TextXAlignment = Enum.TextXAlignment.Left
-			chipTop.TextStrokeColor3 = maxed and GOLDSTROKE or PLUMTEXT
-			chipTop.TextStrokeTransparency = 0.2
-			chipTop.ZIndex = 29
-			local chipPay = label(formChip,
-				("PAYS %d NOW"):format(GameConfig.fusionPayout(basePay, fromForm or bestOwnedForm)),
-				12, Color3.new(1, 1, 1), Enum.Font.GothamBold)
-			chipPay.Position = UDim2.new(0, 12, 0, 28)
-			chipPay.Size = UDim2.new(1, -24, 0, 14)
-			chipPay.TextXAlignment = Enum.TextXAlignment.Left
-			chipPay.TextStrokeColor3 = PLUMTEXT
-			chipPay.TextStrokeTransparency = 0.3
-			chipPay.ZIndex = 29
-			local chipOwn = label(formChip, ("YOU OWN %d"):format(ec + ef1 + ef2),
-				12, Color3.fromRGB(200, 180, 230), Enum.Font.GothamBold)
-			chipOwn.Position = UDim2.new(0, 12, 0, 44)
-			chipOwn.Size = UDim2.new(1, -24, 0, 14)
-			chipOwn.TextXAlignment = Enum.TextXAlignment.Left
-			chipOwn.ZIndex = 29
-		else
-			local q = label(portraitWell, "?", 64, Color3.fromRGB(160, 120, 210), Enum.Font.FredokaOne)
-			q.Size = UDim2.fromScale(1, 1)
-			q.TextStrokeColor3 = PLUMTEXT
-			q.TextStrokeTransparency = 0.3
-			q.ZIndex = 28
+				floorShadow(wellBox, math.floor(well * 0.5), UDim2.fromScale(0.5, 0.88), 28)
+				-- ANIMATED VPF #1 of exactly 2 on this page: the form about
+				-- to be forged (matches the counts below it).
+				local view = makePlanetView(wellBox, dName, dTier, math.floor(well * 0.86), 29,
+					true, showFrom)
+				view.AnchorPoint = Vector2.new(0.5, 0.5)
+				view.Position = UDim2.fromScale(0.5, 0.47)
+				pill(wellBox, Vector2.new(0, 0), UDim2.fromOffset(8, 8),
+					short and 68 or 82, short and 18 or 20, INKBG, formWord(showFrom),
+					formTint(showFrom), formStroke(showFrom), 30, short and 11 or 12)
+				local lockBtn = Instance.new("TextButton")
+				lockBtn.AnchorPoint = Vector2.new(1, 1)
+				lockBtn.Position = UDim2.new(1, -8, 1, -8)
+				lockBtn.Size = UDim2.fromOffset(short and 64 or 76, short and 24 or 28)
+				lockBtn.BorderSizePixel = 0
+				lockBtn.AutoButtonColor = false
+				lockBtn.Font = Enum.Font.GothamBlack
+				lockBtn.TextSize = 12
+				lockBtn.ZIndex = 30
+				lockBtn.Parent = wellBox
+				corner(lockBtn, 12)
+				if isLocked(entry) then
+					lockBtn.Text = "LOCKED"
+					lockBtn.BackgroundColor3 = Color3.fromRGB(70, 52, 16)
+					lockBtn.TextColor3 = UI_GOLD
+					lockBtn.TextStrokeColor3 = GOLDSTROKE
+					lockBtn.TextStrokeTransparency = 0.15
+					stroke(lockBtn, UI_GOLD, 2, 0.2)
+					candyStates(lockBtn, Color3.fromRGB(70, 52, 16))
+				else
+					lockBtn.Text = "LOCK"
+					lockBtn.BackgroundColor3 = SOFTBG
+					lockBtn.TextColor3 = Color3.fromRGB(200, 180, 230)
+					stroke(lockBtn, PLUM, 2, 0)
+					candyStates(lockBtn, SOFTBG)
+				end
+				local lockName, lockTier = entry.n, entry.t
+				lockBtn.MouseButton1Click:Connect(function()
+					if toggleLockRemote then
+						toggleLockRemote:FireServer(lockName, lockTier)
+						-- Optimistic flip; InvSync confirms and re-renders.
+						entry.lk = isLocked(entry) and 0 or 1
+						renderForge()
+					end
+				end)
+				local nameY = C.top + well + 8
+				local nameLbl = label(pickCard, dName:upper(), C.nameSize,
+					Color3.new(1, 1, 1), Enum.Font.FredokaOne)
+				nameLbl.Position = UDim2.new(0, 12, 0, nameY)
+				nameLbl.Size = UDim2.new(1, -24, 0, C.nameH)
+				nameLbl.TextStrokeColor3 = PLUMTEXT
+				nameLbl.TextStrokeTransparency = 0.1
+				nameLbl.TextTruncate = Enum.TextTruncate.AtEnd
+				nameLbl.ZIndex = 28
+				local tierW = math.min(C.tierW, pickW - 40)
+				local tr = mkRibbon(pickCard, UDim2.new(0.5, -tierW / 2, 0, nameY + C.nameH + 4),
+					UDim2.fromOffset(tierW, C.tierH), tierColor, tierInfo.name,
+					short and 12 or 14, Color3.new(0, 0, 0))
+				tr.ZIndex = 28
+				-- Count chip: the pile you are forging FROM, in its form.
+				local chip = Instance.new("Frame")
+				chip.AnchorPoint = Vector2.new(0.5, 1)
+				chip.Position = UDim2.new(0.5, 0, 1, -12)
+				chip.Size = UDim2.new(1, -24, 0, C.chipH)
+				chip.BackgroundColor3 = CHIPBG
+				chip.BorderSizePixel = 0
+				chip.ZIndex = 28
+				chip.Parent = pickCard
+				corner(chip, 12)
+				stroke(chip, PLUM, 2.5, 0)
+				local haveLbl = label(chip, ("YOU HAVE %d %s"):format(shownHave, formWord(showFrom)),
+					short and 15 or 18, Color3.new(1, 1, 1), Enum.Font.FredokaOne)
+				haveLbl.Position = UDim2.new(0, 12, 0, 6)
+				haveLbl.Size = UDim2.new(1, -24, 0, short and 18 or 22)
+				haveLbl.TextXAlignment = Enum.TextXAlignment.Left
+				haveLbl.TextStrokeColor3 = PLUMTEXT
+				haveLbl.TextStrokeTransparency = 0.1
+				haveLbl.TextTruncate = Enum.TextTruncate.AtEnd
+				haveLbl.ZIndex = 29
+				local payLbl = label(chip, ("PAYS %s PER COLLECT"):format(formatCommas(payNow)),
+					12, UI_GOLD, Enum.Font.GothamBold)
+				payLbl.Position = UDim2.new(0, 12, 0, short and 26 or 30)
+				payLbl.Size = UDim2.new(1, -24, 0, 14)
+				payLbl.TextXAlignment = Enum.TextXAlignment.Left
+				payLbl.TextStrokeColor3 = GOLDSTROKE
+				payLbl.TextStrokeTransparency = 0.2
+				payLbl.ZIndex = 29
+				if not short then
+					-- Other forms of this planet you also own.
+					local others = {}
+					for f = 0, 2 do
+						local n = (f == 0 and ec) or (f == 1 and ef1) or ef2
+						if f ~= showFrom and n > 0 then
+							table.insert(others, ("%d %s"):format(n, formWord(f)))
+						end
+					end
+					local alsoLbl = label(chip, #others > 0 and ("ALSO: " .. table.concat(others, ", "))
+						or ("TOTAL OWNED: %d"):format(ec + ef1 + ef2),
+						12, Color3.fromRGB(200, 180, 230), Enum.Font.GothamBold)
+					alsoLbl.Position = UDim2.new(0, 12, 0, 48)
+					alsoLbl.Size = UDim2.new(1, -24, 0, 14)
+					alsoLbl.TextXAlignment = Enum.TextXAlignment.Left
+					alsoLbl.TextTruncate = Enum.TextTruncate.AtEnd
+					alsoLbl.ZIndex = 29
+				end
+			else
+				halo(wellBox, math.floor(well * 0.9), Color3.fromRGB(120, 80, 180), 0.6, 28)
+				local q = label(wellBox, "?", math.floor(well * 0.4), Color3.fromRGB(170, 130, 220),
+					Enum.Font.FredokaOne)
+				q.Size = UDim2.fromScale(1, 1)
+				q.TextStrokeColor3 = PLUMTEXT
+				q.TextStrokeTransparency = 0.3
+				q.ZIndex = 29
+				local hint = label(pickCard, #ownedBalls == 0 and "ROLL PLANETS FIRST!" or "TAP A PLANET BELOW",
+					short and 14 or 16, Color3.new(1, 1, 1), Enum.Font.FredokaOne)
+				hint.Position = UDim2.new(0, 12, 0, C.top + well + 10)
+				hint.Size = UDim2.new(1, -24, 0, 40)
+				hint.TextWrapped = true
+				hint.TextStrokeColor3 = PLUMTEXT
+				hint.TextStrokeTransparency = 0.1
+				hint.ZIndex = 28
+			end
 		end
 
-		-- -------------------- resultCard: what you make --------------------
-		local rays = Instance.new("ImageLabel")
-		rays.Image = FORGE_RAYS
-		rays.AnchorPoint = Vector2.new(0.5, 0)
-		rays.Position = UDim2.new(0.5, 0, 0, -6)
-		rays.Size = UDim2.fromOffset(cfg.rays, cfg.rays)
-		rays.ImageColor3 = entry and (showNext >= 2 and UI_GOLD or Color3.fromRGB(255, 120, 210))
-			or Color3.fromRGB(120, 80, 180)
-		rays.ImageTransparency = entry and 0.35 or 0.6
-		rays.BackgroundTransparency = 1
-		rays.ZIndex = 27
-		rays.Parent = resultCard
-		if entry then
-			-- ANIMATED VPF #2 of exactly 2 (the honest procedural preview).
-			local nextView = makePlanetView(resultCard, dName, dTier, cfg.resPortrait, 28, true, showNext)
-			nextView.AnchorPoint = Vector2.new(0.5, 0)
-			nextView.Position = UDim2.new(0.5, 0, 0, 16)
-		end
-		-- Deterministic recipe, spelled out (owner order: no odds, the result
-		-- is GUARANTEED): e.g. "10 BASE → 1 ASCENDED".
-		local recipeText = "WHAT YOU'LL MAKE"
-		if entry and not maxed then
-			recipeText = ("%d %s → 1 %s — GUARANTEED"):format(req,
-				formWord(progFrom), formWord(progFrom + 1))
-		end
-		local caption = label(resultCard,
-			entry and (maxed and "FINAL FORM REACHED!" or recipeText)
-				or "ROLL PLANETS, THEN FORGE THEM HERE!",
-			entry and 13 or 15,
-			(entry and maxed) and UI_GOLD or (entry and Color3.fromRGB(230, 205, 255) or Color3.new(1, 1, 1)),
-			Enum.Font.GothamBlack)
-		caption.Position = UDim2.new(0, 16, 0, entry and cfg.captionY or 150)
-		caption.Size = UDim2.new(1, -32, 0, entry and 16 or 40)
-		caption.TextWrapped = not entry
-		caption.TextStrokeColor3 = (entry and maxed) and GOLDSTROKE or PLUMTEXT
-		caption.TextStrokeTransparency = 0.2
-		caption.ZIndex = 28
-		if entry and not maxed then
-			local progTrack = Instance.new("Frame")
-			progTrack.AnchorPoint = Vector2.new(0.5, 0)
-			progTrack.Position = UDim2.new(0.5, 0, 0, cfg.trackY)
-			progTrack.Size = UDim2.new(1, -48, 0, cfg.trackH)
-			progTrack.BackgroundColor3 = DEEPWELL
-			progTrack.BorderSizePixel = 0
-			progTrack.ZIndex = 28
-			progTrack.Parent = resultCard
-			corner(progTrack, 12)
-			stroke(progTrack, PLUM, 2.5, 0)
-			local progFill = Instance.new("Frame")
-			progFill.Size = UDim2.new(math.clamp(progHave / req, 0, 1), 0, 1, 0)
-			progFill.BackgroundColor3 = canForge and UI_GOLD or Color3.fromRGB(88, 220, 110)
-			progFill.BorderSizePixel = 0
-			progFill.ZIndex = 29
-			progFill.Parent = progTrack
-			corner(progFill, 12)
-			local onBar = label(progTrack, ("%d / %d READY"):format(progHave, req),
-				13, Color3.new(1, 1, 1), Enum.Font.GothamBlack)
-			onBar.Size = UDim2.fromScale(1, 1)
-			onBar.TextStrokeColor3 = canForge and GOLDSTROKE or Color3.fromRGB(20, 60, 30)
-			onBar.TextStrokeTransparency = 0.1
-			onBar.ZIndex = 30
-			local payLine = label(resultCard,
-				("PAYS %d  →  %d PER COLLECT"):format(
-					GameConfig.fusionPayout(basePay, progFrom),
-					GameConfig.fusionPayout(basePay, progFrom + 1)),
-				13, UI_GOLD, Enum.Font.GothamBold)
-			payLine.Position = UDim2.new(0, 16, 0, cfg.payY)
-			payLine.Size = UDim2.new(1, -32, 0, 16)
-			payLine.TextStrokeColor3 = GOLDSTROKE
-			payLine.TextStrokeTransparency = 0.15
-			payLine.ZIndex = 28
-		elseif entry and maxed then
-			local payLine = label(resultCard,
-				("PAYS %d PER COLLECT"):format(GameConfig.fusionPayout(basePay, showFrom)),
-				13, UI_GOLD, Enum.Font.GothamBold)
-			payLine.Position = UDim2.new(0, 16, 0, cfg.payY)
-			payLine.Size = UDim2.new(1, -32, 0, 16)
-			payLine.TextStrokeColor3 = GOLDSTROKE
-			payLine.TextStrokeTransparency = 0.15
-			payLine.ZIndex = 28
-		end
-
-		-- Big candy button stack (confirm flow preserved).
-		local consumesEquipped = entry ~= nil and equippedKey == key and equippedForm == progFrom
-			and have - req <= 0
-		local confirmBits = {}
-		if entry then
-			-- Exact before/after, always first in any confirm (owner order):
-			-- what's consumed, what's left, what's created.
-			table.insert(confirmBits, ("USES %d %s %s (%d LEFT) → MAKES 1 %s"):format(
-				req, formWord(progFrom), dName:upper(),
-				math.max(0, have - req), formWord(progFrom + 1)))
-		end
-		if entry and isLocked(entry) then
-			table.insert(confirmBits, "IT'S LOCKED")
-		end
-		if consumesEquipped then
-			table.insert(confirmBits,
-				"THIS USES YOUR EQUIPPED PLANET — THE NEW ONE EQUIPS ITSELF")
-		end
-		-- The exact-quantities line alone doesn't force a confirm tap;
-		-- warnings (lock / legendary+ / equipped) do.
-		local needsConfirm = entry ~= nil
-			and (isLocked(entry) or dTier >= 4 or consumesEquipped)
-		if not maxed then
-			local oneLip = Instance.new("Frame")
-			oneLip.AnchorPoint = Vector2.new(0.5, 0)
-			oneLip.Position = UDim2.new(0.5, 0, 0, cfg.oneY + 4)
-			oneLip.Size = UDim2.new(1, -56, 0, cfg.oneH + 6)
-			oneLip.BackgroundColor3 = canForge and Color3.fromRGB(34, 120, 58) or CHIPBG
-			oneLip.BorderSizePixel = 0
-			oneLip.ZIndex = 28
-			oneLip.Parent = resultCard
-			corner(oneLip, 18)
-			local oneBtn = Instance.new("TextButton")
-			oneBtn.AnchorPoint = Vector2.new(0.5, 0)
-			oneBtn.Position = UDim2.new(0.5, 0, 0, cfg.oneY)
-			oneBtn.Size = UDim2.new(1, -56, 0, cfg.oneH)
-			oneBtn.Text = ""
-			oneBtn.AutoButtonColor = false
-			oneBtn.BorderSizePixel = 0
-			oneBtn.ZIndex = 29
-			oneBtn.Parent = resultCard
-			corner(oneBtn, 18)
-			S.forgeGoBtn = oneBtn -- tutorial coach target
-			local oneMain = label(oneBtn, "FORGE ONE!", 22, Color3.new(1, 1, 1), Enum.Font.FredokaOne)
-			oneMain.Position = UDim2.new(0, 0, 0, 6)
-			oneMain.Size = UDim2.new(1, 0, 0, 32)
-			oneMain.TextStrokeColor3 = Color3.fromRGB(18, 74, 34)
-			oneMain.TextStrokeTransparency = 0.1
-			oneMain.ZIndex = 30
-			local oneSub = label(oneBtn,
-				entry and ("USES %d %s → MAKES 1 %s"):format(req,
+		-- -------------------- resultCard: IT BECOMES --------------------
+		local goBtn -- the ONE big FORGE button (nil when maxed)
+		do
+			local rr = mkRibbon(resultCard, UDim2.new(0.5, -C.ribW / 2, 0, -14),
+				UDim2.fromOffset(C.ribW, C.ribH),
+				entry and nextTint or Color3.fromRGB(150, 90, 220),
+				(entry and maxed) and "TOP FORM!" or "IT BECOMES", C.ribSize,
+				entry and nextStroke or PLUMTEXT)
+			rr.ZIndex = 30
+			local cy = C.top + math.floor(preview / 2)
+			local center = UDim2.new(0.5, 0, 0, cy)
+			local rays = Instance.new("ImageLabel")
+			rays.Image = FORGE_RAYS
+			rays.AnchorPoint = Vector2.new(0.5, 0.5)
+			rays.Position = center
+			local raysS = math.floor(preview * 1.55)
+			rays.Size = UDim2.fromOffset(raysS, raysS)
+			rays.ImageColor3 = entry and nextTint or Color3.fromRGB(120, 80, 180)
+			rays.ImageTransparency = entry and 0.38 or 0.65
+			rays.BackgroundTransparency = 1
+			rays.ZIndex = 27
+			rays.Parent = resultCard
+			-- Rotation escapes ClipsDescendants (engine rule), so the rays
+			-- only turn where the card is NOT inside a clipping scroller.
+			if entry and not narrow and not S.reducedMotion then
+				runTween(rays, TweenInfo.new(40, Enum.EasingStyle.Linear,
+					Enum.EasingDirection.In, -1, false), { Rotation = 360 })
+			end
+			local glow = halo(resultCard, math.floor(preview * 1.3),
+				entry and nextTint or Color3.fromRGB(120, 80, 180), 0.5, 27, center)
+			if entry then
+				breathe(glow, "ImageTransparency", 0.5, 0.28, 1.4)
+				floorShadow(resultCard, math.floor(preview * 0.5),
+					UDim2.new(0.5, 0, 0, C.top + math.floor(preview * 0.9)), 27)
+				-- ANIMATED VPF #2 of exactly 2 (the honest procedural preview,
+				-- wearing the next form's dressing).
+				local nextView = makePlanetView(resultCard, dName, dTier, preview, 28, true, showNext)
+				nextView.AnchorPoint = Vector2.new(0.5, 0)
+				nextView.Position = UDim2.new(0.5, 0, 0, C.top)
+				-- Sparkles around a fused form (CELESTIAL gets four).
+				local sparkAt = { { -0.44, -0.3 }, { 0.46, -0.2 }, { -0.4, 0.34 }, { 0.42, 0.38 } }
+				for si = 1, (showNext >= 2 and 4 or 2) do
+					local st = Instance.new("ImageLabel")
+					st.Image = STAR_ART
+					st.AnchorPoint = Vector2.new(0.5, 0.5)
+					st.Position = UDim2.new(0.5, math.floor(sparkAt[si][1] * preview),
+						0, cy + math.floor(sparkAt[si][2] * preview))
+					local ss = short and 12 or 16
+					st.Size = UDim2.fromOffset(ss, ss)
+					st.ImageColor3 = nextTint
+					st.BackgroundTransparency = 1
+					st.ZIndex = 29
+					st.Parent = resultCard
+					if si <= 2 then
+						breathe(st, "ImageTransparency", si == 1 and 0.1 or 0.6,
+							si == 1 and 0.6 or 0.1, 0.9)
+					end
+				end
+			else
+				local q = label(resultCard, "?", math.floor(preview * 0.5),
+					Color3.fromRGB(170, 130, 220), Enum.Font.FredokaOne)
+				q.AnchorPoint = Vector2.new(0.5, 0.5)
+				q.Position = center
+				q.Size = UDim2.fromOffset(preview, preview)
+				q.TextStrokeColor3 = PLUMTEXT
+				q.TextStrokeTransparency = 0.3
+				q.ZIndex = 28
+			end
+			-- Headline: the planet you are about to own.
+			local headY = C.top + preview + 4
+			local head = label(resultCard,
+				entry and ("%s %s"):format(formWord(showNext), dName:upper()) or "WHAT YOU'LL MAKE",
+				C.headSize, entry and nextTint or Color3.new(1, 1, 1), Enum.Font.FredokaOne)
+			head.Position = UDim2.new(0, 16, 0, headY)
+			head.Size = UDim2.new(1, -32, 0, C.headH)
+			head.TextScaled = true
+			head.TextStrokeColor3 = entry and nextStroke or PLUMTEXT
+			head.TextStrokeTransparency = 0.1
+			head.ZIndex = 28
+			local hc = Instance.new("UITextSizeConstraint")
+			hc.MaxTextSize = C.headSize
+			hc.MinTextSize = 10
+			hc.Parent = head
+			-- Deterministic recipe (owner order: no odds — GUARANTEED).
+			local recipeY = headY + C.headH
+			local recipeText
+			if not entry then
+				recipeText = "ROLL PLANETS, THEN FORGE THEM HERE!"
+			elseif maxed then
+				recipeText = "CELESTIAL IS THE TOP FORM — NOTHING LEFT TO FORGE"
+			else
+				recipeText = ("%d %s BECOME 1 %s — GUARANTEED"):format(req,
 					formWord(progFrom), formWord(progFrom + 1))
-				or "", 12,
-				Color3.fromRGB(220, 255, 230), Enum.Font.GothamBold)
-			oneSub.Position = UDim2.new(0, 0, 0, 38)
-			oneSub.Size = UDim2.new(1, 0, 0, 14)
-			oneSub.TextStrokeColor3 = Color3.fromRGB(18, 74, 34)
-			oneSub.TextStrokeTransparency = 0.3
-			oneSub.ZIndex = 30
-			if entry and canForge then
-				oneBtn.BackgroundColor3 = Color3.fromRGB(76, 205, 100)
-				stroke(oneBtn, Color3.fromRGB(24, 92, 44), 3.5, 0)
-				oneBtn.MouseEnter:Connect(function()
-					oneBtn.BackgroundColor3 = Color3.fromRGB(96, 225, 120)
-				end)
-				oneBtn.MouseLeave:Connect(function()
-					oneBtn.BackgroundColor3 = Color3.fromRGB(76, 205, 100)
-				end)
-				local armed = false
-				oneBtn.MouseButton1Click:Connect(function()
-					if needsConfirm and not armed then
-						armed = true
-						oneBtn.BackgroundColor3 = Color3.fromRGB(255, 170, 60)
-						oneMain.Visible = false
-						oneSub.Position = UDim2.new(0, 8, 0, 6)
-						oneSub.Size = UDim2.new(1, -16, 1, -12)
-						oneSub.TextWrapped = true
-						oneSub.TextColor3 = Color3.new(1, 1, 1)
-						oneSub.TextStrokeColor3 = Color3.fromRGB(90, 55, 10)
-						oneSub.Text = table.concat(confirmBits, "\n") .. " — SURE?"
-						task.delay(3.5, function()
-							if oneBtn.Parent and armed then
-								armed = false
-								oneBtn.BackgroundColor3 = Color3.fromRGB(76, 205, 100)
-								oneMain.Visible = true
-								oneSub.Position = UDim2.new(0, 0, 0, 38)
-								oneSub.Size = UDim2.new(1, 0, 0, 14)
-								oneSub.TextWrapped = false
-								oneSub.TextColor3 = Color3.fromRGB(220, 255, 230)
-								oneSub.TextStrokeColor3 = Color3.fromRGB(18, 74, 34)
-								oneSub.Text = ("USES %d %s → MAKES 1 %s"):format(req,
-									formWord(progFrom), formWord(progFrom + 1))
+			end
+			local recipe = label(resultCard, recipeText, entry and (short and 12 or 13) or 14,
+				entry and LAV or Color3.new(1, 1, 1), Enum.Font.GothamBlack)
+			recipe.Position = UDim2.new(0, 16, 0, recipeY)
+			recipe.Size = UDim2.new(1, -32, 0, C.recipeH)
+			recipe.TextTruncate = Enum.TextTruncate.AtEnd
+			recipe.TextStrokeColor3 = PLUMTEXT
+			recipe.TextStrokeTransparency = 0.2
+			recipe.ZIndex = 28
+			local payY = recipeY + C.recipeH
+			if entry then
+				local payLine = label(resultCard,
+					maxed and ("PAYS %s PER COLLECT"):format(formatCommas(payNow))
+						or ("PAYS %s  →  %s PER COLLECT"):format(formatCommas(payNow), formatCommas(payNext)),
+					short and 12 or 13, UI_GOLD, Enum.Font.GothamBold)
+				payLine.Position = UDim2.new(0, 16, 0, payY)
+				payLine.Size = UDim2.new(1, -32, 0, 14)
+				payLine.TextStrokeColor3 = GOLDSTROKE
+				payLine.TextStrokeTransparency = 0.15
+				payLine.ZIndex = 28
+			end
+			-- Fat progress read: "7 / 10" on the track itself.
+			local trackY = payY + 14 + 8
+			if entry and not maxed then
+				local track = Instance.new("Frame")
+				track.AnchorPoint = Vector2.new(0.5, 0)
+				track.Position = UDim2.new(0.5, 0, 0, trackY)
+				track.Size = UDim2.new(1, -48, 0, C.trackH)
+				track.BackgroundColor3 = DEEPWELL
+				track.BorderSizePixel = 0
+				track.ZIndex = 28
+				track.Parent = resultCard
+				corner(track, math.floor(C.trackH / 2))
+				stroke(track, canForge and UI_GOLD or PLUM, 2.5, canForge and 0.2 or 0)
+				local fill = Instance.new("Frame")
+				fill.Size = UDim2.new(math.clamp(progHave / req, 0, 1), 0, 1, 0)
+				fill.BackgroundColor3 = canForge and UI_GOLD or Color3.fromRGB(88, 220, 110)
+				fill.BorderSizePixel = 0
+				fill.ZIndex = 29
+				fill.Parent = track
+				corner(fill, math.floor(C.trackH / 2))
+				local onBar = label(track,
+					canForge and ("%d / %d  READY!"):format(progHave, req)
+						or ("%d / %d"):format(progHave, req),
+					C.trackSize, Color3.new(1, 1, 1), Enum.Font.FredokaOne)
+				onBar.Size = UDim2.fromScale(1, 1)
+				onBar.TextStrokeColor3 = canForge and GOLDSTROKE or Color3.fromRGB(20, 60, 30)
+				onBar.TextStrokeTransparency = 0.1
+				onBar.ZIndex = 30
+			elseif entry and maxed then
+				local chip = pill(resultCard, Vector2.new(0.5, 0), UDim2.new(0.5, 0, 0, trackY),
+					math.min(resW - 48, 300), C.trackH, CHIPBG, "MAXED OUT!",
+					UI_GOLD, GOLDSTROKE, 28, C.trackSize)
+				stroke(chip, UI_GOLD, 2, 0.3)
+			end
+
+			-- Big candy FORGE button + side slot (FORGE MAX / HOW TO GET /
+			-- GO GET PLANETS). Confirm flow preserved: lock, LEGENDARY+, or
+			-- consuming the equipped planet arms an orange SURE? tap first.
+			local goY = trackY + C.trackH + 10
+			local consumesEquipped = entry ~= nil and equippedKey == key and equippedForm == progFrom
+				and have - req <= 0
+			local confirmBits = {}
+			if entry then
+				-- Exact before/after, always first in any confirm (owner
+				-- order): what's consumed, what's left, what's created.
+				table.insert(confirmBits, ("USES %d %s %s (%d LEFT) → MAKES 1 %s"):format(
+					req, formWord(progFrom), dName:upper(),
+					math.max(0, have - req), formWord(progFrom + 1)))
+			end
+			if entry and isLocked(entry) then
+				table.insert(confirmBits, "IT'S LOCKED")
+			end
+			if consumesEquipped then
+				table.insert(confirmBits,
+					"THIS USES YOUR EQUIPPED PLANET — THE NEW ONE EQUIPS ITSELF")
+			end
+			-- The exact-quantities line alone doesn't force a confirm tap;
+			-- warnings (lock / legendary+ / equipped) do.
+			local needsConfirm = entry ~= nil
+				and (isLocked(entry) or dTier >= 4 or consumesEquipped)
+			local sideW = maxed and 0 or ((not entry) and math.clamp(resW - 248, 96, 170) or C.sideW)
+			local goW = resW - 48 - (sideW > 0 and sideW + 8 or 0)
+			local sideX = 24 + goW + 8
+			local goSub = entry and ("%d %s → 1 %s"):format(req, formWord(progFrom), formWord(progFrom + 1))
+				or "ROLL SOME, THEN COME BACK"
+			if not maxed then
+				local lip = Instance.new("Frame")
+				lip.Position = UDim2.new(0, 24, 0, goY + 5)
+				lip.Size = UDim2.fromOffset(goW, C.goH)
+				lip.BackgroundColor3 = canForge and GO_LIP or INKBG
+				lip.BorderSizePixel = 0
+				lip.ZIndex = 28
+				lip.Parent = resultCard
+				corner(lip, 18)
+				if canForge then
+					local ring = Instance.new("ImageLabel")
+					ring.Image = UI_FRAME_GLOW
+					ring.AnchorPoint = Vector2.new(0.5, 0.5)
+					ring.Position = UDim2.new(0, 24 + math.floor(goW / 2), 0, goY + math.floor(C.goH / 2))
+					ring.Size = UDim2.fromOffset(goW + 44, C.goH + 44)
+					ring.ImageColor3 = Color3.fromRGB(120, 255, 150)
+					ring.BackgroundTransparency = 1
+					ring.ZIndex = 27
+					ring.Parent = resultCard
+					breathe(ring, "ImageTransparency", 0.55, 0.25, 0.8)
+				end
+				goBtn = Instance.new("TextButton")
+				goBtn.Position = UDim2.new(0, 24, 0, goY)
+				goBtn.Size = UDim2.fromOffset(goW, C.goH)
+				goBtn.Text = ""
+				goBtn.AutoButtonColor = false
+				goBtn.BorderSizePixel = 0
+				goBtn.ZIndex = 29
+				goBtn.Parent = resultCard
+				corner(goBtn, 18)
+				S.forgeGoBtn = goBtn -- tutorial coach target
+				local goMain = label(goBtn, "FORGE!", C.goSize, Color3.new(1, 1, 1), Enum.Font.FredokaOne)
+				goMain.Position = UDim2.new(0, 6, 0, 4)
+				goMain.Size = UDim2.new(1, -12, 0, C.goSize + 8)
+				goMain.TextStrokeColor3 = GO_INK
+				goMain.TextStrokeTransparency = 0.1
+				goMain.ZIndex = 30
+				local goSubLbl = label(goBtn, goSub, 12, Color3.fromRGB(220, 255, 230), Enum.Font.GothamBold)
+				goSubLbl.Position = UDim2.new(0, 6, 1, -20)
+				goSubLbl.Size = UDim2.new(1, -12, 0, 14)
+				goSubLbl.TextStrokeColor3 = GO_INK
+				goSubLbl.TextStrokeTransparency = 0.3
+				goSubLbl.TextTruncate = Enum.TextTruncate.AtEnd
+				goSubLbl.ZIndex = 30
+				if entry and canForge then
+					goBtn.BackgroundColor3 = GO_GREEN
+					stroke(goBtn, Color3.fromRGB(24, 92, 44), 3.5, 0)
+					local st = candyStates(goBtn, GO_GREEN, lip)
+					local armed = false
+					local function disarm()
+						armed = false
+						st.base = GO_GREEN
+						goBtn.BackgroundColor3 = GO_GREEN
+						goMain.Visible = true
+						goSubLbl.Position = UDim2.new(0, 6, 1, -20)
+						goSubLbl.Size = UDim2.new(1, -12, 0, 14)
+						goSubLbl.TextWrapped = false
+						goSubLbl.TextColor3 = Color3.fromRGB(220, 255, 230)
+						goSubLbl.TextStrokeColor3 = GO_INK
+						goSubLbl.Text = goSub
+					end
+					goBtn.MouseButton1Click:Connect(function()
+						if needsConfirm and not armed then
+							armed = true
+							st.base = ARM_ORANGE
+							goBtn.BackgroundColor3 = ARM_ORANGE
+							goMain.Visible = false
+							goSubLbl.Position = UDim2.new(0, 8, 0, 4)
+							goSubLbl.Size = UDim2.new(1, -16, 1, -8)
+							goSubLbl.TextWrapped = true
+							goSubLbl.TextColor3 = Color3.new(1, 1, 1)
+							goSubLbl.TextStrokeColor3 = ARM_INK
+							goSubLbl.Text = table.concat(confirmBits, "\n") .. " — SURE?"
+							task.delay(3.5, function()
+								if goBtn.Parent and armed then disarm() end
+							end)
+							return
+						end
+						-- One request per activation: the button locks until
+						-- the server's InvSync re-render replaces it (or 1.2s).
+						if goBtn.Active == false then return end
+						goBtn.Active = false
+						goMain.Visible = true
+						goMain.Text = "FORGING..."
+						goSubLbl.Text = ""
+						goBtn.BackgroundColor3 = GO_LIP
+						task.delay(1.2, function()
+							if goBtn.Parent then
+								goBtn.Active = true
+								goMain.Text = "FORGE!"
+								disarm()
 							end
 						end)
-						return
-					end
-					-- One request per activation: the button locks until the
-					-- server's InvSync re-render replaces it (or 1.2s passes).
-					if oneBtn.Active == false then return end
-					oneBtn.Active = false
-					task.delay(1.2, function()
-						if oneBtn.Parent then oneBtn.Active = true end
+						if combineRemote then
+							combineRemote:FireServer(dName, dTier, progFrom)
+						end
 					end)
-					if combineRemote then
-						combineRemote:FireServer(dName, dTier, progFrom)
-					end
-				end)
+				else
+					goBtn.BackgroundColor3 = OFFBG
+					stroke(goBtn, PLUM, 3, 0)
+					goMain.Font = Enum.Font.GothamBlack
+					goMain.TextSize = entry and (short and 17 or 20) or 16
+					goMain.TextColor3 = DIM
+					goMain.TextStrokeColor3 = PLUMTEXT
+					goMain.Text = entry and ("NEED %d MORE"):format(req - (fromForm ~= nil and have or 0))
+						or "NO PLANETS YET"
+					goSubLbl.TextColor3 = Color3.fromRGB(170, 156, 196)
+					goSubLbl.TextStrokeTransparency = 1
+					goSubLbl.Text = entry and ("%d / %d — ROLL OR CRAFT TO GET MORE"):format(
+						fromForm ~= nil and have or 0, req) or goSub
+				end
 			else
-				oneBtn.BackgroundColor3 = OFFBG
-				stroke(oneBtn, PLUM, 3, 0)
-				oneMain.Font = Enum.Font.GothamBlack
-				oneMain.TextSize = entry and 18 or 16
-				oneMain.TextColor3 = Color3.fromRGB(196, 184, 214)
-				oneMain.TextStrokeColor3 = PLUMTEXT
-				oneMain.Text = entry and ("NEED %d MORE"):format(req - (fromForm ~= nil and have or 0))
-					or "NOTHING TO FORGE YET"
-				oneSub.TextColor3 = Color3.fromRGB(160, 146, 186)
-				oneSub.TextStrokeTransparency = 1
-				oneSub.Text = entry and "TAP A PLANET BELOW OR ROLL MORE" or ""
+				local mx = pill(resultCard, Vector2.new(0, 0), UDim2.new(0, 24, 0, goY + 8),
+					resW - 48, C.goH - 16, CHIPBG, "THIS PLANET IS MAXED OUT!", UI_GOLD, GOLDSTROKE,
+					28, short and 13 or 15)
+				stroke(mx, UI_GOLD, 2, 0.3)
 			end
 			if entry and canForge then
+				local maxLip = Instance.new("Frame")
+				maxLip.Position = UDim2.new(0, sideX, 0, goY + 5)
+				maxLip.Size = UDim2.fromOffset(sideW, C.goH)
+				maxLip.BackgroundColor3 = Color3.fromRGB(122, 16, 66)
+				maxLip.BorderSizePixel = 0
+				maxLip.ZIndex = 28
+				maxLip.Parent = resultCard
+				corner(maxLip, 16)
 				local maxBtn = Instance.new("TextButton")
-				maxBtn.AnchorPoint = Vector2.new(0.5, 0)
-				maxBtn.Position = UDim2.new(0.5, 0, 0, cfg.maxY)
-				maxBtn.Size = UDim2.new(1, -56, 0, cfg.maxH)
+				maxBtn.Position = UDim2.new(0, sideX, 0, goY)
+				maxBtn.Size = UDim2.fromOffset(sideW, C.goH)
 				maxBtn.BorderSizePixel = 0
 				maxBtn.AutoButtonColor = false
 				maxBtn.Font = Enum.Font.GothamBlack
-				maxBtn.TextSize = 15
-				maxBtn.Text = "FORGE MAX"
+				maxBtn.TextSize = short and 12 or 14
+				maxBtn.TextWrapped = true
+				maxBtn.Text = "FORGE\nMAX"
 				maxBtn.TextColor3 = Color3.new(1, 1, 1)
 				maxBtn.TextStrokeColor3 = Color3.fromRGB(122, 16, 66)
 				maxBtn.TextStrokeTransparency = 0.15
 				maxBtn.BackgroundColor3 = Color3.fromRGB(255, 84, 150)
 				maxBtn.ZIndex = 29
 				maxBtn.Parent = resultCard
-				corner(maxBtn, 14)
+				corner(maxBtn, 16)
 				stroke(maxBtn, Color3.fromRGB(122, 16, 66), 3, 0)
-				maxBtn.MouseEnter:Connect(function()
-					maxBtn.BackgroundColor3 = Color3.fromRGB(255, 110, 168)
-				end)
-				maxBtn.MouseLeave:Connect(function()
-					maxBtn.BackgroundColor3 = Color3.fromRGB(255, 84, 150)
-				end)
+				local mst = candyStates(maxBtn, Color3.fromRGB(255, 84, 150), maxLip)
 				local maxArmed = false
 				maxBtn.MouseButton1Click:Connect(function()
 					-- LEGENDARY+ consumption always confirms; locked copies
@@ -8233,506 +8571,529 @@ end)()
 						table.insert(maxBits, ("USES %s COPIES"):format(tierInfo.name))
 					end
 					if consumesEquipped then
-						table.insert(maxBits,
-							"THIS USES YOUR EQUIPPED PLANET — THE NEW ONE EQUIPS ITSELF")
+						table.insert(maxBits, "USES YOUR EQUIPPED PLANET")
 					end
 					if #maxBits > 0 and not maxArmed then
 						maxArmed = true
-						maxBtn.BackgroundColor3 = Color3.fromRGB(255, 170, 60)
-						maxBtn.TextSize = 12
-						maxBtn.TextWrapped = true
-						maxBtn.TextStrokeColor3 = Color3.fromRGB(90, 55, 10)
+						mst.base = ARM_ORANGE
+						maxBtn.BackgroundColor3 = ARM_ORANGE
+						maxBtn.TextSize = 11
+						maxBtn.TextStrokeColor3 = ARM_INK
 						maxBtn.Text = table.concat(maxBits, "\n") .. " — SURE?"
 						task.delay(3.5, function()
 							if maxBtn.Parent and maxArmed then
 								maxArmed = false
-								maxBtn.BackgroundColor3 = Color3.fromRGB(255, 84, 150)
-								maxBtn.TextSize = 15
-								maxBtn.TextWrapped = false
+								mst.base = Color3.fromRGB(255, 84, 150)
+								maxBtn.BackgroundColor3 = mst.base
+								maxBtn.TextSize = short and 12 or 14
 								maxBtn.TextStrokeColor3 = Color3.fromRGB(122, 16, 66)
-								maxBtn.Text = "FORGE MAX"
+								maxBtn.Text = "FORGE\nMAX"
 							end
 						end)
 						return
 					end
 					if maxBtn.Active == false then return end
 					maxBtn.Active = false
+					maxBtn.Text = "FORGING..."
 					task.delay(1.2, function()
-						if maxBtn.Parent then maxBtn.Active = true end
+						if maxBtn.Parent then
+							maxBtn.Active = true
+							maxBtn.Text = "FORGE\nMAX"
+						end
 					end)
 					if combineAllRemote then
 						combineAllRemote:FireServer(dName, dTier, progFrom)
 					end
 				end)
-			elseif entry then
-				-- Not forgeable: FORGE MAX is useless, so its slot becomes the
-				-- contextual "HOW TO GET" link into the index detail.
+			elseif entry and not maxed then
+				-- Not forgeable: the side slot is the "HOW TO GET" link into
+				-- the index detail (where to find / craft more copies).
 				local howBtn = Instance.new("TextButton")
-				howBtn.AnchorPoint = Vector2.new(0.5, 0)
-				howBtn.Position = UDim2.new(0.5, 0, 0, cfg.maxY)
-				howBtn.Size = UDim2.new(1, -56, 0, cfg.maxH)
+				howBtn.Position = UDim2.new(0, sideX, 0, goY)
+				howBtn.Size = UDim2.fromOffset(sideW, C.goH)
 				howBtn.BackgroundColor3 = Color3.fromRGB(70, 52, 16)
 				howBtn.BorderSizePixel = 0
+				howBtn.AutoButtonColor = false
 				howBtn.Font = Enum.Font.GothamBlack
-				howBtn.TextSize = 12
+				howBtn.TextSize = short and 11 or 12
+				howBtn.TextWrapped = true
 				howBtn.TextColor3 = UI_GOLD
 				howBtn.TextStrokeColor3 = GOLDSTROKE
 				howBtn.TextStrokeTransparency = 0.15
-				howBtn.Text = "HOW TO GET MORE  >"
+				howBtn.Text = "HOW TO\nGET MORE  >"
 				howBtn.ZIndex = 29
 				howBtn.Parent = resultCard
-				corner(howBtn, 10)
+				corner(howBtn, 14)
 				stroke(howBtn, UI_GOLD, 2, 0.35)
+				candyStates(howBtn, Color3.fromRGB(70, 52, 16))
 				howBtn.MouseButton1Click:Connect(function()
 					forgePage.Visible = false
-					S.openIndexDetail(key, progFrom)
+					if S.openIndexDetail then S.openIndexDetail(key, progFrom) end
 				end)
-			else
+			elseif not entry then
 				-- Truly empty: big friendly CTA back to the game.
 				local goLip = Instance.new("Frame")
-				goLip.AnchorPoint = Vector2.new(0.5, 0)
-				goLip.Position = UDim2.new(0.5, 0, 0, cfg.maxY + 4)
-				goLip.Size = UDim2.fromOffset(240, cfg.maxH + 8)
-				goLip.BackgroundColor3 = Color3.fromRGB(34, 120, 58)
+				goLip.Position = UDim2.new(0, sideX, 0, goY + 5)
+				goLip.Size = UDim2.fromOffset(sideW, C.goH)
+				goLip.BackgroundColor3 = GO_LIP
 				goLip.BorderSizePixel = 0
 				goLip.ZIndex = 28
 				goLip.Parent = resultCard
 				corner(goLip, 16)
-				local goBtn = Instance.new("TextButton")
-				goBtn.AnchorPoint = Vector2.new(0.5, 0)
-				goBtn.Position = UDim2.new(0.5, 0, 0, cfg.maxY)
-				goBtn.Size = UDim2.fromOffset(240, cfg.maxH + 6)
-				goBtn.BackgroundColor3 = Color3.fromRGB(76, 205, 100)
-				goBtn.BorderSizePixel = 0
-				goBtn.Font = Enum.Font.FredokaOne
-				goBtn.TextSize = 16
-				goBtn.TextColor3 = Color3.new(1, 1, 1)
-				goBtn.TextStrokeColor3 = Color3.fromRGB(18, 74, 34)
-				goBtn.TextStrokeTransparency = 0.1
-				goBtn.Text = "GO GET PLANETS!"
-				goBtn.ZIndex = 29
-				goBtn.Parent = resultCard
-				corner(goBtn, 16)
-				stroke(goBtn, Color3.fromRGB(24, 92, 44), 3, 0)
-				goBtn.MouseButton1Click:Connect(function()
+				local getBtn = Instance.new("TextButton")
+				getBtn.Position = UDim2.new(0, sideX, 0, goY)
+				getBtn.Size = UDim2.fromOffset(sideW, C.goH)
+				getBtn.BackgroundColor3 = GO_GREEN
+				getBtn.BorderSizePixel = 0
+				getBtn.AutoButtonColor = false
+				getBtn.Font = Enum.Font.FredokaOne
+				getBtn.TextSize = short and 14 or 16
+				getBtn.TextWrapped = true
+				getBtn.TextColor3 = Color3.new(1, 1, 1)
+				getBtn.TextStrokeColor3 = GO_INK
+				getBtn.TextStrokeTransparency = 0.1
+				getBtn.Text = "GO GET\nPLANETS!"
+				getBtn.ZIndex = 29
+				getBtn.Parent = resultCard
+				corner(getBtn, 16)
+				stroke(getBtn, Color3.fromRGB(24, 92, 44), 3, 0)
+				candyStates(getBtn, GO_GREEN, goLip)
+				getBtn.MouseButton1Click:Connect(function()
 					forgePage.Visible = false
 				end)
 			end
-		else
-			local maxChip = Instance.new("Frame")
-			maxChip.AnchorPoint = Vector2.new(0.5, 0)
-			maxChip.Position = UDim2.new(0.5, 0, 0, cfg.oneY + 18)
-			maxChip.Size = UDim2.fromOffset(300, 40)
-			maxChip.BackgroundColor3 = CHIPBG
-			maxChip.BorderSizePixel = 0
-			maxChip.ZIndex = 28
-			maxChip.Parent = resultCard
-			corner(maxChip, 12)
-			stroke(maxChip, UI_GOLD, 2, 0.3)
-			local maxLbl = label(maxChip, "THIS PLANET IS MAXED OUT!", 13, UI_GOLD, Enum.Font.GothamBlack)
-			maxLbl.Size = UDim2.fromScale(1, 1)
-			maxLbl.TextStrokeColor3 = GOLDSTROKE
-			maxLbl.TextStrokeTransparency = 0.15
-			maxLbl.ZIndex = 29
 		end
 
 		-- -------------------- infoCard: FORGE INFO --------------------
-		local ir = mkRibbon(infoCard, UDim2.new(0.5, -100, 0, -14), UDim2.fromOffset(200, 38),
-			Color3.fromRGB(150, 90, 220), "FORGE INFO", 14, PLUMTEXT)
-		ir.ZIndex = 28
-		local function infoRow(i, name, valueText, valueColor, valueStroke, barRatio, barColor)
-			local y = cfg.rowY0 + (i - 1) * cfg.rowStride
-			if i % 2 == 0 then
-				local strip = Instance.new("Frame")
-				strip.Position = UDim2.new(0, 8, 0, y - 2)
-				strip.Size = UDim2.new(1, -16, 0, cfg.rowH)
-				strip.BackgroundColor3 = CHIPBG
-				strip.BorderSizePixel = 0
-				strip.ZIndex = 27
-				strip.Parent = infoCard
-				corner(strip, 10)
+		do
+			local ir = mkRibbon(infoCard, UDim2.new(0.5, -C.ribW / 2, 0, -14),
+				UDim2.fromOffset(C.ribW, C.ribH), Color3.fromRGB(150, 90, 220),
+				"FORGE INFO", C.ribSize, PLUMTEXT)
+			ir.ZIndex = 30
+			local function infoRow(i, name, valueText, valueColor, valueStroke, barRatio, barColor)
+				local y = C.rowY0 + (i - 1) * C.rowStride
+				if i % 2 == 0 then
+					local band = Instance.new("Frame")
+					band.Position = UDim2.new(0, 8, 0, y - 2)
+					band.Size = UDim2.new(1, -16, 0, C.rowH)
+					band.BackgroundColor3 = CHIPBG
+					band.BorderSizePixel = 0
+					band.ZIndex = 27
+					band.Parent = infoCard
+					corner(band, 10)
+				end
+				local nm = label(infoCard, name, short and 11 or 12, Color3.fromRGB(216, 190, 245),
+					Enum.Font.GothamBold)
+				nm.Position = UDim2.new(0, 14, 0, y)
+				nm.Size = UDim2.new(0.4, 0, 0, C.rowH - 4)
+				nm.TextXAlignment = Enum.TextXAlignment.Left
+				nm.TextTruncate = Enum.TextTruncate.AtEnd
+				nm.TextStrokeColor3 = PLUMTEXT
+				nm.TextStrokeTransparency = 0.3
+				nm.ZIndex = 29
+				if barRatio ~= nil then
+					local track = Instance.new("Frame")
+					track.Position = UDim2.new(0.42, 0, 0, y + math.floor(C.rowH / 2) - 6)
+					track.Size = UDim2.new(0.24, 0, 0, 8)
+					track.BackgroundColor3 = DEEPWELL
+					track.BorderSizePixel = 0
+					track.ZIndex = 29
+					track.Parent = infoCard
+					corner(track, 4)
+					local fill = Instance.new("Frame")
+					fill.Size = UDim2.new(math.clamp(barRatio, 0, 1), 0, 1, 0)
+					fill.BackgroundColor3 = barColor
+					fill.BorderSizePixel = 0
+					fill.ZIndex = 30
+					fill.Parent = track
+					corner(fill, 4)
+				end
+				local val = label(infoCard, valueText, short and 13 or 14,
+					valueColor or Color3.new(1, 1, 1), Enum.Font.GothamBlack)
+				val.AnchorPoint = Vector2.new(1, 0)
+				val.Position = UDim2.new(1, -14, 0, y)
+				val.Size = UDim2.new(barRatio ~= nil and 0.3 or 0.5, 0, 0, C.rowH - 4)
+				val.TextXAlignment = Enum.TextXAlignment.Right
+				val.TextTruncate = Enum.TextTruncate.AtEnd
+				val.TextStrokeColor3 = valueStroke or PLUMTEXT
+				val.TextStrokeTransparency = 0.1
+				val.ZIndex = 29
 			end
-			local nm = label(infoCard, name, 12, Color3.fromRGB(216, 190, 245), Enum.Font.GothamBold)
-			nm.Position = UDim2.new(0, 14, 0, y)
-			nm.Size = UDim2.new(0.36, 0, 0, cfg.rowH - 4)
-			nm.TextXAlignment = Enum.TextXAlignment.Left
-			nm.TextStrokeColor3 = PLUMTEXT
-			nm.TextStrokeTransparency = 0.3
-			nm.ZIndex = 29
-			if barRatio ~= nil then
-				local track = Instance.new("Frame")
-				track.Position = UDim2.new(0.38, 0, 0, y + math.floor(cfg.rowH / 2) - 6)
-				track.Size = UDim2.new(0.3, 0, 0, 8)
-				track.BackgroundColor3 = DEEPWELL
-				track.BorderSizePixel = 0
-				track.ZIndex = 29
-				track.Parent = infoCard
-				corner(track, 4)
-				local fill = Instance.new("Frame")
-				fill.Size = UDim2.new(math.clamp(barRatio, 0, 1), 0, 1, 0)
-				fill.BackgroundColor3 = barColor
-				fill.BorderSizePixel = 0
-				fill.ZIndex = 30
-				fill.Parent = track
-				corner(fill, 4)
-			end
-			local val = label(infoCard, valueText, 14, valueColor or Color3.new(1, 1, 1), Enum.Font.GothamBlack)
-			val.AnchorPoint = Vector2.new(1, 0)
-			val.Position = UDim2.new(1, -14, 0, y)
-			val.Size = UDim2.new(0.3, 0, 0, cfg.rowH - 4)
-			val.TextXAlignment = Enum.TextXAlignment.Right
-			val.TextStrokeColor3 = valueStroke or PLUMTEXT
-			val.TextStrokeTransparency = 0.1
-			val.ZIndex = 29
-		end
-		if entry then
-			infoRow(1, "PROGRESS", ("%d/%d"):format(progHave, req), nil, nil,
-				progHave / req, Color3.fromRGB(88, 220, 110))
-			infoRow(2, "PAYS NOW", formatCommas(GameConfig.fusionPayout(basePay, showFrom)),
-				UI_GOLD, GOLDSTROKE)
-			infoRow(3, "PAYS NEXT", formatCommas(GameConfig.fusionPayout(basePay, showNext)),
-				UI_GOLD, GOLDSTROKE)
-			infoRow(4, "COPIES", tostring(ec + ef1 + ef2), nil, nil,
-				(ec + ef1 + ef2) / req, Color3.fromRGB(255, 120, 210))
-			if nextCount <= 0 then
-				infoRow(5, "NEXT OWNED", "FIRST! +1 SCORE", UI_GREEN, Color3.fromRGB(16, 70, 30))
+			local total = ec + ef1 + ef2
+			if entry then
+				if maxed then
+					infoRow(1, "PROGRESS", "MAXED!", UI_GOLD, GOLDSTROKE, 1, UI_GOLD)
+				else
+					infoRow(1, "PROGRESS", ("%d / %d"):format(progHave, req),
+						canForge and UI_GOLD or nil, canForge and GOLDSTROKE or nil,
+						progHave / req, canForge and UI_GOLD or Color3.fromRGB(88, 220, 110))
+				end
+				infoRow(2, "PAYS NOW", formatCommas(payNow), UI_GOLD, GOLDSTROKE)
+				infoRow(3, "PAYS AFTER", formatCommas(payNext), UI_GOLD, GOLDSTROKE)
+				infoRow(4, "TOTAL OWNED", tostring(total), nil, nil,
+					total / req, Color3.fromRGB(255, 120, 210))
+				if nextCount <= 0 then
+					infoRow(5, formWord(showNext) .. " OWNED", "FIRST! +1 SCORE", UI_GREEN,
+						Color3.fromRGB(16, 70, 30))
+				else
+					infoRow(5, formWord(showNext) .. " OWNED", tostring(nextCount), nextTint, nextStroke)
+				end
+				infoRow(6, "LOCKED", isLocked(entry) and "YES" or "NO",
+					isLocked(entry) and UI_GOLD or Color3.fromRGB(200, 180, 230),
+					isLocked(entry) and GOLDSTROKE or nil)
 			else
-				infoRow(5, "NEXT OWNED", tostring(nextCount))
+				for i = 1, 6 do
+					infoRow(i, ({ "PROGRESS", "PAYS NOW", "PAYS AFTER", "TOTAL OWNED",
+						"NEXT FORM OWNED", "LOCKED" })[i], "—", Color3.fromRGB(160, 146, 186))
+				end
 			end
-			infoRow(6, "LOCKED", isLocked(entry) and "YES" or "NO",
-				isLocked(entry) and UI_GOLD or Color3.fromRGB(200, 180, 230),
-				isLocked(entry) and GOLDSTROKE or nil)
-		else
-			for i = 1, 6 do
-				infoRow(i, ({ "PROGRESS", "PAYS NOW", "PAYS NEXT", "COPIES", "NEXT OWNED", "LOCKED" })[i],
-					"—", Color3.fromRGB(160, 146, 186))
-			end
-		end
-		if entry then
-			local craftCost = GameConfig.DustCraft.costByTier[dTier] or 0
-			local craftBtn = Instance.new("TextButton")
-			craftBtn.AnchorPoint = Vector2.new(0.5, 1)
-			craftBtn.Position = UDim2.new(0.5, 0, 1, -12)
-			craftBtn.Size = UDim2.new(1, -24, 0, cfg.craftH)
-			craftBtn.BorderSizePixel = 0
-			craftBtn.Font = Enum.Font.GothamBlack
-			craftBtn.ZIndex = 29
-			craftBtn.Parent = infoCard
-			corner(craftBtn, 14)
-			if dust >= craftCost then
-				craftBtn.TextSize = 13
-				craftBtn.Text = ("CRAFT A COPY — %d DUST"):format(craftCost)
-				craftBtn.BackgroundColor3 = Color3.fromRGB(150, 90, 220)
-				craftBtn.TextColor3 = Color3.new(1, 1, 1)
-				craftBtn.TextStrokeColor3 = PLUMTEXT
-				craftBtn.TextStrokeTransparency = 0.15
-				stroke(craftBtn, Color3.fromRGB(66, 30, 110), 3, 0)
-				craftBtn.MouseEnter:Connect(function()
-					craftBtn.BackgroundColor3 = Color3.fromRGB(168, 110, 235)
-				end)
-				craftBtn.MouseLeave:Connect(function()
-					craftBtn.BackgroundColor3 = Color3.fromRGB(150, 90, 220)
-				end)
-				craftBtn.MouseButton1Click:Connect(function()
-					if craftRemote then craftRemote:FireServer(dName, dTier) end
-				end)
-			else
-				craftBtn.TextSize = 12
-				craftBtn.Text = ("CRAFT COPY — %d/%d DUST"):format(dust, craftCost)
-				craftBtn.BackgroundColor3 = OFFBG
-				craftBtn.TextColor3 = Color3.fromRGB(196, 184, 214)
+			if entry then
+				local craftCost = GameConfig.DustCraft.costByTier[dTier] or 0
+				local craftBtn = Instance.new("TextButton")
+				craftBtn.AnchorPoint = Vector2.new(0.5, 1)
+				craftBtn.Position = UDim2.new(0.5, 0, 1, -12)
+				craftBtn.Size = UDim2.new(1, -24, 0, C.craftH)
+				craftBtn.BorderSizePixel = 0
 				craftBtn.AutoButtonColor = false
+				craftBtn.Font = Enum.Font.GothamBlack
+				craftBtn.ZIndex = 29
+				craftBtn.Parent = infoCard
+				corner(craftBtn, 14)
+				if dust >= craftCost then
+					craftBtn.TextSize = short and 12 or 13
+					craftBtn.Text = ("CRAFT A COPY — %s DUST"):format(formatCommas(craftCost))
+					craftBtn.BackgroundColor3 = Color3.fromRGB(150, 90, 220)
+					craftBtn.TextColor3 = Color3.new(1, 1, 1)
+					craftBtn.TextStrokeColor3 = PLUMTEXT
+					craftBtn.TextStrokeTransparency = 0.15
+					stroke(craftBtn, Color3.fromRGB(66, 30, 110), 3, 0)
+					candyStates(craftBtn, Color3.fromRGB(150, 90, 220))
+					craftBtn.MouseButton1Click:Connect(function()
+						if craftRemote then craftRemote:FireServer(dName, dTier) end
+					end)
+				else
+					craftBtn.TextSize = short and 11 or 12
+					craftBtn.Text = ("CRAFT A COPY — %s / %s DUST"):format(
+						formatCommas(dust), formatCommas(craftCost))
+					craftBtn.BackgroundColor3 = OFFBG
+					craftBtn.TextColor3 = DIM
+					stroke(craftBtn, PLUM, 2, 0)
+				end
 			end
 		end
 
 		-- -------------------- bottom strip: YOUR PLANETS --------------------
-		local sr = mkRibbon(stripCard, UDim2.new(0, 10, 0, -14),
-			UDim2.fromOffset(narrow and 150 or 190, narrow and 30 or 36),
-			Color3.fromRGB(255, 84, 170), "YOUR PLANETS", narrow and 12 or 13)
-		sr.ZIndex = 28
-		if not narrow and wid >= 1050 then
-			local rc = label(stripCard, ("%d READY TO FORGE"):format(nReady), 12,
-				UI_GOLD, Enum.Font.GothamBlack)
-			rc.Position = UDim2.new(0, 206, 0, 8)
-			rc.Size = UDim2.fromOffset(180, 20)
-			rc.TextXAlignment = Enum.TextXAlignment.Left
-			rc.TextStrokeColor3 = GOLDSTROKE
-			rc.TextStrokeTransparency = 0.3
-			rc.ZIndex = 29
-		end
-		-- Controls band (search / rarity chips / ready-only), right-aligned.
-		local ctrlY = 4
-		local ctrlH = narrow and 26 or 28
-		local searchBox = Instance.new("TextBox")
-		searchBox.AnchorPoint = Vector2.new(1, 0)
-		searchBox.Position = UDim2.new(1, narrow and -330 or -386, 0, ctrlY)
-		searchBox.Size = UDim2.fromOffset(narrow and 110 or 170, ctrlH)
-		searchBox.BackgroundColor3 = DEEPWELL
-		searchBox.BorderSizePixel = 0
-		searchBox.Font = Enum.Font.GothamBold
-		searchBox.TextSize = 12
-		searchBox.TextColor3 = UI_TEXT
-		searchBox.PlaceholderText = "SEARCH..."
-		searchBox.PlaceholderColor3 = Color3.fromRGB(160, 140, 190)
-		searchBox.Text = forgeSearch
-		searchBox.ClearTextOnFocus = false
-		searchBox.TextXAlignment = Enum.TextXAlignment.Left
-		searchBox.ZIndex = 29
-		searchBox.Parent = stripCard
-		corner(searchBox, 10)
-		stroke(searchBox, PLUM, 2, 0)
 		do
-			local pad = Instance.new("UIPadding")
-			pad.PaddingLeft = UDim.new(0, 10)
-			pad.Parent = searchBox
-		end
-		searchBox.FocusLost:Connect(function()
-			local text = searchBox.Text or ""
-			if text ~= forgeSearch then
-				forgeSearch = text
-				renderForge()
+			local ribW = narrow and 150 or 190
+			local sr = mkRibbon(stripCard, UDim2.new(0, 10, 0, -14),
+				UDim2.fromOffset(ribW, narrow and 30 or 36),
+				Color3.fromRGB(255, 84, 170), "YOUR PLANETS", narrow and 12 or 13)
+			sr.ZIndex = 28
+			-- Controls band (search / rarity chips / ready-only), right-aligned.
+			-- Search hides on tight phones — nothing may collide with the ribbon.
+			local ctrlY = 4
+			local ctrlH = narrow and 26 or 28
+			local chipS = narrow and 24 or 28
+			local onlyW = narrow and 108 or 118
+			local searchW = narrow and 110 or 170
+			local showSearch = pw >= 640
+			local ctrlSpan = 12 + onlyW + 8 + (#PusherMachine.Tiers + 1) * (chipS + 4)
+				+ (showSearch and (searchW + 10) or 0)
+			if pw - ctrlSpan - (ribW + 26) >= 150 then
+				local rc = label(stripCard,
+					nReady > 0 and ("%d READY TO FORGE"):format(nReady) or "NONE READY — ROLL MORE!",
+					12, nReady > 0 and UI_GOLD or Color3.fromRGB(200, 180, 230), Enum.Font.GothamBlack)
+				rc.Position = UDim2.new(0, ribW + 16, 0, narrow and 5 or 8)
+				rc.Size = UDim2.fromOffset(180, 20)
+				rc.TextXAlignment = Enum.TextXAlignment.Left
+				rc.TextStrokeColor3 = nReady > 0 and GOLDSTROKE or PLUMTEXT
+				rc.TextStrokeTransparency = 0.3
+				rc.ZIndex = 29
 			end
-		end)
-		local chipS = narrow and 24 or 28
-		for fi = 0, #PusherMachine.Tiers do
-			local isAll = fi == 0
-			local chipTier = not isAll and PusherMachine.Tiers[fi] or nil
-			local chipColor = isAll and UI_TEXT or chipTier.color
-			local fchip = Instance.new("TextButton")
-			fchip.AnchorPoint = Vector2.new(1, 0)
-			fchip.Position = UDim2.new(1, (narrow and -292 or -344) + fi * (chipS + 4), 0, ctrlY)
-			fchip.Size = UDim2.fromOffset(chipS, chipS)
-			fchip.BackgroundColor3 = forgeFilter == fi and chipColor:Lerp(DEEPWELL, 0.55)
-				or SOFTBG
-			fchip.BorderSizePixel = 0
-			fchip.Font = Enum.Font.GothamBlack
-			fchip.TextSize = 12
-			fchip.TextColor3 = chipColor
-			fchip.TextStrokeColor3 = Color3.new(0, 0, 0)
-			fchip.TextStrokeTransparency = 0.4
-			fchip.Text = isAll and "ALL" or tostring(fi)
-			fchip.ZIndex = 29
-			fchip.Parent = stripCard
-			corner(fchip, 10)
-			if forgeFilter == fi then
-				stroke(fchip, chipColor, 2, 0.15)
-			else
-				local pick = fi
-				fchip.MouseButton1Click:Connect(function()
-					forgeFilter = pick
-					renderForge()
-				end)
-			end
-		end
-		local onlyBtn = Instance.new("TextButton")
-		onlyBtn.AnchorPoint = Vector2.new(1, 0)
-		onlyBtn.Position = UDim2.new(1, narrow and -8 or -12, 0, ctrlY)
-		onlyBtn.Size = UDim2.fromOffset(narrow and 108 or 118, ctrlH)
-		onlyBtn.BorderSizePixel = 0
-		onlyBtn.Font = Enum.Font.GothamBlack
-		onlyBtn.TextSize = 12
-		onlyBtn.ZIndex = 29
-		onlyBtn.Parent = stripCard
-		corner(onlyBtn, 10)
-		if forgeOnlyReady then
-			onlyBtn.Text = narrow and "READY: ON" or "READY ONLY: ON"
-			onlyBtn.BackgroundColor3 = Color3.fromRGB(70, 52, 16)
-			onlyBtn.TextColor3 = UI_GOLD
-			onlyBtn.TextStrokeColor3 = GOLDSTROKE
-			onlyBtn.TextStrokeTransparency = 0.3
-			stroke(onlyBtn, UI_GOLD, 2, 0.25)
-		else
-			onlyBtn.Text = narrow and "READY: OFF" or "READY ONLY: OFF"
-			onlyBtn.BackgroundColor3 = SOFTBG
-			onlyBtn.TextColor3 = Color3.fromRGB(200, 180, 230)
-			onlyBtn.TextStrokeColor3 = PLUMTEXT
-			onlyBtn.TextStrokeTransparency = 0.4
-		end
-		onlyBtn.MouseButton1Click:Connect(function()
-			forgeOnlyReady = not forgeOnlyReady
-			renderForge()
-		end)
-
-		-- Virtualized horizontal scroller: fixed pool, 2D sprite portraits
-		-- (ZERO ViewportFrames here), rebinds coalesced on CanvasPosition.
-		local strip = Instance.new("ScrollingFrame")
-		strip.Position = UDim2.new(0, 12, 0, cfg.stripY)
-		strip.Size = UDim2.new(1, -24, 0, cfg.stripH)
-		strip.BackgroundTransparency = 1
-		strip.BorderSizePixel = 0
-		strip.ScrollingDirection = Enum.ScrollingDirection.X
-		strip.ScrollBarThickness = 6
-		strip.ScrollBarImageColor3 = UI_GOLD
-		strip.ElasticBehavior = Enum.ElasticBehavior.WhenScrollable
-		strip.CanvasSize = UDim2.fromOffset(#entries * cfg.stride + 8, 0)
-		strip.ZIndex = 28
-		strip.Parent = stripCard
-		if #ownedBalls == 0 then
-			local ghost = Instance.new("Frame")
-			ghost.Position = UDim2.fromOffset(4, 4)
-			ghost.Size = UDim2.fromOffset(cfg.tileW, cfg.tileH)
-			ghost.BackgroundColor3 = DEEPWELL
-			ghost.BorderSizePixel = 0
-			ghost.ZIndex = 29
-			ghost.Parent = strip
-			corner(ghost, 12)
-			stroke(ghost, Color3.fromRGB(110, 70, 170), 2, 0.4)
-			local gq = label(ghost, "?", 20, Color3.fromRGB(160, 120, 210), Enum.Font.GothamBlack)
-			gq.Size = UDim2.fromScale(1, 1)
-			gq.ZIndex = 30
-		elseif #entries == 0 then
-			local none = label(strip, "NO MATCHES — CLEAR SEARCH OR FILTERS", 13,
-				Color3.fromRGB(200, 180, 230), Enum.Font.GothamBlack)
-			none.Size = UDim2.new(1, 0, 1, 0)
-			none.ZIndex = 29
-		else
-			local pool = {}
-			for i = 1, cfg.pool do
-				local tile = Instance.new("TextButton")
-				tile.Text = ""
-				tile.Visible = false
-				tile.BorderSizePixel = 0
-				tile.Size = UDim2.fromOffset(cfg.tileW, cfg.tileH)
-				tile.ZIndex = 29
-				tile.Parent = strip
-				pool[i] = { btn = tile, key = nil }
-				tile.MouseButton1Click:Connect(function()
-					if pool[i].key then
-						forgeSelected = pool[i].key
+			local chipsRight = 12 + onlyW + 8
+			if showSearch then
+				local searchBox = Instance.new("TextBox")
+				searchBox.AnchorPoint = Vector2.new(1, 0)
+				searchBox.Position = UDim2.new(1, -(chipsRight + (#PusherMachine.Tiers + 1) * (chipS + 4) + 6), 0, ctrlY)
+				searchBox.Size = UDim2.fromOffset(searchW, ctrlH)
+				searchBox.BackgroundColor3 = DEEPWELL
+				searchBox.BorderSizePixel = 0
+				searchBox.Font = Enum.Font.GothamBold
+				searchBox.TextSize = 12
+				searchBox.TextColor3 = UI_TEXT
+				searchBox.PlaceholderText = "SEARCH..."
+				searchBox.PlaceholderColor3 = Color3.fromRGB(160, 140, 190)
+				searchBox.Text = forgeSearch
+				searchBox.ClearTextOnFocus = false
+				searchBox.TextXAlignment = Enum.TextXAlignment.Left
+				searchBox.ZIndex = 29
+				searchBox.Parent = stripCard
+				corner(searchBox, 10)
+				stroke(searchBox, PLUM, 2, 0)
+				local pad = Instance.new("UIPadding")
+				pad.PaddingLeft = UDim.new(0, 10)
+				pad.Parent = searchBox
+				searchBox.FocusLost:Connect(function()
+					local text = searchBox.Text or ""
+					if text ~= forgeSearch then
+						forgeSearch = text
 						renderForge()
 					end
 				end)
 			end
-			local function bindTile(i, e, index)
-				local slot = pool[i]
-				local tile = slot.btn
-				tile:ClearAllChildren()
-				if not e then
-					slot.key = nil
-					tile.Visible = false
-					return
-				end
-				local tKey = e.n .. "|" .. e.t
-				local tTier = PusherMachine.Tiers[e.t] or PusherMachine.Tiers[1]
-				local tc, tf1, tf2 = countsOf(e)
-				local tBest = tf2 > 0 and 2 or (tf1 > 0 and 1 or 0)
-				local selected = tKey == forgeSelected
-				slot.key = tKey
-				tile.Visible = true
-				tile.Position = UDim2.fromOffset((index - 1) * cfg.stride + 4, selected and 0 or 4)
-				tile.BackgroundColor3 = tTier.color:Lerp(Color3.fromRGB(30, 12, 54), 0.72)
-				corner(tile, 12)
-				if selected then
-					stroke(tile, UI_GOLD, 3, 0)
-					local glow = Instance.new("ImageLabel")
-					glow.Image = UI_FRAME_GLOW
-					glow.AnchorPoint = Vector2.new(0.5, 0.5)
-					glow.Position = UDim2.fromScale(0.5, 0.5)
-					glow.Size = UDim2.fromOffset(cfg.tileW + 28, cfg.tileH + 28)
-					glow.ImageColor3 = UI_GOLD
-					glow.ImageTransparency = 0.5
-					glow.BackgroundTransparency = 1
-					glow.ZIndex = 28
-					glow.Parent = tile
+			for fi = 0, #PusherMachine.Tiers do
+				local isAll = fi == 0
+				local chipTier = not isAll and PusherMachine.Tiers[fi] or nil
+				local chipColor = isAll and UI_TEXT or chipTier.color
+				local fchip = Instance.new("TextButton")
+				fchip.AnchorPoint = Vector2.new(1, 0)
+				fchip.Position = UDim2.new(1, -(chipsRight + (#PusherMachine.Tiers - fi) * (chipS + 4)), 0, ctrlY)
+				fchip.Size = UDim2.fromOffset(chipS, chipS)
+				fchip.BackgroundColor3 = forgeFilter == fi and chipColor:Lerp(DEEPWELL, 0.55)
+					or SOFTBG
+				fchip.BorderSizePixel = 0
+				fchip.Font = Enum.Font.GothamBlack
+				fchip.TextSize = 12
+				fchip.TextColor3 = chipColor
+				fchip.TextStrokeColor3 = Color3.new(0, 0, 0)
+				fchip.TextStrokeTransparency = 0.4
+				fchip.Text = isAll and "ALL" or tostring(fi)
+				fchip.ZIndex = 29
+				fchip.Parent = stripCard
+				corner(fchip, 10)
+				if forgeFilter == fi then
+					stroke(fchip, chipColor, 2, 0.15)
 				else
-					stroke(tile, tTier.color, 2.5, 0.1)
-				end
-				local tSpec = planetLookup[tKey]
-				if tSpec then
-					local holder = makePlanetIcon(tile, tSpec, cfg.icon, 30, tBest)
-					holder.Position = UDim2.new(0.5, -cfg.icon / 2, 0, 4)
-				end
-				local nameChip = Instance.new("Frame")
-				nameChip.AnchorPoint = Vector2.new(0.5, 1)
-				nameChip.Position = UDim2.new(0.5, 0, 1, -3)
-				nameChip.Size = UDim2.new(1, -8, 0, narrow and 14 or 16)
-				nameChip.BackgroundColor3 = INKBG
-				nameChip.BackgroundTransparency = 0.15
-				nameChip.BorderSizePixel = 0
-				nameChip.ZIndex = 30
-				nameChip.Parent = tile
-				corner(nameChip, 8)
-				local nc = label(nameChip, e.n, 12, Color3.new(1, 1, 1), Enum.Font.GothamBold)
-				nc.Size = UDim2.fromScale(1, 1)
-				nc.TextTruncate = Enum.TextTruncate.AtEnd
-				nc.TextStrokeColor3 = PLUMTEXT
-				nc.TextStrokeTransparency = 0.3
-				nc.ZIndex = 31
-				local countChip = Instance.new("Frame")
-				countChip.Position = UDim2.new(0, 3, 0, 3)
-				countChip.Size = UDim2.fromOffset(26, 16)
-				countChip.BackgroundColor3 = INKBG
-				countChip.BorderSizePixel = 0
-				countChip.ZIndex = 30
-				countChip.Parent = tile
-				corner(countChip, 8)
-				local cc = label(countChip, "x" .. (tc + tf1 + tf2), 12, UI_GOLD, Enum.Font.GothamBold)
-				cc.Size = UDim2.fromScale(1, 1)
-				cc.TextStrokeColor3 = GOLDSTROKE
-				cc.TextStrokeTransparency = 0.3
-				cc.ZIndex = 31
-				if entryForgeable(e) then
-					local rb = Instance.new("Frame")
-					rb.AnchorPoint = Vector2.new(1, 0)
-					rb.Position = UDim2.new(1, -3, 0, 3)
-					rb.Size = UDim2.fromOffset(narrow and 40 or 46, narrow and 14 or 16)
-					rb.BackgroundColor3 = Color3.fromRGB(20, 80, 40)
-					rb.BorderSizePixel = 0
-					rb.ZIndex = 30
-					rb.Parent = tile
-					corner(rb, 8)
-					local rl = label(rb, "READY!", 12, Color3.new(1, 1, 1), Enum.Font.GothamBlack)
-					rl.Size = UDim2.fromScale(1, 1)
-					rl.TextStrokeColor3 = Color3.fromRGB(16, 60, 30)
-					rl.TextStrokeTransparency = 0.2
-					rl.ZIndex = 31
-				end
-				if isLocked(e) then
-					local lb = Instance.new("Frame")
-					lb.AnchorPoint = Vector2.new(1, 0)
-					lb.Position = UDim2.new(1, -3, 0, narrow and 19 or 21)
-					lb.Size = UDim2.fromOffset(narrow and 40 or 46, narrow and 14 or 16)
-					lb.BackgroundColor3 = Color3.fromRGB(70, 52, 16)
-					lb.BorderSizePixel = 0
-					lb.ZIndex = 30
-					lb.Parent = tile
-					corner(lb, 8)
-					local ll = label(lb, "LOCKED", 12, UI_GOLD, Enum.Font.GothamBlack)
-					ll.Size = UDim2.fromScale(1, 1)
-					ll.TextStrokeColor3 = GOLDSTROKE
-					ll.TextStrokeTransparency = 0.2
-					ll.ZIndex = 31
-				end
-			end
-			local function updateStrip()
-				local first = math.clamp(math.floor(strip.CanvasPosition.X / cfg.stride) + 1,
-					1, math.max(1, #entries - (cfg.pool - 1)))
-				for i = 1, cfg.pool do
-					bindTile(i, entries[first + i - 1], first + i - 1)
-				end
-			end
-			local queued = false
-			strip:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
-				stripScrollX = strip.CanvasPosition.X
-				if not queued then
-					queued = true
-					task.defer(function()
-						queued = false
-						if strip.Parent then updateStrip() end
+					local pick = fi
+					fchip.MouseButton1Click:Connect(function()
+						forgeFilter = pick
+						renderForge()
 					end)
 				end
+			end
+			local onlyBtn = Instance.new("TextButton")
+			onlyBtn.AnchorPoint = Vector2.new(1, 0)
+			onlyBtn.Position = UDim2.new(1, -12, 0, ctrlY)
+			onlyBtn.Size = UDim2.fromOffset(onlyW, ctrlH)
+			onlyBtn.BorderSizePixel = 0
+			onlyBtn.Font = Enum.Font.GothamBlack
+			onlyBtn.TextSize = 12
+			onlyBtn.ZIndex = 29
+			onlyBtn.Parent = stripCard
+			corner(onlyBtn, 10)
+			if forgeOnlyReady then
+				onlyBtn.Text = narrow and "READY: ON" or "READY ONLY: ON"
+				onlyBtn.BackgroundColor3 = Color3.fromRGB(70, 52, 16)
+				onlyBtn.TextColor3 = UI_GOLD
+				onlyBtn.TextStrokeColor3 = GOLDSTROKE
+				onlyBtn.TextStrokeTransparency = 0.3
+				stroke(onlyBtn, UI_GOLD, 2, 0.25)
+			else
+				onlyBtn.Text = narrow and "READY: OFF" or "READY ONLY: OFF"
+				onlyBtn.BackgroundColor3 = SOFTBG
+				onlyBtn.TextColor3 = Color3.fromRGB(200, 180, 230)
+				onlyBtn.TextStrokeColor3 = PLUMTEXT
+				onlyBtn.TextStrokeTransparency = 0.4
+			end
+			onlyBtn.MouseButton1Click:Connect(function()
+				forgeOnlyReady = not forgeOnlyReady
+				renderForge()
 			end)
-			if scrollToSelected and forgeSelected then
-				scrollToSelected = false
-				for si, e in ipairs(entries) do
-					if (e.n .. "|" .. e.t) == forgeSelected then
-						stripScrollX = math.max(0, (si - 1) * cfg.stride - 400)
-						break
+
+			-- Virtualized horizontal scroller: fixed pool, 2D sprite portraits
+			-- (ZERO ViewportFrames here), rebinds coalesced on CanvasPosition.
+			local strip = Instance.new("ScrollingFrame")
+			strip.Position = UDim2.new(0, 12, 0, C.stripY)
+			strip.Size = UDim2.new(1, -24, 0, C.stripH)
+			strip.BackgroundTransparency = 1
+			strip.BorderSizePixel = 0
+			strip.ScrollingDirection = Enum.ScrollingDirection.X
+			strip.ScrollBarThickness = 6
+			strip.ScrollBarImageColor3 = UI_GOLD
+			strip.ElasticBehavior = Enum.ElasticBehavior.WhenScrollable
+			strip.CanvasSize = UDim2.fromOffset(#entries * C.stride + 8, 0)
+			strip.ZIndex = 28
+			strip.Parent = stripCard
+			if #ownedBalls == 0 then
+				local ghost = Instance.new("Frame")
+				ghost.Position = UDim2.fromOffset(4, 4)
+				ghost.Size = UDim2.fromOffset(C.tileW, C.tileH)
+				ghost.BackgroundColor3 = DEEPWELL
+				ghost.BorderSizePixel = 0
+				ghost.ZIndex = 29
+				ghost.Parent = strip
+				corner(ghost, 12)
+				stroke(ghost, Color3.fromRGB(110, 70, 170), 2, 0.4)
+				local gq = label(ghost, "?", 24, Color3.fromRGB(160, 120, 210), Enum.Font.FredokaOne)
+				gq.Size = UDim2.fromScale(1, 1)
+				gq.ZIndex = 30
+				local gh = label(strip, "YOUR PLANETS SHOW UP HERE — ROLL TO GET SOME!", 13,
+					Color3.fromRGB(200, 180, 230), Enum.Font.GothamBlack)
+				gh.Position = UDim2.new(0, C.tileW + 16, 0, 0)
+				gh.Size = UDim2.new(1, -(C.tileW + 24), 0, C.tileH + 4)
+				gh.TextXAlignment = Enum.TextXAlignment.Left
+				gh.TextWrapped = true
+				gh.TextStrokeColor3 = PLUMTEXT
+				gh.TextStrokeTransparency = 0.3
+				gh.ZIndex = 29
+			elseif #entries == 0 then
+				local none = label(strip, "NO MATCHES — CLEAR SEARCH OR FILTERS", 13,
+					Color3.fromRGB(200, 180, 230), Enum.Font.GothamBlack)
+				none.Size = UDim2.new(1, 0, 1, 0)
+				none.ZIndex = 29
+			else
+				-- Selection glow lives BEHIND the tiles (a sibling): tiles clip
+				-- their planet rings, so nothing inside a tile can hang out.
+				local selGlow = Instance.new("ImageLabel")
+				selGlow.Image = UI_FRAME_GLOW
+				selGlow.Size = UDim2.fromOffset(C.tileW + 28, C.tileH + 28)
+				selGlow.ImageColor3 = UI_GOLD
+				selGlow.ImageTransparency = 0.45
+				selGlow.BackgroundTransparency = 1
+				selGlow.Visible = false
+				selGlow.ZIndex = 28
+				selGlow.Parent = strip
+				local pool = {}
+				for i = 1, C.pool do
+					local tile = Instance.new("TextButton")
+					tile.Text = ""
+					tile.Visible = false
+					tile.AutoButtonColor = false
+					tile.BorderSizePixel = 0
+					tile.ClipsDescendants = true
+					tile.Size = UDim2.fromOffset(C.tileW, C.tileH)
+					tile.ZIndex = 29
+					tile.Parent = strip
+					pool[i] = { btn = tile, key = nil }
+					tile.MouseButton1Click:Connect(function()
+						if pool[i].key and pool[i].key ~= forgeSelected then
+							forgeSelected = pool[i].key
+							renderForge()
+						end
+					end)
+				end
+				local badgeW = narrow and 40 or (short and 40 or 46)
+				local badgeH = (narrow or short) and 15 or 16
+				local countW = (narrow or short) and 32 or 38
+				local function bindTile(i, e, index)
+					local slot = pool[i]
+					local tile = slot.btn
+					tile:ClearAllChildren()
+					if not e then
+						slot.key = nil
+						tile.Visible = false
+						return
+					end
+					local tKey = e.n .. "|" .. (e.t or 1)
+					local tTier = PusherMachine.Tiers[e.t or 1] or PusherMachine.Tiers[1]
+					local tc, tf1, tf2 = countsOf(e)
+					local tFrom, tHave, tReq = nextForge(e, e.t or 1)
+					local tReady = entryForgeable(e)
+					local tMaxed = entryMaxed(e)
+					local tLocked = isLocked(e)
+					local selected = tKey == forgeSelected
+					slot.key = tKey
+					tile.Visible = true
+					local tx = (index - 1) * C.stride + 4
+					tile.Position = UDim2.fromOffset(tx, selected and 0 or 4)
+					tile.BackgroundColor3 = tTier.color:Lerp(Color3.fromRGB(30, 12, 54), tMaxed and 0.82 or 0.72)
+					corner(tile, 12)
+					if selected then
+						stroke(tile, UI_GOLD, 3, 0)
+						selGlow.Position = UDim2.fromOffset(tx - 14, -14)
+						selGlow.Visible = true
+					elseif tLocked then
+						stroke(tile, UI_GOLD, 2.5, 0.35)
+					else
+						stroke(tile, tTier.color, 2.5, tReady and 0 or 0.25)
+					end
+					-- Planet sprite at ONE size for every tile (the form the
+					-- tile forges next, so READY tiles show the pile you spend).
+					local tSpec = planetLookup[tKey]
+					local iconForm = tFrom or (tf2 > 0 and 2 or (tf1 > 0 and 1 or 0))
+					local holder = makePlanetIcon(tile, tSpec, C.icon, 30, iconForm)
+					holder.Position = UDim2.new(0.5, -C.icon / 2, 0, C.iconY)
+					if tReady then
+						halo(tile, math.floor(C.icon * 1.6), UI_GOLD, 0.6, 29,
+							UDim2.new(0.5, 0, 0, C.iconY + math.floor(C.icon / 2)))
+					end
+					-- Name chip (gold-plated when locked).
+					local nameChip = Instance.new("Frame")
+					nameChip.AnchorPoint = Vector2.new(0.5, 1)
+					nameChip.Position = UDim2.new(0.5, 0, 1, -3)
+					nameChip.Size = UDim2.new(1, -8, 0, (narrow or short) and 15 or 17)
+					nameChip.BackgroundColor3 = tLocked and Color3.fromRGB(70, 52, 16) or INKBG
+					nameChip.BackgroundTransparency = tLocked and 0 or 0.15
+					nameChip.BorderSizePixel = 0
+					nameChip.ZIndex = 31
+					nameChip.Parent = tile
+					corner(nameChip, 8)
+					local nc = label(nameChip, e.n, 12, tLocked and UI_GOLD or Color3.new(1, 1, 1),
+						Enum.Font.GothamBold)
+					nc.Size = UDim2.fromScale(1, 1)
+					nc.TextTruncate = Enum.TextTruncate.AtEnd
+					nc.TextStrokeColor3 = tLocked and GOLDSTROKE or PLUMTEXT
+					nc.TextStrokeTransparency = 0.3
+					nc.ZIndex = 32
+					-- Count chip top-left: "7/10" toward the next forge.
+					local countText, countColor, countStroke
+					if tMaxed then
+						countText, countColor, countStroke = "MAX", UI_GOLD, GOLDSTROKE
+					elseif tFrom ~= nil then
+						countText = ("%d/%d"):format(math.min(tHave, tReq), tReq)
+						countColor = tReady and UI_GOLD or Color3.fromRGB(230, 205, 255)
+						countStroke = tReady and GOLDSTROKE or PLUMTEXT
+					else
+						countText, countColor, countStroke = "x" .. (tc + tf1 + tf2), Color3.fromRGB(230, 205, 255), PLUMTEXT
+					end
+					pill(tile, Vector2.new(0, 0), UDim2.fromOffset(3, 3), countW, badgeH, INKBG,
+						countText, countColor, countStroke, 31, (narrow or short) and 10 or 11)
+					-- ONE status badge top-right: READY! > MAX > LOCKED.
+					if tReady then
+						pill(tile, Vector2.new(1, 0), UDim2.new(1, -3, 0, 3), badgeW, badgeH,
+							Color3.fromRGB(20, 92, 44), "READY!", Color3.new(1, 1, 1),
+							Color3.fromRGB(16, 60, 30), 31, 11)
+					elseif tMaxed then
+						pill(tile, Vector2.new(1, 0), UDim2.new(1, -3, 0, 3), badgeW, badgeH,
+							Color3.fromRGB(70, 52, 16), "MAX", UI_GOLD, GOLDSTROKE, 31, 11)
+					elseif tLocked then
+						pill(tile, Vector2.new(1, 0), UDim2.new(1, -3, 0, 3), badgeW, badgeH,
+							Color3.fromRGB(70, 52, 16), "LOCKED", UI_GOLD, GOLDSTROKE, 31, 10)
 					end
 				end
+				local function updateStrip()
+					local first = math.clamp(math.floor(strip.CanvasPosition.X / C.stride) + 1,
+						1, math.max(1, #entries - (C.pool - 1)))
+					selGlow.Visible = false
+					for i = 1, C.pool do
+						bindTile(i, entries[first + i - 1], first + i - 1)
+					end
+				end
+				local queued = false
+				strip:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
+					stripScrollX = strip.CanvasPosition.X
+					if not queued then
+						queued = true
+						task.defer(function()
+							queued = false
+							if strip.Parent then updateStrip() end
+						end)
+					end
+				end)
+				if scrollToSelected and forgeSelected then
+					scrollToSelected = false
+					for si, e in ipairs(entries) do
+						if (e.n .. "|" .. (e.t or 1)) == forgeSelected then
+							-- Land the tile near the middle of the visible strip.
+							stripScrollX = math.max(0, (si - 1) * C.stride
+								- math.floor((pw - 64) / 2) + math.floor(C.tileW / 2))
+							break
+						end
+					end
+				end
+				strip.CanvasPosition = Vector2.new(stripScrollX, 0)
+				updateStrip()
 			end
-			strip.CanvasPosition = Vector2.new(stripScrollX, 0)
-			updateStrip()
 		end
 	end
 
@@ -12003,8 +12364,12 @@ end)()
 					return nil, "PICK YOUR " .. tostring(gift.n):upper() .. " — YOU HAVE ENOUGH!"
 				end
 				if S.forgeCanForge and S.forgeGoBtn and S.forgeGoBtn.Parent then
-					return S.forgeGoBtn, "TAP FORGE — 10 BECOME 1 ASCENDED!"
+					local selTier = tonumber(tostring(S.forgeSelectedKey or ""):match("|(%d+)$")) or 1
+					local req = GameConfig.forgeReq(attrGet, selTier) or 10
+					return S.forgeGoBtn, ("TAP FORGE — %d BECOME 1 ASCENDED!"):format(req)
 				end
+				-- (Hidden beats: a nil target keeps the tutorial alive but
+				-- draws nothing — the page's own copy carries these.)
 				return nil, "ROLL MORE TO FORGE!"
 			end
 			return S.forgeNavBtn, "FORGE 10 INTO 1 ASCENDED!"
@@ -12058,6 +12423,23 @@ end)()
 		if asz.X <= 0 or asz.Y <= 0 then
 			coach.Visible = false -- not laid out yet
 			return
+		end
+		-- A target inside a scroller (the forge's narrow layout) that is
+		-- scrolled out of its window would leave the coach floating over
+		-- whatever is drawn there instead — hide until it scrolls back.
+		do
+			local anc = target.Parent
+			while anc and anc ~= gui do
+				if anc:IsA("ScrollingFrame") then
+					local wp, ws = anc.AbsolutePosition, anc.AbsoluteWindowSize
+					if ap.Y + asz.Y < wp.Y or ap.Y > wp.Y + ws.Y
+						or ap.X + asz.X < wp.X or ap.X > wp.X + ws.X then
+						coach.Visible = false
+						return
+					end
+				end
+				anc = anc.Parent
+			end
 		end
 		-- AbsolutePosition is post-HudScale screen pixels IN INSET SPACE, and
 		-- this gui has IgnoreGuiInset, so its own origin sits at (0, -inset):
@@ -12235,9 +12617,16 @@ end)()
 	-- beats; snap instead of waiting for the 0.5s sweep.
 	if S.forgePage then
 		S.forgePage:GetPropertyChangedSignal("Visible"):Connect(function()
+			-- Closing re-arms the one-time pre-select, so a player who
+			-- tapped another planet and left gets the gift planet picked
+			-- again next time in.
+			if not S.forgePage.Visible then forgeAutoPicked = false end
 			task.defer(refresh)
 		end)
 	end
+	-- The starter gift and the first forge both land as inventory syncs
+	-- (the FirstForgeDone attr can beat the sync by a frame).
+	invDirty.Event:Connect(refresh)
 	task.spawn(function()
 		while not tutorialSkipped do
 			refresh()
