@@ -1051,7 +1051,10 @@ local function wireCollector(machine)
 	local burst = burstHost and burstHost:FindFirstChild("PayBurst")
 	local clink = burstHost and burstHost:FindFirstChild("Clink")
 
-	local conn = collector.Touched:Connect(function(hit)
+	-- ONE scoring path for both sensors: the Collector band buckets a piece
+	-- by the x it crossed the mouth at; the JackpotHole inside the cup forces
+	-- lane 4 (the jackpot lane) — landing in the bowl IS the jackpot.
+	local function collectPiece(hit, laneOverride)
 		if hit.Parent ~= machine then return end
 		if hit:GetAttribute("Paid") then return end
 
@@ -1082,7 +1085,9 @@ local function wireCollector(machine)
 		local relXS = collector.CFrame:PointToObjectSpace(hit.Position).X
 		local relX = math.abs(relXS)
 		local lane
-		if relX < 0.55 then
+		if laneOverride then
+			lane = laneOverride
+		elseif relX < 0.55 then
 			lane = 4
 		elseif relX < 1.9 then
 			lane = relXS < 0 and 3 or 5
@@ -1263,8 +1268,16 @@ local function wireCollector(machine)
 		task.delay(0.55, function()
 			if hit.Parent then hit:Destroy() end
 		end)
-	end)
-	table.insert(current.conns, conn)
+	end
+	table.insert(current.conns, collector.Touched:Connect(function(hit)
+		collectPiece(hit, nil)
+	end))
+	local hole = machine.Payout:FindFirstChild("JackpotHole")
+	if hole then
+		table.insert(current.conns, hole.Touched:Connect(function(hit)
+			collectPiece(hit, 4)
+		end))
+	end
 end
 
 local function spawnHouseCoin()

@@ -1562,7 +1562,10 @@ local function makePlanet(spec, cf, anchored, parent, form)
 		Reflectance = spec.rf or 0.03,
 		-- Bouncier planets (owner order): lively landings; the frictionless
 		-- 0-elasticity mouth funnel keeps them from pinballing in the throat.
-		CustomPhysicalProperties = PhysicalProperties.new(1.8, 0.6, 0.32, 1, 1),
+		-- Elasticity 0.32 -> 0.5 (owner: "a bit more bouncy"): livelier landings
+		-- and the lucky hops the JACKPOT CUP is fed by. The frictionless
+		-- 0-elasticity mouth funnel still keeps them from pinballing.
+		CustomPhysicalProperties = PhysicalProperties.new(1.8, 0.6, 0.5, 1, 1),
 	}, parent)
 	ball:SetAttribute("Variation", spec.n)
 	ball:SetAttribute("Tier", spec.t or 1)
@@ -2552,14 +2555,25 @@ function PusherMachine.build(originCFrame, name, theme)
 	-- onto the rim cap — both inside the Collector band. Runs y 1.0..8.0 so
 	-- nothing slips under or lobs over it. frictionWeight 100 keeps Roblox's
 	-- pair-averaging from lending it any grip.
-	newPart({
-		Name = "FrontWall",
-		Size = Vector3.new(11.6, 7.0, 0.10),
-		CFrame = at(0, 4.5, -7.20),
-		Transparency = 1,
-		CustomPhysicalProperties = PhysicalProperties.new(0.7, 0, 0, 100, 1),
-		CanQuery = false, CanTouch = false,
-	}, cabinet)
+	-- Split around the JACKPOT CUP: its bowl cantilevers past this plane
+	-- (front wall outer face z -7.57), so the centre span is open below
+	-- y 3.7 — the cup's own 0.5-tall walls are the containment there, and the
+	-- 0.15 between the cup rim (3.55) and this panel's bottom (3.7) passes
+	-- nothing. Side panels start at |x| 1.10, 0.03 clear of the cup's flanks.
+	for _, wall in ipairs({
+		{ size = Vector3.new(4.7, 7.0, 0.10), x = -3.45, y = 4.5 },
+		{ size = Vector3.new(4.7, 7.0, 0.10), x = 3.45, y = 4.5 },
+		{ size = Vector3.new(2.4, 4.4, 0.10), x = 0, y = 5.9 },
+	}) do
+		newPart({
+			Name = "FrontWall",
+			Size = wall.size,
+			CFrame = at(wall.x, wall.y, -7.20),
+			Transparency = 1,
+			CustomPhysicalProperties = PhysicalProperties.new(0.7, 0, 0, 100, 1),
+			CanQuery = false, CanTouch = false,
+		}, cabinet)
+	end
 	newPart({
 		Name = "PoolGlowPlate",
 		Size = Vector3.new(9.9, 0.04, 0.85),
@@ -2602,12 +2616,13 @@ function PusherMachine.build(originCFrame, name, theme)
 		film:SetAttribute("FlashColor", slot.color)
 	end
 
-	-- Lane blades: slope-parallel dividers over the apron at the scoring band
-	-- edges |x| 1.9 / 3.3. COLLIDABLE — a capsule that bridges two blades
-	-- toboggans down the 31-degree line and drops into the basin (bottom 1.55
-	-- < Collector top 2.4), so it still scores; nothing can rest mid-mouth.
-	-- The up-slope tip nests in the 0.12 inter-plate slot of the header wall.
-	for _, bladeX in ipairs({ -3.3, -1.9, 1.9, 3.3 }) do
+	-- Lane blades: slope-parallel dividers over the apron at the outer
+	-- scoring band edge |x| 3.3 only. The inner pair at |x| 1.9 is GONE: with
+	-- the JACKPOT CUP's flanks at |x| 1.07 they left a 0.78 channel that a
+	-- 1.15 planet shed by the prow would wedge in. Lanes are bucketed by x
+	-- at the Collector, so dividers were never load-bearing; the 25X channel
+	-- now runs 1.07..3.25 (2.18 wide) and nothing can rest mid-mouth.
+	for _, bladeX in ipairs({ -3.3, 3.3 }) do
 		newPart({
 			Name = "LaneBlade",
 			-- Shorter + steeper (-40 vs the plates' -25): the old -31 blades'
@@ -2631,27 +2646,14 @@ function PusherMachine.build(originCFrame, name, theme)
 		}, cabinet)
 		decorate(tip)
 	end
-	-- Jackpot channel blades at |x| 0.55: VISUAL ONLY. A collidable 1.1-stud
-	-- gap would ban planets (1.15) outright — the pins stay the sole gate.
-	-- Height trimmed 0.9 -> 0.72 (bottom edge kept: center slid 0.09 down the
-	-- blade's local Y) so the JACKPOT CORE ring's lower arc clears the blade
-	-- tops by >= 0.11 instead of embedding 0.05 into them.
-	for _, side in ipairs({ -1, 1 }) do
-		newPart({
-			Name = "JackpotBlade",
-			Size = Vector3.new(0.06, 0.72, 1.5),
-			CFrame = at(side * 0.55, 2.413, -5.824, CFrame.Angles(math.rad(-31), 0, 0)),
-			Color = Color3.new(cfg.colGoldHot.R * 0.5, cfg.colGoldHot.G * 0.5, cfg.colGoldHot.B * 0.5),
-			Material = Enum.Material.Neon,
-			Transparency = 0.35,
-			CanCollide = false, CanQuery = false, CanTouch = false,
-		}, cabinet)
-	end
 	-- Pachinko deflectors: two staggered gold diamond pins over the JACKPOT
 	-- lane. The near-high pin catches slow rollers off the ledge, the
 	-- far-low pin catches fast arcs — nothing drops straight in, so the
 	-- jackpot only lands off a lucky carom between them.
-	for pinIndex, pin in ipairs({ { y = 3.9, z = -5.55 }, { y = 3.25, z = -6.45 } }) do
+	-- ONE pin now (the far-low pin at z -6.45 sat inside the JACKPOT CUP's
+	-- interior): the near-high diamond still scatters straight drops so the
+	-- cup is fed by caroms, never by a dead-centre plunge.
+	for pinIndex, pin in ipairs({ { y = 3.9, z = -5.55 } }) do
 		-- INVISIBLE deflectors (owner call: no visible pillars of any kind at
 		-- the center). SIZE and position are FROZEN gameplay — the staggered
 		-- carom gate is what stops center-spam jackpots — but the parts are
@@ -2676,24 +2678,75 @@ function PusherMachine.build(originCFrame, name, theme)
 			Transparency = 1,
 			CanQuery = false, CanTouch = false,
 		}, cabinet)
-		if pinIndex == 2 then
-			pointLight(pinCap, cfg.colGoldHot, 1.0, 4)
-		end
 	end
-	-- Energy shield over the center channel: one faint teal dome wrapping
-	-- both invisible deflectors, so every carom reads as the shield doing
-	-- it. Non-collidable, purely visual.
-	local shieldDome = newPart({
-		Name = "ShieldDome",
-		Shape = "Ball",
-		Size = Vector3.new(1.9, 1.9, 1.9),
-		CFrame = at(0, 3.55, -6.0),
-		Color = cfg.colTeal,
-		Material = Enum.Material.Neon,
-		Transparency = 0.84,
-		CastShadow = false,
+	----------------------------------------------------------------------------
+	-- JACKPOT CUP — the jackpot is a HOLE now. A raised gold-rimmed cup at the
+	-- centre of the mouth, fed only from above: a planet has to BOUNCE in.
+	-- Why raised and why forward: the mouth is only 1.3 studs deep between the
+	-- header-wall foot (z -5.55) and the pool rim (-6.85), so a hole that fits
+	-- a ringed planet (ring 1.5 D) cannot sit inside it. The cup floor rides at
+	-- y 3.05 (0.7 above the apron) and its bowl cantilevers forward OVER the
+	-- rim to z -7.45 — interior 1.90 x 1.50 (x by z), 0.5 tall walls.
+	-- Underneath, a solid pedestal fills the centre of the basin (nothing can
+	-- get beneath), and a frictionless V PROW pointing back into the header
+	-- wall splits anything sliding down the plate at |x| < 0.92 into the 25X
+	-- lanes — so the apron never delivers a jackpot; only a lucky hop over the
+	-- back rim does. The JackpotHole sensor inside (built with the payout
+	-- sensors) scores lane 4 the instant a piece lands in the bowl.
+	----------------------------------------------------------------------------
+	local CUP_Z = -6.70 -- bowl centre
+	local cupFloor = newPart({
+		Name = "JackpotCupFloor",
+		Size = Vector3.new(2.14, 0.20, 1.74),
+		CFrame = at(0, 2.95, CUP_Z),
+		Color = cfg.colDark,
+		Material = Enum.Material.Metal,
+		CustomPhysicalProperties = PhysicalProperties.new(0.7, 0.3, 0.1, 1, 1),
 	}, cabinet)
-	decorate(shieldDome)
+	pointLight(cupFloor, cfg.colGoldHot, 1.3, 3.5)
+	newPart({
+		Name = "JackpotCupPedestal",
+		Size = Vector3.new(2.14, 1.40, 1.74),
+		CFrame = at(0, 2.25, CUP_Z),
+		Color = cfg.colBody2,
+		Material = Enum.Material.Metal,
+	}, cabinet)
+	-- Bowl walls: inner faces at x +-0.95 and z -5.95 / -7.45.
+	for _, wall in ipairs({
+		{ name = "JackpotCupBack", size = Vector3.new(2.14, 0.5, 0.12), x = 0, z = CUP_Z + 0.81 },
+		{ name = "JackpotCupFront", size = Vector3.new(2.14, 0.5, 0.12), x = 0, z = CUP_Z - 0.81 },
+		{ name = "JackpotCupLeft", size = Vector3.new(0.12, 0.5, 1.74), x = -1.01, z = CUP_Z },
+		{ name = "JackpotCupRight", size = Vector3.new(0.12, 0.5, 1.74), x = 1.01, z = CUP_Z },
+	}) do
+		newPart({
+			Name = wall.name,
+			Size = wall.size,
+			CFrame = at(wall.x, 3.30, wall.z),
+			Color = cfg.colGold,
+			Material = Enum.Material.Metal,
+			CustomPhysicalProperties = PhysicalProperties.new(0.7, 0, 0.2, 100, 1),
+		}, cabinet)
+	end
+	-- Neon rim ring on top of the walls (decor).
+	neonStrip(Vector3.new(2.26, 0.05, 0.10), at(0, 3.58, CUP_Z + 0.81), cfg.colGoldHot, cabinet, "JackpotRimBack")
+	neonStrip(Vector3.new(2.26, 0.05, 0.10), at(0, 3.58, CUP_Z - 0.81), cfg.colGoldHot, cabinet, "JackpotRimFront")
+	neonStrip(Vector3.new(0.10, 0.05, 1.74), at(-1.01, 3.58, CUP_Z), cfg.colGoldHot, cabinet, "JackpotRimLeft")
+	neonStrip(Vector3.new(0.10, 0.05, 1.74), at(1.01, 3.58, CUP_Z), cfg.colGoldHot, cabinet, "JackpotRimRight")
+	-- V prow: two frictionless blades meeting at (0, z -5.15) — buried in the
+	-- header backer so deflection starts while a piece is still on the plate
+	-- face — and fanning out to x +-0.92 at z -6.07 against the cup's flanks.
+	-- Knife-edge tops (0.12 wide, y 3.15): nothing can balance on them.
+	for _, side in ipairs({ -1, 1 }) do
+		newPart({
+			Name = "JackpotProw",
+			Size = Vector3.new(0.12, 1.60, 1.30),
+			CFrame = at(side * 0.46, 2.35, -5.61, CFrame.Angles(0, math.rad(side * 45), 0)),
+			Color = cfg.colGold,
+			Material = Enum.Material.Metal,
+			CustomPhysicalProperties = PhysicalProperties.new(0.7, 0, 0, 100, 1),
+			CanQuery = false, CanTouch = false,
+		}, cabinet)
+	end
 
 	----------------------------------------------------------------------------
 	-- Header wall: seven reclined billboard plates (25 degrees, stepped
@@ -4126,6 +4179,15 @@ function PusherMachine.build(originCFrame, name, theme)
 		Name = "Collector",
 		Size = Vector3.new(10, 1.45, 2.7),
 		CFrame = at(0, 2.225, -6.55),
+		Transparency = 1, CanCollide = false,
+	}, payout)
+	-- JACKPOT HOLE: the sensor inside the cup bowl (x +-0.9, y 3.08..3.53,
+	-- z -7.40..-6.00). A piece that lands in the bowl touches it on arrival;
+	-- the server scores it as lane 4 (the jackpot lane) regardless of x.
+	newPart({
+		Name = "JackpotHole",
+		Size = Vector3.new(1.8, 0.45, 1.4),
+		CFrame = at(0, 3.305, -6.70),
 		Transparency = 1, CanCollide = false,
 	}, payout)
 
