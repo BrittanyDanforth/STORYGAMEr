@@ -2480,6 +2480,21 @@ local function initPlayer(player)
 		found = found + 1
 	end
 	player:SetAttribute("IndexFound", found)
+	-- Tutorial-complete backfill: FirstForgeDone gates auto-roll now. A
+	-- veteran from before the forge step existed (first roll done, free
+	-- 100X claimed, an ASCENDED or CELESTIAL in the inventory) must not
+	-- find auto-roll locked behind a coach they will never see — the
+	-- client's veteran gate reads the same three facts.
+	if player:GetAttribute("FirstForgeDone") ~= true
+		and player:GetAttribute("TutorialDone") == true
+		and player:GetAttribute("FreeSpinUsed") == true then
+		for _, entry in pairs(invMap) do
+			if (entry.f1 or 0) > 0 or (entry.f2 or 0) > 0 then
+				player:SetAttribute("FirstForgeDone", true)
+				break
+			end
+		end
+	end
 	player:SetAttribute("StreakReady",
 		os.time() - (doc.daily.sLast or 0) >= GameConfig.Streak.minGapHours * 3600)
 	player:SetAttribute("StreakLast", doc.daily.sLast or 0) -- client countdown mirror
@@ -2702,8 +2717,13 @@ task.spawn(function()
 					end
 				end
 
-				-- Auto-roll: free once the tutorial (first manual roll) is done.
-				if player:GetAttribute("AutoRoll") and player:GetAttribute("TutorialDone")
+				-- Auto-roll: free once the WHOLE tutorial is done (FirstForgeDone
+				-- — set by the first forge, or backfilled at load for veterans).
+				-- It used to unlock on the first manual roll, and then fired
+				-- the very roll the coach was asking for ("ROLL AGAIN — 100X
+				-- LUCKIER"): an auto roll doesn't count as the boosted step,
+				-- so the tutorial stalled behind it (owner report).
+				if player:GetAttribute("AutoRoll") and player:GetAttribute("FirstForgeDone") == true
 					and now >= (player:GetAttribute("NextRollAt") or 0) then
 					performRoll(player, true)
 				end

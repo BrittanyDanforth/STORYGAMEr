@@ -1720,9 +1720,11 @@ do
 	autoSub.TextStrokeTransparency = 0.15
 	autoSub.ZIndex = 15
 	local function restyleAutoPill()
-		-- Locked until the first manual roll (the server refuses auto-rolls
-		-- while TutorialDone is unset) — never claim ON under that gate.
-		if player:GetAttribute("TutorialDone") ~= true then
+		-- Locked until the WHOLE tutorial is done (the server refuses auto-
+		-- rolls while FirstForgeDone is unset: an auto roll used to fire the
+		-- very roll the coach asked for and stall the 100X step) — never
+		-- claim ON under that gate.
+		if player:GetAttribute("FirstForgeDone") ~= true then
 			autoPlate.ImageColor3 = pixelTint(Color3.fromRGB(104, 108, 126))
 			autoIcon.ImageColor3 = Color3.fromRGB(30, 32, 42)
 			autoTitle.TextStrokeColor3 = Color3.fromRGB(20, 22, 30)
@@ -1743,8 +1745,8 @@ do
 	end
 	autoBtn.MouseButton1Click:Connect(function()
 		-- Locked pill is inert: while the tutorial gate holds, a tap must not
-		-- invisibly arm/disarm auto-roll under the "ROLL ONCE TO UNLOCK" text.
-		if player:GetAttribute("TutorialDone") ~= true then return end
+		-- invisibly arm/disarm auto-roll under the "… TO UNLOCK" text.
+		if player:GetAttribute("FirstForgeDone") ~= true then return end
 		local enabled = not S.autoRollOn()
 		if setToggleRemote then setToggleRemote:FireServer("AutoRoll", enabled) end
 		-- Optimistic restyle; the replicated attribute confirms it.
@@ -1756,8 +1758,9 @@ do
 
 	-- Replaces the old timer ring on the 0.1s cosmetic cadence.
 	function S.updateAutoRollBar()
-		if player:GetAttribute("TutorialDone") ~= true then
-			autoSub.Text = "ROLL TO UNLOCK"
+		if player:GetAttribute("FirstForgeDone") ~= true then
+			autoSub.Text = player:GetAttribute("TutorialDone") == true
+				and "FORGE TO UNLOCK" or "ROLL TO UNLOCK"
 			return
 		end
 		local interval = GameConfig.autoRollInterval(attrGet)
@@ -1770,11 +1773,14 @@ do
 			autoSub.Text = ("OFF — EVERY %ds"):format(math.floor(interval + 0.5))
 		end
 	end
-	-- Flips live off the first manual roll — no rejoin needed.
-	player:GetAttributeChangedSignal("TutorialDone"):Connect(function()
-		restyleAutoPill()
-		S.updateAutoRollBar()
-	end)
+	-- Flips live off the first roll (copy) and the first forge (unlock) —
+	-- no rejoin needed.
+	for _, gateAttr in ipairs({ "TutorialDone", "FirstForgeDone" }) do
+		player:GetAttributeChangedSignal(gateAttr):Connect(function()
+			restyleAutoPill()
+			S.updateAutoRollBar()
+		end)
+	end
 end
 
 -- Pity strip: rolls until an ULTRA RARE+ is guaranteed.
@@ -7831,6 +7837,12 @@ end)()
 		local progFrom = fromForm or 0
 		local progHave = fromForm ~= nil and math.min(have, req) or 0
 		local canForge = fromForm ~= nil and have >= req
+		-- Tutorial coach contract (read by the coach's in-forge step, keep
+		-- these on any rework): the selected key, whether it forges, and
+		-- the main FORGE button (S.forgeGoBtn, set where it is built).
+		S.forgeSelectedKey = key
+		S.forgeCanForge = canForge
+		S.forgeGoBtn = nil
 		local showFrom = entry and (fromForm or bestOwnedForm) or 0
 		local showNext = math.min(showFrom + 1, 2)
 		local nextCount = showNext == 2 and ef2 or ef1
@@ -8110,6 +8122,7 @@ end)()
 			oneBtn.ZIndex = 29
 			oneBtn.Parent = resultCard
 			corner(oneBtn, 18)
+			S.forgeGoBtn = oneBtn -- tutorial coach target
 			local oneMain = label(oneBtn, "FORGE ONE!", 22, Color3.new(1, 1, 1), Enum.Font.FredokaOne)
 			oneMain.Position = UDim2.new(0, 0, 0, 6)
 			oneMain.Size = UDim2.new(1, 0, 0, 32)
@@ -11815,6 +11828,7 @@ end)()
 	local tutorialSkipped = false
 	local rolledDuringBoost = false -- rolled at least once while boosted
 	local forgedOnce = false -- CombineDone fired this session
+	local forgeAutoPicked = false -- the coach pre-selected the gift planet once
 	-- WELCOME brick: up right now (coach hides behind it) / builder, defined
 	-- after refresh() below because LET'S GO! hands straight off to it.
 	local welcomeUp = false
@@ -11829,6 +11843,16 @@ end)()
 			if (entry.f1 or 0) > 0 or (entry.f2 or 0) > 0 then return true end
 		end
 		return false
+	end
+
+	-- The starter gift made ONE base planet forgeable (the first roll's
+	-- planet, topped up to a full recipe). The forge step points at it.
+	local function giftedEntry()
+		for _, entry in ipairs(ownedBalls) do
+			local req = GameConfig.forgeReq(attrGet, entry.t or 1) or 10
+			if (entry.c or 0) >= req then return entry end
+		end
+		return nil
 	end
 
 	-- Veteran gate: the coach exists for genuinely new players only. If the
@@ -11963,6 +11987,26 @@ end)()
 			return S.spinButton, rollAwaited("ROLL AGAIN — 100X LUCKIER!")
 		end
 		if ownsAnyForm1() ~= true and forgedOnce ~= true then
+			-- The forge step, in two beats: find the FORGE button, then —
+			-- inside the forge, on the planet the starter gift completed —
+			-- TAP FORGE. The coach pre-selects that planet the first time
+			-- the page opens (S.openForge selects + scrolls to it), so the
+			-- big button already reads FORGE, never NEED N MORE.
+			if S.forgePage and S.forgePage.Visible then
+				local gift = giftedEntry()
+				local giftKey = gift and (gift.n .. "|" .. (gift.t or 1)) or nil
+				if giftKey and S.forgeSelectedKey ~= giftKey then
+					if not forgeAutoPicked and S.openForge then
+						forgeAutoPicked = true
+						task.defer(S.openForge, gift.n, gift.t or 1)
+					end
+					return nil, "PICK YOUR " .. tostring(gift.n):upper() .. " — YOU HAVE ENOUGH!"
+				end
+				if S.forgeCanForge and S.forgeGoBtn and S.forgeGoBtn.Parent then
+					return S.forgeGoBtn, "TAP FORGE — 10 BECOME 1 ASCENDED!"
+				end
+				return nil, "ROLL MORE TO FORGE!"
+			end
 			return S.forgeNavBtn, "FORGE 10 INTO 1 ASCENDED!"
 		end
 		return nil, nil
@@ -12001,11 +12045,12 @@ end)()
 			coach.Visible = false
 			return
 		end
-		-- Hide behind any open page — including the forge step the moment
-		-- the forge page itself opens (they found it).
+		-- Hide behind any open page — except the forge page when the step's
+		-- target lives inside it (the in-forge TAP FORGE beat).
+		local forgeOpen = S.forgePage and S.forgePage.Visible
 		if not target or panel.Visible
 			or (S.treePage and S.treePage.Visible)
-			or (S.forgePage and S.forgePage.Visible) then
+			or (forgeOpen and not target:IsDescendantOf(S.forgePage)) then
 			coach.Visible = false
 			return
 		end
@@ -12165,8 +12210,8 @@ end)()
 
 	-- roll2's client-local half: a MANUAL roll landing while the luck boost
 	-- attr is up means they rolled boosted (second listener on the remote —
-	-- fine). Auto-rolls must not count: AutoRoll defaults on and fires within
-	-- ~20s of TutorialDone, which would complete the step for the player.
+	-- fine). Auto-rolls must not count (the server holds them until the
+	-- first forge now, so none should land here; belt and braces).
 	if rolledRemote then
 		rolledRemote.OnClientEvent:Connect(function(_, _, _, isAuto)
 			if not isAuto and (attrGet("LuckBoost") or 0) > 0 then
@@ -12183,8 +12228,15 @@ end)()
 	-- Attribute signals snap the coach to the next step instantly; the slow
 	-- loop below mops up everything else (page toggles, layout, boost expiry).
 	for _, attrName in ipairs({ "TotalDrops", "TutorialDone", "FreeSpinUsed",
-		"LuckBoost", "LuckBoostUntil" }) do
+		"LuckBoost", "LuckBoostUntil", "FirstForgeDone" }) do
 		player:GetAttributeChangedSignal(attrName):Connect(refresh)
+	end
+	-- The forge page opening/closing moves the forge step between its two
+	-- beats; snap instead of waiting for the 0.5s sweep.
+	if S.forgePage then
+		S.forgePage:GetPropertyChangedSignal("Visible"):Connect(function()
+			task.defer(refresh)
+		end)
 	end
 	task.spawn(function()
 		while not tutorialSkipped do
