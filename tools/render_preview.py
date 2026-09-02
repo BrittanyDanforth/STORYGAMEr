@@ -6,7 +6,7 @@ perspective view with PIL: painter's algorithm, flat lambert shading, additive
 glow for Neon parts and lights, alpha compositing for Glass, and text drawn
 onto SurfaceGui faces. Purpose: see the cabinet before Studio does.
 
-Usage: render_preview.py parts.json out.png [front]
+Usage: render_preview.py parts.json out.png [front|cam]
 """
 import json, math, sys
 from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageChops
@@ -98,9 +98,15 @@ def shade(color, normal, neon):
         f = 0.48 + 0.56*lam
     return (min(255,int(r*f)), min(255,int(g*f)), min(255,int(b*f)))
 
-def render(parts, out_path, front=False):
-    cam = Camera((-13, 18, -28), (0, 5.2, 1.5), 1500) if not front else \
-          Camera((0, 8.6, -48), (0, 8.3, 0), 2050)
+def render(parts, out_path, front=False, view=None):
+    # "cam" = the game's locked camera (GameConfig-free copy of
+    # PusherMachine cfg.camEye / cfg.camLook): what the player actually sees.
+    if view == "cam":
+        cam = Camera((0, 12.2, -13.8), (0, 3.7, 2.2), 1400)
+    elif front:
+        cam = Camera((0, 8.6, -48), (0, 8.3, 0), 2050)
+    else:
+        cam = Camera((-13, 18, -28), (0, 5.2, 1.5), 1500)
 
     img = Image.new("RGB", (W, H))
     d = ImageDraw.Draw(img)
@@ -220,4 +226,5 @@ def render(parts, out_path, front=False):
 
 if __name__ == "__main__":
     parts = json.load(open(sys.argv[1]))
-    render(parts, sys.argv[2], front=(len(sys.argv) > 3 and sys.argv[3] == "front"))
+    mode = sys.argv[3] if len(sys.argv) > 3 else ""
+    render(parts, sys.argv[2], front=(mode == "front"), view=(mode if mode in ("cam",) else None))

@@ -50,12 +50,14 @@ headlessly:
 lua5.1 tools/dump_parts.lua > parts.json          # runs the real builder against a Roblox stub
 python3 tools/render_preview.py parts.json hero.png        # shaded 3/4 view
 python3 tools/render_preview.py parts.json front.png front  # straight-on view
+python3 tools/render_preview.py parts.json cam.png cam      # the game's locked camera
 ```
 
 `tools/roblox_stub.lua` mocks just enough of the Roblox API (Instance tree, CFrame math,
 Enums) to execute `PusherMachine.build()` outside Studio; the renderer draws the captured
 geometry with flat shading, neon glow and glass transparency. Renders of the current
-geometry live in `docs/pusher-hero.png` and `docs/pusher-front.png`. Two known renderer
+geometry live in `docs/pusher-hero.png`, `docs/pusher-front.png` and `docs/pusher-cam.png`
+(the last one is what the player sees — the locked camera's own eye and look point). Two known renderer
 approximations: glow bleeds through walls (Neon doesn't emit light in Studio), and
 SurfaceGui text draws on top rather than being occluded.
 

@@ -2557,13 +2557,16 @@ function PusherMachine.build(originCFrame, name, theme)
 	-- pair-averaging from lending it any grip.
 	-- Split around the JACKPOT CUP: its bowl cantilevers past this plane
 	-- (front wall outer face z -7.37), so the centre span is open below
-	-- y 4.85 — the cup's own 0.5-tall walls are the containment there, and
-	-- the 0.15 between the cup rim (4.70) and this panel's bottom (4.85)
-	-- passes nothing. Side panels start at |x| 1.10, 0.03 clear of the flanks.
+	-- y 6.95 — the solid pedestal and the cup's own 0.5-tall walls are the
+	-- containment there, and the 0.15 between the cup rim (6.80) and this
+	-- panel's bottom (6.95) passes nothing. Above the rim the panel is the
+	-- bowl's BACKBOARD: a bounce that overshoots the bowl hits it and drops
+	-- back in. Side panels start at |x| 1.10, 0.03 clear of the flanks.
+	-- (The Glass at z -7.45 seals everything above y 4.45 behind all three.)
 	for _, wall in ipairs({
 		{ size = Vector3.new(4.7, 7.0, 0.10), x = -3.45, y = 4.5 },
 		{ size = Vector3.new(4.7, 7.0, 0.10), x = 3.45, y = 4.5 },
-		{ size = Vector3.new(2.4, 3.3, 0.10), x = 0, y = 6.5 },
+		{ size = Vector3.new(2.4, 1.2, 0.10), x = 0, y = 7.55 },
 	}) do
 		newPart({
 			Name = "FrontWall",
@@ -2647,51 +2650,60 @@ function PusherMachine.build(originCFrame, name, theme)
 		decorate(tip)
 	end
 	----------------------------------------------------------------------------
-	-- JACKPOT CUP — the jackpot is a HOLE, and it sits ABOVE the ledge line.
-	-- V1 lived at y 3.05 in the mouth and was invisible: the locked camera
-	-- looks over the ledge, and the JACKPOT sign plate (top 4.12) hid it
-	-- completely (owner: "move it up, higher than the LedgeFillet"). Raising
-	-- a cup changes how it is fed — the higher the rim, the faster a piece
-	-- must be launched to clear the gap from the lip — so it is fed by a
-	-- TONGUE instead: a 0.6-wide frictionless gold ramp from the centre of
-	-- the lip straight into the bowl. A piece whose centre is within +-0.3
-	-- of x = 0 rides it in (the sweep timing IS the aim); anything wider
-	-- slides off the tongue's side, drops onto the V prow and is shed into
-	-- the 25X lanes. That narrowness is the whole gate — no pins needed.
-	-- Bowl: interior 1.90 x 1.50 (x by z) so a ringed planet (1.5) fits,
-	-- floor y 4.20 (LedgeFillet top 4.57 sits below the rim at 4.70), front
-	-- and side walls 0.5 tall; the back wall is a 0.25 lip the tongue ends
-	-- on. A solid pedestal fills the centre of the basin beneath (nothing
-	-- gets under), and the prow now runs the pedestal's full height. The
+	-- JACKPOT CUP — the jackpot is a HOLE, a raised gold bowl that floats
+	-- ABOVE the ledge line, and only a LUCKY BOUNCE gets a piece in.
+	-- V1 lived at y 3.05 in the mouth and was invisible; v2 (floor 4.20)
+	-- cleared the LedgeFillet in world y but, being 1.4 studs nearer the
+	-- locked camera than the lip, still drew BELOW the ledge line on screen
+	-- (owner: "higher still, more like 45% more"). v3 lifts the whole
+	-- assembly 2.10: rim 6.80 (= 4.70 x 1.45). From camEye (0, 12.2, -13.8)
+	-- the front rim at z -7.37 now sits at 40.0 degrees of depression, the
+	-- lip edge (4.80, -5.11) at 40.4 and the LedgeFillet top at 41.1 — the
+	-- entire cup reads above the ledge, the bowl's mouth opening upward.
+	-- HOW IT IS FED: nothing the pusher shoves off the lip can climb 1.5
+	-- studs, so the tongue ramp is gone. A piece enters only by bouncing —
+	-- a fresh drop hitting the front pile (ball-on-ball elasticity 0.5
+	-- rebounds ~24 studs/s; a second-layer rebound starts ABOVE the rim)
+	-- and hopping forward over the low back lip (6.55). Anything that
+	-- overshoots meets the FrontWall backboard and drops in. The bowl's
+	-- interior 1.90 x 1.50 (x by z) fits a ringed planet (1.5); the
 	-- JackpotHole sensor inside (built with the payout sensors) scores lane
-	-- 4 the instant a piece lands in the bowl. The JACKPOT core "card"
-	-- stands behind the hole as a crown (see the core block).
+	-- 4 the instant a piece is in the bowl. A solid pedestal fills the
+	-- centre of the basin beneath (nothing gets under — the collector's
+	-- centre x would otherwise read as lane 4 for a plain drop), and the V
+	-- prow runs the pedestal's full height so a centre piece coming off the
+	-- lip is split into the 25X channels instead of wedging against the
+	-- pedestal's back face. The JACKPOT core "card" stands above the bowl's
+	-- front wall as a crown (see the core block).
 	----------------------------------------------------------------------------
 	local CUP_Z = -6.50 -- bowl centre; interior z -7.25 .. -5.75
+	local CUP_FLOOR = 6.30 -- bowl floor top (rim 6.80, back lip 6.55)
 	local cupFloor = newPart({
 		Name = "JackpotCupFloor",
 		Size = Vector3.new(2.14, 0.20, 1.74),
-		CFrame = at(0, 4.10, CUP_Z),
+		CFrame = at(0, CUP_FLOOR - 0.10, CUP_Z),
 		Color = cfg.colDark,
 		Material = Enum.Material.Metal,
 		CustomPhysicalProperties = PhysicalProperties.new(0.7, 0.3, 0.1, 1, 1),
 	}, cabinet)
 	pointLight(cupFloor, cfg.colGoldHot, 1.3, 3.5)
+	-- Pedestal: y 1.55 up to the floor's underside.
+	local PEDESTAL_H = (CUP_FLOOR - 0.20) - 1.55
 	newPart({
 		Name = "JackpotCupPedestal",
-		Size = Vector3.new(2.14, 2.45, 1.74),
-		CFrame = at(0, 2.775, CUP_Z),
+		Size = Vector3.new(2.14, PEDESTAL_H, 1.74),
+		CFrame = at(0, 1.55 + PEDESTAL_H / 2, CUP_Z),
 		Color = cfg.colBody2,
 		Material = Enum.Material.Metal,
 	}, cabinet)
 	-- Bowl walls: inner faces at x +-0.95 and z -5.75 / -7.25. The BACK wall
-	-- is the low lip the tongue delivers over (top 4.45); the rest rise to
-	-- 4.70 so a hop that overshoots still drops back in.
+	-- (deck side) is a low 0.25 lip a hop clears; the rest rise 0.5 so a
+	-- hop that overshoots still drops back in.
 	for _, wall in ipairs({
-		{ name = "JackpotCupBack", size = Vector3.new(2.14, 0.25, 0.12), x = 0, y = 4.325, z = CUP_Z + 0.81 },
-		{ name = "JackpotCupFront", size = Vector3.new(2.14, 0.5, 0.12), x = 0, y = 4.45, z = CUP_Z - 0.81 },
-		{ name = "JackpotCupLeft", size = Vector3.new(0.12, 0.5, 1.74), x = -1.01, y = 4.45, z = CUP_Z },
-		{ name = "JackpotCupRight", size = Vector3.new(0.12, 0.5, 1.74), x = 1.01, y = 4.45, z = CUP_Z },
+		{ name = "JackpotCupBack", size = Vector3.new(2.14, 0.25, 0.12), x = 0, y = CUP_FLOOR + 0.125, z = CUP_Z + 0.81 },
+		{ name = "JackpotCupFront", size = Vector3.new(2.14, 0.5, 0.12), x = 0, y = CUP_FLOOR + 0.25, z = CUP_Z - 0.81 },
+		{ name = "JackpotCupLeft", size = Vector3.new(0.12, 0.5, 1.74), x = -1.01, y = CUP_FLOOR + 0.25, z = CUP_Z },
+		{ name = "JackpotCupRight", size = Vector3.new(0.12, 0.5, 1.74), x = 1.01, y = CUP_FLOOR + 0.25, z = CUP_Z },
 	}) do
 		newPart({
 			Name = wall.name,
@@ -2703,32 +2715,22 @@ function PusherMachine.build(originCFrame, name, theme)
 		}, cabinet)
 	end
 	-- Neon rim ring on top of the walls (decor).
-	neonStrip(Vector3.new(2.26, 0.05, 0.10), at(0, 4.48, CUP_Z + 0.81), cfg.colGoldHot, cabinet, "JackpotRimBack")
-	neonStrip(Vector3.new(2.26, 0.05, 0.10), at(0, 4.73, CUP_Z - 0.81), cfg.colGoldHot, cabinet, "JackpotRimFront")
-	neonStrip(Vector3.new(0.10, 0.05, 1.74), at(-1.01, 4.73, CUP_Z), cfg.colGoldHot, cabinet, "JackpotRimLeft")
-	neonStrip(Vector3.new(0.10, 0.05, 1.74), at(1.01, 4.73, CUP_Z), cfg.colGoldHot, cabinet, "JackpotRimRight")
-	-- THE TONGUE: 0.6 wide, from the LipRamp's front edge (y 4.80, z -5.11)
-	-- down 31 degrees to the bowl's back lip (y 4.45, z -5.69). Frictionless
-	-- with frictionWeight 100 like the LipRamp — nothing can rest on it, and
-	-- a piece half on it slides off the side (onto the prow) on its own.
-	newPart({
-		Name = "JackpotTongue",
-		Size = Vector3.new(0.6, 0.08, 0.68),
-		CFrame = at(0, 4.605, -5.40, CFrame.Angles(math.rad(-31), 0, 0)),
-		Color = cfg.colGoldHot,
-		Material = Enum.Material.Neon,
-		CustomPhysicalProperties = PhysicalProperties.new(0.7, 0, 0, 100, 1),
-		CanQuery = false, CanTouch = false,
-	}, cabinet)
-	-- V prow: two frictionless blades meeting at (0, z -5.15) — buried in the
-	-- header backer so deflection starts while a piece is still on the plate
-	-- face — and fanning out to x +-0.92 at z -6.07 against the cup's flanks.
-	-- Full pedestal height (y 1.55..4.00); knife-edge tops, nothing balances.
+	neonStrip(Vector3.new(2.26, 0.05, 0.10), at(0, CUP_FLOOR + 0.28, CUP_Z + 0.81), cfg.colGoldHot, cabinet, "JackpotRimBack")
+	neonStrip(Vector3.new(2.26, 0.05, 0.10), at(0, CUP_FLOOR + 0.53, CUP_Z - 0.81), cfg.colGoldHot, cabinet, "JackpotRimFront")
+	neonStrip(Vector3.new(0.10, 0.05, 1.74), at(-1.01, CUP_FLOOR + 0.53, CUP_Z), cfg.colGoldHot, cabinet, "JackpotRimLeft")
+	neonStrip(Vector3.new(0.10, 0.05, 1.74), at(1.01, CUP_FLOOR + 0.53, CUP_Z), cfg.colGoldHot, cabinet, "JackpotRimRight")
+	-- V prow: two frictionless blades meeting at (0, z -5.15) — the apex
+	-- stands at the lip edge, so a centre piece is deflected while it is
+	-- still sliding off the ramp — and fanning out to x +-0.92 at z -6.07
+	-- against the cup's flanks. Full pedestal height (y 1.55 up to the
+	-- floor top): the pedestal's back face is never exposed, at any height
+	-- a piece can arrive at. Knife-edge tops, nothing balances.
+	local PROW_H = CUP_FLOOR - 1.55
 	for _, side in ipairs({ -1, 1 }) do
 		newPart({
 			Name = "JackpotProw",
-			Size = Vector3.new(0.12, 2.45, 1.30),
-			CFrame = at(side * 0.46, 2.775, -5.61, CFrame.Angles(0, math.rad(side * 45), 0)),
+			Size = Vector3.new(0.12, PROW_H, 1.30),
+			CFrame = at(side * 0.46, 1.55 + PROW_H / 2, -5.61, CFrame.Angles(0, math.rad(side * 45), 0)),
 			Color = cfg.colGold,
 			Material = Enum.Material.Metal,
 			CustomPhysicalProperties = PhysicalProperties.new(0.7, 0, 0, 100, 1),
@@ -2881,13 +2883,14 @@ function PusherMachine.build(originCFrame, name, theme)
 	-- (CoreTitle, max, already shipped) — all inside |x| <= 0.52, y <= 4.12.
 	----------------------------------------------------------------------------
 	do
-		-- CROWN anchor (owner: "the jackpot card thingy moved up too"): the
-		-- core no longer rides the lane-4 wall plate (hidden below the ledge
-		-- line); it stands as a reclined billboard just beyond the bowl's
-		-- front wall, its lowest part (PotPlate bottom, local y -0.98) at
-		-- world ~4.81, clear of the 4.70 rim. Every piece is still
-		-- decorate()'d, so the bowl's physics never sees it.
-		local coreCF = at(0, 5.70, -7.15, RECL)
+		-- CROWN anchor (owner: "the jackpot card thingy moved up too", then
+		-- "higher still"): the core no longer rides the lane-4 wall plate
+		-- (hidden below the ledge line); it stands as a reclined billboard
+		-- just beyond the bowl's front wall and rides the cup — lifted 2.10
+		-- with it, its lowest part (PotPlate bottom, local y -0.98) at world
+		-- ~6.91, clear of the 6.80 rim. Every piece is still decorate()'d,
+		-- so the bowl's physics never sees it.
+		local coreCF = at(0, 7.80, -7.15, RECL)
 		local pivot = coreCF * CFrame.new(0, -0.05, -0.36) -- planet center
 		local ringCF = pivot * CFrame.Angles(math.rad(-28), 0, 0) -- ring plane, top leans back
 		-- V3 composition (judged polish final): orb raised to the plate's
@@ -4175,13 +4178,14 @@ function PusherMachine.build(originCFrame, name, theme)
 		CFrame = at(0, 2.225, -6.55),
 		Transparency = 1, CanCollide = false,
 	}, payout)
-	-- JACKPOT HOLE: the sensor inside the cup bowl (x +-0.9, y 4.23..4.68,
-	-- z -7.20..-5.80). A piece that lands in the bowl touches it on arrival;
-	-- the server scores it as lane 4 (the jackpot lane) regardless of x.
+	-- JACKPOT HOLE: the sensor inside the cup bowl (x +-0.9, y 6.33..6.78,
+	-- z -7.20..-5.80 — mirrors CUP_FLOOR 6.30 in the cabinet block). A piece
+	-- that lands in the bowl touches it on arrival; the server scores it as
+	-- lane 4 (the jackpot lane) regardless of x.
 	newPart({
 		Name = "JackpotHole",
 		Size = Vector3.new(1.8, 0.45, 1.4),
-		CFrame = at(0, 4.455, -6.50),
+		CFrame = at(0, 6.555, -6.50),
 		Transparency = 1, CanCollide = false,
 	}, payout)
 
