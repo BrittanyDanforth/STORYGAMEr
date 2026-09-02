@@ -2672,7 +2672,11 @@ end
 -- K/M/B short form for rank rows 4-25 (podium + pinned YOU stay exact).
 local function shortValue(n)
 	n = math.floor(tonumber(n) or 0)
-	if n >= 1e9 then
+	-- T band: rebirth costs pass 12T near the cap; "10049.4B" is not a number
+	-- a kid can read.
+	if n >= 1e12 then
+		return string.format("%.1fT", n / 1e12)
+	elseif n >= 1e9 then
 		return string.format("%.1fB", n / 1e9)
 	elseif n >= 1e6 then
 		return string.format("%.1fM", n / 1e6)
@@ -2870,142 +2874,532 @@ local function renderDailyPage()
 		return math.floor((base or 0) * GameConfig.ticketScale(attrGet, zone))
 	end
 	panelTitle.Text = "DAILY"
-	pillTabBar({
-		{ id = "quests", label = "QUESTS" },
-		{ id = "streak", label = "STREAK" },
-		{ id = "playtime", label = "PLAYTIME" },
-	}, dailyTab, function(id)
+
+	-- Built like RANKS / REBIRTH: pixel-brick plates, one pinned TODAY hero
+	-- with a huge FredokaOne count, kid-word copy, giant claim bricks. Every
+	-- claim still goes through the same remote with the same args, and every
+	-- state reads ONLY the replicated attrs (never optimistic).
+
+	-- ---- Shared readers. The TODAY brick, the tab badges and all three
+	-- tabs read these same attrs, so the ready count and the CLAIM ALL list
+	-- agree with the tabs by construction (S.dailyReadyCount's rules).
+	local function questReady(i)
+		return player:GetAttribute("DailyR" .. i) == true
+			and player:GetAttribute("DailyC" .. i) ~= true
+	end
+	local function questClaimed(i)
+		return player:GetAttribute("DailyC" .. i) == true
+	end
+	local questReadyList = {} -- 1..3 = missions, 4 = the all-3 chest
+	for i = 1, 4 do
+		if questReady(i) then table.insert(questReadyList, i) end
+	end
+	local streakReady = player:GetAttribute("StreakReady") == true
+	local sDay = player:GetAttribute("StreakDay") or 0
+	local sLast = player:GetAttribute("StreakLast") -- optional mirror
+	local paused = sLast ~= nil and sLast > 0
+		and (os.time() - sLast) > (STREAK_CFG.breakHours * 3600)
+	local displayDay = sDay + (streakReady and 1 or 0)
+	if paused and streakReady then displayDay = 1 end
+	if displayDay < 1 then displayDay = 1 end
+	local todaySlot = ((displayDay - 1) % 7) + 1
+	local weeks = math.floor(math.max(displayDay - 1, 0) / 7)
+	local mult = math.min(1 + 0.1 * weeks, STREAK_CFG.weekMultCap)
+	local playSecs = player:GetAttribute("PlaySecs") or 0
+	local playReadyMask = player:GetAttribute("PlayReady") or 0
+	local playClaimedMask = player:GetAttribute("PlayClaimed") or 0
+	local milestones = PLAY_CFG.milestones
+	local playReadyList = {}
+	local playClaimedCount = 0
+	local nextReadyIdx, nextFutureIdx = nil, nil
+	for i = 1, #milestones do
+		local isClaimed = maskBit(playClaimedMask, i)
+		if isClaimed then playClaimedCount += 1 end
+		if maskBit(playReadyMask, i) and not isClaimed then
+			table.insert(playReadyList, i)
+			if not nextReadyIdx then nextReadyIdx = i end
+		end
+		if not isClaimed and not maskBit(playReadyMask, i) and not nextFutureIdx then
+			nextFutureIdx = i
+		end
+	end
+	local readyTotal = #questReadyList + (streakReady and 1 or 0) + #playReadyList
+
+	-- ---- Clocks. PlaySecs mirrors 1x/30s; between mirrors the page ticks
+	-- locally off the render stamp (the 30s re-render re-syncs it).
+	local renderStamp = os.time()
+	local function liveSecs()
+		return playSecs + math.max(0, os.time() - renderStamp)
+	end
+	local function streakLeft() -- seconds until the next streak claim opens
+		if streakReady or not sLast or sLast <= 0 then return nil end
+		return (sLast + STREAK_CFG.minGapHours * 3600) - os.time()
+	end
+	local function playLeft() -- seconds until the next playtime station
+		if not nextFutureIdx then return nil end
+		return milestones[nextFutureIdx] - liveSecs()
+	end
+	-- The next thing coming: the sooner of streak / playtime, else the
+	-- quest reset (UTC midnight, the same clock as the server rollover).
+	local function nextUpText()
+		local sl, pl = streakLeft(), playLeft()
+		local nextDay = paused and 1 or (sDay + 1)
+		local text = nil
+		if sl then
+			text = sl > 0 and ("STREAK DAY %d UNLOCKS IN %s"):format(nextDay, fmtClock(sl))
+				or ("STREAK DAY %d ANY MINUTE..."):format(nextDay)
+		end
+		if pl and (not sl or pl < sl) then
+			text = pl > 0 and ("PLAYTIME PRIZE IN %s"):format(fmtClock(pl))
+				or "PLAYTIME PRIZE ANY SECOND..."
+		end
+		if not text then
+			text = "NEW QUESTS IN " .. fmtClock(86400 - (os.time() % 86400))
+		end
+		return text
+	end
+
+	-- ---- Entrance fade (the RANKS / REBIRTH pattern), keyed on the TAB
+	-- only. This page clear-rebuilds on every Tickets collect, on the 30s
+	-- PlaySecs mirror and on each claim landing — a blink there reads as a
+	-- glitch, so those re-renders build settled. Closing the panel, or
+	-- leaving for another page (the title changes), clears the key so the
+	-- next arrival fades again. Hooks connect once.
+	if not S.dailyFadeHook then
+		S.dailyFadeHook = true
+		panel:GetPropertyChangedSignal("Visible"):Connect(function()
+			if not panel.Visible then S.dailyFadeKey = nil end
+		end)
+		panelTitle:GetPropertyChangedSignal("Text"):Connect(function()
+			if panelTitle.Text ~= "DAILY" then S.dailyFadeKey = nil end
+		end)
+	end
+	local fadeKey = "daily|" .. tostring(dailyTab)
+	local animateEntrance = S.dailyFadeKey ~= fadeKey
+	S.dailyFadeKey = fadeKey
+	local fadeOrder = 0
+	local function fadeIn(block)
+		if S.reducedMotion or not animateEntrance then return end
+		local info = TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out,
+			0, false, fadeOrder * 0.02)
+		fadeOrder = fadeOrder + 1
+		local function fade(obj, prop)
+			local target = obj[prop]
+			if target >= 1 then return end
+			obj[prop] = 1
+			TweenService:Create(obj, info, { [prop] = target }):Play()
+		end
+		fade(block, "BackgroundTransparency")
+		for _, obj in ipairs(block:GetDescendants()) do
+			-- "Pulse" plates own a looping transparency tween; a second
+			-- tween on the same property would cancel the breathing.
+			if obj.Name ~= "Pulse" then
+				if obj:IsA("TextLabel") or obj:IsA("TextButton") then
+					fade(obj, "TextTransparency")
+					fade(obj, "TextStrokeTransparency")
+					fade(obj, "BackgroundTransparency")
+				elseif obj:IsA("ImageLabel") then
+					fade(obj, "ImageTransparency")
+					fade(obj, "BackgroundTransparency")
+				elseif obj:IsA("Frame") then
+					fade(obj, "BackgroundTransparency")
+				elseif obj:IsA("UIStroke") then
+					fade(obj, "Transparency")
+				end
+			end
+		end
+	end
+
+	-- ---- Palette + small builders (all local to this page).
+	local INK = Color3.fromRGB(12, 13, 20) -- the one glyph-stroke colour
+	local STAGE = Color3.fromRGB(16, 17, 26) -- dark brick behind heroes/rails
+	local GOLD_CARD = Color3.fromRGB(58, 46, 18) -- hero plate (RANKS' YOU card)
+	local GOLD_DIM = Color3.fromRGB(44, 38, 20) -- claimed plate
+	local GOLD_SLOT = Color3.fromRGB(96, 74, 24) -- claimed calendar slot
+	local GREEN_CARD = Color3.fromRGB(22, 46, 28) -- ready plate
+	local GREEN_INK = Color3.fromRGB(18, 74, 34)
+	local LOCKED = Color3.fromRGB(40, 42, 58) -- unlit pip / station
+	local MINT = Color3.fromRGB(120, 230, 140)
+	local PALE_GOLD = Color3.fromRGB(255, 226, 150)
+	local LILAC = Color3.fromRGB(210, 170, 255) -- dust
+	local SALMON = Color3.fromRGB(235, 150, 120) -- paused streak
+	local DARK_TEXT = Color3.fromRGB(30, 26, 14) -- text on solid gold
+
+	-- Thin progress bar: dark track, coloured fill, frac 0..1.
+	local function progressBar(parent, posU, sizeU, frac, color, zindex)
+		local track = Instance.new("Frame")
+		track.Position = posU
+		track.Size = sizeU
+		track.BackgroundColor3 = STAGE
+		track.BorderSizePixel = 0
+		track.ZIndex = zindex
+		track.Parent = parent
+		corner(track, 3)
+		stroke(track, Color3.new(0, 0, 0), 1, 0.6)
+		local fill = Instance.new("Frame")
+		fill.Size = UDim2.new(math.clamp(frac, 0, 1), 0, 1, 0)
+		fill.BackgroundColor3 = color
+		fill.BorderSizePixel = 0
+		fill.ZIndex = zindex + 1
+		fill.Parent = track
+		corner(fill, 3)
+		return track
+	end
+
+	-- Breathing pixel halo behind a brick (the READY glow): a slightly
+	-- larger plate whose transparency loops. Static at half under reduced
+	-- motion. Sits at zindex (one under the brick's own plate).
+	local function glow(parent, color, zindex)
+		local halo = Instance.new("Frame")
+		halo.Name = "Pulse"
+		halo.Position = UDim2.new(0, -2, 0, -2)
+		halo.Size = UDim2.new(1, 4, 1, 4)
+		halo.BackgroundTransparency = 1
+		halo.ZIndex = zindex
+		halo.Parent = parent
+		local plate = pixelPlate(halo, color, zindex, "card", 3)
+		plate.Name = "Pulse"
+		plate.ImageTransparency = 0.5
+		if not S.reducedMotion then
+			plate.ImageTransparency = 0.2
+			TweenService:Create(plate,
+				TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+				{ ImageTransparency = 0.75 }):Play()
+		end
+		return halo
+	end
+
+	-- Pixel-brick claim button (the REBIRTH button idiom) with the claim
+	-- state set: ready (green, hover, squash), claimed (dark gold + check),
+	-- disabled (dark, sub text). Callers restyle via setState; tickers
+	-- write api.txt.
+	local function brickButton(parent, sizeU, posU, zindex, textSize)
+		local btn = Instance.new("TextButton")
+		btn.Size = sizeU
+		btn.Position = posU
+		btn.BackgroundTransparency = 1
+		btn.Text = ""
+		btn.AutoButtonColor = false
+		btn.ZIndex = zindex
+		btn.Parent = parent
+		local face = pixelPlate(btn, STAGE, zindex, "btn", 3)
+		local txt = label(btn, "", textSize or 16, UI_SUB, Enum.Font.FredokaOne)
+		txt.Position = UDim2.new(0, 6, 0, 0)
+		txt.Size = UDim2.new(1, -12, 1, -6)
+		txt.TextTruncate = Enum.TextTruncate.AtEnd
+		txt.TextStrokeColor3 = INK
+		txt.ZIndex = zindex + 1
+		local pressScale = Instance.new("UIScale")
+		pressScale.Parent = btn
+		local api = { btn = btn, txt = txt }
+		local state = "disabled"
+		local hovering = false
+		local function paint()
+			if state == "ready" then
+				face.ImageColor3 = pixelTint(hovering and Color3.fromRGB(104, 214, 124) or UI_GREEN)
+				txt.TextColor3 = Color3.new(1, 1, 1)
+				txt.TextStrokeColor3 = GREEN_INK
+				txt.TextStrokeTransparency = 0.15
+			elseif state == "claimed" then
+				face.ImageColor3 = pixelTint(GOLD_DIM)
+				txt.TextColor3 = UI_GOLD
+				txt.TextStrokeTransparency = 1
+			else
+				face.ImageColor3 = pixelTint(LOCKED)
+				txt.TextColor3 = UI_SUB
+				txt.TextStrokeTransparency = 1
+			end
+		end
+		btn.MouseEnter:Connect(function()
+			hovering = true
+			paint()
+		end)
+		btn.MouseLeave:Connect(function()
+			hovering = false
+			paint()
+		end)
+		btn.MouseButton1Down:Connect(function()
+			if state == "ready" then
+				TweenService:Create(pressScale,
+					TweenInfo.new(0.07, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+					{ Scale = 0.95 }):Play()
+			end
+		end)
+		btn.MouseButton1Up:Connect(function()
+			TweenService:Create(pressScale,
+				TweenInfo.new(0.07, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+				{ Scale = 1 }):Play()
+		end)
+		function api.setState(newState, text)
+			state = newState
+			if text then txt.Text = text end
+			paint()
+		end
+		paint()
+		return api
+	end
+
+	-- Small pixel chip (a stamp, not a button): FredokaOne text on a brick.
+	local function chip(parent, posU, w, face, text, textColor, ink, zindex)
+		local c = Instance.new("Frame")
+		c.AnchorPoint = Vector2.new(1, 0)
+		c.Position = posU
+		c.Size = UDim2.fromOffset(w, 32)
+		c.BackgroundTransparency = 1
+		c.ZIndex = zindex
+		c.Parent = parent
+		pixelPlate(c, face, zindex, "btn", 2)
+		local t = label(c, text, 13, textColor, Enum.Font.FredokaOne)
+		t.Position = UDim2.new(0, 4, 0, 0)
+		t.Size = UDim2.new(1, -8, 1, -5)
+		t.TextTruncate = Enum.TextTruncate.AtEnd
+		if ink then
+			t.TextStrokeColor3 = ink
+			t.TextStrokeTransparency = 0.2
+		end
+		t.ZIndex = zindex + 1
+		return c
+	end
+
+	-- Hero brick: eyebrow, a bottom-aligned headline row (words around a
+	-- huge FredokaOne number), and a sub line. Returns row, numRow, sub.
+	local function heroCard(height, face, eyebrowText)
+		local hero = makeRow(height)
+		hero.BackgroundTransparency = 1
+		pixelPlate(hero, face, 21, "card", 3)
+		pixelDither(hero, 22, 0.4)
+		local eyebrow = label(hero, eyebrowText, 12, UI_GOLD, Enum.Font.GothamBlack)
+		eyebrow.Position = UDim2.new(0, 14, 0, 10)
+		eyebrow.Size = UDim2.new(1, -220, 0, 14)
+		eyebrow.TextXAlignment = Enum.TextXAlignment.Left
+		eyebrow.ZIndex = 23
+		local numRow = Instance.new("Frame")
+		numRow.BackgroundTransparency = 1
+		numRow.Position = UDim2.new(0, 14, 0, 24)
+		numRow.Size = UDim2.new(1, -220, 0, 46)
+		numRow.ZIndex = 23
+		numRow.Parent = hero
+		local numLayout = Instance.new("UIListLayout")
+		numLayout.FillDirection = Enum.FillDirection.Horizontal
+		numLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+		numLayout.SortOrder = Enum.SortOrder.LayoutOrder
+		numLayout.Padding = UDim.new(0, 8)
+		numLayout.Parent = numRow
+		local sub = label(hero, "", 12, PALE_GOLD, Enum.Font.GothamBold)
+		sub.Position = UDim2.new(0, 14, 0, 72)
+		sub.Size = UDim2.new(1, -28, 0, 16)
+		sub.TextTruncate = Enum.TextTruncate.AtEnd
+		sub.TextXAlignment = Enum.TextXAlignment.Left
+		sub.ZIndex = 23
+		return hero, numRow, sub
+	end
+	-- "[before] 42 [after]": the number sizes itself; words sit on its
+	-- baseline. Returns the number label (tickers rewrite it).
+	local function headline(numRow, before, bigText, after, bigColor, wordColor, bigSize)
+		local order = 0
+		local function word(text)
+			if not text then return end
+			order += 1
+			local w = label(numRow, text, 14, wordColor, Enum.Font.GothamBlack)
+			w.AutomaticSize = Enum.AutomaticSize.X
+			w.Size = UDim2.new(0, 0, 0, 24)
+			w.LayoutOrder = order
+			w.ZIndex = 23
+		end
+		word(before)
+		order += 1
+		local num = label(numRow, bigText, bigSize or 40, bigColor, Enum.Font.FredokaOne)
+		num.AutomaticSize = Enum.AutomaticSize.X
+		num.Size = UDim2.new(0, 0, 1, 0)
+		num.LayoutOrder = order
+		num.TextStrokeColor3 = INK
+		num.TextStrokeTransparency = 0.3
+		num.ZIndex = 23
+		word(after)
+		return num
+	end
+
+	-- ---- TABS (shared pillTabBar) + a ready-count badge on tabs that have
+	-- something to claim; the active chip wears real gold.
+	local TABS = {
+		{ id = "quests", label = "QUESTS", ready = #questReadyList },
+		{ id = "streak", label = "STREAK", ready = streakReady and 1 or 0 },
+		{ id = "playtime", label = "PLAYTIME", ready = #playReadyList },
+	}
+	local tabBar = pillTabBar(TABS, dailyTab, function(id)
 		dailyTab = id
 		renderPage()
 	end)
+	for _, pill in ipairs(tabBar:GetChildren()) do
+		if pill:IsA("TextButton") then
+			for _, tab in ipairs(TABS) do
+				if tab.label == pill.Text then
+					if tab.id == dailyTab then
+						pill.BackgroundColor3 = Color3.fromRGB(78, 60, 20)
+						local pillStroke = pill:FindFirstChildOfClass("UIStroke")
+						if pillStroke then pillStroke.Transparency = 0.05 end
+					end
+					if tab.ready > 0 then
+						local badge = Instance.new("Frame")
+						badge.AnchorPoint = Vector2.new(1, 0.5)
+						badge.Position = UDim2.new(1, -6, 0.5, 0)
+						badge.Size = UDim2.fromOffset(22, 22)
+						badge.BackgroundColor3 = UI_GREEN
+						badge.BorderSizePixel = 0
+						badge.ZIndex = 24
+						badge.Parent = pill
+						corner(badge, 11)
+						stroke(badge, GREEN_INK, 1.5, 0.2)
+						local bt = label(badge, tostring(tab.ready), 12, Color3.new(1, 1, 1), Enum.Font.GothamBlack)
+						bt.Size = UDim2.fromScale(1, 1)
+						bt.ZIndex = 25
+					end
+				end
+			end
+		end
+	end
+
+	-- ---- TODAY: "N REWARDS READY" huge. 2+ ready = one CLAIM ALL brick
+	-- that fires every ready claim in order (the toast rail coalesces the
+	-- spree). 0-1 ready = the next thing coming, ticking.
+	do
+		local showAll = readyTotal >= 2
+		local hero, numRow, sub = heroCard(showAll and 150 or 94, GOLD_CARD, "TODAY")
+		headline(numRow, nil, tostring(readyTotal),
+			readyTotal == 1 and "REWARD READY" or "REWARDS READY",
+			readyTotal > 0 and Color3.new(1, 1, 1) or UI_SUB,
+			readyTotal > 0 and UI_GOLD or UI_SUB, 44)
+		if showAll then
+			-- What the spree pays, summed from the same tables the tabs
+			-- print (scaled tickets, flat dust — understates, never over).
+			local tix, dust = 0, 0
+			for _, qi in ipairs(questReadyList) do
+				if qi <= 3 then
+					local m = GameConfig.Daily.missions[qi]
+					tix += scaledTix(m.tickets)
+					dust += (m.dust or 0)
+				else
+					tix += scaledTix(DAILY_CHEST.tickets or 300)
+					dust += (DAILY_CHEST.dust or 40)
+				end
+			end
+			if streakReady then
+				local dayCfg = STREAK_CFG.days[todaySlot] or {}
+				tix += scaledTix(dayCfg.tickets)
+				dust += (dayCfg.dust or 0)
+			end
+			for _, pi in ipairs(playReadyList) do
+				tix += scaledTix(PLAY_CFG.tickets[pi])
+				dust += (PLAY_CFG.dust[pi] or 0)
+			end
+			sub.Text = ("+%s TIX · +%s DUST WAITING FOR YOU"):format(formatCommas(tix), formatCommas(dust))
+			local all = brickButton(hero, UDim2.new(1, -28, 0, 50), UDim2.new(0, 14, 0, 92), 23, 20)
+			all.setState("ready", ("CLAIM ALL %d"):format(readyTotal))
+			all.btn.MouseButton1Click:Connect(function()
+				-- Same remotes, same args, same order the tabs fire:
+				-- quests (missions then chest), the streak, then playtime.
+				if claimQuestRemote then
+					for _, qi in ipairs(questReadyList) do
+						claimQuestRemote:FireServer(qi)
+					end
+				end
+				if streakReady and claimStreakRemote then
+					claimStreakRemote:FireServer()
+				end
+				if claimPlaytimeRemote then
+					for _, pi in ipairs(playReadyList) do
+						claimPlaytimeRemote:FireServer(pi)
+					end
+				end
+				all.setState("disabled", "CLAIMING...")
+			end)
+		else
+			bindTicker(sub, function(lbl)
+				lbl.Text = nextUpText()
+			end, 1)
+			if readyTotal == 1 then
+				-- Point at the one ready thing: its tab, or "below" if
+				-- you're already on it.
+				local whereId = #questReadyList > 0 and "quests" or streakReady and "streak" or "playtime"
+				local whereText = "READY BELOW"
+				if whereId ~= dailyTab then
+					for _, tab in ipairs(TABS) do
+						if tab.id == whereId then whereText = "READY ON " .. tab.label end
+					end
+				end
+				chip(hero, UDim2.new(1, -14, 0, 14), 170, UI_GREEN, whereText,
+					Color3.new(1, 1, 1), GREEN_INK, 23)
+			end
+		end
+		fadeIn(hero)
+	end
 
 	if dailyTab == "quests" then
-		-- Claim states read ONLY the replicated DailyR/DailyC attrs — the
-		-- claimed check appears when DailyC<i> flips, never optimistically.
-		local function questReady(i)
-			return player:GetAttribute("DailyR" .. i) == true
-				and player:GetAttribute("DailyC" .. i) ~= true
-		end
-		local function questClaimed(i)
-			return player:GetAttribute("DailyC" .. i) == true
-		end
-
-		-- CLAIM ALL header button when 2+ are ready.
-		local readyList = {}
-		for i = 1, 4 do
-			if questReady(i) then table.insert(readyList, i) end
-		end
-		if #readyList >= 2 then
-			local row = makeRow(48)
-			row.BackgroundTransparency = 1
-			local allBtn = makeClaimButton(row, UDim2.new(1, 0, 0, 44), UDim2.new(0, 0, 0, 2))
-			allBtn.setState("ready", ("CLAIM ALL (%d)"):format(#readyList))
-			allBtn.btn.MouseButton1Click:Connect(function()
-				if not claimQuestRemote then return end
-				for _, qi in ipairs(readyList) do
-					claimQuestRemote:FireServer(qi)
-				end
-				allBtn.setState("disabled", "CLAIMING...")
-			end)
-		end
-
-		-- Quest rows: progress + big CLAIM.
-		for i, mission in ipairs(GameConfig.Daily.missions) do
-			local cur = math.min(player:GetAttribute(mission.statAttr) or 0, mission.goal)
-			local done = cur >= mission.goal
-			local row = makeRow(64)
-			if questClaimed(i) then
-				row.BackgroundColor3 = Color3.fromRGB(30, 34, 26)
-			elseif questReady(i) then
-				row.BackgroundColor3 = Color3.fromRGB(44, 38, 20)
-				stroke(row, UI_GOLD, 1.4, 0.35)
-			end
-			local icon = Instance.new("ImageLabel")
-			icon.Image = STAR_ART
-			icon.BackgroundTransparency = 1
-			icon.Size = UDim2.fromOffset(24, 24)
-			icon.Position = UDim2.new(0, 12, 0.5, -12)
-			icon.ImageColor3 = done and UI_GOLD or UI_SUB
-			icon.ZIndex = 22
-			icon.Parent = row
-			local nameLabel = label(row, mission.label, 14,
-				done and UI_GOLD or UI_TEXT, Enum.Font.GothamBold)
-			nameLabel.Position = UDim2.new(0, 46, 0, 8)
-			nameLabel.Size = UDim2.new(1, -180, 0, 16)
-			nameLabel.TextXAlignment = Enum.TextXAlignment.Left
-			nameLabel.ZIndex = 22
-			local rewardLabel = label(row,
-				("+%s TIX · +%d DUST"):format(formatCommas(scaledTix(mission.tickets)), mission.dust or 0),
-				12, UI_SUB, Enum.Font.GothamBold)
-			rewardLabel.Position = UDim2.new(0, 46, 0, 26)
-			rewardLabel.Size = UDim2.new(1, -180, 0, 14)
-			rewardLabel.TextXAlignment = Enum.TextXAlignment.Left
-			rewardLabel.ZIndex = 22
-			local bar = Instance.new("Frame")
-			bar.Position = UDim2.new(0, 46, 0, 46)
-			bar.Size = UDim2.new(1, -180, 0, 8)
-			bar.BackgroundColor3 = Color3.fromRGB(16, 17, 26)
-			bar.BorderSizePixel = 0
-			bar.ZIndex = 22
-			bar.Parent = row
-			corner(bar, 4)
-			local fill = Instance.new("Frame")
-			fill.Size = UDim2.new(cur / mission.goal, 0, 1, 0)
-			fill.BackgroundColor3 = UI_GOLD
-			fill.BorderSizePixel = 0
-			fill.ZIndex = 23
-			fill.Parent = bar
-			corner(fill, 4)
-			local claim = makeClaimButton(row, UDim2.fromOffset(112, 44),
-				UDim2.new(1, -122, 0.5, -22))
-			if questClaimed(i) then
-				claim.setState("claimed", "CLAIMED " .. CHECK_GLYPH)
-			elseif questReady(i) then
-				claim.setState("ready", "CLAIM")
-				local qi = i
-				claim.btn.MouseButton1Click:Connect(function()
-					if claimQuestRemote then
-						claimQuestRemote:FireServer(qi)
-						claim.setState("disabled", "...")
-					end
-				end)
-			else
-				claim.setState("disabled", cur .. "/" .. mission.goal)
-			end
-		end
-
-		-- All-3 chest row = quest slot 4.
+		-- ---- HERO: the ALL-3 BONUS CHEST on top (quest slot 4) — three
+		-- pips for the missions, the chest reward, its claim brick. The gate
+		-- is unchanged: DailyR4 (server flips it when r1..r3 are REACHED).
 		do
-			local row = makeRow(64)
-			row.BackgroundColor3 = questReady(4) and Color3.fromRGB(52, 42, 18)
-				or Color3.fromRGB(16, 17, 26)
-			stroke(row, UI_GOLD, 1.6, questReady(4) and 0.15 or 0.5)
+			local chestReady = questReady(4)
+			local chestClaimed = questClaimed(4)
+			local hitCount = 0
+			for i = 1, 3 do
+				if player:GetAttribute("DailyR" .. i) == true then hitCount += 1 end
+			end
+			local row = makeRow(88)
+			row.BackgroundTransparency = 1
+			if chestReady then glow(row, UI_GREEN, 20) end
+			pixelPlate(row, chestClaimed and GOLD_DIM or chestReady and GREEN_CARD or STAGE, 21, "card", 3)
+			pixelDither(row, 22, chestReady and 0.35 or 0.5)
 			local icon = Instance.new("ImageLabel")
 			icon.Image = ACH_ICONS.crown
 			icon.BackgroundTransparency = 1
-			icon.Size = UDim2.fromOffset(36, 36)
-			icon.Position = UDim2.new(0, 10, 0.5, -18)
-			icon.ZIndex = 22
+			icon.Size = UDim2.fromOffset(44, 44)
+			icon.Position = UDim2.new(0, 12, 0, 14)
+			icon.ImageTransparency = chestClaimed and 0.4 or 0
+			icon.ZIndex = 23
 			icon.Parent = row
-			local nameLabel = label(row, "ALL 3 DONE — BONUS CHEST", 14, UI_GOLD, Enum.Font.GothamBlack)
-			nameLabel.Position = UDim2.new(0, 56, 0, 10)
-			nameLabel.Size = UDim2.new(1, -190, 0, 18)
-			nameLabel.TextXAlignment = Enum.TextXAlignment.Left
-			nameLabel.ZIndex = 22
-			local subLabel = label(row,
+			local title = label(row, "ALL 3 DONE = BONUS CHEST", 14,
+				chestClaimed and UI_SUB or UI_GOLD, Enum.Font.GothamBlack)
+			title.Position = UDim2.new(0, 66, 0, 10)
+			title.Size = UDim2.new(1, -206, 0, 18)
+			title.TextTruncate = Enum.TextTruncate.AtEnd
+			title.TextXAlignment = Enum.TextXAlignment.Left
+			title.ZIndex = 23
+			local reward = label(row,
 				("+%s TIX · +%d DUST · +%d STAR"):format(
 					formatCommas(scaledTix(DAILY_CHEST.tickets or 300)),
 					DAILY_CHEST.dust or 40, DAILY_CHEST.stars or 1),
-				12, UI_SUB, Enum.Font.GothamBold)
-			subLabel.Position = UDim2.new(0, 56, 0, 32)
-			subLabel.Size = UDim2.new(1, -190, 0, 14)
-			subLabel.TextXAlignment = Enum.TextXAlignment.Left
-			subLabel.ZIndex = 22
-			local claim = makeClaimButton(row, UDim2.fromOffset(112, 44),
-				UDim2.new(1, -122, 0.5, -22))
-			if questClaimed(4) then
+				12, chestClaimed and UI_SUB or UI_TEXT, Enum.Font.GothamBold)
+			reward.Position = UDim2.new(0, 66, 0, 30)
+			reward.Size = UDim2.new(1, -206, 0, 14)
+			reward.TextTruncate = Enum.TextTruncate.AtEnd
+			reward.TextXAlignment = Enum.TextXAlignment.Left
+			reward.ZIndex = 23
+			-- Three pips: one per mission, lit gold when it's reached.
+			for i = 1, 3 do
+				local hit = player:GetAttribute("DailyR" .. i) == true
+				local pip = Instance.new("Frame")
+				pip.Position = UDim2.new(0, 66 + (i - 1) * 26, 0, 52)
+				pip.Size = UDim2.fromOffset(22, 22)
+				pip.BackgroundTransparency = 1
+				pip.ZIndex = 23
+				pip.Parent = row
+				pixelPlate(pip, hit and UI_GOLD or LOCKED, 23, "btn", 2)
+				local g = label(pip, hit and CHECK_GLYPH or tostring(i), 12,
+					hit and DARK_TEXT or UI_SUB, Enum.Font.GothamBlack)
+				g.Size = UDim2.new(1, 0, 1, -4)
+				g.ZIndex = 24
+			end
+			local pipText = label(row, ("%d OF 3 DONE"):format(hitCount), 11,
+				hitCount == 3 and MINT or UI_SUB, Enum.Font.GothamBlack)
+			pipText.Position = UDim2.new(0, 150, 0, 52)
+			pipText.Size = UDim2.new(1, -290, 0, 22)
+			pipText.TextXAlignment = Enum.TextXAlignment.Left
+			pipText.ZIndex = 23
+			local claim = brickButton(row, UDim2.fromOffset(120, 46), UDim2.new(1, -132, 0.5, -23), 23, 17)
+			if chestClaimed then
 				claim.setState("claimed", "CLAIMED " .. CHECK_GLYPH)
-			elseif questReady(4) then
+			elseif chestReady then
 				claim.setState("ready", "CLAIM")
 				claim.btn.MouseButton1Click:Connect(function()
 					if claimQuestRemote then
@@ -3016,11 +3410,122 @@ local function renderDailyPage()
 			else
 				claim.setState("disabled", "FINISH ALL 3")
 			end
+			fadeIn(row)
+		end
+
+		-- ---- CONSTELLATION: a compact pixel strip (stars still feed
+		-- CONSTELLATION PRIME — the chest is what grants the star).
+		do
+			local starsEarned = player:GetAttribute("DailyStars") or 0
+			local need = GameConfig.Daily.starsToPrize
+			local strip = makeRow(40)
+			strip.BackgroundTransparency = 1
+			pixelPlate(strip, STAGE, 21, "card", 3)
+			local count = label(strip, ("%d / %d STARS"):format(starsEarned, need), 12,
+				UI_GOLD, Enum.Font.GothamBlack)
+			count.Position = UDim2.new(0, 12, 0, 0)
+			count.Size = UDim2.new(0, 92, 1, 0)
+			count.TextXAlignment = Enum.TextXAlignment.Left
+			count.ZIndex = 23
+			for i = 1, need do
+				local starIcon = Instance.new("ImageLabel")
+				starIcon.Image = STAR_ART
+				starIcon.BackgroundTransparency = 1
+				starIcon.Size = UDim2.fromOffset(18, 18)
+				starIcon.Position = UDim2.new(0, 106 + (i - 1) * 22, 0.5, -9)
+				starIcon.ImageColor3 = (i <= starsEarned) and UI_GOLD or Color3.fromRGB(60, 62, 80)
+				starIcon.ZIndex = 23
+				starIcon.Parent = strip
+			end
+			local prizeSpec = planetLookup[GameConfig.Daily.prizePlanet.n .. "|" .. GameConfig.Daily.prizePlanet.t]
+			local prizeIcon = makePlanetIcon(strip, prizeSpec, 26, 23)
+			prizeIcon.AnchorPoint = Vector2.new(1, 0.5)
+			prizeIcon.Position = UDim2.new(1, -10, 0.5, 0)
+			local prizeText = label(strip, ("%d STARS = %s"):format(need, GameConfig.Daily.rewardName), 11,
+				starsEarned >= need and UI_GOLD or UI_SUB, Enum.Font.GothamBlack)
+			prizeText.AnchorPoint = Vector2.new(1, 0)
+			prizeText.Position = UDim2.new(1, -44, 0, 0)
+			prizeText.Size = UDim2.new(1, -(106 + need * 22 + 52), 1, 0)
+			prizeText.TextTruncate = Enum.TextTruncate.AtEnd
+			prizeText.TextXAlignment = Enum.TextXAlignment.Right
+			prizeText.ZIndex = 23
+			fadeIn(strip)
+		end
+
+		-- ---- MISSIONS: 64px bricks — big bar with "17 / 25" on it, the
+		-- reward line, and CLAIM / CLAIMED bricks. In progress = dim plate.
+		for i, mission in ipairs(GameConfig.Daily.missions) do
+			local cur = math.min(player:GetAttribute(mission.statAttr) or 0, mission.goal)
+			local done = cur >= mission.goal
+			local isReady, isClaimed = questReady(i), questClaimed(i)
+			local row = makeRow(64)
+			row.BackgroundTransparency = 1
+			if isReady then glow(row, UI_GREEN, 20) end
+			local plate = pixelPlate(row, isClaimed and GOLD_DIM or isReady and GREEN_CARD or UI_ROW, 21, "card", 3)
+			if not isReady and not isClaimed then plate.ImageTransparency = 0.25 end
+			pixelDither(row, 22, isReady and 0.4 or 0.6)
+			local icon = Instance.new("ImageLabel")
+			icon.Image = STAR_ART
+			icon.BackgroundTransparency = 1
+			icon.Size = UDim2.fromOffset(22, 22)
+			icon.Position = UDim2.new(0, 12, 0, 10)
+			icon.ImageColor3 = done and UI_GOLD or UI_SUB
+			icon.ImageTransparency = isClaimed and 0.4 or 0
+			icon.ZIndex = 23
+			icon.Parent = row
+			local nameLabel = label(row, mission.label, 14,
+				isClaimed and UI_SUB or isReady and MINT or UI_TEXT, Enum.Font.GothamBlack)
+			nameLabel.Position = UDim2.new(0, 42, 0, 6)
+			nameLabel.Size = UDim2.new(1, -178, 0, 16)
+			nameLabel.TextTruncate = Enum.TextTruncate.AtEnd
+			nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+			nameLabel.ZIndex = 23
+			local rewardLabel = label(row,
+				("+%s TIX · +%d DUST"):format(formatCommas(scaledTix(mission.tickets)), mission.dust or 0),
+				12, isClaimed and UI_SUB or PALE_GOLD, Enum.Font.GothamBold)
+			rewardLabel.Position = UDim2.new(0, 42, 0, 23)
+			rewardLabel.Size = UDim2.new(1, -178, 0, 14)
+			rewardLabel.TextXAlignment = Enum.TextXAlignment.Left
+			rewardLabel.ZIndex = 23
+			local track = progressBar(row, UDim2.new(0, 42, 0, 42), UDim2.new(1, -178, 0, 14),
+				cur / mission.goal, isClaimed and GOLD_SLOT or UI_GOLD, 23)
+			local onBar = label(track, ("%d / %d"):format(cur, mission.goal), 11,
+				Color3.new(1, 1, 1), Enum.Font.GothamBlack)
+			onBar.Size = UDim2.fromScale(1, 1)
+			onBar.TextStrokeColor3 = INK
+			onBar.TextStrokeTransparency = 0.2
+			onBar.ZIndex = 25
+			if isClaimed or isReady then
+				local claim = brickButton(row, UDim2.fromOffset(120, 44), UDim2.new(1, -132, 0.5, -22), 23, 16)
+				if isClaimed then
+					claim.setState("claimed", "CLAIMED " .. CHECK_GLYPH)
+				else
+					claim.setState("ready", "CLAIM")
+					local qi = i
+					claim.btn.MouseButton1Click:Connect(function()
+						if claimQuestRemote then
+							claimQuestRemote:FireServer(qi)
+							claim.setState("disabled", "...")
+						end
+					end)
+				end
+			else
+				-- In progress: no button — the bar says how far, the stamp
+				-- says how much is left.
+				local togo = label(row, done and "DONE!" or ("%d TO GO"):format(mission.goal - cur), 13,
+					done and MINT or UI_SUB, Enum.Font.GothamBlack)
+				togo.AnchorPoint = Vector2.new(1, 0.5)
+				togo.Position = UDim2.new(1, -14, 0.5, 0)
+				togo.Size = UDim2.fromOffset(110, 20)
+				togo.TextXAlignment = Enum.TextXAlignment.Right
+				togo.ZIndex = 23
+			end
+			fadeIn(row)
 		end
 
 		-- Reset countdown (UTC midnight, same clock as the server rollover).
 		do
-			local row = makeRow(28)
+			local row = makeRow(24)
 			row.BackgroundTransparency = 1
 			local cd = label(row, "", 12, UI_SUB, Enum.Font.GothamBold)
 			cd.Size = UDim2.new(1, -8, 1, 0)
@@ -3030,6 +3535,7 @@ local function renderDailyPage()
 				local left = 86400 - (os.time() % 86400)
 				lbl.Text = "NEW QUESTS IN " .. fmtClock(left)
 			end, 1)
+			fadeIn(row)
 		end
 
 		-- Contextual forge handoff (addendum §5).
@@ -3043,351 +3549,365 @@ local function renderDailyPage()
 			end)
 		end
 
-		-- Constellation arc (kept: stars still feed CONSTELLATION PRIME —
-		-- the chest is what grants the star now).
-		local starsEarned = player:GetAttribute("DailyStars") or 0
-		local conRow = makeRow(96)
-		local conTitle = label(conRow,
-			("CONSTELLATION — 7 STARS = %s"):format(GameConfig.Daily.rewardName),
-			12, UI_SUB, Enum.Font.GothamBlack)
-		conTitle.Position = UDim2.new(0, 14, 0, 8)
-		conTitle.Size = UDim2.new(1, -24, 0, 14)
-		conTitle.TextXAlignment = Enum.TextXAlignment.Left
-		conTitle.ZIndex = 22
-		local prevX, prevY = nil, nil
-		for i = 1, GameConfig.Daily.starsToPrize do
-			local x = 24 + (i - 1) * 62
-			local y = 54 - math.floor(math.sin((i - 1) / 6 * math.pi) * 20 + 0.5)
-			if prevX then
-				local dx, dy = x - prevX, y - prevY
-				local dist = math.sqrt(dx * dx + dy * dy)
-				local link = Instance.new("Frame")
-				link.AnchorPoint = Vector2.new(0.5, 0.5)
-				link.Position = UDim2.fromOffset((x + prevX) / 2 + 14, (y + prevY) / 2 + 14)
-				link.Size = UDim2.fromOffset(dist, 2)
-				link.Rotation = math.deg(math.atan2(dy, dx))
-				link.BackgroundColor3 = (i <= starsEarned) and UI_GOLD or Color3.fromRGB(60, 62, 80)
-				link.BackgroundTransparency = 0.35
-				link.BorderSizePixel = 0
-				link.ZIndex = 22
-				link.Parent = conRow
-			end
-			local starIcon = Instance.new("ImageLabel")
-			starIcon.Image = STAR_ART
-			starIcon.BackgroundTransparency = 1
-			starIcon.Size = UDim2.fromOffset(28, 28)
-			starIcon.Position = UDim2.fromOffset(x, y)
-			starIcon.ImageColor3 = (i <= starsEarned) and UI_GOLD or Color3.fromRGB(60, 62, 80)
-			starIcon.ZIndex = 23
-			starIcon.Parent = conRow
-			prevX, prevY = x, y
+		-- ---- ACHIEVEMENTS: same data, compact bricks — icon, name, desc,
+		-- "+N TIX", a done check (or "7 / 10") and a thin bar.
+		local achDone = 0
+		for _, ach in ipairs(GameConfig.Achievements) do
+			if player:GetAttribute("Ach" .. ach.id) == true then achDone += 1 end
 		end
-		local prizeChip = Instance.new("Frame")
-		prizeChip.Size = UDim2.fromOffset(40, 40)
-		prizeChip.AnchorPoint = Vector2.new(1, 0.5)
-		prizeChip.Position = UDim2.new(1, -12, 0.5, 8)
-		prizeChip.BackgroundColor3 = starsEarned >= GameConfig.Daily.starsToPrize
-			and Color3.fromRGB(52, 42, 18) or Color3.fromRGB(24, 25, 38)
-		prizeChip.BorderSizePixel = 0
-		prizeChip.ZIndex = 22
-		prizeChip.Parent = conRow
-		corner(prizeChip, 10)
-		stroke(prizeChip, starsEarned >= GameConfig.Daily.starsToPrize and UI_GOLD
-			or Color3.fromRGB(60, 62, 80), 1.4, 0.3)
-		local prizeSpec = planetLookup[GameConfig.Daily.prizePlanet.n .. "|" .. GameConfig.Daily.prizePlanet.t]
-		local prizeIcon = makePlanetIcon(prizeChip, prizeSpec, 26, 23)
-		prizeIcon.Position = UDim2.new(0.5, -13, 0.5, -13)
-
-		-- Achievements checklist (auto-pay display, unchanged — it kept its
-		-- home when the quests page became DAILY).
-		local achHeader = makeRow(28)
+		local achHeader = makeRow(26)
 		achHeader.BackgroundTransparency = 1
 		local achTitle = label(achHeader, "ACHIEVEMENTS", 13, UI_SUB, Enum.Font.GothamBlack)
 		achTitle.Position = UDim2.new(0, 4, 0, 0)
-		achTitle.Size = UDim2.new(1, -8, 1, 0)
+		achTitle.Size = UDim2.new(1, -140, 1, 0)
 		achTitle.TextXAlignment = Enum.TextXAlignment.Left
 		achTitle.ZIndex = 22
+		local achCount = label(achHeader, ("%d / %d DONE"):format(achDone, #GameConfig.Achievements), 12,
+			UI_GOLD, Enum.Font.GothamBlack)
+		achCount.AnchorPoint = Vector2.new(1, 0)
+		achCount.Position = UDim2.new(1, -4, 0, 0)
+		achCount.Size = UDim2.new(0, 130, 1, 0)
+		achCount.TextXAlignment = Enum.TextXAlignment.Right
+		achCount.ZIndex = 22
 		for _, ach in ipairs(GameConfig.Achievements) do
 			local done = player:GetAttribute("Ach" .. ach.id) == true
 			local value = math.min(player:GetAttribute(ach.stat) or 0, ach.need)
-			local row = makeRow(64)
-			if done then
-				row.BackgroundColor3 = Color3.fromRGB(44, 38, 20)
-				stroke(row, UI_GOLD, 1.6, 0.3)
-			end
+			local row = makeRow(52)
+			row.BackgroundTransparency = 1
+			pixelPlate(row, done and GOLD_DIM or UI_ROW, 21, "btn", 2)
 			local icon = Instance.new("ImageLabel")
 			icon.Image = ACH_ICONS[ach.icon]
 			icon.BackgroundTransparency = 1
-			icon.Size = UDim2.fromOffset(42, 42)
-			icon.Position = UDim2.new(0, 10, 0.5, -21)
+			icon.Size = UDim2.fromOffset(32, 32)
+			icon.Position = UDim2.new(0, 10, 0, 7)
 			icon.ImageTransparency = done and 0 or 0.35
 			icon.ZIndex = 22
 			icon.Parent = row
-			local nameLabel = label(row, ach.name, 15, done and UI_GOLD or UI_TEXT, Enum.Font.GothamBlack)
-			nameLabel.Position = UDim2.new(0, 62, 0, 8)
-			nameLabel.Size = UDim2.new(1, -200, 0, 18)
+			local nameLabel = label(row, ach.name, 13, done and UI_GOLD or UI_TEXT, Enum.Font.GothamBlack)
+			nameLabel.Position = UDim2.new(0, 50, 0, 5)
+			nameLabel.Size = UDim2.new(1, -190, 0, 16)
+			nameLabel.TextTruncate = Enum.TextTruncate.AtEnd
 			nameLabel.TextXAlignment = Enum.TextXAlignment.Left
 			nameLabel.ZIndex = 22
-			local descLabel = label(row, ach.desc .. "  ·  +" .. ach.reward .. " TIX", 11, UI_SUB, Enum.Font.Gotham)
-			descLabel.Position = UDim2.new(0, 62, 0, 28)
-			descLabel.Size = UDim2.new(1, -200, 0, 14)
+			local descLabel = label(row, ach.desc, 11, UI_SUB, Enum.Font.Gotham)
+			descLabel.Position = UDim2.new(0, 50, 0, 22)
+			descLabel.Size = UDim2.new(1, -190, 0, 14)
+			descLabel.TextTruncate = Enum.TextTruncate.AtEnd
 			descLabel.TextXAlignment = Enum.TextXAlignment.Left
 			descLabel.ZIndex = 22
-			local bar = Instance.new("Frame")
-			bar.Position = UDim2.new(0, 62, 0, 46)
-			bar.Size = UDim2.new(1, -200, 0, 8)
-			bar.BackgroundColor3 = UI_BG
-			bar.BorderSizePixel = 0
-			bar.ZIndex = 22
-			bar.Parent = row
-			corner(bar, 4)
-			local fill = Instance.new("Frame")
-			fill.Size = UDim2.new(value / ach.need, 0, 1, 0)
-			fill.BackgroundColor3 = done and UI_GOLD or UI_GREEN
-			fill.BorderSizePixel = 0
-			fill.ZIndex = 23
-			fill.Parent = bar
-			corner(fill, 4)
-			local stateLabel = label(row, done and "DONE" or (value .. "/" .. ach.need), 13,
-				done and UI_GOLD or UI_SUB, Enum.Font.GothamBlack)
+			progressBar(row, UDim2.new(0, 50, 0, 39), UDim2.new(1, -190, 0, 5),
+				value / ach.need, done and UI_GOLD or UI_GREEN, 22)
+			local rewardLabel = label(row, "+" .. formatCommas(ach.reward) .. " TIX", 12,
+				done and UI_GOLD or PALE_GOLD, Enum.Font.GothamBlack)
+			rewardLabel.AnchorPoint = Vector2.new(1, 0)
+			rewardLabel.Position = UDim2.new(1, -14, 0, 6)
+			rewardLabel.Size = UDim2.fromOffset(120, 16)
+			rewardLabel.TextXAlignment = Enum.TextXAlignment.Right
+			rewardLabel.ZIndex = 22
+			local stateLabel = label(row, done and CHECK_GLYPH or (value .. " / " .. ach.need),
+				done and 16 or 11, done and UI_GREEN or UI_SUB, Enum.Font.GothamBlack)
 			stateLabel.AnchorPoint = Vector2.new(1, 0)
-			stateLabel.Position = UDim2.new(1, -14, 0, 0)
-			stateLabel.Size = UDim2.fromOffset(110, 64)
+			stateLabel.Position = UDim2.new(1, -14, 0, 23)
+			stateLabel.Size = UDim2.fromOffset(120, 18)
 			stateLabel.TextXAlignment = Enum.TextXAlignment.Right
 			stateLabel.ZIndex = 22
+			fadeIn(row)
 		end
 	elseif dailyTab == "streak" then
 		-- DAY STREAK (loop-daily §5, judge's engine verbatim server-side).
-		local sDay = player:GetAttribute("StreakDay") or 0
-		local ready = player:GetAttribute("StreakReady") == true
-		local sLast = player:GetAttribute("StreakLast") -- optional mirror
-		local paused = sLast ~= nil and sLast > 0
-			and (os.time() - sLast) > (STREAK_CFG.breakHours * 3600)
-		local displayDay = sDay + (ready and 1 or 0)
-		if paused and ready then displayDay = 1 end
-		if displayDay < 1 then displayDay = 1 end
-		local todaySlot = ((displayDay - 1) % 7) + 1
-		local weeks = math.floor(math.max(displayDay - 1, 0) / 7)
-		local mult = math.min(1 + 0.1 * weeks, STREAK_CFG.weekMultCap)
-
-		local header = makeRow(56)
-		header.BackgroundColor3 = Color3.fromRGB(16, 17, 26)
-		local hTitle = label(header, ("DAY STREAK: %d"):format(sDay), 18, UI_GOLD, Enum.Font.GothamBlack)
-		hTitle.Position = UDim2.new(0, 14, 0, 8)
-		hTitle.Size = UDim2.new(1, -28, 0, 22)
-		hTitle.TextXAlignment = Enum.TextXAlignment.Left
-		hTitle.ZIndex = 22
-		local hSub = label(header,
-			paused and "STREAK PAUSED — CLAIM TO START AT DAY 1!"
-				or "COME BACK EVERY DAY FOR BIGGER PRIZES", 12,
-			paused and Color3.fromRGB(235, 150, 120) or UI_SUB, Enum.Font.GothamBold)
-		hSub.Position = UDim2.new(0, 14, 0, 32)
-		hSub.Size = UDim2.new(1, -28, 0, 16)
-		hSub.TextXAlignment = Enum.TextXAlignment.Left
-		hSub.ZIndex = 22
-
-		if weeks > 0 then
-			local bonusRow = makeRow(26)
-			bonusRow.BackgroundTransparency = 1
-			local bonus = label(bonusRow,
-				("WEEK %d BONUS: PRIZES x%.1f"):format(weeks + 1, mult), 12,
-				UI_GOLD, Enum.Font.GothamBlack)
-			bonus.Size = UDim2.new(1, -8, 1, 0)
-			bonus.Position = UDim2.new(0, 4, 0, 0)
-			bonus.TextXAlignment = Enum.TextXAlignment.Left
-			bonus.ZIndex = 22
+		-- ---- HERO: "DAY n" huge + the week multiplier chip.
+		do
+			local hero, numRow, sub = heroCard(96, GOLD_CARD, "DAY STREAK")
+			local inARow = nil
+			if not paused and sDay > 0 then
+				inARow = sDay == 1 and "1 DAY IN A ROW" or ("%d DAYS IN A ROW"):format(sDay)
+			end
+			headline(numRow, nil, "DAY " .. displayDay, inARow, Color3.new(1, 1, 1), UI_GOLD, 40)
+			chip(hero, UDim2.new(1, -14, 0, 14), 196,
+				weeks > 0 and UI_GOLD or GOLD_DIM,
+				weeks > 0 and ("WEEK %d · x%.1f TICKETS"):format(weeks + 1, mult) or "WEEK 1",
+				weeks > 0 and DARK_TEXT or UI_GOLD, nil, 23)
+			sub.Text = paused and "STREAK PAUSED — CLAIM TO START AT DAY 1!"
+				or "COME BACK EVERY DAY FOR BIGGER PRIZES"
+			sub.TextColor3 = paused and SALMON or PALE_GOLD
+			fadeIn(hero)
 		end
 
-		-- 7 day cards in one row; TODAY enlarged with gold stroke + pulse.
-		local cardsRow = makeRow(96)
-		cardsRow.BackgroundTransparency = 1
-		for i = 1, 7 do
-			local dayCfg = STREAK_CFG.days[i] or {}
-			local isPast = i < todaySlot
-			local isToday = i == todaySlot
-			local card = Instance.new("Frame")
-			card.Position = UDim2.new((i - 1) / 7, i == 1 and 0 or 3, 0, isToday and 0 or 8)
-			card.Size = UDim2.new(1 / 7, i == 1 and -2 or -5, 1, isToday and -4 or -20)
-			card.BackgroundColor3 = isToday and Color3.fromRGB(52, 42, 18) or UI_ROW
-			card.BackgroundTransparency = (isPast or isToday) and 0 or 0.35
-			card.BorderSizePixel = 0
-			card.ZIndex = 22
-			card.Parent = cardsRow
-			corner(card, 10)
-			if isToday then
-				local st = stroke(card, UI_GOLD, 2, 0.1)
-				if ready then
-					TweenService:Create(st,
-						TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
-						{ Transparency = 0.55 }):Play()
+		-- ---- CALENDAR: one row of 7 pixel bricks. Claimed = gold + check,
+		-- today = breathing green with the reward big, future = dim previews
+		-- (the next two brighter than the rest).
+		do
+			local cal = makeRow(112)
+			cal.BackgroundTransparency = 1
+			for i = 1, 7 do
+				local dayCfg = STREAK_CFG.days[i] or {}
+				local isPast = i < todaySlot
+				local isToday = i == todaySlot
+				-- Today reads as claimed only when a real claim stamped it (not
+				-- ready with no StreakLast = the attrs are still replicating).
+				local claimedSlot = isPast or (isToday and not streakReady and sLast ~= nil and sLast > 0)
+				local soon = i == todaySlot + 1 or i == todaySlot + 2
+				local slot = Instance.new("Frame")
+				slot.Position = UDim2.new((i - 1) / 7, i == 1 and 0 or 3, 0, 0)
+				slot.Size = UDim2.new(1 / 7, i == 1 and -2 or -5, 1, 0)
+				slot.BackgroundTransparency = 1
+				slot.ZIndex = 22
+				slot.Parent = cal
+				if isToday and streakReady then glow(slot, UI_GREEN, 21) end
+				local plate = pixelPlate(slot,
+					claimedSlot and GOLD_SLOT or isToday and GREEN_CARD or UI_ROW, 22, "card", 3)
+				if not claimedSlot and not isToday then
+					plate.ImageTransparency = soon and 0.1 or 0.4
+				end
+				pixelDither(slot, 23, 0.55)
+				local dayLabel = label(slot, isToday and "TODAY" or ("DAY " .. i), 11,
+					isToday and (streakReady and MINT or UI_GOLD) or claimedSlot and UI_GOLD or UI_SUB,
+					Enum.Font.GothamBlack)
+				dayLabel.Position = UDim2.new(0, 0, 0, 6)
+				dayLabel.Size = UDim2.new(1, 0, 0, 14)
+				dayLabel.ZIndex = 24
+				if claimedSlot then
+					local check = label(slot, CHECK_GLYPH, 30, UI_GREEN, Enum.Font.GothamBlack)
+					check.AnchorPoint = Vector2.new(0.5, 0.5)
+					check.Position = UDim2.new(0.5, 0, 0.56, 0)
+					check.Size = UDim2.fromOffset(36, 36)
+					check.TextStrokeColor3 = INK
+					check.TextStrokeTransparency = 0.5
+					check.ZIndex = 24
+				else
+					-- Reward preview: icon (planet > dust > ticket), the
+					-- ticket amount big, then the dust / planet line.
+					local ic = Instance.new("ImageLabel")
+					ic.BackgroundTransparency = 1
+					ic.AnchorPoint = Vector2.new(0.5, 0)
+					ic.Position = UDim2.new(0.5, 0, 0, 24)
+					ic.Size = UDim2.fromOffset(18, 18)
+					if dayCfg.rollMinTier then
+						ic.Image = UI_ORB
+						ic.ImageColor3 = UI_PURPLE
+					elseif (dayCfg.dust or 0) > 0 then
+						ic.Image = STAR_ART
+						ic.ImageColor3 = LILAC
+					else
+						ic.Image = ACH_ICONS.ticket
+						ic.ImageColor3 = UI_GOLD
+					end
+					ic.ImageTransparency = (isToday or soon) and 0 or 0.3
+					ic.ZIndex = 24
+					ic.Parent = slot
+					local amount = label(slot, formatCommas(scaledTix(dayCfg.tickets)),
+						isToday and 20 or 15,
+						isToday and Color3.new(1, 1, 1) or soon and UI_TEXT or UI_SUB, Enum.Font.FredokaOne)
+					amount.Position = UDim2.new(0, 0, 0, 46)
+					amount.Size = UDim2.new(1, 0, 0, 24)
+					amount.TextStrokeColor3 = INK
+					amount.TextStrokeTransparency = isToday and 0.3 or 1
+					amount.ZIndex = 24
+					local line2 = label(slot,
+						dayCfg.rollMinTier and "TIX + PLANET"
+						or (dayCfg.dust or 0) > 0 and ("TIX + %d DUST"):format(dayCfg.dust)
+						or "TIX",
+						10, dayCfg.rollMinTier and UI_PURPLE or (dayCfg.dust or 0) > 0 and LILAC or UI_SUB,
+						Enum.Font.GothamBlack)
+					line2.Position = UDim2.new(0, 2, 0, 72)
+					line2.Size = UDim2.new(1, -4, 0, 12)
+					line2.TextTruncate = Enum.TextTruncate.AtEnd
+					line2.ZIndex = 24
 				end
 			end
-			local dayLabel = label(card, "DAY " .. i, 12,
-				isToday and UI_GOLD or (isPast and UI_SUB or UI_SUB), Enum.Font.GothamBlack)
-			dayLabel.Position = UDim2.new(0, 0, 0, 6)
-			dayLabel.Size = UDim2.new(1, 0, 0, 14)
-			dayLabel.ZIndex = 23
-			if isPast then
-				local check = label(card, CHECK_GLYPH, 22, UI_GREEN, Enum.Font.GothamBlack)
-				check.AnchorPoint = Vector2.new(0.5, 0.5)
-				check.Position = UDim2.new(0.5, 0, 0.58, 0)
-				check.Size = UDim2.fromOffset(30, 30)
-				check.ZIndex = 23
+			fadeIn(cal)
+		end
+
+		-- ---- CLAIM brick (56px, touch-safe) or the real countdown.
+		do
+			local claimRow = makeRow(60)
+			claimRow.BackgroundTransparency = 1
+			local claim = brickButton(claimRow, UDim2.new(1, 0, 0, 56), UDim2.new(0, 0, 0, 0), 22, 20)
+			if streakReady then
+				claim.setState("ready", ("CLAIM DAY %d!"):format(displayDay))
+				claim.btn.MouseButton1Click:Connect(function()
+					if claimStreakRemote then
+						claimStreakRemote:FireServer()
+						claim.setState("disabled", "CLAIMING...")
+					end
+				end)
+			elseif sLast and sLast > 0 then
+				claim.setState("disabled", "")
+				bindTicker(claim.txt, function(lbl)
+					local left = (sLast + STREAK_CFG.minGapHours * 3600) - os.time()
+					if left > 0 then
+						lbl.Text = "COME BACK IN " .. fmtClock(left)
+					else
+						lbl.Text = "NEXT PRIZE ANY MINUTE..."
+					end
+				end, 1)
 			else
-				-- Mini reward icon: planet > dust > ticket.
-				local ic = Instance.new("ImageLabel")
-				ic.BackgroundTransparency = 1
-				ic.AnchorPoint = Vector2.new(0.5, 0.5)
-				ic.Position = UDim2.new(0.5, 0, 0.52, 0)
-				ic.Size = UDim2.fromOffset(20, 20)
-				if dayCfg.rollMinTier then
-					ic.Image = UI_ORB
-					ic.ImageColor3 = UI_PURPLE
-				elseif (dayCfg.dust or 0) > 0 then
-					ic.Image = STAR_ART
-					ic.ImageColor3 = Color3.fromRGB(210, 170, 255)
-				else
-					ic.Image = ACH_ICONS.ticket
-					ic.ImageColor3 = UI_GOLD
-				end
-				ic.ZIndex = 23
-				ic.Parent = card
-				local amount = label(card, formatCommas(scaledTix(dayCfg.tickets)), 12,
-					isToday and UI_TEXT or UI_SUB, Enum.Font.GothamBold)
-				amount.AnchorPoint = Vector2.new(0.5, 1)
-				amount.Position = UDim2.new(0.5, 0, 1, -4)
-				amount.Size = UDim2.new(1, 0, 0, 14)
-				amount.ZIndex = 23
+				claim.setState("disabled", "COME BACK TOMORROW")
 			end
-		end
-
-		-- Full-width CLAIM (44px, touch-safe at every panel size).
-		local claimRow = makeRow(52)
-		claimRow.BackgroundTransparency = 1
-		local claim = makeClaimButton(claimRow, UDim2.new(1, 0, 0, 44), UDim2.new(0, 0, 0, 2))
-		if ready then
-			claim.setState("ready", ("CLAIM DAY %d!"):format(displayDay))
-			claim.btn.MouseButton1Click:Connect(function()
-				if claimStreakRemote then
-					claimStreakRemote:FireServer()
-					claim.setState("disabled", "CLAIMING...")
-				end
-			end)
-		elseif sLast and sLast > 0 then
-			claim.setState("disabled", "")
-			bindTicker(claim.btn, function(lbl)
-				local left = (sLast + STREAK_CFG.minGapHours * 3600) - os.time()
-				if left > 0 then
-					lbl.Text = "NEXT PRIZE IN " .. fmtClock(left)
-				else
-					lbl.Text = "NEXT PRIZE ANY MINUTE..."
-				end
-			end, 1)
-		else
-			claim.setState("disabled", "COME BACK TOMORROW")
+			fadeIn(claimRow)
+			-- One honest line, no jargon.
+			local honestRow = makeRow(22)
+			honestRow.BackgroundTransparency = 1
+			local honest = label(honestRow, "MISSING A DAY RESTARTS THE COUNT — YOU NEVER LOSE WHAT YOU EARNED",
+				12, UI_SUB, Enum.Font.GothamBold)
+			honest.Position = UDim2.new(0, 4, 0, 0)
+			honest.Size = UDim2.new(1, -8, 1, 0)
+			honest.TextTruncate = Enum.TextTruncate.AtEnd
+			honest.ZIndex = 22
+			fadeIn(honestRow)
 		end
 	else
 		-- PLAYTIME milestone rail (addendum §3).
-		local secs = player:GetAttribute("PlaySecs") or 0
-		local ready = player:GetAttribute("PlayReady") or 0
-		local claimed = player:GetAttribute("PlayClaimed") or 0
-		local milestones = PLAY_CFG.milestones
+		local n = #milestones
 
-		local header = makeRow(48)
-		header.BackgroundColor3 = Color3.fromRGB(16, 17, 26)
-		local hTitle = label(header, "PLAY PRIZES", 16, UI_GOLD, Enum.Font.GothamBlack)
-		hTitle.Position = UDim2.new(0, 14, 0, 6)
-		hTitle.Size = UDim2.new(1, -28, 0, 20)
-		hTitle.TextXAlignment = Enum.TextXAlignment.Left
-		hTitle.ZIndex = 22
-		local hSub = label(header, "TIME PLAYED: " .. fmtClock(secs), 12, UI_SUB, Enum.Font.GothamBold)
-		hSub.Position = UDim2.new(0, 14, 0, 28)
-		hSub.Size = UDim2.new(1, -28, 0, 14)
-		hSub.TextXAlignment = Enum.TextXAlignment.Left
-		hSub.ZIndex = 22
-
-		-- Circle rail: 8 milestone circles with times, pulse when claimable.
-		local rail = makeRow(84)
-		rail.BackgroundTransparency = 1
-		local track = Instance.new("Frame")
-		track.Position = UDim2.new(0, 18, 0, 26)
-		track.Size = UDim2.new(1, -36, 0, 4)
-		track.BackgroundColor3 = UI_BG
-		track.BorderSizePixel = 0
-		track.ZIndex = 22
-		track.Parent = rail
-		corner(track, 2)
-		local reachedFrac = 0
-		for i = #milestones, 1, -1 do
-			if secs >= milestones[i] then
-				reachedFrac = (i - 0.5) / #milestones
-				break
+		-- ---- HERO: time played, ticking, + the claimed-count chip.
+		do
+			local hero, numRow, sub = heroCard(96, GOLD_CARD, "PLAY PRIZES")
+			local num = headline(numRow, nil, fmtClock(liveSecs()), "PLAYED", Color3.new(1, 1, 1), UI_GOLD, 36)
+			bindTicker(num, function(lbl)
+				lbl.Text = fmtClock(liveSecs())
+			end, 1)
+			local allDone = playClaimedCount >= n
+			chip(hero, UDim2.new(1, -14, 0, 14), 150, allDone and UI_GOLD or GOLD_DIM,
+				("%d / %d CLAIMED"):format(playClaimedCount, n),
+				allDone and DARK_TEXT or UI_GOLD, nil, 23)
+			if nextReadyIdx then
+				sub.Text = ("+%s TIX · +%d DUST READY — GRAB IT!"):format(
+					formatCommas(scaledTix(PLAY_CFG.tickets[nextReadyIdx])),
+					PLAY_CFG.dust[nextReadyIdx] or 0)
+				sub.TextColor3 = MINT
+			elseif nextFutureIdx then
+				bindTicker(sub, function(lbl)
+					local left = playLeft()
+					lbl.Text = left > 0 and ("NEXT PRIZE IN %s — KEEP PLAYING!"):format(fmtClock(left))
+						or "NEXT PRIZE ANY SECOND..."
+				end, 1)
+			else
+				sub.Text = "EVERY PLAY PRIZE CLAIMED " .. CHECK_GLYPH
 			end
-		end
-		local trackFill = Instance.new("Frame")
-		trackFill.Size = UDim2.new(reachedFrac, 0, 1, 0)
-		trackFill.BackgroundColor3 = UI_GOLD
-		trackFill.BorderSizePixel = 0
-		trackFill.ZIndex = 23
-		trackFill.Parent = track
-		for i, ms in ipairs(milestones) do
-			local isClaimed = maskBit(claimed, i)
-			local isReady = maskBit(ready, i) and not isClaimed
-			local circle = Instance.new("Frame")
-			circle.AnchorPoint = Vector2.new(0.5, 0.5)
-			circle.Position = UDim2.new((i - 0.5) / #milestones, 0, 0, 28)
-			circle.Size = UDim2.fromOffset(34, 34)
-			circle.BackgroundColor3 = isClaimed and Color3.fromRGB(44, 38, 20)
-				or isReady and Color3.fromRGB(22, 46, 28) or UI_ROW
-			circle.BorderSizePixel = 0
-			circle.ZIndex = 24
-			circle.Parent = rail
-			corner(circle, 17)
-			stroke(circle, isClaimed and UI_GOLD or isReady and UI_GREEN
-				or Color3.fromRGB(60, 62, 80), 1.6, isReady and 0.05 or 0.35)
-			if isReady then
-				local pulse = Instance.new("UIScale")
-				pulse.Parent = circle
-				TweenService:Create(pulse,
-					TweenInfo.new(0.55, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
-					{ Scale = 1.14 }):Play()
-			end
-			local mark = label(circle, isClaimed and CHECK_GLYPH or fmtShortTime(ms), 12,
-				isClaimed and UI_GOLD or isReady and UI_GREEN or UI_SUB, Enum.Font.GothamBlack)
-			mark.Size = UDim2.fromScale(1, 1)
-			mark.ZIndex = 25
+			fadeIn(hero)
 		end
 
-		-- One big CLAIM for the first ready milestone; countdown otherwise.
-		local nextReadyIdx = nil
-		local nextFutureIdx = nil
-		for i = 1, #milestones do
-			if maskBit(ready, i) and not maskBit(claimed, i) and not nextReadyIdx then
-				nextReadyIdx = i
+		-- ---- RAIL: stations for each milestone; the fill runs to your
+		-- live playtime between station centres. Claimable = lit green with
+		-- the reward, claimed = checked, the next station counts down.
+		do
+			local rail = makeRow(96)
+			rail.BackgroundTransparency = 1
+			pixelPlate(rail, STAGE, 21, "card", 3)
+			pixelDither(rail, 22, 0.5)
+			local function centre(k)
+				return k == 0 and 0 or (k - 0.5) / n
 			end
-			if not maskBit(claimed, i) and not maskBit(ready, i) and not nextFutureIdx then
-				nextFutureIdx = i
-			end
-		end
-		local claimRow = makeRow(52)
-		claimRow.BackgroundTransparency = 1
-		local claim = makeClaimButton(claimRow, UDim2.new(1, 0, 0, 44), UDim2.new(0, 0, 0, 2))
-		if nextReadyIdx then
-			claim.setState("ready", ("CLAIM +%s TIX · +%d DUST"):format(
-				formatCommas(scaledTix(PLAY_CFG.tickets[nextReadyIdx])),
-				PLAY_CFG.dust[nextReadyIdx] or 0))
-			local idx = nextReadyIdx
-			claim.btn.MouseButton1Click:Connect(function()
-				if claimPlaytimeRemote then
-					claimPlaytimeRemote:FireServer(idx)
-					claim.setState("disabled", "CLAIMING...")
+			local function railFrac(secs)
+				local k = 0
+				for i = 1, n do
+					if secs >= milestones[i] then k = i end
 				end
-			end)
-		elseif nextFutureIdx then
-			claim.setState("disabled", ("NEXT PRIZE AT %s — KEEP PLAYING!"):format(
-				fmtShortTime(milestones[nextFutureIdx])))
-		else
-			claim.setState("claimed", "ALL PLAY PRIZES CLAIMED TODAY " .. CHECK_GLYPH)
+				if k >= n then return centre(n) end
+				local lo = k == 0 and 0 or milestones[k]
+				local hi = milestones[k + 1]
+				local part = math.clamp((secs - lo) / math.max(hi - lo, 1), 0, 1)
+				return centre(k) + (centre(k + 1) - centre(k)) * part
+			end
+			local track = Instance.new("Frame")
+			track.Position = UDim2.new(0, 16, 0, 36)
+			track.Size = UDim2.new(1, -32, 0, 6)
+			track.BackgroundColor3 = UI_BG
+			track.BorderSizePixel = 0
+			track.ZIndex = 23
+			track.Parent = rail
+			corner(track, 3)
+			local trackFill = Instance.new("Frame")
+			trackFill.Size = UDim2.new(railFrac(playSecs), 0, 1, 0)
+			trackFill.BackgroundColor3 = UI_GOLD
+			trackFill.BorderSizePixel = 0
+			trackFill.ZIndex = 24
+			trackFill.Parent = track
+			corner(trackFill, 3)
+			bindTicker(trackFill, function(f)
+				f.Size = UDim2.new(railFrac(liveSecs()), 0, 1, 0)
+			end, 1)
+			for i, ms in ipairs(milestones) do
+				local isClaimed = maskBit(playClaimedMask, i)
+				local isReady = maskBit(playReadyMask, i) and not isClaimed
+				local isNext = i == nextFutureIdx
+				local station = Instance.new("Frame")
+				station.AnchorPoint = Vector2.new(0.5, 0.5)
+				station.Position = UDim2.new((i - 0.5) / n, 0, 0, 39)
+				station.Size = UDim2.fromOffset(40, 40)
+				station.BackgroundTransparency = 1
+				station.ZIndex = 25
+				station.Parent = rail
+				if isReady then
+					glow(station, UI_GREEN, 24)
+					if not S.reducedMotion then
+						local pulse = Instance.new("UIScale")
+						pulse.Parent = station
+						TweenService:Create(pulse,
+							TweenInfo.new(0.55, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+							{ Scale = 1.1 }):Play()
+					end
+				end
+				pixelPlate(station, isClaimed and UI_GOLD or isReady and UI_GREEN or LOCKED, 25, "btn", 2)
+				local mark = label(station, isClaimed and CHECK_GLYPH or fmtShortTime(ms), 13,
+					isClaimed and DARK_TEXT or isReady and Color3.new(1, 1, 1) or UI_SUB, Enum.Font.GothamBlack)
+				mark.Size = UDim2.new(1, 0, 1, -4)
+				mark.TextStrokeColor3 = isReady and GREEN_INK or INK
+				mark.TextStrokeTransparency = isReady and 0.2 or 1
+				mark.ZIndex = 26
+				local under = label(rail, "", 10, UI_SUB, Enum.Font.GothamBlack)
+				under.AnchorPoint = Vector2.new(0.5, 0)
+				under.Position = UDim2.new((i - 0.5) / n, 0, 0, 66)
+				under.Size = UDim2.new(1 / n, -2, 0, 14)
+				under.TextTruncate = Enum.TextTruncate.AtEnd
+				under.ZIndex = 23
+				if isClaimed then
+					under.Text = "DONE"
+				elseif isReady then
+					under.Text = "+" .. formatCommas(scaledTix(PLAY_CFG.tickets[i])) .. " TIX"
+					under.TextColor3 = MINT
+				elseif isNext then
+					under.TextColor3 = PALE_GOLD
+					local stationIdx = i
+					bindTicker(under, function(lbl)
+						local left = milestones[stationIdx] - liveSecs()
+						lbl.Text = left > 0 and ("IN " .. fmtClock(left)) or "ANY SECOND"
+					end, 1)
+				else
+					under.Text = "+" .. formatCommas(scaledTix(PLAY_CFG.tickets[i]))
+				end
+			end
+			fadeIn(rail)
+		end
+
+		-- ---- One big CLAIM for the first ready station; countdown otherwise.
+		do
+			local claimRow = makeRow(60)
+			claimRow.BackgroundTransparency = 1
+			local claim = brickButton(claimRow, UDim2.new(1, 0, 0, 56), UDim2.new(0, 0, 0, 0), 22, 19)
+			if nextReadyIdx then
+				claim.setState("ready", ("CLAIM +%s TIX · +%d DUST"):format(
+					formatCommas(scaledTix(PLAY_CFG.tickets[nextReadyIdx])),
+					PLAY_CFG.dust[nextReadyIdx] or 0))
+				local idx = nextReadyIdx
+				claim.btn.MouseButton1Click:Connect(function()
+					if claimPlaytimeRemote then
+						claimPlaytimeRemote:FireServer(idx)
+						claim.setState("disabled", "CLAIMING...")
+					end
+				end)
+			elseif nextFutureIdx then
+				claim.setState("disabled", "")
+				bindTicker(claim.txt, function(lbl)
+					local left = playLeft()
+					lbl.Text = left > 0 and ("NEXT PRIZE IN %s — KEEP PLAYING!"):format(fmtClock(left))
+						or "NEXT PRIZE ANY SECOND..."
+				end, 1)
+			else
+				claim.setState("claimed", ("ALL %d PLAY PRIZES CLAIMED %s"):format(n, CHECK_GLYPH))
+			end
+			fadeIn(claimRow)
 		end
 	end
 end
@@ -4928,133 +5448,421 @@ function renderPage()
 				pick.Parent = row
 			end
 		else
+			-- ======================= REBIRTH PAGE =======================
+			-- Built like RANKS: pixel-brick plates, one pinned hero with a
+			-- huge FredokaOne number, kid-word copy, one giant button.
+			-- Every KEEP / RESET line mirrors ServerInit's rebirthRemote
+			-- handler exactly: Tickets -> 0 (the whole balance), every tree
+			-- node wiped except resetsOnRebirth = false ones (Outer Surge,
+			-- Twin Surge, Cheaper Forge), Rebirth + 1, thrones re-checked
+			-- (they only ever go UP). Planets, dust, forge forms, shop perks
+			-- and streak are never touched there — so they are "kept".
 			local rebirth = player:GetAttribute("Rebirth") or 0
 			local cost = GameConfig.rebirthCost(rebirth) -- nil at MaxRebirth
 			local tickets = player:GetAttribute("Tickets") or 0
+			local maxed = cost == nil
+			local RB_RED = Color3.fromRGB(210, 72, 98)
+			local RB_PINK = Color3.fromRGB(255, 160, 180)
+			local RB_INK = Color3.fromRGB(12, 13, 20)
+			local RB_STAGE = Color3.fromRGB(16, 17, 26)
+			local RB_MINT = Color3.fromRGB(120, 230, 140)
+			local multNow = GameConfig.rebirthTicketMult(rebirth)
+			local multNext = GameConfig.rebirthTicketMult(math.min(rebirth + 1, GameConfig.MaxRebirth))
+			local function fmtMult(m)
+				return ("%gx"):format(m)
+			end
 
-			-- Where you stand.
-			local status = makeRow(70)
-			status.BackgroundColor3 = Color3.fromRGB(44, 24, 30)
-			stroke(status, Color3.fromRGB(210, 72, 98), 1.8, 0.3)
-			local statusClover = Instance.new("ImageLabel")
-			statusClover.Image = UI_CLOVER
-			statusClover.BackgroundTransparency = 1
-			statusClover.Size = UDim2.fromOffset(44, 44)
-			statusClover.Position = UDim2.new(0, 12, 0.5, -22)
-			statusClover.ZIndex = 22
-			statusClover.Parent = status
-			local statusTitle = label(status,
-				"REBIRTH " .. rebirth .. " / " .. GameConfig.MaxRebirth, 18, UI_TEXT, Enum.Font.GothamBlack)
-			statusTitle.Position = UDim2.new(0, 68, 0, 12)
-			statusTitle.Size = UDim2.new(1, -80, 0, 20)
-			statusTitle.TextXAlignment = Enum.TextXAlignment.Left
-			statusTitle.ZIndex = 22
-			local statusSub = label(status,
-				("Earning ×%g tickets on every collect"):format(GameConfig.rebirthTicketMult(rebirth)),
-				12, UI_SUB, Enum.Font.Gotham)
-			statusSub.Position = UDim2.new(0, 68, 0, 38)
-			statusSub.Size = UDim2.new(1, -80, 0, 16)
-			statusSub.TextXAlignment = Enum.TextXAlignment.Left
-			statusSub.ZIndex = 22
-
-			-- The deal, stated plainly.
-			local deal = makeRow(88)
-			local dealKeep = label(deal, "KEEP: planets, dust, fusions, thrones, perks", 12, UI_GREEN, Enum.Font.GothamBold)
-			dealKeep.Position = UDim2.new(0, 14, 0, 10)
-			dealKeep.Size = UDim2.new(1, -24, 0, 16)
-			dealKeep.TextXAlignment = Enum.TextXAlignment.Left
-			dealKeep.ZIndex = 22
-			local dealLose = label(deal, "LOSE: all tickets and all tree upgrades", 12, Color3.fromRGB(235, 120, 130), Enum.Font.GothamBold)
-			dealLose.Position = UDim2.new(0, 14, 0, 32)
-			dealLose.Size = UDim2.new(1, -24, 0, 16)
-			dealLose.TextXAlignment = Enum.TextXAlignment.Left
-			dealLose.ZIndex = 22
-			local dealGain = label(deal, "GAIN: +75% tickets forever, deeper zones", 12, UI_GOLD, Enum.Font.GothamBold)
-			dealGain.Position = UDim2.new(0, 14, 0, 54)
-			dealGain.Size = UDim2.new(1, -24, 0, 16)
-			dealGain.TextXAlignment = Enum.TextXAlignment.Left
-			dealGain.ZIndex = 22
-
-			-- The next zone this rebirth walks you toward.
-			local nextZone, nextReq = nil, nil
-			for zi, req in ipairs(GameConfig.Zones.reqs) do
-				if req > rebirth then
-					nextZone, nextReq = zi, req
-					break
+			-- Entrance fade (the RANKS pattern): plays on open and again
+			-- after each rebirth (the number changed), never on the
+			-- per-collect Tickets re-renders. Closing the panel clears the
+			-- key so the next open fades again (hook connected once).
+			if not S.rebirthFadeHook then
+				S.rebirthFadeHook = true
+				panel:GetPropertyChangedSignal("Visible"):Connect(function()
+					if not panel.Visible then S.rebirthFadeKey = nil end
+				end)
+			end
+			local fadeKey = "rb" .. tostring(rebirth)
+			local animateEntrance = S.rebirthFadeKey ~= fadeKey
+			S.rebirthFadeKey = fadeKey
+			local fadeOrder = 0
+			local function fadeIn(block)
+				if S.reducedMotion or not animateEntrance then return end
+				local info = TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out,
+					0, false, fadeOrder * 0.03)
+				fadeOrder = fadeOrder + 1
+				local function fade(obj, prop)
+					local target = obj[prop]
+					if target >= 1 then return end
+					obj[prop] = 1
+					TweenService:Create(obj, info, { [prop] = target }):Play()
+				end
+				fade(block, "BackgroundTransparency")
+				for _, obj in ipairs(block:GetDescendants()) do
+					if obj:IsA("TextLabel") or obj:IsA("TextButton") then
+						fade(obj, "TextTransparency")
+						fade(obj, "TextStrokeTransparency")
+						fade(obj, "BackgroundTransparency")
+					elseif obj:IsA("ImageLabel") then
+						fade(obj, "ImageTransparency")
+						fade(obj, "BackgroundTransparency")
+					elseif obj:IsA("Frame") then
+						fade(obj, "BackgroundTransparency")
+					elseif obj:IsA("UIStroke") then
+						fade(obj, "Transparency")
+					end
 				end
 			end
-			if nextZone and PusherMachine.Themes[nextZone] then
-				local zoneRow = makeRow(66)
-				local zThumb = Instance.new("ImageLabel")
-				zThumb.Image = ZONE_THUMBS[nextZone] or ""
-				zThumb.BackgroundColor3 = UI_BG
-				zThumb.BorderSizePixel = 0
-				zThumb.Size = UDim2.fromOffset(72, 54)
-				zThumb.Position = UDim2.new(0, 10, 0.5, -27)
-				zThumb.ScaleType = Enum.ScaleType.Crop
-				zThumb.ZIndex = 22
-				zThumb.Parent = zoneRow
-				corner(zThumb, 8)
-				local zName = label(zoneRow, (PusherMachine.Themes[nextZone].displayName or "?"), 14, UI_TEXT, Enum.Font.GothamBlack)
-				zName.Position = UDim2.new(0, 94, 0, 12)
-				zName.Size = UDim2.new(1, -110, 0, 18)
-				zName.TextXAlignment = Enum.TextXAlignment.Left
-				zName.ZIndex = 22
-				local zReq = label(zoneRow,
-					"UNLOCKS AT REBIRTH " .. nextReq .. " · ×" .. (GameConfig.Zones.mults[nextZone] or 1) .. " TIX",
-					11, UI_SUB, Enum.Font.GothamBold)
-				zReq.Position = UDim2.new(0, 94, 0, 34)
-				zReq.Size = UDim2.new(1, -110, 0, 14)
-				zReq.TextXAlignment = Enum.TextXAlignment.Left
-				zReq.ZIndex = 22
+
+			-- Thin progress bar: dark track, coloured fill, frac 0..1.
+			local function progressBar(parent, posU, sizeU, frac, color, zindex)
+				local track = Instance.new("Frame")
+				track.Position = posU
+				track.Size = sizeU
+				track.BackgroundColor3 = RB_STAGE
+				track.BorderSizePixel = 0
+				track.ZIndex = zindex
+				track.Parent = parent
+				corner(track, 3)
+				stroke(track, Color3.new(0, 0, 0), 1, 0.6)
+				local fill = Instance.new("Frame")
+				fill.Size = UDim2.new(math.clamp(frac, 0, 1), 0, 1, 0)
+				fill.BackgroundColor3 = color
+				fill.BorderSizePixel = 0
+				fill.ZIndex = zindex + 1
+				fill.Parent = track
+				corner(fill, 3)
+				return track
 			end
 
-			if cost == nil then
-				-- Capped out: nothing left to buy here.
-				local maxRow = makeRow(64)
-				maxRow.BackgroundColor3 = Color3.fromRGB(52, 42, 18)
-				stroke(maxRow, UI_GOLD, 1.6, 0.3)
-				local maxLabel = label(maxRow,
-					"MAX REBIRTH — " .. GameConfig.MaxRebirth .. " " .. STAR_GLYPH, 16,
-					UI_GOLD, Enum.Font.GothamBlack)
-				maxLabel.Size = UDim2.fromScale(1, 1)
-				maxLabel.ZIndex = 22
-			else
-				-- The button. Two clicks: the first arms it, honestly worded.
-				local canAfford = tickets >= cost
-				local rebirthBtn = Instance.new("TextButton")
-				rebirthBtn.Size = UDim2.new(1, -24, 0, 52)
-				rebirthBtn.BorderSizePixel = 0
-				rebirthBtn.Font = Enum.Font.GothamBlack
-				rebirthBtn.TextSize = 17
-				rebirthBtn.Text = canAfford and ("REBIRTH — " .. cost .. " TIX")
-					or ("NEED " .. cost .. " TIX (have " .. tickets .. ")")
-				rebirthBtn.BackgroundColor3 = canAfford and Color3.fromRGB(210, 72, 98) or UI_BG
-				rebirthBtn.TextColor3 = canAfford and Color3.new(1, 1, 1) or UI_SUB
-				local btnRow = makeRow(64)
+			-- Half-width pixel brick inside a transparent row (x = 0 or 0.5).
+			local function halfBrick(row, x, face)
+				local brick = Instance.new("Frame")
+				brick.Position = UDim2.new(x, x > 0 and 4 or 0, 0, 0)
+				brick.Size = UDim2.new(0.5, -4, 1, 0)
+				brick.BackgroundTransparency = 1
+				brick.ZIndex = 22
+				brick.Parent = row
+				pixelPlate(brick, face, 22, "card", 3)
+				pixelDither(brick, 23, 0.5)
+				return brick
+			end
+
+			-- ---- HERO: "REBIRTH 7 / 50 MAX" + the promise + the NOW chip ----
+			do
+				local hero = makeRow(116)
+				hero.BackgroundTransparency = 1
+				pixelPlate(hero, Color3.fromRGB(66, 22, 36), 21, "card", 3)
+				pixelDither(hero, 22, 0.4)
+				local eyebrow = label(hero, "REBIRTH", 12, RB_PINK, Enum.Font.GothamBlack)
+				eyebrow.Position = UDim2.new(0, 14, 0, 10)
+				eyebrow.Size = UDim2.new(1, -170, 0, 14)
+				eyebrow.TextXAlignment = Enum.TextXAlignment.Left
+				eyebrow.ZIndex = 23
+				-- "7  / 50 MAX": the number sizes itself; the cap sits on its baseline.
+				local numRow = Instance.new("Frame")
+				numRow.BackgroundTransparency = 1
+				numRow.Position = UDim2.new(0, 14, 0, 24)
+				numRow.Size = UDim2.new(1, -170, 0, 54)
+				numRow.ZIndex = 23
+				numRow.Parent = hero
+				local numLayout = Instance.new("UIListLayout")
+				numLayout.FillDirection = Enum.FillDirection.Horizontal
+				numLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+				numLayout.SortOrder = Enum.SortOrder.LayoutOrder
+				numLayout.Padding = UDim.new(0, 8)
+				numLayout.Parent = numRow
+				local num = label(numRow, tostring(rebirth), 48, Color3.new(1, 1, 1), Enum.Font.FredokaOne)
+				num.AutomaticSize = Enum.AutomaticSize.X
+				num.Size = UDim2.new(0, 0, 1, 0)
+				num.LayoutOrder = 1
+				num.TextStrokeColor3 = RB_INK
+				num.TextStrokeTransparency = 0.3
+				num.ZIndex = 23
+				local cap = label(numRow, "/ " .. GameConfig.MaxRebirth .. " MAX", 13, UI_SUB, Enum.Font.GothamBlack)
+				cap.AutomaticSize = Enum.AutomaticSize.X
+				cap.Size = UDim2.new(0, 0, 0, 26)
+				cap.LayoutOrder = 2
+				cap.ZIndex = 23
+				-- NOW chip: the multiplier you already earn, on a red brick.
+				local chip = Instance.new("Frame")
+				chip.AnchorPoint = Vector2.new(1, 0)
+				chip.Position = UDim2.new(1, -14, 0, 12)
+				chip.Size = UDim2.fromOffset(140, 34)
+				chip.BackgroundTransparency = 1
+				chip.ZIndex = 23
+				chip.Parent = hero
+				pixelPlate(chip, RB_RED, 23, "btn", 2)
+				local chipText = label(chip, "NOW: " .. fmtMult(multNow) .. " TIX", 15, Color3.new(1, 1, 1), Enum.Font.FredokaOne)
+				chipText.Size = UDim2.new(1, 0, 1, -5)
+				chipText.TextStrokeColor3 = Color3.fromRGB(90, 20, 36)
+				chipText.TextStrokeTransparency = 0.2
+				chipText.ZIndex = 24
+				-- The promise, one line, next multiplier in the sentence.
+				local promise = label(hero,
+					maxed and ("YOU EARN " .. fmtMult(multNow) .. " TICKETS FOREVER — MAXED " .. STAR_GLYPH)
+					or ("RESET TICKETS + UPGRADES → EARN " .. fmtMult(multNext) .. " TICKETS FOREVER"),
+					13, UI_GOLD, Enum.Font.GothamBlack)
+				promise.Position = UDim2.new(0, 14, 0, 86)
+				promise.Size = UDim2.new(1, -28, 0, 18)
+				promise.TextTruncate = Enum.TextTruncate.AtEnd
+				promise.TextXAlignment = Enum.TextXAlignment.Left
+				promise.ZIndex = 23
+				fadeIn(hero)
+			end
+
+			-- ---- YOU KEEP / RESETS: two bricks, three kid-word lines each ----
+			do
+				local deal = makeRow(100)
+				deal.BackgroundTransparency = 1
+				local BULLET = utf8.char(8226) .. " "
+				local function dealBrick(x, face, head, headColor, lines, lineColor)
+					local brick = halfBrick(deal, x, face)
+					local h = label(brick, head, 12, headColor, Enum.Font.GothamBlack)
+					h.Position = UDim2.new(0, 12, 0, 8)
+					h.Size = UDim2.new(1, -24, 0, 16)
+					h.TextXAlignment = Enum.TextXAlignment.Left
+					h.ZIndex = 24
+					for i, line in ipairs(lines) do
+						local dim = line:sub(1, 1) == "("
+						local l = label(brick, BULLET .. line, dim and 11 or 12,
+							dim and UI_SUB or lineColor, Enum.Font.GothamBold)
+						l.Position = UDim2.new(0, 12, 0, 28 + (i - 1) * 21)
+						l.Size = UDim2.new(1, -24, 0, 18)
+						l.TextTruncate = Enum.TextTruncate.AtEnd
+						l.TextXAlignment = Enum.TextXAlignment.Left
+						l.ZIndex = 24
+					end
+				end
+				dealBrick(0, Color3.fromRGB(22, 54, 34), "YOU KEEP", RB_MINT, {
+					"EVERY PLANET YOU FOUND",
+					"STAR DUST + FORGED FORMS",
+					"THRONES + SHOP PERKS",
+				}, UI_TEXT)
+				dealBrick(0.5, Color3.fromRGB(66, 24, 32), "RESETS", RB_PINK, {
+					"ALL TICKETS GO TO 0",
+					"ALL UPGRADES GO TO 0",
+					"(SURGE + FORGE NODES STAY)",
+				}, Color3.fromRGB(255, 205, 214))
+				fadeIn(deal)
+			end
+
+			-- ---- NEXT UNLOCKS: the zone and the throne this ladder reaches ----
+			do
+				-- First zone above you; when every zone is open, the deepest
+				-- one wears UNLOCKED. Same rule for the centre-spine thrones.
+				local zoneIdx, zoneReq = nil, nil
+				for zi, req in ipairs(GameConfig.Zones.reqs) do
+					if req > rebirth then
+						zoneIdx, zoneReq = zi, req
+						break
+					end
+				end
+				if not zoneIdx then
+					zoneIdx = #GameConfig.Zones.reqs
+					zoneReq = GameConfig.Zones.reqs[zoneIdx] or 0
+				end
+				local throne = nil
+				for _, t in ipairs(GameConfig.Spine) do
+					if (t.gate and t.gate.rebirth or 0) > rebirth then
+						throne = t
+						break
+					end
+				end
+				if not throne then throne = GameConfig.Spine[#GameConfig.Spine] end
+
+				local unlocks = makeRow(100)
+				unlocks.BackgroundTransparency = 1
+				local function unlockBrick(x, tint, iconW, eyebrowText, name, perk, req)
+					local brick = halfBrick(unlocks, x, RB_STAGE)
+					local tx = 12 + iconW + (iconW > 0 and 8 or 0)
+					local reached = rebirth >= req
+					local nextOne = (not reached) and req == rebirth + 1
+					local eb = label(brick, eyebrowText, 11, tint, Enum.Font.GothamBlack)
+					eb.Position = UDim2.new(0, tx, 0, 8)
+					eb.Size = UDim2.new(1, -tx - 10, 0, 14)
+					eb.TextXAlignment = Enum.TextXAlignment.Left
+					eb.ZIndex = 24
+					local nm = label(brick, name, 13, UI_TEXT, Enum.Font.GothamBlack)
+					nm.Position = UDim2.new(0, tx, 0, 23)
+					nm.Size = UDim2.new(1, -tx - 10, 0, 16)
+					nm.TextTruncate = Enum.TextTruncate.AtEnd
+					nm.TextXAlignment = Enum.TextXAlignment.Left
+					nm.ZIndex = 24
+					local pk = label(brick, perk, 12, UI_GOLD, Enum.Font.GothamBold)
+					pk.Position = UDim2.new(0, tx, 0, 40)
+					pk.Size = UDim2.new(1, -tx - 10, 0, 16)
+					pk.TextTruncate = Enum.TextTruncate.AtEnd
+					pk.TextXAlignment = Enum.TextXAlignment.Left
+					pk.ZIndex = 24
+					local st = label(brick,
+						reached and "UNLOCKED " .. CHECK_GLYPH
+						or nextOne and "THIS REBIRTH!"
+						or ("AT REBIRTH " .. req),
+						11, reached and UI_GREEN or nextOne and RB_MINT or RB_PINK, Enum.Font.GothamBlack)
+					st.Position = UDim2.new(0, 12, 0, 60)
+					st.Size = UDim2.new(1, -24, 0, 14)
+					st.TextXAlignment = Enum.TextXAlignment.Left
+					st.ZIndex = 24
+					progressBar(brick, UDim2.new(0, 12, 0, 80), UDim2.new(1, -24, 0, 8),
+						reached and 1 or rebirth / math.max(req, 1),
+						reached and UI_GREEN or tint, 24)
+					return brick
+				end
+
+				local zoneBrick = unlockBrick(0, Color3.fromRGB(90, 210, 200), 56, "NEXT ZONE",
+					(PusherMachine.Themes[zoneIdx] and PusherMachine.Themes[zoneIdx].displayName)
+						or ("ZONE " .. zoneIdx),
+					"×" .. (GameConfig.Zones.mults[zoneIdx] or 1) .. " TICKETS THERE", zoneReq)
+				local zThumb = Instance.new("ImageLabel")
+				zThumb.Image = ZONE_THUMBS[zoneIdx] or ""
+				zThumb.BackgroundColor3 = UI_BG
+				zThumb.BorderSizePixel = 0
+				zThumb.Size = UDim2.fromOffset(56, 42)
+				zThumb.Position = UDim2.new(0, 12, 0, 12)
+				zThumb.ScaleType = Enum.ScaleType.Crop
+				zThumb.ZIndex = 24
+				zThumb.Parent = zoneBrick
+				corner(zThumb, 6)
+				stroke(zThumb, Color3.fromRGB(90, 210, 200), 1.4, 0.4)
+
+				if throne then
+					local throneBrick = unlockBrick(0.5, UI_GOLD, 40, "NEXT THRONE",
+						tostring(throne.name or "?"):upper(), tostring(throne.desc or ""),
+						throne.gate and throne.gate.rebirth or 0)
+					local crown = Instance.new("ImageLabel")
+					crown.Image = ACH_ICONS.crown
+					crown.BackgroundTransparency = 1
+					crown.ImageColor3 = UI_GOLD
+					crown.Size = UDim2.fromOffset(40, 40)
+					crown.Position = UDim2.new(0, 12, 0, 13)
+					crown.ZIndex = 24
+					crown.Parent = throneBrick
+				end
+				fadeIn(unlocks)
+			end
+
+			-- ---- THE BUTTON: one full-width 60px brick, three looks ----
+			do
+				local affordable = (not maxed) and tickets >= cost
+				local btnRow = makeRow((maxed or affordable) and 64 or 80)
 				btnRow.BackgroundTransparency = 1
-				rebirthBtn.Position = UDim2.new(0, 12, 0.5, -26)
-				rebirthBtn.ZIndex = 22
-				rebirthBtn.Parent = btnRow
-				corner(rebirthBtn, 12)
-				if canAfford then
-					local armed = false
-					rebirthBtn.MouseButton1Click:Connect(function()
-						if armed then
+				local btn = Instance.new("TextButton")
+				btn.Size = UDim2.new(1, 0, 0, 60)
+				btn.BackgroundTransparency = 1
+				btn.Text = ""
+				btn.AutoButtonColor = false
+				btn.ZIndex = 22
+				btn.Parent = btnRow
+				local face = pixelPlate(btn, UI_GREEN, 22, "btn", 3)
+				local txt = label(btn, "", 21, Color3.new(1, 1, 1), Enum.Font.FredokaOne)
+				txt.Position = UDim2.new(0, 8, 0, 0)
+				txt.Size = UDim2.new(1, -16, 1, -8)
+				txt.TextTruncate = Enum.TextTruncate.AtEnd
+				txt.TextStrokeTransparency = 0.15
+				txt.ZIndex = 23
+				local look = { color = UI_GREEN, text = "", textColor = Color3.new(1, 1, 1), ink = RB_INK }
+				local hovering = false
+				local function paint()
+					face.ImageColor3 = pixelTint(hovering
+						and look.color:Lerp(Color3.new(1, 1, 1), 0.12) or look.color)
+					txt.Text = look.text
+					txt.TextColor3 = look.textColor
+					txt.TextStrokeColor3 = look.ink
+				end
+				local function setLook(color, text, textColor, ink)
+					look.color, look.text, look.textColor, look.ink = color, text, textColor, ink
+					paint()
+				end
+				btn.MouseEnter:Connect(function()
+					hovering = true
+					paint()
+				end)
+				btn.MouseLeave:Connect(function()
+					hovering = false
+					paint()
+				end)
+
+				if maxed then
+					setLook(UI_GOLD, "MAX REBIRTH " .. STAR_GLYPH, Color3.fromRGB(30, 26, 14), UI_GOLD)
+					txt.TextStrokeTransparency = 1
+				elseif affordable then
+					-- 2-tap confirm: a reset is destructive for a kid. The
+					-- armed stamp rides S so the per-collect re-render mid-
+					-- confirm rebuilds the button still armed.
+					local function idleLook()
+						setLook(UI_GREEN, "REBIRTH NOW — " .. formatCommas(cost) .. " TIX",
+							Color3.new(1, 1, 1), Color3.fromRGB(18, 74, 34))
+					end
+					local function armedLook()
+						setLook(RB_RED, "TAP AGAIN TO CONFIRM", Color3.new(1, 1, 1), Color3.fromRGB(90, 20, 36))
+					end
+					local function disarmLater(secs)
+						task.delay(secs, function()
+							if btn.Parent and os.clock() >= (S.rebirthArmedUntil or 0) then idleLook() end
+						end)
+					end
+					local left = (S.rebirthArmedUntil or 0) - os.clock()
+					if left > 0 then
+						armedLook()
+						disarmLater(left + 0.05)
+					else
+						idleLook()
+					end
+					local pressScale = Instance.new("UIScale")
+					pressScale.Parent = btn
+					btn.MouseButton1Down:Connect(function()
+						TweenService:Create(pressScale,
+							TweenInfo.new(0.07, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+							{ Scale = 0.96 }):Play()
+					end)
+					btn.MouseButton1Up:Connect(function()
+						TweenService:Create(pressScale,
+							TweenInfo.new(0.07, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+							{ Scale = 1 }):Play()
+					end)
+					btn.MouseButton1Click:Connect(function()
+						if os.clock() < (S.rebirthArmedUntil or 0) then
+							S.rebirthArmedUntil = 0
 							if rebirthRemote then rebirthRemote:FireServer() end
 							return
 						end
-						armed = true
-						rebirthBtn.Text = "SURE? TICKETS + UPGRADES RESET"
-						rebirthBtn.BackgroundColor3 = Color3.fromRGB(150, 40, 60)
-						task.delay(3, function()
-							if rebirthBtn.Parent and armed then
-								armed = false
-								rebirthBtn.Text = "REBIRTH — " .. cost .. " TIX"
-								rebirthBtn.BackgroundColor3 = Color3.fromRGB(210, 72, 98)
-							end
-						end)
+						S.rebirthArmedUntil = os.clock() + 3
+						armedLook()
+						disarmLater(3.05)
 					end)
+				else
+					S.rebirthArmedUntil = 0
+					setLook(Color3.fromRGB(104, 40, 54), "NEED " .. formatCommas(cost - tickets) .. " MORE TIX",
+						Color3.fromRGB(255, 176, 190), Color3.fromRGB(40, 10, 18))
+					-- How close you are, under the brick.
+					progressBar(btnRow, UDim2.new(0, 2, 0, 67), UDim2.new(1, -112, 0, 8),
+						tickets / math.max(cost, 1), RB_RED, 22)
+					local have = label(btnRow, shortValue(tickets) .. " / " .. shortValue(cost), 11, UI_SUB, Enum.Font.GothamBold)
+					have.AnchorPoint = Vector2.new(1, 0)
+					have.Position = UDim2.new(1, -2, 0, 63)
+					have.Size = UDim2.fromOffset(104, 16)
+					have.TextXAlignment = Enum.TextXAlignment.Right
+					have.ZIndex = 22
+				end
+				fadeIn(btnRow)
+			end
+
+			-- ---- COST LADDER PEEK: the three rebirths after this one ----
+			if not maxed then
+				local peek = {}
+				for k = 1, 3 do
+					local c = GameConfig.rebirthCost(rebirth + k)
+					if c then table.insert(peek, shortValue(c)) end
+				end
+				if #peek > 0 then
+					local ladder = makeRow(22)
+					ladder.BackgroundTransparency = 1
+					local l = label(ladder, "NEXT COSTS: " .. table.concat(peek, " · "), 12, UI_SUB, Enum.Font.GothamBold)
+					l.Position = UDim2.new(0, 4, 0, 0)
+					l.Size = UDim2.new(1, -8, 1, 0)
+					l.ZIndex = 22
+					fadeIn(ladder)
 				end
 			end
 		end
@@ -5062,39 +5870,84 @@ function renderPage()
 		panelTitle.Text = "SHOP"
 		local tickets = player:GetAttribute("Tickets") or 0
 
-		-- SHOP TYPOGRAPHY RESPEC (polish-final): kid-readable floor is 12px —
-		-- nothing below it anywhere on this page. Luck products get FULL-WIDTH
-		-- cards with the color-coded §3d odds block; only simple products keep
-		-- the 2-col grid. Durations live in pills, prices on 44px buttons.
+		-- SHOP REBUILD (earn without pressure): built like RANKS / REBIRTH /
+		-- DAILY — pixel-brick plates, FredokaOne display numbers, GothamBlack
+		-- labels, kid-word benefit lines, and prices ONLY on the bricks.
+		-- Sections run in ORDER OF VALUE: the starter hero, passes, the luck
+		-- ladder, personal boosts, for everyone, ticket rewards, then the
+		-- stacking footnote. Badges are honest and one per section (BEST
+		-- VALUE / FOREVER / WHOLE SERVER) — no timers, no fake scarcity.
+		-- Every purchase path is unchanged: S.promptProduct(key, btn) per
+		-- product, BuyPerk / ClaimGroup with the same args, the
+		-- PaidRandomRestricted hiding rule and the §4f GroupId gate exactly
+		-- as before. Kid-readable floor is 12px — nothing below it here.
 
-		-- §3a section header: 15px plain caps (the old per-letter spacing gsub
-		-- is dead — spaced caps at small sizes read as fine print), 0.42 rule.
-		local function shopHeader(text, tint)
-			local h = makeRow(32)
-			h.BackgroundTransparency = 1
-			local t = label(h, text:upper(), 15, tint or UI_GOLD, Enum.Font.GothamBlack)
-			t.Size = UDim2.new(1, -8, 1, 0)
-			t.Position = UDim2.new(0, 8, 0, 0)
-			t.TextXAlignment = Enum.TextXAlignment.Left
-			t.ZIndex = 22
-			local rule = Instance.new("Frame")
-			rule.AnchorPoint = Vector2.new(1, 0.5)
-			rule.Position = UDim2.new(1, -8, 0.5, 1)
-			rule.Size = UDim2.new(0.42, 0, 0, 2)
-			rule.BackgroundColor3 = (tint or UI_GOLD):Lerp(UI_PANEL, 0.6)
-			rule.BorderSizePixel = 0
-			rule.ZIndex = 22
-			rule.Parent = h
+		-- ---- Entrance fade (the DAILY pattern), keyed "shop" on S: plays
+		-- on arrival only. This page clear-rebuilds on every Tickets collect
+		-- (refreshHudState re-renders the open panel) and a blink there reads
+		-- as a glitch. Closing the panel, or leaving for another page (the
+		-- title changes), clears the key so the next arrival fades again.
+		-- Hooks connect once.
+		if not S.shopFadeHook then
+			S.shopFadeHook = true
+			panel:GetPropertyChangedSignal("Visible"):Connect(function()
+				if not panel.Visible then S.shopFadeKey = nil end
+			end)
+			panelTitle:GetPropertyChangedSignal("Text"):Connect(function()
+				if panelTitle.Text ~= "SHOP" then S.shopFadeKey = nil end
+			end)
 		end
+		local animateEntrance = S.shopFadeKey ~= "shop"
+		S.shopFadeKey = "shop"
+		local fadeOrder = 0
+		local function fadeIn(block)
+			if S.reducedMotion or not animateEntrance then return end
+			local info = TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out,
+				0, false, fadeOrder * 0.02)
+			fadeOrder = fadeOrder + 1
+			local function fade(obj, prop)
+				local target = obj[prop]
+				if target >= 1 then return end
+				obj[prop] = 1
+				TweenService:Create(obj, info, { [prop] = target }):Play()
+			end
+			fade(block, "BackgroundTransparency")
+			for _, obj in ipairs(block:GetDescendants()) do
+				if obj:IsA("TextLabel") or obj:IsA("TextButton") then
+					fade(obj, "TextTransparency")
+					fade(obj, "TextStrokeTransparency")
+					fade(obj, "BackgroundTransparency")
+				elseif obj:IsA("ImageLabel") then
+					fade(obj, "ImageTransparency")
+					fade(obj, "BackgroundTransparency")
+				elseif obj:IsA("Frame") then
+					fade(obj, "BackgroundTransparency")
+				elseif obj:IsA("UIStroke") then
+					fade(obj, "Transparency")
+				end
+			end
+		end
+
+		-- ---- Palette (all local to this page).
+		local INK = Color3.fromRGB(12, 13, 20) -- the one glyph-stroke colour
+		local STAGE = Color3.fromRGB(16, 17, 26) -- dark brick: strip / odds / footnote
+		local GOLD_CARD = Color3.fromRGB(58, 46, 18) -- the starter hero plate
+		local GOLD_DIM = Color3.fromRGB(44, 38, 20) -- owned / claimed
+		local LOCKED = Color3.fromRGB(40, 42, 58) -- SOON / can't-afford bricks
+		local GREEN_INK = Color3.fromRGB(18, 74, 34)
+		local PALE_GOLD = Color3.fromRGB(255, 226, 150)
+		local LILAC = Color3.fromRGB(210, 170, 255) -- dust
+		local DARK_TEXT = Color3.fromRGB(30, 26, 14) -- text on solid gold
+		local SRV_TINT = Color3.fromRGB(80, 200, 220) -- FOR EVERYONE identity
+		local SRV_CARD = Color3.fromRGB(14, 30, 36)
+		local LUCK_CARD = Color3.fromRGB(28, 24, 44)
+		local PASS_CARD = Color3.fromRGB(20, 38, 30)
+		local BOOST_CARD = Color3.fromRGB(40, 34, 18)
 
 		-- All purchase buttons route through the uniform PId_<key> attributes
-		-- (S.promptProduct flashes SOON on unconfigured ids).
+		-- (S.promptProduct flashes SOON on unconfigured ids; the brick already
+		-- READS "SOON" at render time — see priceBrick).
 		local restricted = player:GetAttribute("PaidRandomRestricted")
-		local SRV_TINT = Color3.fromRGB(80, 200, 220)
-		local function prodPrice(key, fallback)
-			local prod = S.productInfo(key)
-			return "R$ " .. ((prod and prod.robux) or fallback)
-		end
 		-- §2 icon identity: ONE icon per product family, never mixed. Clover =
 		-- luck, ticket = tickets, comet star = rush, crown = "the big one".
 		local PROD_ICONS = {
@@ -5102,29 +5955,59 @@ function renderPage()
 			Luck100 = UI_CLOVER, Luck1000 = UI_CLOVER, Luck3500 = UI_CLOVER,
 			RushNow = STAR_ART, PotBoost = ACH_ICONS.crown, MegaPack = ACH_ICONS.crown,
 			SrvLuck100 = UI_CLOVER, SrvTix2x = ACH_ICONS.ticket, SrvRush = STAR_ART,
+			Starter = ACH_ICONS.crown, Tickets2xPass = ACH_ICONS.ticket,
+			AutoDropPass = ACH_ICONS.star,
 		}
-		-- Names carry NO durations (§3b — durations moved into the pills).
+		-- Names carry NO durations (§3b — durations live in the pills) and NO
+		-- prices (§3c — prices live on the bricks).
 		local NAMES = {
 			Tix2x15 = "2X TICKETS", Tix3x15 = "3X TICKETS",
 			Luck100 = "100X LUCK", Luck1000 = "1000X LUCK", Luck3500 = "3500X LUCK",
 			RushNow = "METEOR RAIN NOW", PotBoost = "JACKPOT +5,000",
 			MegaPack = "MEGA BUNDLE", SrvLuck100 = "SERVER 100X LUCK",
 			SrvTix2x = "SERVER 2X TICKETS", SrvRush = "SERVER METEOR RAIN",
+			Starter = "STARTER GALAXY PACK", Tickets2xPass = "2X TICKETS PASS",
+			AutoDropPass = "AUTO DROP PASS",
 		}
 		local PRICES = { Tix2x15 = 39, Tix3x15 = 79, Luck100 = 99, Luck1000 = 199,
 			Luck3500 = 399, RushNow = 79, PotBoost = 49, MegaPack = 249,
-			SrvLuck100 = 149, SrvTix2x = 129, SrvRush = 99 }
+			SrvLuck100 = 149, SrvTix2x = 129, SrvRush = 99,
+			Starter = 49, Tickets2xPass = 249, AutoDropPass = 169 }
 		local PILLS = { Tix2x15 = "15 MIN", Tix3x15 = "15 MIN", Luck100 = "90 SEC",
 			Luck1000 = "60 SEC", Luck3500 = "30 SEC", RushNow = "INSTANT",
 			PotBoost = "INSTANT", SrvLuck100 = "90 SEC", SrvTix2x = "10 MIN",
 			SrvRush = "INSTANT" }
-		-- Copy alignment with GameConfig.Products: the scope caption reads the
-		-- product's `label` ("WHOLE SERVER") and timed pills derive from its
-		-- `duration`, so a config edit lands here with no client change; the
-		-- tables above stay as the fallback. NAMES stay local on purpose:
-		-- config names carry the duration ("2X TICKETS — 15 MIN") that §3b
-		-- moved into the pills, and the server names overrun the one-line
-		-- 17px name slot.
+		-- One-line benefits in kid words (the same strings as before).
+		local BENEFIT = {
+			Tix2x15 = "Every ticket pays DOUBLE.",
+			Tix3x15 = "Every ticket pays TRIPLE.",
+			RushNow = "Starts a METEOR RAIN right now.",
+			PotBoost = "Adds 5,000 to the jackpot — everyone sees it.",
+			Luck100 = "Rarer planets, WAY more often — for a short time.",
+			Luck1000 = "Rarer planets, WAY more often — for a short time.",
+			Luck3500 = "Rarer planets, WAY more often — for a short time.",
+			MegaPack = "3X tickets + 1000X luck + a METEOR RAIN — all at once.",
+			SrvLuck100 = "Rarer planets, WAY more often — for EVERYONE here.",
+			SrvTix2x = "Doubled tickets for every player here.",
+			SrvRush = "A METEOR RAIN + chest for everyone online.",
+			Tickets2xPass = "Every ticket pays DOUBLE. Forever.",
+			AutoDropPass = "The dropper plays while you chill.",
+			Starter = "Tickets, star dust AND a golden planet — yours to keep.",
+		}
+		-- Luck-bearing products: hidden entirely for PaidRandomRestricted
+		-- players (§1 — fail-closed), and each carries the mandatory live
+		-- odds disclosure at its own magnitude.
+		local LUCK_MAG = { Luck100 = 100, Luck1000 = 1000, Luck3500 = 3500,
+			MegaPack = 1000, SrvLuck100 = 100 }
+
+		-- Copy alignment with GameConfig.Products: the price reads the
+		-- product's `robux`, the scope caption its `label` ("WHOLE SERVER")
+		-- and timed pills derive from its `duration`, so a config edit lands
+		-- here with no client change; the tables above stay as the fallback.
+		local function prodPrice(key, fallback)
+			local prod = S.productInfo(key)
+			return "R$ " .. ((prod and prod.robux) or fallback)
+		end
 		local function prodScope(key, fallback)
 			local prod = S.productInfo(key)
 			return (prod and prod.label) or fallback
@@ -5140,56 +6023,134 @@ function renderPage()
 			end
 			return PILLS[key]
 		end
-		-- Luck-bearing products: hidden entirely for PaidRandomRestricted
-		-- players (§1 — fail-closed), and each carries the mandatory live
-		-- odds disclosure at its own magnitude.
-		local LUCK_MAG = { Luck100 = 100, Luck1000 = 1000, Luck3500 = 3500,
-			MegaPack = 1000, SrvLuck100 = 100 }
 
-		-- §3b duration pill, top-right of any timed card. wide = full-width
-		-- cards (84×30), else the 2-col size (72×26). Text 13 GothamBlack.
-		local function durationPill(card, text, tint)
-			if not text then return end
-			local wide = card.Size.X.Scale > 0.5 -- full-width rows are (1,-6)
-			local pill = Instance.new("Frame")
-			pill.AnchorPoint = Vector2.new(1, 0)
-			pill.Position = UDim2.new(1, -10, 0, 10)
-			pill.Size = wide and UDim2.fromOffset(84, 30) or UDim2.fromOffset(72, 26)
-			pill.BackgroundColor3 = (tint or UI_GOLD):Lerp(UI_BG, 0.75)
-			pill.BorderSizePixel = 0
-			pill.ZIndex = 23
-			pill.Parent = card
-			corner(pill, 13)
-			stroke(pill, tint or UI_GOLD, 1.2, 0.4)
-			local pillText = label(pill, text, 13, tint or UI_GOLD, Enum.Font.GothamBlack)
-			pillText.Size = UDim2.fromScale(1, 1)
-			pillText.ZIndex = 24
+		-- ---- Small builders (all local to this page).
+		-- Pixel card row: plate + dither on a transparent row.
+		local function pixelRow(height, face, dither)
+			local row = makeRow(height)
+			row.BackgroundTransparency = 1
+			pixelPlate(row, face, 21, "card", 3)
+			pixelDither(row, 22, dither or 0.5)
+			return row
 		end
-
-		-- §3c price button: 44px tall, full card width, 16px GothamBlack.
-		local function priceButton(card, key, fallbackPrice)
+		-- Plain left-aligned line (truncates; callers flip TextWrapped).
+		local function line(parent, text, size, color, font, posU, sizeU, zindex)
+			local l = label(parent, text, size, color, font)
+			l.Position = posU
+			l.Size = sizeU
+			l.TextXAlignment = Enum.TextXAlignment.Left
+			l.TextTruncate = Enum.TextTruncate.AtEnd
+			l.ZIndex = zindex
+			return l
+		end
+		-- Product name: 15px GothamBlack, scaled with a 12px floor so the
+		-- long names still fit the 2-col cards on phones.
+		local function nameLabel(parent, text, posU, sizeU, color, zindex)
+			local l = line(parent, text, 15, color, Enum.Font.GothamBlack, posU, sizeU, zindex)
+			l.TextScaled = true
+			local fit = Instance.new("UITextSizeConstraint")
+			fit.MinTextSize = 12
+			fit.MaxTextSize = 15
+			fit.Parent = l
+			return l
+		end
+		-- Stamp chip (not a button): FredokaOne text on a small brick.
+		-- anchorX 1 = right-aligned (default), 0 = left, 0.5 = centred.
+		local function chip(parent, posU, w, face, text, textColor, ink, zindex, anchorX)
+			local c = Instance.new("Frame")
+			c.AnchorPoint = Vector2.new(anchorX or 1, 0)
+			c.Position = posU
+			c.Size = UDim2.fromOffset(w, 28)
+			c.BackgroundTransparency = 1
+			c.ZIndex = zindex
+			c.Parent = parent
+			pixelPlate(c, face, zindex, "btn", 2)
+			local t = label(c, text, 13, textColor, Enum.Font.FredokaOne)
+			t.Position = UDim2.new(0, 4, 0, 0)
+			t.Size = UDim2.new(1, -8, 1, -5)
+			t.TextTruncate = Enum.TextTruncate.AtEnd
+			if ink then
+				t.TextStrokeColor3 = ink
+				t.TextStrokeTransparency = 0.2
+			end
+			t.ZIndex = zindex + 1
+			return c
+		end
+		-- §3b duration pill: a dark chip in the family tint (top-right of a
+		-- card unless the caller places it).
+		local function durationPill(parent, text, tint, posU, zindex, anchorX)
+			if not text then return nil end
+			return chip(parent, posU or UDim2.new(1, -10, 0, 10), 76, tint:Lerp(UI_BG, 0.7),
+				text, tint, nil, zindex or 23, anchorX)
+		end
+		-- Pixel brick button. `live` bricks get the hover lift + press
+		-- squash; dead ones (OWNED / SOON / can't afford) don't react.
+		local function brick(parent, sizeU, posU, zindex, face, text, textColor, ink, textSize, live)
 			local btn = Instance.new("TextButton")
-			btn.AnchorPoint = Vector2.new(0.5, 1)
-			btn.Position = UDim2.new(0.5, 0, 1, -10)
-			btn.Size = UDim2.new(1, -20, 0, 44)
-			btn.BorderSizePixel = 0
-			btn.Font = Enum.Font.GothamBlack
-			btn.TextSize = 16
-			btn.Text = prodPrice(key, fallbackPrice)
-			btn.BackgroundColor3 = UI_GREEN
-			btn.TextColor3 = Color3.new(1, 1, 1)
-			btn.ZIndex = 23
-			btn.Parent = card
-			corner(btn, 12)
-			stroke(btn, Color3.new(0, 0, 0), 2, 0.55)
-			if key then
-				btn.MouseButton1Click:Connect(function()
-					S.promptProduct(key, btn)
+			btn.Size = sizeU
+			btn.Position = posU
+			btn.BackgroundTransparency = 1
+			btn.Text = ""
+			-- promptProduct's SOON flash writes btn.Text; the face label is
+			-- what reads, so the button's own text stays invisible.
+			btn.TextTransparency = 1
+			btn.AutoButtonColor = false
+			btn.ZIndex = zindex
+			btn.Parent = parent
+			local plate = pixelPlate(btn, face, zindex, "btn", 3)
+			local txt = label(btn, text, textSize or 16, textColor, Enum.Font.FredokaOne)
+			txt.Position = UDim2.new(0, 6, 0, 0)
+			txt.Size = UDim2.new(1, -12, 1, -6)
+			txt.TextTruncate = Enum.TextTruncate.AtEnd
+			if ink then
+				txt.TextStrokeColor3 = ink
+				txt.TextStrokeTransparency = 0.15
+			end
+			txt.ZIndex = zindex + 1
+			if live then
+				local pressScale = Instance.new("UIScale")
+				pressScale.Parent = btn
+				btn.MouseEnter:Connect(function()
+					plate.ImageColor3 = pixelTint(face:Lerp(Color3.new(1, 1, 1), 0.12))
+				end)
+				btn.MouseLeave:Connect(function()
+					plate.ImageColor3 = pixelTint(face)
+				end)
+				btn.MouseButton1Down:Connect(function()
+					TweenService:Create(pressScale,
+						TweenInfo.new(0.07, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+						{ Scale = 0.95 }):Play()
+				end)
+				btn.MouseButton1Up:Connect(function()
+					TweenService:Create(pressScale,
+						TweenInfo.new(0.07, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+						{ Scale = 1 }):Play()
 				end)
 			end
+			return btn, txt
+		end
+		-- §3c PRICE BRICK — the ONLY place a price appears. The state is
+		-- decided at render time: owned = dim gold "OWNED ✓" (no handler);
+		-- SOON = dim (the PId_<key> attribute is 0 — kids never tap a live-
+		-- looking dead button); else a green "R$ 99" brick. Both SOON and
+		-- live bricks prompt the SAME product key through S.promptProduct,
+		-- so a product configured after render still buys.
+		local function priceBrick(parent, key, sizeU, posU, zindex, owned, textSize)
+			if owned then
+				return (brick(parent, sizeU, posU, zindex, GOLD_DIM, "OWNED " .. CHECK_GLYPH,
+					UI_GOLD, nil, textSize, false))
+			end
+			local live = S.productConfigured(key)
+			local btn = brick(parent, sizeU, posU, zindex,
+				live and UI_GREEN or LOCKED,
+				live and prodPrice(key, PRICES[key]) or "SOON",
+				live and Color3.new(1, 1, 1) or UI_SUB,
+				live and GREEN_INK or nil, textSize, live)
+			btn.MouseButton1Click:Connect(function()
+				S.promptProduct(key, btn)
+			end)
 			return btn
 		end
-
 		-- §2 server-scope badge: glowOrb + ring hoop overlapping the family
 		-- icon's bottom-right corner — orb above the ring.
 		local function srvBadge(icon)
@@ -5198,7 +6159,7 @@ function renderPage()
 			hoop.Position = UDim2.new(1, 9, 1, 3)
 			hoop.Size = UDim2.fromOffset(26, 10)
 			hoop.BackgroundTransparency = 1
-			hoop.ZIndex = 23
+			hoop.ZIndex = icon.ZIndex + 1
 			hoop.Parent = icon
 			corner(hoop, 5)
 			stroke(hoop, SRV_TINT, 2, 0.1)
@@ -5209,48 +6170,63 @@ function renderPage()
 			orb.Position = UDim2.new(1, 6, 1, 6)
 			orb.Size = UDim2.fromOffset(20, 20)
 			orb.ImageColor3 = SRV_TINT
-			orb.ZIndex = 24
+			orb.ZIndex = icon.ZIndex + 2
 			orb.Parent = icon
 		end
-
-		-- §4a FULL-WIDTH LUCK CARD: 17px gold name, 13px benefit, duration
-		-- pill, the §3d color-coded odds block, 44px price button.
-		local function luckCard(key, benefitText, srv)
-			local mega = key == "MegaPack"
-			local card = makeRow(mega and 232 or 212)
-			card.BackgroundColor3 = srv and Color3.fromRGB(14, 30, 36) or Color3.fromRGB(28, 24, 44)
-			stroke(card, srv and SRV_TINT or Color3.fromRGB(70, 74, 100),
-				srv and 2 or 1.2, srv and 0.2 or 0.5)
+		-- Family icon at (x, y); srv adds the server badge.
+		local function famIcon(parent, key, size, x, y, tint, zindex, srv)
 			local icon = Instance.new("ImageLabel")
-			icon.Image = PROD_ICONS[key] or UI_CLOVER
-			icon.ImageColor3 = srv and SRV_TINT or UI_GOLD
+			icon.Image = PROD_ICONS[key] or STAR_ART
+			icon.ImageColor3 = tint or Color3.new(1, 1, 1)
 			icon.BackgroundTransparency = 1
-			icon.Size = UDim2.fromOffset(48, 48)
-			icon.Position = UDim2.new(0, 12, 0, 8)
-			icon.ZIndex = 23
-			icon.Parent = card
+			icon.Size = UDim2.fromOffset(size, size)
+			icon.Position = UDim2.new(0, x, 0, y)
+			icon.ZIndex = zindex
+			icon.Parent = parent
 			if srv then srvBadge(icon) end
-			local cName = label(card, NAMES[key], 17, UI_GOLD, Enum.Font.GothamBlack)
-			cName.Position = UDim2.new(0, 72, 0, 10)
-			cName.Size = UDim2.new(1, -180, 0, 22)
-			cName.TextXAlignment = Enum.TextXAlignment.Left
-			cName.TextTruncate = Enum.TextTruncate.AtEnd
-			cName.ZIndex = 23
-			local benefit = label(card, benefitText, 13, UI_TEXT, Enum.Font.GothamBold)
-			benefit.Position = UDim2.new(0, 72, 0, 34)
-			benefit.Size = UDim2.new(1, -180, 0, mega and 40 or 20)
-			benefit.TextWrapped = true
-			benefit.TextXAlignment = Enum.TextXAlignment.Left
-			benefit.ZIndex = 23
-			durationPill(card, prodPill(key), srv and SRV_TINT or UI_GOLD)
-			S.oddsBlock(card, 12, mega and 84 or 64, -24, LUCK_MAG[key], true, 23)
-			priceButton(card, key, PRICES[key])
+			return icon
+		end
+		-- §3a section header: 15px caps + the 0.42 rule, or the ONE honest
+		-- badge chip a section may wear (BEST VALUE / FOREVER / WHOLE SERVER).
+		local function shopHeader(text, tint, badge, badgeText, badgeInk)
+			local h = makeRow(32)
+			h.BackgroundTransparency = 1
+			local t = label(h, text:upper(), 15, tint or UI_GOLD, Enum.Font.GothamBlack)
+			t.Size = UDim2.new(1, -8, 1, 0)
+			t.Position = UDim2.new(0, 8, 0, 0)
+			t.TextXAlignment = Enum.TextXAlignment.Left
+			t.ZIndex = 22
+			if badge then
+				chip(h, UDim2.new(1, -8, 0, 2), 124, tint or UI_GOLD, badge,
+					badgeText or DARK_TEXT, badgeInk, 23)
+			else
+				local rule = Instance.new("Frame")
+				rule.AnchorPoint = Vector2.new(1, 0.5)
+				rule.Position = UDim2.new(1, -8, 0.5, 1)
+				rule.Size = UDim2.new(0.42, 0, 0, 2)
+				rule.BackgroundColor3 = (tint or UI_GOLD):Lerp(UI_PANEL, 0.6)
+				rule.BorderSizePixel = 0
+				rule.ZIndex = 22
+				rule.Parent = h
+			end
+			fadeIn(h)
+			return h
+		end
+		-- One kid-words line under a header.
+		local function captionRow(text, tint)
+			local row = makeRow(18)
+			row.BackgroundTransparency = 1
+			line(row, text, 12, tint or UI_SUB, Enum.Font.GothamBold,
+				UDim2.new(0, 8, 0, 0), UDim2.new(1, -16, 1, 0), 22)
+			fadeIn(row)
+			return row
 		end
 
-		-- §4b 2-COL SIMPLE CARD, 156px: 17px name (2-line budget), pill,
-		-- 13px benefit, 44px button. Only simple products live here.
-		local function simpleGrid(defs)
-			local CARD_H, GAP = 156, 8
+		-- §4b 2-COL CARD GRID, 158px cards: small family icon + scaled name,
+		-- 2-line benefit, scope caption + duration pill on one band, a
+		-- full-width price brick. Owned durables dim to the gold plate.
+		local CARD_H, GAP = 158, 8
+		local function grid2(defs, face)
 			local rowsN = math.ceil(#defs / 2)
 			local grid = makeRow(rowsN * CARD_H + math.max(0, rowsN - 1) * GAP)
 			grid.BackgroundTransparency = 1
@@ -5259,209 +6235,250 @@ function renderPage()
 				local cf = Instance.new("Frame")
 				cf.Position = UDim2.new(col * 0.5, col * (GAP / 2), 0, rowI * (CARD_H + GAP))
 				cf.Size = UDim2.new(0.5, -GAP / 2, 0, CARD_H)
-				cf.BackgroundColor3 = def.tint or Color3.fromRGB(40, 34, 18)
-				cf.BorderSizePixel = 0
+				cf.BackgroundTransparency = 1
 				cf.ZIndex = 22
 				cf.Parent = grid
-				corner(cf, 12)
-				stroke(cf, Color3.fromRGB(70, 74, 100), 1.2, 0.5)
-				local icon = Instance.new("ImageLabel")
-				icon.Image = def.icon or PROD_ICONS[def.key] or STAR_ART
-				icon.ImageColor3 = def.iconTint or Color3.new(1, 1, 1)
-				icon.BackgroundTransparency = 1
-				icon.Size = UDim2.fromOffset(44, 44)
-				icon.Position = UDim2.new(0, 10, 0, 10)
-				icon.ZIndex = 23
-				icon.Parent = cf
-				local cName = label(cf, def.name or NAMES[def.key], 17, UI_TEXT, Enum.Font.GothamBlack)
-				cName.Position = UDim2.new(0, 62, 0, 10)
-				cName.Size = UDim2.new(1, -140, 0, 40)
-				cName.TextWrapped = true
-				cName.TextXAlignment = Enum.TextXAlignment.Left
-				cName.ZIndex = 23
-				durationPill(cf, def.pill, UI_GOLD)
-				local benefit = label(cf, def.desc or "", 13, UI_TEXT, Enum.Font.GothamBold)
-				benefit.Position = UDim2.new(0, 10, 0, 58)
-				benefit.Size = UDim2.new(1, -20, 0, 38)
+				local owned = def.ownedAttr ~= nil and player:GetAttribute(def.ownedAttr) == true
+				pixelPlate(cf, owned and GOLD_DIM or face, 22, "card", 3)
+				pixelDither(cf, 23, 0.55)
+				local icon = famIcon(cf, def.key, 28, 10, 9, def.iconTint, 24)
+				if owned then icon.ImageTransparency = 0.4 end
+				nameLabel(cf, NAMES[def.key], UDim2.new(0, 44, 0, 8), UDim2.new(1, -54, 0, 30),
+					owned and UI_SUB or UI_TEXT, 24)
+				local benefit = line(cf, BENEFIT[def.key] or "", 12, owned and UI_SUB or UI_TEXT,
+					Enum.Font.GothamBold, UDim2.new(0, 10, 0, 42), UDim2.new(1, -20, 0, 30), 24)
 				benefit.TextWrapped = true
 				benefit.TextYAlignment = Enum.TextYAlignment.Top
-				benefit.TextXAlignment = Enum.TextXAlignment.Left
-				benefit.ZIndex = 23
-				if def.ownedAttr and player:GetAttribute(def.ownedAttr) then
-					local ownBtn = priceButton(cf, nil, 0)
-					ownBtn.Text = "OWNED"
-					ownBtn.BackgroundColor3 = UI_BG
-					ownBtn.TextColor3 = UI_SUB
+				line(cf, prodScope(def.key, def.scope), 12, def.scopeTint or PALE_GOLD,
+					Enum.Font.GothamBlack, UDim2.new(0, 10, 0, 74), UDim2.new(1, -96, 0, 26), 24)
+				durationPill(cf, prodPill(def.key), UI_GOLD, UDim2.new(1, -10, 0, 73), 24)
+				priceBrick(cf, def.key, UDim2.new(1, -20, 0, 44), UDim2.new(0, 10, 0, 106), 24, owned)
+			end
+			fadeIn(grid)
+			return grid
+		end
+
+		-- ============ YOU HAVE: the ticket balance strip ============
+		-- Thin stage brick under the title so the ticket-priced rewards at
+		-- the bottom read against a balance.
+		do
+			local strip = pixelRow(34, STAGE, 0.45)
+			local ic = Instance.new("ImageLabel")
+			ic.Image = ACH_ICONS.ticket
+			ic.ImageColor3 = UI_GOLD
+			ic.BackgroundTransparency = 1
+			ic.Size = UDim2.fromOffset(20, 20)
+			ic.Position = UDim2.new(0, 12, 0, 7)
+			ic.ZIndex = 23
+			ic.Parent = strip
+			line(strip, "YOU HAVE:", 12, UI_SUB, Enum.Font.GothamBlack,
+				UDim2.new(0, 40, 0, 0), UDim2.new(0, 70, 1, 0), 23)
+			local num = line(strip, formatCommas(tickets) .. " TIX", 16, UI_GOLD, Enum.Font.FredokaOne,
+				UDim2.new(0, 112, 0, 0), UDim2.new(1, -244, 1, -3), 23)
+			num.TextStrokeColor3 = INK
+			num.TextStrokeTransparency = 0.3
+			local hint = label(strip, "TICKET REWARDS BELOW ↓", 12, UI_SUB, Enum.Font.GothamBold)
+			hint.AnchorPoint = Vector2.new(1, 0)
+			hint.Position = UDim2.new(1, -12, 0, 0)
+			hint.Size = UDim2.new(0, 124, 1, 0)
+			hint.TextXAlignment = Enum.TextXAlignment.Right
+			hint.TextTruncate = Enum.TextTruncate.AtEnd
+			hint.ZIndex = 23
+			fadeIn(strip)
+		end
+
+		-- ============ (a) STARTER GALAXY PACK — the hero ============
+		-- Full-width gold pixel card: BEST VALUE chip, what's inside as three
+		-- icon + text chips (tickets / dust / the planet, read from the
+		-- product entry), the price brick. Owned = dim plate + "OWNED ✓".
+		do
+			local prod = S.productInfo("Starter")
+			local owned = player:GetAttribute("StarterOwned") == true
+			local hero = pixelRow(172, owned and GOLD_DIM or GOLD_CARD, 0.4)
+			local icon = famIcon(hero, "Starter", 48, 12, 10, nil, 23)
+			if owned then icon.ImageTransparency = 0.4 end
+			nameLabel(hero, NAMES.Starter, UDim2.new(0, 70, 0, 10), UDim2.new(1, -198, 0, 22),
+				owned and UI_SUB or UI_GOLD, 23)
+			line(hero, BENEFIT.Starter, 12, owned and UI_SUB or UI_TEXT, Enum.Font.GothamBold,
+				UDim2.new(0, 70, 0, 34), UDim2.new(1, -198, 0, 16), 23)
+			line(hero, prodScope("Starter", "ONE-TIME"), 12, owned and UI_SUB or PALE_GOLD,
+				Enum.Font.GothamBlack, UDim2.new(0, 70, 0, 52), UDim2.new(1, -198, 0, 14), 23)
+			if not owned then
+				chip(hero, UDim2.new(1, -12, 0, 10), 108, UI_GOLD, "BEST VALUE", DARK_TEXT, nil, 23)
+			end
+			-- What's inside: three equal stage chips.
+			local planetName = (prod and prod.planet) or "Gilded Terra"
+			local planetTier = 3
+			for _, sp in ipairs(GameConfig.SpecialPlanets or {}) do
+				if sp.n == planetName then planetTier = sp.t or planetTier end
+			end
+			local inside = {
+				{ image = ACH_ICONS.ticket, tint = UI_GOLD,
+					text = formatCommas((prod and prod.tickets) or 1500) .. " TICKETS" },
+				{ image = STAR_ART, tint = LILAC,
+					text = formatCommas((prod and prod.dust) or 150) .. " STAR DUST" },
+				{ planet = planetLookup[planetName .. "|" .. planetTier],
+					text = planetName:upper() .. " PLANET" },
+			}
+			local holder = Instance.new("Frame")
+			holder.BackgroundTransparency = 1
+			holder.Position = UDim2.new(0, 12, 0, 74)
+			holder.Size = UDim2.new(1, -24, 0, 36)
+			holder.ZIndex = 23
+			holder.Parent = hero
+			for i, item in ipairs(inside) do
+				local c = Instance.new("Frame")
+				c.Position = UDim2.new((i - 1) / 3, 2, 0, 0)
+				c.Size = UDim2.new(1 / 3, -4, 1, 0)
+				c.BackgroundTransparency = 1
+				c.ZIndex = 23
+				c.Parent = holder
+				pixelPlate(c, STAGE, 23, "btn", 2)
+				if item.planet ~= nil or item.image == nil then
+					local pl = makePlanetIcon(c, item.planet, 20, 24, 0)
+					pl.Position = UDim2.new(0, 8, 0, 6)
 				else
-					priceButton(cf, def.key, def.price)
+					local ic = Instance.new("ImageLabel")
+					ic.Image = item.image
+					ic.ImageColor3 = item.tint
+					ic.BackgroundTransparency = 1
+					ic.Size = UDim2.fromOffset(18, 18)
+					ic.Position = UDim2.new(0, 9, 0, 7)
+					ic.ZIndex = 24
+					ic.Parent = c
 				end
+				line(c, item.text, 12, owned and UI_SUB or UI_TEXT, Enum.Font.GothamBlack,
+					UDim2.new(0, 32, 0, 0), UDim2.new(1, -36, 1, -5), 24)
 			end
+			priceBrick(hero, "Starter", UDim2.new(1, -24, 0, 44), UDim2.new(0, 12, 0, 118), 23, owned, 18)
+			fadeIn(hero)
 		end
 
-		-- ============ BOOSTS ============
+		-- ============ (b) PASSES: buy once, keep forever ============
+		shopHeader("Passes", UI_GREEN, "FOREVER", Color3.new(1, 1, 1), GREEN_INK)
+		captionRow("Buy once, keep forever.", UI_SUB)
+		grid2({
+			{ key = "Tickets2xPass", ownedAttr = "Tickets2xOwned", scope = "FOREVER",
+				scopeTint = Color3.fromRGB(120, 230, 140) },
+			{ key = "AutoDropPass", ownedAttr = "AutoDropOwned", scope = "FOREVER",
+				scopeTint = Color3.fromRGB(120, 230, 140) },
+		}, PASS_CARD)
+
+		-- ============ (c) LUCK: the 3-step ladder + the MEGA BUNDLE ============
+		if not restricted then
+			shopHeader("Luck", UI_GOLD)
+			captionRow("More luck = rare planets show up WAY more. Bigger number, bigger luck.", UI_SUB)
+			local LADDER = { "Luck100", "Luck1000", "Luck3500" }
+			local LADDER_WORDS = { "BIG LUCK", "BIGGER LUCK", "BIGGEST LUCK" }
+			-- §4a the ladder row: three equal bricks — the multiplier huge,
+			-- the duration pill, the price brick.
+			do
+				local row = makeRow(158)
+				row.BackgroundTransparency = 1
+				for i, key in ipairs(LADDER) do
+					local b = Instance.new("Frame")
+					b.Position = UDim2.new((i - 1) / 3, 3, 0, 0)
+					b.Size = UDim2.new(1 / 3, -6, 1, 0)
+					b.BackgroundTransparency = 1
+					b.ZIndex = 22
+					b.Parent = row
+					pixelPlate(b, LUCK_CARD, 22, "card", 3)
+					pixelDither(b, 23, 0.5)
+					local eyebrow = label(b, LADDER_WORDS[i], 12, UI_GOLD, Enum.Font.GothamBlack)
+					eyebrow.Position = UDim2.new(0, 6, 0, 8)
+					eyebrow.Size = UDim2.new(1, -12, 0, 14)
+					eyebrow.TextTruncate = Enum.TextTruncate.AtEnd
+					eyebrow.ZIndex = 24
+					local big = label(b, tostring(LUCK_MAG[key]) .. "X", 36, Color3.new(1, 1, 1), Enum.Font.FredokaOne)
+					big.Position = UDim2.new(0, 6, 0, 24)
+					big.Size = UDim2.new(1, -12, 0, 44)
+					big.TextScaled = true
+					big.TextStrokeColor3 = INK
+					big.TextStrokeTransparency = 0.3
+					big.ZIndex = 24
+					local bigFit = Instance.new("UITextSizeConstraint")
+					bigFit.MinTextSize = 20
+					bigFit.MaxTextSize = 38
+					bigFit.Parent = big
+					durationPill(b, prodPill(key), UI_GOLD, UDim2.new(0.5, 0, 0, 72), 24, 0.5)
+					priceBrick(b, key, UDim2.new(1, -16, 0, 44), UDim2.new(0, 8, 0, 106), 24)
+				end
+				fadeIn(row)
+			end
+			-- The mandatory live odds for each rung, shown exactly as the
+			-- full-width luck cards showed them (S.oddsBlock at the rung's
+			-- own magnitude, intro line included). A rung brick is a third
+			-- of the row — too narrow for "1 in 250,000 → 1 in 250" at the
+			-- 12px floor — so each rung's block sits in its own stage brick
+			-- right under the ladder, headed by the rung it belongs to.
+			for _, key in ipairs(LADDER) do
+				local odds = pixelRow(124, STAGE, 0.5)
+				line(odds, NAMES[key] .. "  ·  " .. (prodPill(key) or "") .. "  ·  THE ODDS", 12, UI_GOLD,
+					Enum.Font.GothamBlack, UDim2.new(0, 12, 0, 8), UDim2.new(1, -24, 0, 16), 23)
+				S.oddsBlock(odds, 12, 26, -24, LUCK_MAG[key], true, 23)
+				fadeIn(odds)
+			end
+		end
+		-- Full-width luck card (MEGA BUNDLE / the server 100X): family icon,
+		-- scaled name, benefit, scope caption, pill, the §3d odds block at
+		-- the same spot as before, the price brick.
+		local function wideLuckCard(key, srv)
+			local mega = key == "MegaPack"
+			local tint = srv and SRV_TINT or UI_GOLD
+			local card = pixelRow(mega and 236 or 216, srv and SRV_CARD or LUCK_CARD, 0.5)
+			famIcon(card, key, 48, 12, 8, tint, 23, srv)
+			nameLabel(card, NAMES[key], UDim2.new(0, 72, 0, 10), UDim2.new(1, -180, 0, 22), UI_GOLD, 23)
+			local benefit = line(card, BENEFIT[key], 13, UI_TEXT, Enum.Font.GothamBold,
+				UDim2.new(0, 72, 0, 32), UDim2.new(1, -180, 0, mega and 34 or 16), 23)
+			benefit.TextWrapped = true
+			benefit.TextYAlignment = Enum.TextYAlignment.Top
+			line(card, prodScope(key, srv and "WHOLE SERVER" or "JUST YOU"), 12, tint, Enum.Font.GothamBlack,
+				UDim2.new(0, 72, 0, mega and 68 or 48), UDim2.new(1, -180, 0, 14), 23)
+			durationPill(card, prodPill(key), tint)
+			S.oddsBlock(card, 12, mega and 84 or 64, -24, LUCK_MAG[key], true, 23)
+			priceBrick(card, key, UDim2.new(1, -24, 0, 44), UDim2.new(0, 12, 0, mega and 184 or 164), 23)
+			fadeIn(card)
+			return card
+		end
+		if not restricted then
+			wideLuckCard("MegaPack", false)
+		end
+
+		-- ============ (c2) BOOSTS: just you, for a little while ============
 		shopHeader("Boosts", UI_GOLD)
-		simpleGrid({
-			{ key = "Tix2x15", pill = prodPill("Tix2x15"), price = PRICES.Tix2x15,
-				desc = "Every ticket pays DOUBLE." },
-			{ key = "Tix3x15", pill = prodPill("Tix3x15"), price = PRICES.Tix3x15,
-				desc = "Every ticket pays TRIPLE." },
-			{ key = "RushNow", pill = prodPill("RushNow"), price = PRICES.RushNow,
-				desc = "Starts a METEOR RAIN right now." },
-			{ key = "PotBoost", pill = prodPill("PotBoost"), price = PRICES.PotBoost,
-				desc = "Adds 5,000 to the jackpot — everyone sees it." },
-		})
+		captionRow("Just for you, for a little while.", UI_SUB)
+		grid2({
+			{ key = "Tix2x15", scope = "JUST YOU" },
+			{ key = "Tix3x15", scope = "JUST YOU" },
+			{ key = "RushNow", scope = "JUST YOU" },
+			{ key = "PotBoost", scope = "JUST YOU" },
+		}, BOOST_CARD)
+
+		-- ============ (d) FOR EVERYONE: the 3 server-wide products ============
+		shopHeader("For Everyone", SRV_TINT, "WHOLE SERVER", DARK_TEXT, nil)
+		captionRow("Buy it and EVERYONE here gets it — you'll be the hero.", SRV_TINT)
 		if not restricted then
-			luckCard("Luck100", "Rarer planets, WAY more often — for a short time.")
-			luckCard("Luck1000", "Rarer planets, WAY more often — for a short time.")
-			luckCard("Luck3500", "Rarer planets, WAY more often — for a short time.")
-			luckCard("MegaPack", "3X tickets + 1000X luck + a METEOR RAIN — all at once.")
+			wideLuckCard("SrvLuck100", true)
+		end
+		-- §4c server rows, 112px: cyan family icon + badge, scaled name,
+		-- benefit, the config scope caption, pill, the price brick at right.
+		for _, key in ipairs({ "SrvTix2x", "SrvRush" }) do
+			local row = pixelRow(112, SRV_CARD, 0.5)
+			famIcon(row, key, 44, 12, 12, SRV_TINT, 23, true)
+			nameLabel(row, NAMES[key], UDim2.new(0, 68, 0, 10), UDim2.new(1, -212, 0, 22), UI_TEXT, 23)
+			line(row, BENEFIT[key], 13, UI_TEXT, Enum.Font.GothamBold,
+				UDim2.new(0, 68, 0, 34), UDim2.new(1, -212, 0, 16), 23)
+			line(row, prodScope(key, "WHOLE SERVER"), 12, SRV_TINT, Enum.Font.GothamBlack,
+				UDim2.new(0, 68, 0, 52), UDim2.new(1, -212, 0, 14), 23)
+			durationPill(row, prodPill(key), SRV_TINT, UDim2.new(0, 68, 0, 72), 23, 0)
+			priceBrick(row, key, UDim2.fromOffset(128, 44), UDim2.new(1, -140, 0.5, -22), 23)
+			fadeIn(row)
 		end
 
-		-- §4d stacking footnote: a real info row, 12px, kid words.
-		do
-			local foot = makeRow(56)
-			foot.BackgroundColor3 = UI_BG
-			local infoDot = Instance.new("Frame")
-			infoDot.Position = UDim2.new(0, 12, 0.5, -11)
-			infoDot.Size = UDim2.fromOffset(22, 22)
-			infoDot.BackgroundColor3 = UI_SUB:Lerp(UI_BG, 0.5)
-			infoDot.BorderSizePixel = 0
-			infoDot.ZIndex = 22
-			infoDot.Parent = foot
-			corner(infoDot, 11)
-			local infoI = label(infoDot, "i", 13, UI_TEXT, Enum.Font.GothamBlack)
-			infoI.Size = UDim2.fromScale(1, 1)
-			infoI.ZIndex = 23
-			local footText = label(foot,
-				"Boosts of the same type don't stack — the strongest one wins. Buy the same one again to add more time.",
-				12, UI_SUB, Enum.Font.Gotham)
-			footText.Position = UDim2.new(0, 44, 0, 0)
-			footText.Size = UDim2.new(1, -54, 1, 0)
-			footText.TextWrapped = true
-			footText.TextXAlignment = Enum.TextXAlignment.Left
-			footText.ZIndex = 22
-		end
-
-		-- ============ FOR EVERYONE: the 3 server-wide products ============
-		shopHeader("For Everyone", SRV_TINT)
-		if not restricted then
-			luckCard("SrvLuck100", "Rarer planets, WAY more often — for EVERYONE here.", true)
-		end
-		-- §4c server simple rows, 144px: cyan border, scope caption at 12px
-		-- (the 7px scope tag is dead), pill, full-width 44px button.
-		for _, def in ipairs({
-			{ key = "SrvTix2x", desc = "Doubled tickets for every player here." },
-			{ key = "SrvRush", desc = "A METEOR RAIN + chest for everyone online." },
-		}) do
-			local row = makeRow(144)
-			row.BackgroundColor3 = Color3.fromRGB(14, 30, 36)
-			stroke(row, SRV_TINT, 2, 0.2)
-			local icon = Instance.new("ImageLabel")
-			icon.Image = PROD_ICONS[def.key] or STAR_ART
-			icon.ImageColor3 = SRV_TINT
-			icon.BackgroundTransparency = 1
-			icon.Size = UDim2.fromOffset(44, 44)
-			icon.Position = UDim2.new(0, 12, 0, 10)
-			icon.ZIndex = 22
-			icon.Parent = row
-			srvBadge(icon)
-			local nameLabel = label(row, NAMES[def.key], 17, UI_TEXT, Enum.Font.GothamBlack)
-			nameLabel.Position = UDim2.new(0, 68, 0, 12)
-			nameLabel.Size = UDim2.new(1, -180, 0, 22)
-			nameLabel.TextXAlignment = Enum.TextXAlignment.Left
-			nameLabel.TextTruncate = Enum.TextTruncate.AtEnd
-			nameLabel.ZIndex = 22
-			local benefit = label(row, def.desc, 13, UI_TEXT, Enum.Font.GothamBold)
-			benefit.Position = UDim2.new(0, 68, 0, 36)
-			benefit.Size = UDim2.new(1, -180, 0, 20)
-			benefit.TextXAlignment = Enum.TextXAlignment.Left
-			benefit.ZIndex = 22
-			local scope = label(row, prodScope(def.key, "EVERYONE IN THIS SERVER"), 12, SRV_TINT, Enum.Font.Gotham)
-			scope.Position = UDim2.new(0, 68, 0, 58)
-			scope.Size = UDim2.new(1, -180, 0, 16)
-			scope.TextXAlignment = Enum.TextXAlignment.Left
-			scope.ZIndex = 22
-			durationPill(row, prodPill(def.key), SRV_TINT)
-			priceButton(row, def.key, PRICES[def.key])
-		end
-
-		-- ============ PASSES: durables + the starter hero ============
-		shopHeader("Passes", UI_GREEN)
-
-		-- §4e FEATURED: Starter Galaxy Pack — full-width hero, 104px.
-		do
-			local hero = makeRow(104)
-			hero.BackgroundColor3 = Color3.fromRGB(52, 40, 14)
-			stroke(hero, UI_GOLD, 2, 0.15)
-			local ribbon = Instance.new("Frame")
-			ribbon.Position = UDim2.new(0, -6, 0, -8)
-			ribbon.Size = UDim2.fromOffset(96, 22)
-			ribbon.BackgroundColor3 = Color3.fromRGB(226, 64, 64)
-			ribbon.BorderSizePixel = 0
-			ribbon.Rotation = -4
-			ribbon.ZIndex = 24
-			ribbon.Parent = hero
-			corner(ribbon, 8)
-			local ribbonText = label(ribbon, "BEST DEAL", 12, Color3.new(1, 1, 1), Enum.Font.GothamBlack)
-			ribbonText.Size = UDim2.fromScale(1, 1)
-			ribbonText.ZIndex = 25
-			local icon = Instance.new("ImageLabel")
-			icon.Image = ACH_ICONS.crown
-			icon.BackgroundTransparency = 1
-			icon.Size = UDim2.fromOffset(56, 56)
-			icon.Position = UDim2.new(0, 14, 0.5, -28)
-			icon.ZIndex = 22
-			icon.Parent = hero
-			local heroName = label(hero, "STARTER GALAXY PACK", 17, UI_GOLD, Enum.Font.GothamBlack)
-			heroName.Position = UDim2.new(0, 84, 0, 16)
-			heroName.Size = UDim2.new(1, -220, 0, 20)
-			heroName.TextXAlignment = Enum.TextXAlignment.Left
-			heroName.ZIndex = 22
-			local heroDesc = label(hero, "1,500 TICKETS  ·  150 STAR DUST  ·  THE GILDED TERRA PLANET",
-				13, UI_TEXT, Enum.Font.GothamBold)
-			heroDesc.Position = UDim2.new(0, 84, 0, 42)
-			heroDesc.Size = UDim2.new(1, -220, 0, 34)
-			heroDesc.TextWrapped = true
-			heroDesc.TextXAlignment = Enum.TextXAlignment.Left
-			heroDesc.ZIndex = 22
-			local heroBtn = Instance.new("TextButton")
-			heroBtn.AnchorPoint = Vector2.new(1, 0.5)
-			heroBtn.Position = UDim2.new(1, -12, 0.5, 0)
-			heroBtn.Size = UDim2.fromOffset(128, 44)
-			heroBtn.BorderSizePixel = 0
-			heroBtn.Font = Enum.Font.GothamBlack
-			heroBtn.TextSize = 16
-			heroBtn.ZIndex = 22
-			heroBtn.Parent = hero
-			corner(heroBtn, 12)
-			if player:GetAttribute("StarterOwned") then
-				heroBtn.Text = "OWNED"
-				heroBtn.BackgroundColor3 = UI_BG
-				heroBtn.TextColor3 = UI_SUB
-			else
-				heroBtn.Text = prodPrice("Starter", 49)
-				heroBtn.BackgroundColor3 = UI_GREEN
-				heroBtn.TextColor3 = Color3.new(1, 1, 1)
-				heroBtn.MouseButton1Click:Connect(function()
-					S.promptProduct("Starter", heroBtn)
-				end)
-			end
-		end
-
-		-- Durable pass cards: 2X TICKETS FOREVER + AUTO DROP (simple 2-col).
-		simpleGrid({
-			{ key = "Tickets2xPass", name = "2X TICKETS FOREVER",
-				desc = "Every ticket pays DOUBLE. Forever.",
-				price = 249, ownedAttr = "Tickets2xOwned",
-				icon = ACH_ICONS.ticket, tint = Color3.fromRGB(46, 36, 14) },
-			{ key = "AutoDropPass", name = "AUTO DROP",
-				desc = "The dropper plays while you chill.",
-				price = 169, ownedAttr = "AutoDropOwned",
-				icon = ACH_ICONS.star, tint = Color3.fromRGB(20, 38, 30) },
-		})
-
+		-- ============ (e) TICKET REWARDS: paid in tickets, not Robux ============
 		-- ("perks" is borderline at age 9 — "rewards" is universal.)
 		shopHeader("Ticket Rewards", UI_GOLD)
+		captionRow(("Pay with tickets you earned — you have %s."):format(formatCommas(tickets)), UI_SUB)
 
 		-- §4f JOIN THE GROUP claim banner (+25% luck & +25% tickets, forever).
 		-- Hidden until GameConfig.GroupId is set (the server fails the claim
@@ -5469,88 +6486,81 @@ function renderPage()
 		if player:GetAttribute("GroupPerk") == true
 			or (GameConfig.GroupId or 0) > 0
 			or RunService:IsStudio() then
-		local banner = makeRow(84)
-		banner.BackgroundColor3 = Color3.fromRGB(30, 27, 44)
-		stroke(banner, UI_GOLD, 1.8, 0.3)
 		local claimed = player:GetAttribute("GroupPerk") == true
-		local bTitle = label(banner, "JOIN THE GROUP, then claim:", 13, UI_TEXT, Enum.Font.GothamBold)
-		bTitle.Position = UDim2.new(0, 14, 0, 16)
-		bTitle.Size = UDim2.new(1, -160, 0, 16)
-		bTitle.TextXAlignment = Enum.TextXAlignment.Left
-		bTitle.ZIndex = 22
-		local bPerk = label(banner, "+25% LUCK & +25% TICKETS — FOREVER!", 15, UI_GOLD, Enum.Font.GothamBlack)
-		bPerk.Position = UDim2.new(0, 14, 0, 40)
-		bPerk.Size = UDim2.new(1, -160, 0, 20)
-		bPerk.TextXAlignment = Enum.TextXAlignment.Left
-		bPerk.ZIndex = 22
-		local claimBtn = Instance.new("TextButton")
-		claimBtn.AnchorPoint = Vector2.new(1, 0.5)
-		claimBtn.Position = UDim2.new(1, -12, 0.5, 0)
-		claimBtn.Size = UDim2.fromOffset(116, 44)
-		claimBtn.BorderSizePixel = 0
-		claimBtn.Font = Enum.Font.GothamBlack
-		claimBtn.TextSize = 16
-		claimBtn.Text = claimed and "CLAIMED" or "CLAIM"
-		claimBtn.BackgroundColor3 = claimed and UI_BG or UI_GREEN
-		claimBtn.TextColor3 = claimed and UI_SUB or Color3.new(1, 1, 1)
-		claimBtn.ZIndex = 22
-		claimBtn.Parent = banner
-		corner(claimBtn, 10)
+		local banner = pixelRow(84, claimed and GOLD_DIM or Color3.fromRGB(30, 27, 44), 0.5)
+		line(banner, "JOIN THE GROUP, then claim:", 13, claimed and UI_SUB or UI_TEXT, Enum.Font.GothamBold,
+			UDim2.new(0, 14, 0, 16), UDim2.new(1, -160, 0, 16), 23)
+		line(banner, "+25% LUCK & +25% TICKETS — FOREVER!", 15, UI_GOLD, Enum.Font.GothamBlack,
+			UDim2.new(0, 14, 0, 40), UDim2.new(1, -160, 0, 20), 23)
+		local claimBtn = brick(banner, UDim2.fromOffset(116, 44), UDim2.new(1, -128, 0.5, -22), 23,
+			claimed and GOLD_DIM or UI_GREEN,
+			claimed and ("CLAIMED " .. CHECK_GLYPH) or "CLAIM",
+			claimed and UI_GOLD or Color3.new(1, 1, 1),
+			(not claimed) and GREEN_INK or nil, 16, not claimed)
 		if not claimed then
 			claimBtn.MouseButton1Click:Connect(function()
 				local remote = remotes and remotes:FindFirstChild("ClaimGroup")
 				if remote then remote:FireServer() end
 			end)
 		end
+		fadeIn(banner)
 		end -- §4f GroupId gate
 
-		-- Permanent multipliers, paid in tickets (defs from GameConfig).
+		-- Permanent multipliers, paid in tickets (defs from GameConfig). The
+		-- price brick goes green only when the balance covers it.
 		for _, card in ipairs(GameConfig.Perks) do
-			local row = makeRow(84)
-			row.BackgroundColor3 = Color3.fromRGB(46, 36, 14)
-			stroke(row, UI_GOLD, 1.4, 0.4)
+			local owned = (player:GetAttribute(card.attr) or 1) >= (card.value or 2)
+			local canPay = tickets >= card.cost
+			local row = pixelRow(84, owned and GOLD_DIM or Color3.fromRGB(46, 36, 14), 0.5)
 			local icon = Instance.new("ImageLabel")
 			icon.Image = ACH_ICONS[card.icon] or ""
 			icon.BackgroundTransparency = 1
 			icon.Size = UDim2.fromOffset(46, 46)
 			icon.Position = UDim2.new(0, 10, 0.5, -23)
-			icon.ZIndex = 22
+			icon.ImageTransparency = owned and 0.4 or 0
+			icon.ZIndex = 23
 			icon.Parent = row
-			local nameLabel = label(row, card.name, 15, UI_GOLD, Enum.Font.GothamBlack)
-			nameLabel.Position = UDim2.new(0, 68, 0, 16)
-			nameLabel.Size = UDim2.new(1, -200, 0, 20)
-			nameLabel.TextXAlignment = Enum.TextXAlignment.Left
-			nameLabel.ZIndex = 22
-			local descLabel = label(row, card.desc, 12, UI_SUB, Enum.Font.Gotham)
-			descLabel.Position = UDim2.new(0, 68, 0, 42)
-			descLabel.Size = UDim2.new(1, -200, 0, 28)
-			descLabel.TextWrapped = true
-			descLabel.TextXAlignment = Enum.TextXAlignment.Left
-			descLabel.ZIndex = 22
-			local owned = (player:GetAttribute(card.attr) or 1) >= (card.value or 2)
-			local buyBtn = Instance.new("TextButton")
-			buyBtn.AnchorPoint = Vector2.new(1, 0.5)
-			buyBtn.Position = UDim2.new(1, -12, 0.5, 0)
-			buyBtn.Size = UDim2.fromOffset(110, 44)
-			buyBtn.BorderSizePixel = 0
-			buyBtn.Font = Enum.Font.GothamBlack
-			buyBtn.TextSize = 15
-			buyBtn.ZIndex = 22
-			buyBtn.Parent = row
-			corner(buyBtn, 10)
+			nameLabel(row, card.name:upper(), UDim2.new(0, 68, 0, 16), UDim2.new(1, -200, 0, 20),
+				owned and UI_SUB or UI_GOLD, 23)
+			local desc = line(row, card.desc, 12, UI_SUB, Enum.Font.Gotham,
+				UDim2.new(0, 68, 0, 40), UDim2.new(1, -200, 0, 30), 23)
+			desc.TextWrapped = true
+			desc.TextYAlignment = Enum.TextYAlignment.Top
 			if owned then
-				buyBtn.Text = "OWNED"
-				buyBtn.BackgroundColor3 = UI_BG
-				buyBtn.TextColor3 = UI_SUB
+				brick(row, UDim2.fromOffset(110, 44), UDim2.new(1, -122, 0.5, -22), 23,
+					GOLD_DIM, "OWNED " .. CHECK_GLYPH, UI_GOLD, nil, 15, false)
 			else
-				buyBtn.Text = card.cost .. " TIX"
-				buyBtn.BackgroundColor3 = tickets >= card.cost and UI_GREEN or UI_BG
-				buyBtn.TextColor3 = tickets >= card.cost and Color3.new(1, 1, 1) or UI_SUB
+				local buyBtn = brick(row, UDim2.fromOffset(110, 44), UDim2.new(1, -122, 0.5, -22), 23,
+					canPay and UI_GREEN or LOCKED, formatCommas(card.cost) .. " TIX",
+					canPay and Color3.new(1, 1, 1) or UI_SUB,
+					canPay and GREEN_INK or nil, 15, canPay)
 				buyBtn.MouseButton1Click:Connect(function()
 					local remote = remotes and remotes:FindFirstChild("BuyPerk")
 					if remote then remote:FireServer(card.id) end
 				end)
 			end
+			fadeIn(row)
+		end
+
+		-- ============ (f) the stacking footnote, kid words, last ============
+		do
+			local foot = pixelRow(56, STAGE, 0.5)
+			local infoDot = Instance.new("Frame")
+			infoDot.Position = UDim2.new(0, 12, 0.5, -11)
+			infoDot.Size = UDim2.fromOffset(22, 22)
+			infoDot.BackgroundColor3 = UI_SUB:Lerp(UI_BG, 0.5)
+			infoDot.BorderSizePixel = 0
+			infoDot.ZIndex = 23
+			infoDot.Parent = foot
+			corner(infoDot, 11)
+			local infoI = label(infoDot, "i", 13, UI_TEXT, Enum.Font.GothamBlack)
+			infoI.Size = UDim2.fromScale(1, 1)
+			infoI.ZIndex = 24
+			local footText = line(foot,
+				"Boosts of the same kind don't stack — the strongest one wins. Buy the same one again to add more time. Passes are forever.",
+				12, UI_SUB, Enum.Font.Gotham, UDim2.new(0, 44, 0, 0), UDim2.new(1, -54, 1, 0), 23)
+			footText.TextWrapped = true
+			fadeIn(foot)
 		end
 
 	elseif openPage == "daily" then
