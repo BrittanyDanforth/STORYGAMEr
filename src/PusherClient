@@ -156,13 +156,17 @@ local function bindMachine(machine)
 		state.laneLeds[i] = cabinet:FindFirstChild("LaneLED" .. i)
 		state.laneFilms[i] = cabinet:FindFirstChild("AbsorbFilm" .. i)
 	end
-	-- SUPERNOVA SATURN centerpiece (polish-final): orb + light + tilted
-	-- CoreRing + 8-seg charge arc on the ring + orbiting moonlets + ember
-	-- vent + live pot label + title plate, all cabinet children like the
-	-- headers. CoreRing carries the build-stamped RingCF attr the moonlet
-	-- orbit reads (never the live CFrame — the celebration spin moves that).
+	-- JACKPOT CORE card: title plate + 8-pip charge bar + pot label, with
+	-- the CoreLight on an invisible CoreGlowHost and the ember vent on the
+	-- bar's crest. The orb / CoreRing / moonlets of the old Supernova Saturn
+	-- core are no longer built (owner: "remove the planet"); every bind
+	-- below stays nil-safe so a themed cabinet that still has them works.
 	state.coreOrb = cabinet:FindFirstChild("CoreOrb")
-	state.coreLight = state.coreOrb and state.coreOrb:FindFirstChild("CoreLight")
+	state.coreLight = (state.coreOrb and state.coreOrb:FindFirstChild("CoreLight"))
+		or (function()
+			local host = cabinet:FindFirstChild("CoreGlowHost")
+			return host and host:FindFirstChild("CoreLight")
+		end)()
 	state.coreRing = cabinet:FindFirstChild("CoreRing")
 	for i = 1, 8 do
 		state.chargeSegs[i] = cabinet:FindFirstChild("ChargeSeg" .. i)
@@ -12283,20 +12287,24 @@ end)()
 	S.stopCoreAnticipation = stopCoreAnticipation
 	local function startCoreAnticipation()
 		local orb, light = bound.coreOrb, bound.coreLight
-		if not (orb and orb.Parent and light and light.Parent) then return end
+		-- The light is the one required target (the card has no orb now);
+		-- the orb colour breath runs only where an orb exists.
+		if not (light and light.Parent) then return end
 		coreAnticipating = true
 		coreTweenOrb = orb
-		local orbBase = coreOrbBase() or orb.Color
 		light.Brightness = 1.5
 		coreLightTween = TweenService:Create(light,
 			TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
 			{ Brightness = 3.0 })
 		coreLightTween:Play()
-		orb.Color = orbBase
-		coreOrbTween = TweenService:Create(orb,
-			TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
-			{ Color = orbBase:Lerp(Color3.new(1, 1, 1), 0.65) })
-		coreOrbTween:Play()
+		if orb and orb.Parent then
+			local orbBase = coreOrbBase() or orb.Color
+			orb.Color = orbBase
+			coreOrbTween = TweenService:Create(orb,
+				TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+				{ Color = orbBase:Lerp(Color3.new(1, 1, 1), 0.65) })
+			coreOrbTween:Play()
+		end
 		-- NEAR escalation on: the ember vent starts leaking (Rate stays 0 at
 		-- build; the HIT eruption is a burst Emit, not a rate).
 		if bound.emberEmit and bound.emberEmit.Parent then bound.emberEmit.Rate = 4 end

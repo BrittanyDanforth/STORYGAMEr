@@ -473,8 +473,8 @@ local function makeCapsule(cfg, cf, anchored, parent)
 		Color = cfg.capPlanet,
 		Material = Enum.Material.SmoothPlastic,
 		Reflectance = 0.05,
-		-- Same 0.3 elasticity as the planets: one pile, one feel.
-		CustomPhysicalProperties = PhysicalProperties.new(1.2, 0.5, 0.3, 1, 1),
+		-- Same bounce pairing as the planets: one pile, one feel.
+		CustomPhysicalProperties = PhysicalProperties.new(1.2, 0.5, 0.5, 1, 6),
 	}, parent)
 	-- Outer ring glows; inner ring is metal for contrast. Both are discs whose
 	-- plane cuts the ball's equator, tilted like Saturn. Kept to 1.45x the
@@ -1561,15 +1561,17 @@ local function makePlanet(spec, cf, anchored, parent, form)
 		Material = mat,
 		Transparency = spec.tp or 0,
 		Reflectance = spec.rf or 0.03,
-		-- Elasticity 0.3. The 0.5 "bouncier" pass popped the pile — the coins
-		-- document the popcorn line at ~0.4 (owner: "make planets bouncy
-		-- CORRECTLY, like the coins, so it isn't buggy"). 0.3 lands lively
-		-- and still settles, one notch above the coins' 0.22 so planets read
-		-- springier than coins without out-bouncing the pile (planet-on-coin
-		-- averages 0.26, planet-on-deck 0.15). The JACKPOT CUP is fed by a
-		-- dropped piece STRIKING a front-row piece — the launch speed comes
-		-- from the impact, not the rebound — so the lucky hop survives this.
-		CustomPhysicalProperties = PhysicalProperties.new(1.8, 0.6, 0.3, 1, 1),
+		-- BOUNCY (owner: "they're not bouncy!!!"). Roblox pairs elasticity by
+		-- a WEIGHTED average, and the deck is 0 at weight 1 — so a 0.5 planet
+		-- at weight 1 landed at 0.25 (a 0.36-stud hop off a 5.5 drop, i.e.
+		-- nothing), and the 0.3 pass at 0.15 was invisible. The planet's own
+		-- number now dominates the pair: elasticity 0.5 at weight 6 lands on
+		-- the deck at 0.43 (a 1.0-stud first hop, settled in three), on a
+		-- coin at 0.46, on another planet at 0.5. The mouth funnel parts
+		-- carry weight 100 at 0 so the throat stays dead and nothing pinballs
+		-- there; the JACKPOT CUP's lucky hop is an impact launch off a
+		-- front-row piece and gets livelier with this, not rarer.
+		CustomPhysicalProperties = PhysicalProperties.new(1.8, 0.6, 0.5, 1, 6),
 	}, parent)
 	ball:SetAttribute("Variation", spec.n)
 	ball:SetAttribute("Tier", spec.t or 1)
@@ -2489,7 +2491,7 @@ function PusherMachine.build(originCFrame, name, theme)
 		CFrame = at(0, 2.125, -5.675),
 		Color = cfg.colApron,
 		Material = Enum.Material.Metal,
-		CustomPhysicalProperties = PhysicalProperties.new(0.7, 0.05, 0, 1, 1),
+		CustomPhysicalProperties = PhysicalProperties.new(0.7, 0.05, 0, 1, 100),
 	}, cabinet)
 	newPart({
 		Name = "ApronRiser",
@@ -2561,23 +2563,23 @@ function PusherMachine.build(originCFrame, name, theme)
 	-- pair-averaging from lending it any grip.
 	-- Split around the JACKPOT CUP: its bowl cantilevers past this plane
 	-- (front wall outer face z -7.37), so the centre span is open below
-	-- y 6.53 — the solid pedestal and the cup's own 0.5-tall walls are the
-	-- containment there, and the 0.15 between the cup rim (6.38) and this
-	-- panel's bottom (6.53) passes nothing. Above the rim the panel is the
+	-- y 6.15 — the solid pedestal and the cup's own 0.5-tall walls are the
+	-- containment there, and the 0.15 between the cup rim (6.00) and this
+	-- panel's bottom (6.15) passes nothing. Above the rim the panel is the
 	-- bowl's BACKBOARD: a bounce that overshoots the bowl hits it and drops
 	-- back in. Side panels start at |x| 1.10, 0.03 clear of the flanks.
 	-- (The Glass at z -7.45 seals everything above y 4.45 behind all three.)
 	for _, wall in ipairs({
 		{ size = Vector3.new(4.7, 7.0, 0.10), x = -3.45, y = 4.5 },
 		{ size = Vector3.new(4.7, 7.0, 0.10), x = 3.45, y = 4.5 },
-		{ size = Vector3.new(2.4, 1.62, 0.10), x = 0, y = 7.34 },
+		{ size = Vector3.new(2.4, 2.0, 0.10), x = 0, y = 7.15 },
 	}) do
 		newPart({
 			Name = "FrontWall",
 			Size = wall.size,
 			CFrame = at(wall.x, wall.y, -7.20),
 			Transparency = 1,
-			CustomPhysicalProperties = PhysicalProperties.new(0.7, 0, 0, 100, 1),
+			CustomPhysicalProperties = PhysicalProperties.new(0.7, 0, 0, 100, 100),
 			CanQuery = false, CanTouch = false,
 		}, cabinet)
 	end
@@ -2641,7 +2643,7 @@ function PusherMachine.build(originCFrame, name, theme)
 			CFrame = at(bladeX, 2.35, -6.15, CFrame.Angles(math.rad(-40), 0, 0)),
 			Color = cfg.colGoldDim,
 			Material = Enum.Material.Metal,
-			CustomPhysicalProperties = PhysicalProperties.new(0.7, 0.05, 0, 1, 1),
+			CustomPhysicalProperties = PhysicalProperties.new(0.7, 0.05, 0, 1, 100),
 			CanQuery = false, CanTouch = false,
 		}, cabinet)
 		local tip = newPart({
@@ -2660,11 +2662,12 @@ function PusherMachine.build(originCFrame, name, theme)
 	-- cleared the LedgeFillet in world y but, being 1.4 studs nearer the
 	-- locked camera than the lip, still drew BELOW the ledge line on screen
 	-- (owner: "higher still, more like 45% more"); v3 lifted the assembly
-	-- 2.10 (rim 6.80) and read too high (owner: "20% lower than now"). v4
-	-- keeps 80% of that lift: floor 5.88, rim 6.38. From camEye (0, 12.2,
-	-- -13.8) the front rim at z -7.37 sits at 42.2 degrees of depression and
-	-- the back rim at 36.6, against the lip edge (4.80, -5.11) at 40.4 — the
-	-- bowl's mouth straddles the ledge line and opens above it.
+	-- 2.10 (rim 6.80) and read too high (owner: "20% lower than now"); v4
+	-- at 80% of that lift (rim 6.38) was "a bit too high still". v5 keeps
+	-- 62%: floor 5.50, rim 6.00. From camEye (0, 12.2, -13.8) the front rim
+	-- at z -7.37 sits at 43.9 degrees of depression and the back rim at
+	-- 38.3, against the lip edge (4.80, -5.11) at 40.4 — the bowl's mouth
+	-- straddles the ledge line and opens above it.
 	-- HOW IT IS FED: nothing the pusher shoves off the lip can climb 1.5
 	-- studs, so the tongue ramp is gone. A piece enters only by bouncing —
 	-- a fresh drop hitting the front pile (ball-on-ball elasticity 0.5
@@ -2682,7 +2685,7 @@ function PusherMachine.build(originCFrame, name, theme)
 	-- front wall as a crown (see the core block).
 	----------------------------------------------------------------------------
 	local CUP_Z = -6.50 -- bowl centre; interior z -7.25 .. -5.75
-	local CUP_FLOOR = 5.88 -- bowl floor top (rim 6.38, back lip 6.13)
+	local CUP_FLOOR = 5.50 -- bowl floor top (rim 6.00, back lip 5.75)
 	local cupFloor = newPart({
 		Name = "JackpotCupFloor",
 		Size = Vector3.new(2.14, 0.20, 1.74),
@@ -2738,7 +2741,7 @@ function PusherMachine.build(originCFrame, name, theme)
 			CFrame = at(side * 0.46, 1.55 + PROW_H / 2, -5.61, CFrame.Angles(0, math.rad(side * 45), 0)),
 			Color = cfg.colGold,
 			Material = Enum.Material.Metal,
-			CustomPhysicalProperties = PhysicalProperties.new(0.7, 0, 0, 100, 1),
+			CustomPhysicalProperties = PhysicalProperties.new(0.7, 0, 0, 100, 100),
 			CanQuery = false, CanTouch = false,
 		}, cabinet)
 	end
@@ -2781,7 +2784,7 @@ function PusherMachine.build(originCFrame, name, theme)
 			-- Frictionless: planets must SLIDE down the 25-degree faces; at
 			-- default friction the steeper-friction planets could rest here
 			-- and seed a mouth dam.
-			CustomPhysicalProperties = PhysicalProperties.new(0.7, 0.05, 0, 1, 1),
+			CustomPhysicalProperties = PhysicalProperties.new(0.7, 0.05, 0, 1, 100),
 			CanQuery = false, CanTouch = false,
 		}, cabinet)
 		plate:SetAttribute("BaseColor", dimColor)
@@ -2869,108 +2872,60 @@ function PusherMachine.build(originCFrame, name, theme)
 	end
 
 	----------------------------------------------------------------------------
-	-- JACKPOT CORE — "SUPERNOVA SATURN", compact: the JACKPOT title, a SMALL
-	-- glowing gold planet under it wearing a tilted Saturn ring (two neon
-	-- moonlets the CLIENT orbits from the stamped RingCF attribute, an 8-pip
-	-- charge gauge notched into the ring's leading arc, an ember vent at the
-	-- crest), and the live pot readout — a card that grows out of the cup's
-	-- front rim. The orb was a 0.78 ball that filled the card (owner: "remove
-	-- that glowing ball or make it WAY smaller, under the JACKPOT text"); it
-	-- is 0.36 now, ring 0.56, and sits between the title and the number.
-	-- EVERY piece is decorate()'d (no collide/query/touch): the bowl's
-	-- physics never sees it. Sizes ride CORE_S so the client's supernova
-	-- pop (BaseSize x 1.28) and orbit (OrbitRadius stamp) scale with it.
+	-- JACKPOT CORE — the card. Three stacked plates growing out of the cup's
+	-- front rim: the JACKPOT title, an 8-pip CHARGE BAR (the jackpot window
+	-- / pot-charge gauge the client lights pip by pip, strobing at 6+), and
+	-- the live pot readout. The glowing planet that used to sit here is gone
+	-- (owner: "remove the planet") — the CoreLight it carried now rides an
+	-- invisible CoreGlowHost behind the bar, and the ember vent sits on the
+	-- bar's crest, so the client's anticipation breathing, pip strobe and
+	-- HIT eruption all still have their targets. No CoreOrb / CoreRing /
+	-- Moonlets are built; the client guards every one of those binds. EVERY
+	-- piece is decorate()'d (no collide/query/touch): the bowl's physics
+	-- never sees the card.
 	----------------------------------------------------------------------------
 	do
 		-- Anchor: a reclined billboard just beyond the bowl's front wall,
-		-- its lowest part (PotPlate bottom) 0.11 above the 6.38 rim.
-		local CORE_S = 0.46 -- 0.78 orb -> 0.36
-		local coreCF = at(0, 7.00, -7.15, RECL)
-		local pivot = coreCF * CFrame.new(0, 0.10, -0.36) -- planet center
-		local ringCF = pivot * CFrame.Angles(math.rad(-28), 0, 0) -- ring plane, top leans back
-		local ORB_D = 0.78 * CORE_S
-		local RING_D = 1.02 * CORE_S + 0.09 -- 0.56: reads as the silhouette
-		local ORBIT_R = 0.24 -- moonlet orbit radius (stamped for the client)
-		local coreOrb = decorate(newPart({
-			Name = "CoreOrb",
-			Shape = Enum.PartType.Ball,
-			Size = Vector3.new(ORB_D, ORB_D, ORB_D),
-			CFrame = pivot,
-			Color = cfg.colGoldHot,
-			Material = Enum.Material.Neon,
-		}, cabinet))
-		coreOrb:SetAttribute("BaseColor", cfg.colGoldHot)
-		coreOrb:SetAttribute("BaseSize", coreOrb.Size)
-		local coreLight = pointLight(coreOrb, cfg.colGoldHot, 1.5, 3.5)
-		coreLight.Name = "CoreLight"
-		-- The Saturn ring: tilted -28 degrees so it reads as a planet's ring
-		-- from the locked camera. RingCF and OrbitRadius are STAMPED as
-		-- attributes — the client orbit loop reads the stamps, never the live
-		-- CFrame, so the celebration spin and bind retries can never corrupt
-		-- the orbit plane.
-		local coreRing = decorate(newPart({
-			Name = "CoreRing",
-			Shape = Enum.PartType.Cylinder,
-			Size = Vector3.new(0.045, RING_D, RING_D),
-			CFrame = ringCF * CFrame.Angles(0, math.rad(90), 0),
-			Color = cfg.colGold,
-			Material = Enum.Material.Neon,
-			Transparency = 0.25,
-		}, cabinet))
-		coreRing:SetAttribute("BaseColor", cfg.colGold)
-		coreRing:SetAttribute("FillColor", Color3.fromRGB(255, 244, 214))
-		coreRing:SetAttribute("RingCF", ringCF)
-		coreRing:SetAttribute("OrbitRadius", ORBIT_R)
-		-- Moonlets: two neon balls parked ON the ring at their OrbitPhase
-		-- angles — the client re-seats them every Heartbeat from the stamps
-		-- (period 12s idle -> 1.2s at full charge), so the server pose only
-		-- matters for the pre-bind frame and streaming stragglers.
-		for moonIndex, moon in ipairs({
-			{ phase = 200, color = cfg.colTeal },
-			{ phase = 20, color = cfg.colMagenta },
-		}) do
-			local moonlet = decorate(newPart({
-				Name = "Moonlet" .. moonIndex,
-				Shape = Enum.PartType.Ball,
-				Size = Vector3.new(0.08, 0.08, 0.08),
-				CFrame = ringCF * CFrame.Angles(0, 0, math.rad(moon.phase))
-					* CFrame.new(0, -ORBIT_R, -0.04),
-				Color = moon.color,
-				Material = Enum.Material.Neon,
-			}, cabinet))
-			moonlet:SetAttribute("BaseColor", moon.color)
-			moonlet:SetAttribute("FillColor", Color3.fromRGB(255, 255, 255))
-			moonlet:SetAttribute("OrbitPhase", moon.phase)
-		end
-		-- Charge gauge: 8 pips seated on the ring's lower LEADING arc
-		-- (-63..+63 degrees in ring-local plane, radius 0.235 — 0.045 in
-		-- from the 0.28 edge), embedded through both ring faces so they read
-		-- as notches IN the ring. Unfilled is colSign SmoothPlastic; the lit
-		-- FillColor is NEAR-WHITE (255, 244, 214) — never colGoldHot: gold-
-		-- on-gold made the FULL state (the one that sells) the lowest-
+		-- its lowest edge (PotPlate bottom) ~0.09 above the 6.00 rim.
+		local coreCF = at(0, 6.43, -7.15, RECL)
+		-- Charge bar: a dark backing strip with 8 dim-gold notches; lit
+		-- notches go Neon NEAR-WHITE (255, 244, 214) — never colGoldHot,
+		-- gold-on-gold made the FULL state (the one that sells) the lowest-
 		-- contrast state.
+		decorate(newPart({
+			Name = "ChargeBar",
+			Size = Vector3.new(1.02, 0.12, 0.06),
+			CFrame = coreCF * CFrame.new(0, 0.06, -0.19),
+			Color = cfg.colDark,
+		}, cabinet))
 		for segIndex = 1, 8 do
 			local seg = decorate(newPart({
 				Name = "ChargeSeg" .. segIndex,
-				Size = Vector3.new(0.055, 0.04, 0.06),
-				CFrame = ringCF
-					* CFrame.Angles(0, 0, math.rad(-63 + (segIndex - 1) * 18))
-					* CFrame.new(0, -0.235, 0),
-				Color = cfg.colSign,
+				Size = Vector3.new(0.09, 0.06, 0.06),
+				CFrame = coreCF * CFrame.new(-0.42 + (segIndex - 1) * 0.12, 0.06, -0.22),
+				Color = cfg.colGoldDim,
 			}, cabinet))
-			seg:SetAttribute("BaseColor", cfg.colSign)
+			seg:SetAttribute("BaseColor", cfg.colGoldDim)
 			seg:SetAttribute("FillColor", Color3.fromRGB(255, 244, 214))
 		end
-		-- Ember vent (grafted from the Comet Chamber runner-up): invisible
-		-- host at the orb's crest. Both emitters build at Rate 0 — the
-		-- client drives Rate 4/2 during anticipation and Emit(30)/Emit(12)
-		-- on the jackpot eruption. Low speed + short lifetime keeps the
-		-- plume visually near the crest (skyline-safe: particles aren't
-		-- parts).
+		-- Glow host: the CoreLight the client breathes (1.5 -> 3.0) during
+		-- anticipation and flares to 9 on a HIT.
+		local glowHost = decorate(newPart({
+			Name = "CoreGlowHost",
+			Size = Vector3.new(0.10, 0.10, 0.10),
+			CFrame = coreCF * CFrame.new(0, 0.06, -0.30),
+			Transparency = 1,
+		}, cabinet))
+		local coreLight = pointLight(glowHost, cfg.colGoldHot, 1.5, 3.5)
+		coreLight.Name = "CoreLight"
+		-- Ember vent: invisible host on the bar's crest. Both emitters build
+		-- at Rate 0 — the client drives Rate 4/2 during anticipation and
+		-- Emit(30)/Emit(12) on the jackpot eruption. Low speed + short
+		-- lifetime keeps the plume near the bar (particles aren't parts).
 		local emberVent = decorate(newPart({
 			Name = "EmberVent",
 			Size = Vector3.new(0.10, 0.10, 0.10),
-			CFrame = pivot * CFrame.new(0, ORB_D / 2, 0),
+			CFrame = coreCF * CFrame.new(0, 0.14, -0.26),
 			Transparency = 1,
 		}, cabinet))
 		local emberEmit = Instance.new("ParticleEmitter")
@@ -2982,7 +2937,7 @@ function PusherMachine.build(originCFrame, name, theme)
 		emberEmit.Lifetime = NumberRange.new(0.35, 0.7)
 		emberEmit.Speed = NumberRange.new(0.3, 0.7)
 		emberEmit.Acceleration = Vector3.new(0, 0.6, 0)
-		emberEmit.SpreadAngle = Vector2.new(25, 25)
+		emberEmit.SpreadAngle = Vector2.new(35, 35)
 		emberEmit.Rotation = NumberRange.new(-40, 40)
 		emberEmit.RotSpeed = NumberRange.new(-45, 45)
 		emberEmit.Size = NumberSequence.new({
@@ -3011,7 +2966,7 @@ function PusherMachine.build(originCFrame, name, theme)
 		local potPlate = decorate(newPart({
 			Name = "PotPlate",
 			Size = Vector3.new(1.02, 0.44, 0.10),
-			CFrame = coreCF * CFrame.new(0, -0.44, -0.24),
+			CFrame = coreCF * CFrame.new(0, -0.24, -0.24),
 			Color = cfg.colSign,
 		}, cabinet))
 		local potGui = Instance.new("SurfaceGui")
@@ -3031,11 +2986,11 @@ function PusherMachine.build(originCFrame, name, theme)
 		potLabel.TextScaled = true
 		potLabel.Font = Enum.Font.FredokaOne
 		potLabel.Parent = potGui
-		-- Title plate on top, the small orb right under it.
+		-- Title plate on top.
 		local coreTitle = decorate(newPart({
 			Name = "CoreTitle",
 			Size = Vector3.new(1.02, 0.26, 0.08),
-			CFrame = coreCF * CFrame.new(0, 0.50, -0.20),
+			CFrame = coreCF * CFrame.new(0, 0.36, -0.20),
 			Color = cfg.colSign,
 		}, cabinet))
 		local titleGui = Instance.new("SurfaceGui")
@@ -3069,7 +3024,7 @@ function PusherMachine.build(originCFrame, name, theme)
 		Size = Vector3.new(9.96, 0.40, 0.62),
 		CFrame = at(0, 4.22, -4.78),
 		Color = cfg.colBody2,
-		CustomPhysicalProperties = PhysicalProperties.new(0.7, 0.05, 0, 1, 1),
+		CustomPhysicalProperties = PhysicalProperties.new(0.7, 0.05, 0, 1, 100),
 		CanQuery = false, CanTouch = false,
 	}, cabinet)
 
@@ -3710,7 +3665,7 @@ function PusherMachine.build(originCFrame, name, theme)
 		CFrame = at(0, 4.842, -4.75, CFrame.Angles(math.rad(-16), 0, 0)),
 		Color = cfg.colDeck,
 		Material = cfg.deckMaterial,
-		CustomPhysicalProperties = PhysicalProperties.new(0.7, 0, 0, 100, 1),
+		CustomPhysicalProperties = PhysicalProperties.new(0.7, 0, 0, 100, 100),
 		CanQuery = false, CanTouch = false,
 	}, playfield)
 	-- Scoring-lane divider fins at the lip (lane boundaries x ±3.4 / ±0.8).
@@ -4165,14 +4120,14 @@ function PusherMachine.build(originCFrame, name, theme)
 		CFrame = at(0, 2.225, -6.55),
 		Transparency = 1, CanCollide = false,
 	}, payout)
-	-- JACKPOT HOLE: the sensor inside the cup bowl (x +-0.9, y 5.91..6.36,
-	-- z -7.20..-5.80 — mirrors CUP_FLOOR 5.88 in the cabinet block). A piece
+	-- JACKPOT HOLE: the sensor inside the cup bowl (x +-0.9, y 5.53..5.98,
+	-- z -7.20..-5.80 — mirrors CUP_FLOOR 5.50 in the cabinet block). A piece
 	-- that lands in the bowl touches it on arrival; the server scores it as
 	-- lane 4 (the jackpot lane) regardless of x.
 	newPart({
 		Name = "JackpotHole",
 		Size = Vector3.new(1.8, 0.45, 1.4),
-		CFrame = at(0, 6.135, -6.50),
+		CFrame = at(0, 5.755, -6.50),
 		Transparency = 1, CanCollide = false,
 	}, payout)
 
