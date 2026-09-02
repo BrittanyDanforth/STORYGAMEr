@@ -2732,57 +2732,6 @@ local function pillTabBar(tabs, activeId, onPick)
 	return bar
 end
 
--- §5 type token: claim buttons carry the full state set — normal (ready),
--- hover, pressed (squash), disabled, claimed. Callers restyle via setState.
-local function makeClaimButton(parent, sizeU, posU, zindex)
-	local btn = Instance.new("TextButton")
-	btn.Size = sizeU
-	btn.Position = posU
-	btn.BorderSizePixel = 0
-	btn.AutoButtonColor = false
-	btn.Font = Enum.Font.GothamBlack
-	btn.TextSize = 14
-	btn.ZIndex = zindex or 22
-	btn.Parent = parent
-	corner(btn, 10)
-	local pressScale = Instance.new("UIScale")
-	pressScale.Parent = btn
-	local state = "disabled"
-	local function paint(hover)
-		if state == "ready" then
-			btn.BackgroundColor3 = hover and Color3.fromRGB(104, 214, 124) or UI_GREEN
-			btn.TextColor3 = Color3.new(1, 1, 1)
-		elseif state == "claimed" then
-			btn.BackgroundColor3 = Color3.fromRGB(44, 38, 20)
-			btn.TextColor3 = UI_GOLD
-		else
-			btn.BackgroundColor3 = UI_BG
-			btn.TextColor3 = UI_SUB
-		end
-	end
-	btn.MouseEnter:Connect(function() paint(true) end)
-	btn.MouseLeave:Connect(function() paint(false) end)
-	btn.MouseButton1Down:Connect(function()
-		if state == "ready" then
-			TweenService:Create(pressScale,
-				TweenInfo.new(0.07, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-				{ Scale = 0.95 }):Play()
-		end
-	end)
-	btn.MouseButton1Up:Connect(function()
-		TweenService:Create(pressScale,
-			TweenInfo.new(0.07, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-			{ Scale = 1 }):Play()
-	end)
-	local api = { btn = btn }
-	function api.setState(newState, text)
-		state = newState
-		if text then btn.Text = text end
-		paint(false)
-	end
-	return api
-end
-
 -- Contextual link row (addendum §5): a slim gold-outline button that routes
 -- to another page — the loop's connective tissue.
 local function linkRow(text, onTap)
@@ -3016,6 +2965,11 @@ local function renderDailyPage()
 	local GOLD_CARD = Color3.fromRGB(58, 46, 18) -- hero plate (RANKS' YOU card)
 	local GOLD_DIM = Color3.fromRGB(44, 38, 20) -- claimed plate
 	local GOLD_SLOT = Color3.fromRGB(96, 74, 24) -- claimed calendar slot
+	-- The row width in offset units (the panel is scale-sized, capped by
+	-- panelSize, under hudScale): labels that share a row with fixed-width
+	-- neighbours size or hide themselves from it instead of guessing.
+	local rowW = panel.AbsoluteSize.X / math.max(hudScale.Scale, 0.01) - 34
+	if rowW < 100 then rowW = panelSize.MinSize.X - 34 end
 	local GREEN_CARD = Color3.fromRGB(22, 46, 28) -- ready plate
 	local GREEN_INK = Color3.fromRGB(18, 74, 34)
 	local LOCKED = Color3.fromRGB(40, 42, 58) -- unlit pip / station
@@ -3163,20 +3117,27 @@ local function renderDailyPage()
 
 	-- Hero brick: eyebrow, a bottom-aligned headline row (words around a
 	-- huge FredokaOne number), and a sub line. Returns row, numRow, sub.
-	local function heroCard(height, face, eyebrowText)
+	local function heroCard(height, face, eyebrowText, chipW)
 		local hero = makeRow(height)
 		hero.BackgroundTransparency = 1
 		pixelPlate(hero, face, 21, "card", 3)
 		pixelDither(hero, 22, 0.4)
+		-- The headline row stops where the hero's chip starts (chipW is
+		-- the chip the caller draws at the right; 0 = none) and clips —
+		-- a UIListLayout never truncates, so long words would otherwise
+		-- run under the chip.
+		local reserve = (chipW or 0) + 42
 		local eyebrow = label(hero, eyebrowText, 12, UI_GOLD, Enum.Font.GothamBlack)
 		eyebrow.Position = UDim2.new(0, 14, 0, 10)
-		eyebrow.Size = UDim2.new(1, -220, 0, 14)
+		eyebrow.Size = UDim2.new(1, -reserve, 0, 14)
+		eyebrow.TextTruncate = Enum.TextTruncate.AtEnd
 		eyebrow.TextXAlignment = Enum.TextXAlignment.Left
 		eyebrow.ZIndex = 23
 		local numRow = Instance.new("Frame")
 		numRow.BackgroundTransparency = 1
 		numRow.Position = UDim2.new(0, 14, 0, 24)
-		numRow.Size = UDim2.new(1, -220, 0, 46)
+		numRow.Size = UDim2.new(1, -reserve, 0, 46)
+		numRow.ClipsDescendants = true
 		numRow.ZIndex = 23
 		numRow.Parent = hero
 		local numLayout = Instance.new("UIListLayout")
@@ -3264,7 +3225,7 @@ local function renderDailyPage()
 	-- spree). 0-1 ready = the next thing coming, ticking.
 	do
 		local showAll = readyTotal >= 2
-		local hero, numRow, sub = heroCard(showAll and 150 or 94, GOLD_CARD, "TODAY")
+		local hero, numRow, sub = heroCard(showAll and 150 or 94, GOLD_CARD, "TODAY", showAll and 0 or 170)
 		headline(numRow, nil, tostring(readyTotal),
 			readyTotal == 1 and "REWARD READY" or "REWARDS READY",
 			readyTotal > 0 and Color3.new(1, 1, 1) or UI_SUB,
@@ -3366,10 +3327,10 @@ local function renderDailyPage()
 			title.TextXAlignment = Enum.TextXAlignment.Left
 			title.ZIndex = 23
 			local reward = label(row,
-				("+%s TIX · +%d DUST · +%d STAR"):format(
+				("+%s TIX · +%d DUST · +%d %s"):format(
 					formatCommas(scaledTix(DAILY_CHEST.tickets or 300)),
-					DAILY_CHEST.dust or 40, DAILY_CHEST.stars or 1),
-				12, chestClaimed and UI_SUB or UI_TEXT, Enum.Font.GothamBold)
+					DAILY_CHEST.dust or 40, DAILY_CHEST.stars or 1, STAR_GLYPH),
+				11, chestClaimed and UI_SUB or UI_TEXT, Enum.Font.GothamBold)
 			reward.Position = UDim2.new(0, 66, 0, 30)
 			reward.Size = UDim2.new(1, -206, 0, 14)
 			reward.TextTruncate = Enum.TextTruncate.AtEnd
@@ -3396,6 +3357,8 @@ local function renderDailyPage()
 			pipText.Size = UDim2.new(1, -290, 0, 22)
 			pipText.TextXAlignment = Enum.TextXAlignment.Left
 			pipText.ZIndex = 23
+			-- The pips already count it; on a narrow panel the words go.
+			pipText.Visible = rowW - 290 >= 74
 			local claim = brickButton(row, UDim2.fromOffset(120, 46), UDim2.new(1, -132, 0.5, -23), 23, 17)
 			if chestClaimed then
 				claim.setState("claimed", "CLAIMED " .. CHECK_GLYPH)
@@ -3441,13 +3404,20 @@ local function renderDailyPage()
 			local prizeIcon = makePlanetIcon(strip, prizeSpec, 26, 23)
 			prizeIcon.AnchorPoint = Vector2.new(1, 0.5)
 			prizeIcon.Position = UDim2.new(1, -10, 0.5, 0)
-			local prizeText = label(strip, ("%d STARS = %s"):format(need, GameConfig.Daily.rewardName), 11,
+			-- What's left of the strip after the star rail and the prize
+			-- icon: the full sentence, just "7 STARS =" (the icon IS the
+			-- prize), or nothing on the narrowest panel.
+			local prizeW = rowW - (106 + need * 22 + 52)
+			local prizeText = label(strip,
+				prizeW >= 160 and ("%d STARS = %s"):format(need, GameConfig.Daily.rewardName)
+				or ("%d STARS ="):format(need), 11,
 				starsEarned >= need and UI_GOLD or UI_SUB, Enum.Font.GothamBlack)
 			prizeText.AnchorPoint = Vector2.new(1, 0)
 			prizeText.Position = UDim2.new(1, -44, 0, 0)
 			prizeText.Size = UDim2.new(1, -(106 + need * 22 + 52), 1, 0)
 			prizeText.TextTruncate = Enum.TextTruncate.AtEnd
 			prizeText.TextXAlignment = Enum.TextXAlignment.Right
+			prizeText.Visible = prizeW >= 60
 			prizeText.ZIndex = 23
 			fadeIn(strip)
 		end
@@ -3617,17 +3587,21 @@ local function renderDailyPage()
 		-- DAY STREAK (loop-daily §5, judge's engine verbatim server-side).
 		-- ---- HERO: "DAY n" huge + the week multiplier chip.
 		do
-			local hero, numRow, sub = heroCard(96, GOLD_CARD, "DAY STREAK")
+			local hero, numRow, sub = heroCard(96, GOLD_CARD, "DAY STREAK", 150)
+			-- "DAY 12" huge; the in-a-row count rides the sub line (with
+			-- the chip at the right there is no room for it beside the
+			-- number on a phone panel).
 			local inARow = nil
 			if not paused and sDay > 0 then
 				inARow = sDay == 1 and "1 DAY IN A ROW" or ("%d DAYS IN A ROW"):format(sDay)
 			end
-			headline(numRow, nil, "DAY " .. displayDay, inARow, Color3.new(1, 1, 1), UI_GOLD, 40)
-			chip(hero, UDim2.new(1, -14, 0, 14), 196,
+			headline(numRow, nil, "DAY " .. displayDay, nil, Color3.new(1, 1, 1), UI_GOLD, 40)
+			chip(hero, UDim2.new(1, -14, 0, 14), 150,
 				weeks > 0 and UI_GOLD or GOLD_DIM,
-				weeks > 0 and ("WEEK %d · x%.1f TICKETS"):format(weeks + 1, mult) or "WEEK 1",
+				weeks > 0 and ("WEEK %d · x%.1f TIX"):format(weeks + 1, mult) or "WEEK 1",
 				weeks > 0 and DARK_TEXT or UI_GOLD, nil, 23)
 			sub.Text = paused and "STREAK PAUSED — CLAIM TO START AT DAY 1!"
+				or (inARow and (inARow .. (streakReady and " · CLAIM TODAY'S PRIZE BELOW!" or " · COME BACK TOMORROW!")))
 				or "COME BACK EVERY DAY FOR BIGGER PRIZES"
 			sub.TextColor3 = paused and SALMON or PALE_GOLD
 			fadeIn(hero)
@@ -3695,14 +3669,23 @@ local function renderDailyPage()
 					ic.ImageTransparency = (isToday or soon) and 0 or 0.3
 					ic.ZIndex = 24
 					ic.Parent = slot
-					local amount = label(slot, formatCommas(scaledTix(dayCfg.tickets)),
+					-- A seventh of the row is ~50px: short form past 10K and
+					-- a scaled fit so "12.5K" never spills onto its neighbour
+					-- (the exact number is on the CLAIM brick).
+					local dayTix = scaledTix(dayCfg.tickets)
+					local amount = label(slot, dayTix >= 10000 and shortValue(dayTix) or formatCommas(dayTix),
 						isToday and 20 or 15,
 						isToday and Color3.new(1, 1, 1) or soon and UI_TEXT or UI_SUB, Enum.Font.FredokaOne)
-					amount.Position = UDim2.new(0, 0, 0, 46)
-					amount.Size = UDim2.new(1, 0, 0, 24)
+					amount.Position = UDim2.new(0, 2, 0, 46)
+					amount.Size = UDim2.new(1, -4, 0, 24)
+					amount.TextScaled = true
 					amount.TextStrokeColor3 = INK
 					amount.TextStrokeTransparency = isToday and 0.3 or 1
 					amount.ZIndex = 24
+					local amountFit = Instance.new("UITextSizeConstraint")
+					amountFit.MinTextSize = 10
+					amountFit.MaxTextSize = isToday and 20 or 15
+					amountFit.Parent = amount
 					local line2 = label(slot,
 						dayCfg.rollMinTier and "TIX + PLANET"
 						or (dayCfg.dust or 0) > 0 and ("TIX + %d DUST"):format(dayCfg.dust)
@@ -3762,13 +3745,13 @@ local function renderDailyPage()
 
 		-- ---- HERO: time played, ticking, + the claimed-count chip.
 		do
-			local hero, numRow, sub = heroCard(96, GOLD_CARD, "PLAY PRIZES")
-			local num = headline(numRow, nil, fmtClock(liveSecs()), "PLAYED", Color3.new(1, 1, 1), UI_GOLD, 36)
+			local hero, numRow, sub = heroCard(96, GOLD_CARD, "TIME PLAYED", 130)
+			local num = headline(numRow, nil, fmtClock(liveSecs()), nil, Color3.new(1, 1, 1), UI_GOLD, 36)
 			bindTicker(num, function(lbl)
 				lbl.Text = fmtClock(liveSecs())
 			end, 1)
 			local allDone = playClaimedCount >= n
-			chip(hero, UDim2.new(1, -14, 0, 14), 150, allDone and UI_GOLD or GOLD_DIM,
+			chip(hero, UDim2.new(1, -14, 0, 14), 130, allDone and UI_GOLD or GOLD_DIM,
 				("%d / %d CLAIMED"):format(playClaimedCount, n),
 				allDone and DARK_TEXT or UI_GOLD, nil, 23)
 			if nextReadyIdx then
@@ -3856,7 +3839,11 @@ local function renderDailyPage()
 				mark.TextStrokeColor3 = isReady and GREEN_INK or INK
 				mark.TextStrokeTransparency = isReady and 0.2 or 1
 				mark.ZIndex = 26
-				local under = label(rail, "", 10, UI_SUB, Enum.Font.GothamBlack)
+				-- A sixth of the rail is ~45px: the amount alone (short
+				-- form past 10K), no "IN" / "TIX" — colour and place say it.
+				local stationTix = scaledTix(PLAY_CFG.tickets[i])
+				local tixText = "+" .. (stationTix >= 10000 and shortValue(stationTix) or formatCommas(stationTix))
+				local under = label(rail, "", 12, UI_SUB, Enum.Font.GothamBlack)
 				under.AnchorPoint = Vector2.new(0.5, 0)
 				under.Position = UDim2.new((i - 0.5) / n, 0, 0, 66)
 				under.Size = UDim2.new(1 / n, -2, 0, 14)
@@ -3865,17 +3852,17 @@ local function renderDailyPage()
 				if isClaimed then
 					under.Text = "DONE"
 				elseif isReady then
-					under.Text = "+" .. formatCommas(scaledTix(PLAY_CFG.tickets[i])) .. " TIX"
+					under.Text = tixText
 					under.TextColor3 = MINT
 				elseif isNext then
 					under.TextColor3 = PALE_GOLD
 					local stationIdx = i
 					bindTicker(under, function(lbl)
 						local left = milestones[stationIdx] - liveSecs()
-						lbl.Text = left > 0 and ("IN " .. fmtClock(left)) or "ANY SECOND"
+						lbl.Text = left > 0 and fmtClock(left) or "READY!"
 					end, 1)
 				else
-					under.Text = "+" .. formatCommas(scaledTix(PLAY_CFG.tickets[i]))
+					under.Text = tixText
 				end
 			end
 			fadeIn(rail)
@@ -5479,7 +5466,10 @@ function renderPage()
 			if not S.rebirthFadeHook then
 				S.rebirthFadeHook = true
 				panel:GetPropertyChangedSignal("Visible"):Connect(function()
-					if not panel.Visible then S.rebirthFadeKey = nil end
+					if not panel.Visible then S.rebirthFadeKey = nil; S.rebirthArmedUntil = 0 end
+				end)
+				panelTitle:GetPropertyChangedSignal("Text"):Connect(function()
+					if panelTitle.Text ~= "REBIRTH" then S.rebirthFadeKey = nil; S.rebirthArmedUntil = 0 end
 				end)
 			end
 			local fadeKey = "rb" .. tostring(rebirth)
@@ -5671,7 +5661,7 @@ function renderPage()
 				end
 				if not throne then throne = GameConfig.Spine[#GameConfig.Spine] end
 
-				local unlocks = makeRow(100)
+				local unlocks = makeRow(104)
 				unlocks.BackgroundTransparency = 1
 				local function unlockBrick(x, tint, iconW, eyebrowText, name, perk, req)
 					local brick = halfBrick(unlocks, x, RB_STAGE)
@@ -5689,22 +5679,26 @@ function renderPage()
 					nm.TextTruncate = Enum.TextTruncate.AtEnd
 					nm.TextXAlignment = Enum.TextXAlignment.Left
 					nm.ZIndex = 24
+					-- Two lines: "5x TICKETS + 2x DUST FOREVER" is wider than
+					-- a half brick beside a 40px icon.
 					local pk = label(brick, perk, 12, UI_GOLD, Enum.Font.GothamBold)
-					pk.Position = UDim2.new(0, tx, 0, 40)
-					pk.Size = UDim2.new(1, -tx - 10, 0, 16)
+					pk.Position = UDim2.new(0, tx, 0, 39)
+					pk.Size = UDim2.new(1, -tx - 10, 0, 28)
+					pk.TextWrapped = true
 					pk.TextTruncate = Enum.TextTruncate.AtEnd
 					pk.TextXAlignment = Enum.TextXAlignment.Left
+					pk.TextYAlignment = Enum.TextYAlignment.Top
 					pk.ZIndex = 24
 					local st = label(brick,
 						reached and "UNLOCKED " .. CHECK_GLYPH
 						or nextOne and "THIS REBIRTH!"
 						or ("AT REBIRTH " .. req),
 						11, reached and UI_GREEN or nextOne and RB_MINT or RB_PINK, Enum.Font.GothamBlack)
-					st.Position = UDim2.new(0, 12, 0, 60)
+					st.Position = UDim2.new(0, 12, 0, 68)
 					st.Size = UDim2.new(1, -24, 0, 14)
 					st.TextXAlignment = Enum.TextXAlignment.Left
 					st.ZIndex = 24
-					progressBar(brick, UDim2.new(0, 12, 0, 80), UDim2.new(1, -24, 0, 8),
+					progressBar(brick, UDim2.new(0, 12, 0, 86), UDim2.new(1, -24, 0, 8),
 						reached and 1 or rebirth / math.max(req, 1),
 						reached and UI_GREEN or tint, 24)
 					return brick
@@ -5790,8 +5784,11 @@ function renderPage()
 					-- 2-tap confirm: a reset is destructive for a kid. The
 					-- armed stamp rides S so the per-collect re-render mid-
 					-- confirm rebuilds the button still armed.
+					-- Past a million the comma form no longer fits the brick
+					-- at 21px ("1,090,000,000,000 TIX") — the short form reads.
+					local costText = cost >= 1e6 and shortValue(cost) or formatCommas(cost)
 					local function idleLook()
-						setLook(UI_GREEN, "REBIRTH NOW — " .. formatCommas(cost) .. " TIX",
+						setLook(UI_GREEN, "REBIRTH NOW — " .. costText .. " TIX",
 							Color3.new(1, 1, 1), Color3.fromRGB(18, 74, 34))
 					end
 					local function armedLook()
@@ -5833,7 +5830,9 @@ function renderPage()
 					end)
 				else
 					S.rebirthArmedUntil = 0
-					setLook(Color3.fromRGB(104, 40, 54), "NEED " .. formatCommas(cost - tickets) .. " MORE TIX",
+					local gap = cost - tickets
+					setLook(Color3.fromRGB(104, 40, 54),
+						"NEED " .. (gap >= 1e6 and shortValue(gap) or formatCommas(gap)) .. " MORE TIX",
 						Color3.fromRGB(255, 176, 190), Color3.fromRGB(40, 10, 18))
 					-- How close you are, under the brick.
 					progressBar(btnRow, UDim2.new(0, 2, 0, 67), UDim2.new(1, -112, 0, 8),
@@ -5896,6 +5895,17 @@ function renderPage()
 			panelTitle:GetPropertyChangedSignal("Text"):Connect(function()
 				if panelTitle.Text ~= "SHOP" then S.shopFadeKey = nil end
 			end)
+			-- A product id landing mid-session (PId_<key> flips from 0)
+			-- re-renders the open shop so its SOON brick goes live.
+			if remotes then
+				for _, prod in ipairs(GameConfig.Products) do
+					if prod.key then
+						remotes:GetAttributeChangedSignal("PId_" .. prod.key):Connect(function()
+							if panel.Visible and openPage == "shop" then renderPage() end
+						end)
+					end
+				end
+			end
 		end
 		local animateEntrance = S.shopFadeKey ~= "shop"
 		S.shopFadeKey = "shop"
@@ -6131,10 +6141,10 @@ function renderPage()
 		end
 		-- §3c PRICE BRICK — the ONLY place a price appears. The state is
 		-- decided at render time: owned = dim gold "OWNED ✓" (no handler);
-		-- SOON = dim (the PId_<key> attribute is 0 — kids never tap a live-
-		-- looking dead button); else a green "R$ 99" brick. Both SOON and
-		-- live bricks prompt the SAME product key through S.promptProduct,
-		-- so a product configured after render still buys.
+		-- SOON = dim, no handler (the PId_<key> attribute is 0 — kids never
+		-- tap a live-looking dead button, and a dim one does nothing); else
+		-- a green "R$ 99" brick. A product configured after render re-
+		-- renders the open shop (the PId_ hook below), so it goes live.
 		local function priceBrick(parent, key, sizeU, posU, zindex, owned, textSize)
 			if owned then
 				return (brick(parent, sizeU, posU, zindex, GOLD_DIM, "OWNED " .. CHECK_GLYPH,
@@ -6146,9 +6156,11 @@ function renderPage()
 				live and prodPrice(key, PRICES[key]) or "SOON",
 				live and Color3.new(1, 1, 1) or UI_SUB,
 				live and GREEN_INK or nil, textSize, live)
-			btn.MouseButton1Click:Connect(function()
-				S.promptProduct(key, btn)
-			end)
+			if live then
+				btn.MouseButton1Click:Connect(function()
+					S.promptProduct(key, btn)
+				end)
+			end
 			return btn
 		end
 		-- §2 server-scope badge: glowOrb + ring hoop overlapping the family
@@ -6273,14 +6285,18 @@ function renderPage()
 			ic.Parent = strip
 			line(strip, "YOU HAVE:", 12, UI_SUB, Enum.Font.GothamBlack,
 				UDim2.new(0, 40, 0, 0), UDim2.new(0, 70, 1, 0), 23)
-			local num = line(strip, formatCommas(tickets) .. " TIX", 16, UI_GOLD, Enum.Font.FredokaOne,
-				UDim2.new(0, 112, 0, 0), UDim2.new(1, -244, 1, -3), 23)
+			-- Short form past 10M: "9,999,999 TIX" is the widest comma
+			-- form the strip fits beside the hint on the smallest panel.
+			local num = line(strip,
+				(tickets >= 1e7 and shortValue(tickets) or formatCommas(tickets)) .. " TIX",
+				16, UI_GOLD, Enum.Font.FredokaOne,
+				UDim2.new(0, 112, 0, 0), UDim2.new(1, -212, 1, -3), 23)
 			num.TextStrokeColor3 = INK
 			num.TextStrokeTransparency = 0.3
-			local hint = label(strip, "TICKET REWARDS BELOW ↓", 12, UI_SUB, Enum.Font.GothamBold)
+			local hint = label(strip, "REWARDS ↓", 12, UI_SUB, Enum.Font.GothamBold)
 			hint.AnchorPoint = Vector2.new(1, 0)
 			hint.Position = UDim2.new(1, -12, 0, 0)
-			hint.Size = UDim2.new(0, 124, 1, 0)
+			hint.Size = UDim2.new(0, 80, 1, 0)
 			hint.TextXAlignment = Enum.TextXAlignment.Right
 			hint.TextTruncate = Enum.TextTruncate.AtEnd
 			hint.ZIndex = 23
@@ -6370,8 +6386,23 @@ function renderPage()
 			captionRow("More luck = rare planets show up WAY more. Bigger number, bigger luck.", UI_SUB)
 			local LADDER = { "Luck100", "Luck1000", "Luck3500" }
 			local LADDER_WORDS = { "BIG LUCK", "BIGGER LUCK", "BIGGEST LUCK" }
-			-- §4a the ladder row: three equal bricks — the multiplier huge,
-			-- the duration pill, the price brick.
+			-- The mandatory live odds for each rung, shown exactly as the
+			-- full-width luck cards showed them (S.oddsBlock at the rung's
+			-- own magnitude, intro line included). A rung brick is a third
+			-- of the row — too narrow for "1 in 250,000 → 1 in 250" at the
+			-- 12px floor — so each rung's block sits in its own stage brick,
+			-- headed by the rung it belongs to, ABOVE the ladder: the odds
+			-- scroll into view before the price brick does, so a tap on a
+			-- short phone panel never buys past an unseen disclosure.
+			for _, key in ipairs(LADDER) do
+				local odds = pixelRow(124, STAGE, 0.5)
+				line(odds, NAMES[key] .. "  ·  " .. (prodPill(key) or "") .. "  ·  THE ODDS", 12, UI_GOLD,
+					Enum.Font.GothamBlack, UDim2.new(0, 12, 0, 8), UDim2.new(1, -24, 0, 16), 23)
+				S.oddsBlock(odds, 12, 26, -24, LUCK_MAG[key], true, 23)
+				fadeIn(odds)
+			end
+			-- §4a the ladder row (under its odds): three equal bricks — the
+			-- multiplier huge, the duration pill, the price brick.
 			do
 				local row = makeRow(158)
 				row.BackgroundTransparency = 1
@@ -6404,19 +6435,6 @@ function renderPage()
 					priceBrick(b, key, UDim2.new(1, -16, 0, 44), UDim2.new(0, 8, 0, 106), 24)
 				end
 				fadeIn(row)
-			end
-			-- The mandatory live odds for each rung, shown exactly as the
-			-- full-width luck cards showed them (S.oddsBlock at the rung's
-			-- own magnitude, intro line included). A rung brick is a third
-			-- of the row — too narrow for "1 in 250,000 → 1 in 250" at the
-			-- 12px floor — so each rung's block sits in its own stage brick
-			-- right under the ladder, headed by the rung it belongs to.
-			for _, key in ipairs(LADDER) do
-				local odds = pixelRow(124, STAGE, 0.5)
-				line(odds, NAMES[key] .. "  ·  " .. (prodPill(key) or "") .. "  ·  THE ODDS", 12, UI_GOLD,
-					Enum.Font.GothamBlack, UDim2.new(0, 12, 0, 8), UDim2.new(1, -24, 0, 16), 23)
-				S.oddsBlock(odds, 12, 26, -24, LUCK_MAG[key], true, 23)
-				fadeIn(odds)
 			end
 		end
 		-- Full-width luck card (MEGA BUNDLE / the server 100X): family icon,
@@ -6530,14 +6548,27 @@ function renderPage()
 				brick(row, UDim2.fromOffset(110, 44), UDim2.new(1, -122, 0.5, -22), 23,
 					GOLD_DIM, "OWNED " .. CHECK_GLYPH, UI_GOLD, nil, 15, false)
 			else
-				local buyBtn = brick(row, UDim2.fromOffset(110, 44), UDim2.new(1, -122, 0.5, -22), 23,
+				local buyBtn, buyTxt = brick(row, UDim2.fromOffset(110, 44), UDim2.new(1, -122, 0.5, -22), 23,
 					canPay and UI_GREEN or LOCKED, formatCommas(card.cost) .. " TIX",
 					canPay and Color3.new(1, 1, 1) or UI_SUB,
 					canPay and GREEN_INK or nil, 15, canPay)
-				buyBtn.MouseButton1Click:Connect(function()
-					local remote = remotes and remotes:FindFirstChild("BuyPerk")
-					if remote then remote:FireServer(card.id) end
-				end)
+				if canPay then
+					buyBtn.MouseButton1Click:Connect(function()
+						local remote = remotes and remotes:FindFirstChild("BuyPerk")
+						if remote then remote:FireServer(card.id) end
+					end)
+				else
+					-- The server would refuse silently; the brick answers
+					-- the tap itself with how far away it is.
+					buyBtn.MouseButton1Click:Connect(function()
+						local short = card.cost - (player:GetAttribute("Tickets") or 0)
+						if short <= 0 then return end
+						buyTxt.Text = "NEED " .. shortValue(short) .. " MORE"
+						task.delay(1.2, function()
+							if buyTxt.Parent then buyTxt.Text = formatCommas(card.cost) .. " TIX" end
+						end)
+					end)
+				end
 			end
 			fadeIn(row)
 		end
@@ -9196,6 +9227,9 @@ end)()
 		"DailyC1", "DailyC2", "DailyC3", "DailyC4",
 		"StreakDay", "StreakReady", "PlaySecs", "PlayReady", "PlayClaimed",
 		"IndexFound",
+		-- Pass grants: the open shop's brick flips to OWNED the moment the
+		-- receipt lands, so a second tap can't re-prompt the purchase.
+		"Tickets2xOwned", "AutoDropOwned",
 	}) do
 		player:GetAttributeChangedSignal(attr):Connect(refreshHudState)
 	end
