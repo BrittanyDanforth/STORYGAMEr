@@ -7868,6 +7868,39 @@ end)()
 		btn.MouseButton1Up:Connect(function() paint(1) end)
 		return st
 	end
+	-- Scale-to-fit for one-line copy that must survive SHORT widths: TextScaled
+	-- with a floor, never below `minSize`. Returns the constraint so a confirm
+	-- arm can lower the floor while multi-line text is up.
+	local function fitText(obj, minSize, maxSize, offUntilArmed)
+		local fit = Instance.new("UITextSizeConstraint")
+		fit.MinTextSize = minSize
+		fit.MaxTextSize = maxSize
+		fit.Parent = obj
+		obj.TextScaled = not offUntilArmed
+		return fit
+	end
+	-- Tiny padlock from two frames (no lock glyph in the sprite set): a hollow
+	-- rounded shackle behind a solid body; unlocked lifts the shackle aside.
+	local function miniLock(parent, isLockedNow, tint, zindex)
+		local shackle = Instance.new("Frame")
+		shackle.AnchorPoint = Vector2.new(0.5, 1)
+		shackle.Position = UDim2.new(0.5, isLockedNow and 0 or 3, 0.5, isLockedNow and -2 or -5)
+		shackle.Size = UDim2.fromOffset(9, 9)
+		shackle.BackgroundTransparency = 1
+		shackle.ZIndex = zindex
+		shackle.Parent = parent
+		corner(shackle, 4)
+		stroke(shackle, tint, 2, 0)
+		local body = Instance.new("Frame")
+		body.AnchorPoint = Vector2.new(0.5, 1)
+		body.Position = UDim2.new(0.5, 0, 0.5, 7)
+		body.Size = UDim2.fromOffset(13, 10)
+		body.BackgroundColor3 = tint
+		body.BorderSizePixel = 0
+		body.ZIndex = zindex + 1
+		body.Parent = parent
+		corner(body, 3)
+	end
 	-- A planet with CELESTIAL copies and nothing else left to forge.
 	local function entryMaxed(e)
 		return e ~= nil and (e.f2 or 0) > 0 and nextForge(e, e.t or 1) == nil
@@ -7891,7 +7924,9 @@ end)()
 		local hgt = forgePage.AbsoluteSize.Y / s
 		if wid <= 0 then wid = 1280 end
 		if hgt <= 0 then hgt = 720 end
-		local narrow = wid < 900
+		-- Orientation decides NARROW: a landscape phone (853x480 HUD) must get
+		-- the SHORT row, not the portrait stack (which put FORGE below the fold).
+		local narrow = wid < 900 and hgt > wid * 0.9
 		local pw, ph
 		if narrow then
 			mainPanel.Size = UDim2.new(1, -16, 1, -20)
@@ -7911,6 +7946,29 @@ end)()
 		local tiny = short and ph < 480
 
 		clearPane(content)
+		local viaHook = scrollToSelected -- opened through S.openForge this render
+
+		-- Strip controls budget, decided BEFORE filtering: on a 320-wide
+		-- portrait the ribbon, six rarity chips and the READY toggle cannot
+		-- share one row — chips slim down, then hide (and the filter resets
+		-- to ALL so a hidden chip can never strand the strip).
+		local ctrl = {
+			ribW = narrow and 140 or 190,
+			scW = narrow and (pw - 20) or (pw - 40), -- the strip card's width
+			chipS = narrow and 24 or (short and 32 or 28), -- SHORT chips are touch-sized
+			onlyW = narrow and 96 or 118,
+			searchW = narrow and 110 or 170,
+			showSearch = pw >= 640,
+			showChips = true,
+		}
+		local function ctrlSpan()
+			return 12 + ctrl.onlyW + 8 + (ctrl.showChips and (#PusherMachine.Tiers + 1) * (ctrl.chipS + 4) or 0)
+				+ (ctrl.showSearch and (ctrl.searchW + 10) or 0)
+		end
+		if ctrl.scW - ctrlSpan() < ctrl.ribW + 18 then ctrl.chipS, ctrl.onlyW = 22, 84 end
+		if ctrl.scW - ctrlSpan() < ctrl.ribW + 18 then ctrl.showChips = false end
+		if not ctrl.showChips then forgeFilter = 0 end
+		ctrl.span = ctrlSpan()
 
 		-- Filtered + sorted entry list: READY first, then in-progress by
 		-- rarity, MAXED planets last (nothing to do with them here).
@@ -7926,13 +7984,13 @@ end)()
 			end
 			if pass then table.insert(entries, entry) end
 		end
-		local function rankOf(e)
-			if entryForgeable(e) then return 0 end
-			if entryMaxed(e) then return 2 end
-			return 1
+		-- Rank once per entry (forgeReq walks the perk stats — not per compare).
+		local rankOf = {}
+		for _, e in ipairs(entries) do
+			rankOf[e] = entryForgeable(e) and 0 or (entryMaxed(e) and 2 or 1)
 		end
 		table.sort(entries, function(a, b)
-			local ar, br = rankOf(a), rankOf(b)
+			local ar, br = rankOf[a], rankOf[b]
 			if ar ~= br then return ar < br end
 			local at, bt = a.t or 1, b.t or 1
 			if at ~= bt then return at > bt end
@@ -7948,12 +8006,11 @@ end)()
 
 		-- Selected entry data.
 		local entry = forgeSelected and invByKey[forgeSelected] or nil
-		local dName, dTier, key, spec, tierInfo
+		local dName, dTier, key, tierInfo
 		local ec, ef1, ef2, bestOwnedForm, req, fromForm, have, basePay = 0, 0, 0, 0, 10, nil, 0, 0
 		if entry then
 			dName, dTier = entry.n, entry.t or 1
 			key = dName .. "|" .. dTier
-			spec = planetLookup[key]
 			tierInfo = PusherMachine.Tiers[dTier] or PusherMachine.Tiers[1]
 			ec, ef1, ef2 = countsOf(entry)
 			bestOwnedForm = ef2 > 0 and 2 or (ef1 > 0 and 1 or 0)
@@ -7965,11 +8022,14 @@ end)()
 		local progFrom = fromForm or 0
 		local progHave = fromForm ~= nil and math.min(have, req) or 0
 		local canForge = fromForm ~= nil and have >= req
+		-- Locked copies are refused server-side (doCombine skips lk == 1), so
+		-- a locked READY planet's main button is UNLOCK TO FORGE, not FORGE!.
+		local locked = entry ~= nil and isLocked(entry)
 		-- Tutorial coach contract (read by the coach's in-forge step, keep
 		-- these on any rework): the selected key, whether it forges, and
 		-- the main FORGE button (S.forgeGoBtn, set where it is built).
 		S.forgeSelectedKey = key
-		S.forgeCanForge = canForge
+		S.forgeCanForge = canForge and not locked
 		S.forgeGoBtn = nil
 		local showFrom = entry and (fromForm or bestOwnedForm) or 0
 		local showNext = math.min(showFrom + 1, 2)
@@ -7995,20 +8055,20 @@ end)()
 		local C = {}
 		if narrow then
 			C.ribH, C.ribW, C.ribSize, C.top = 28, 168, 13, 20
-			C.nameH, C.nameSize, C.tierH, C.tierW, C.chipH = 22, 17, 28, 176, 52
+			C.nameH, C.nameSize, C.tierH, C.tierW, C.chipH = 22, 17, 28, 176, 66
 			C.headH, C.headSize, C.recipeH, C.trackH, C.trackSize = 22, 18, 14, 26, 15
 			C.goH, C.goSize, C.sideW = 60, 24, 108
 			C.rowY0, C.rowStride, C.craftH = 30, 32, 40
 			C.tileW, C.tileH, C.stride, C.icon, C.pool, C.iconY = 80, 88, 88, 46, 10, 12
 			C.stripY, C.stripH = 36, 94
 		elseif short then
-			C.ribH, C.ribW, C.ribSize, C.top = 26, 150, 12, 16
+			C.ribH, C.ribW, C.ribSize, C.top = 26, 150, 12, tiny and 12 or 16
 			C.nameH, C.nameSize, C.tierH, C.tierW, C.chipH = 20, 16, 26, 160, 46
 			C.headH, C.headSize, C.recipeH, C.trackH, C.trackSize = 20, 17, 13, 24, 14
-			C.goH, C.goSize, C.sideW = 52, 22, tiny and 84 or 92
+			C.goH, C.goSize, C.sideW = 60, 22, tiny and 84 or 92 -- 60 HUD = 45 real px, the touch floor
 			C.rowY0, C.rowStride, C.craftH = 26, 29, 36
-			C.tileW, C.tileH, C.stride, C.icon, C.pool, C.iconY = 80, tiny and 74 or 84, 88, 44, 16, tiny and 8 or 12
-			C.stripY, C.stripH = tiny and 30 or 32, tiny and 78 or 90
+			C.tileW, C.tileH, C.stride, C.icon, C.pool, C.iconY = 80, tiny and 70 or 84, 88, 44, 16, tiny and 6 or 12
+			C.stripY, C.stripH = 36, tiny and 74 or 88 -- below the 32px rarity chips
 		else
 			C.ribH, C.ribW, C.ribSize, C.top = 36, 200, 14, 24
 			C.nameH, C.nameSize, C.tierH, C.tierW, C.chipH = 26, 22, 36, 216, 72
@@ -8023,12 +8083,12 @@ end)()
 		local resFixed = C.top + 4 + C.headH + C.recipeH + 14 + 8 + C.trackH + 10 + C.goH + 12
 
 		-- ---- card frames (wide/short: one row; narrow: stacked scroll) ----
-		local pickCard, resultCard, infoCard, stripCard
+		local pickCard, resultCard, infoCard, stripCard, midScroll
 		local pickW, resW, infoW, well, preview
 		if not narrow then
-			local stripH = short and (tiny and 112 or 128) or 160
+			local stripH = short and (tiny and 114 or 128) or 160
 			local stripY = ph - stripH - (short and 10 or 16)
-			local cardY = short and 44 or 54
+			local cardY = short and 50 or 54 -- clear of the hanging FORGE title ribbon
 			local cardH = stripY - cardY - (short and 10 or 14)
 			local gapA = short and 30 or 40 -- holds the → arrow
 			local gapB = short and 14 or 18
@@ -8036,8 +8096,8 @@ end)()
 			pickW = math.floor(avail * 0.27)
 			infoW = math.floor(avail * 0.31)
 			resW = avail - pickW - infoW
-			preview = math.clamp(cardH - resFixed, 60, math.min(resW - 48, 220))
-			well = math.max(60, math.min(pickW - 32, cardH - pickFixed, preview + 24))
+			preview = math.clamp(cardH - resFixed, 48, math.min(resW - 48, 220))
+			well = math.max(48, math.min(pickW - 32, cardH - pickFixed, preview + 24))
 			C.rowStride = math.clamp(math.floor((cardH - C.rowY0 - C.craftH - 22) / 6), 24, 46)
 			pickCard = insetCard(content, UDim2.new(0, 20, 0, cardY), UDim2.new(0, pickW, 0, cardH))
 			resultCard = insetCard(content, UDim2.new(0, 20 + pickW + gapA, 0, cardY),
@@ -8062,7 +8122,7 @@ end)()
 			end
 		else
 			stripCard = insetCard(content, UDim2.new(0, 10, 1, -150), UDim2.new(1, -20, 0, 134))
-			local midScroll = Instance.new("ScrollingFrame")
+			midScroll = Instance.new("ScrollingFrame")
 			midScroll.Position = UDim2.new(0, 10, 0, 44)
 			midScroll.Size = UDim2.new(1, -20, 1, -200)
 			midScroll.BackgroundTransparency = 1
@@ -8091,6 +8151,8 @@ end)()
 			infoCard.LayoutOrder = 3
 		end
 		C.rowH = C.rowStride - 4
+		-- Tile pool covers the visible strip on any width (+2 for the scroll seam).
+		C.pool = math.max(6, math.ceil((pw - 64) / C.stride) + 2)
 
 		-- -------------------- pickCard: YOUR PLANET --------------------
 		do
@@ -8119,25 +8181,29 @@ end)()
 				-- ANIMATED VPF #1 of exactly 2 on this page: the form about
 				-- to be forged (matches the counts below it).
 				local view = makePlanetView(wellBox, dName, dTier, math.floor(well * 0.86), 29,
-					true, showFrom)
+					not S.reducedMotion, showFrom)
 				view.AnchorPoint = Vector2.new(0.5, 0.5)
 				view.Position = UDim2.fromScale(0.5, 0.47)
-				pill(wellBox, Vector2.new(0, 0), UDim2.fromOffset(8, 8),
-					short and 68 or 82, short and 18 or 20, INKBG, formWord(showFrom),
-					formTint(showFrom), formStroke(showFrom), 30, short and 11 or 12)
+				if not short then
+					-- Form tag (SHORT skips it: the count chip already names the
+					-- form, and the small well needs every pixel for the planet).
+					pill(wellBox, Vector2.new(0, 0), UDim2.fromOffset(8, 8), 82, 20, INKBG,
+						formWord(showFrom), formTint(showFrom), formStroke(showFrom), 30, 12)
+				end
 				local lockBtn = Instance.new("TextButton")
 				lockBtn.AnchorPoint = Vector2.new(1, 1)
 				lockBtn.Position = UDim2.new(1, -8, 1, -8)
-				lockBtn.Size = UDim2.fromOffset(short and 64 or 76, short and 24 or 28)
+				lockBtn.Size = short and UDim2.fromOffset(28, 28) or UDim2.fromOffset(76, 28)
 				lockBtn.BorderSizePixel = 0
 				lockBtn.AutoButtonColor = false
 				lockBtn.Font = Enum.Font.GothamBlack
 				lockBtn.TextSize = 12
+				lockBtn.Text = ""
 				lockBtn.ZIndex = 30
 				lockBtn.Parent = wellBox
-				corner(lockBtn, 12)
-				if isLocked(entry) then
-					lockBtn.Text = "LOCKED"
+				corner(lockBtn, short and 14 or 12)
+				if locked then
+					lockBtn.Text = short and "" or "LOCKED"
 					lockBtn.BackgroundColor3 = Color3.fromRGB(70, 52, 16)
 					lockBtn.TextColor3 = UI_GOLD
 					lockBtn.TextStrokeColor3 = GOLDSTROKE
@@ -8145,16 +8211,18 @@ end)()
 					stroke(lockBtn, UI_GOLD, 2, 0.2)
 					candyStates(lockBtn, Color3.fromRGB(70, 52, 16))
 				else
-					lockBtn.Text = "LOCK"
+					lockBtn.Text = short and "" or "LOCK"
 					lockBtn.BackgroundColor3 = SOFTBG
 					lockBtn.TextColor3 = Color3.fromRGB(200, 180, 230)
 					stroke(lockBtn, PLUM, 2, 0)
 					candyStates(lockBtn, SOFTBG)
 				end
-				local lockName, lockTier = entry.n, entry.t
+				if short then
+					miniLock(lockBtn, locked, locked and UI_GOLD or Color3.fromRGB(200, 180, 230), 31)
+				end
 				lockBtn.MouseButton1Click:Connect(function()
 					if toggleLockRemote then
-						toggleLockRemote:FireServer(lockName, lockTier)
+						toggleLockRemote:FireServer(dName, dTier)
 						-- Optimistic flip; InvSync confirms and re-renders.
 						entry.lk = isLocked(entry) and 0 or 1
 						renderForge()
@@ -8193,6 +8261,7 @@ end)()
 				haveLbl.TextStrokeColor3 = PLUMTEXT
 				haveLbl.TextStrokeTransparency = 0.1
 				haveLbl.TextTruncate = Enum.TextTruncate.AtEnd
+				fitText(haveLbl, 10, short and 15 or 18)
 				haveLbl.ZIndex = 29
 				local payLbl = label(chip, ("PAYS %s PER COLLECT"):format(formatCommas(payNow)),
 					12, UI_GOLD, Enum.Font.GothamBold)
@@ -8241,6 +8310,7 @@ end)()
 
 		-- -------------------- resultCard: IT BECOMES --------------------
 		local goBtn -- the ONE big FORGE button (nil when maxed)
+		local goBottom = 0 -- its lip's bottom edge inside the result card
 		do
 			local rr = mkRibbon(resultCard, UDim2.new(0.5, -C.ribW / 2, 0, -14),
 				UDim2.fromOffset(C.ribW, C.ribH),
@@ -8275,7 +8345,7 @@ end)()
 					UDim2.new(0.5, 0, 0, C.top + math.floor(preview * 0.9)), 27)
 				-- ANIMATED VPF #2 of exactly 2 (the honest procedural preview,
 				-- wearing the next form's dressing).
-				local nextView = makePlanetView(resultCard, dName, dTier, preview, 28, true, showNext)
+				local nextView = makePlanetView(resultCard, dName, dTier, preview, 28, not S.reducedMotion, showNext)
 				nextView.AnchorPoint = Vector2.new(0.5, 0)
 				nextView.Position = UDim2.new(0.5, 0, 0, C.top)
 				-- Sparkles around a fused form (CELESTIAL gets four).
@@ -8338,6 +8408,7 @@ end)()
 			recipe.Position = UDim2.new(0, 16, 0, recipeY)
 			recipe.Size = UDim2.new(1, -32, 0, C.recipeH)
 			recipe.TextTruncate = Enum.TextTruncate.AtEnd
+			fitText(recipe, 10, entry and (short and 12 or 13) or 14)
 			recipe.TextStrokeColor3 = PLUMTEXT
 			recipe.TextStrokeTransparency = 0.2
 			recipe.ZIndex = 28
@@ -8374,8 +8445,9 @@ end)()
 				fill.Parent = track
 				corner(fill, math.floor(C.trackH / 2))
 				local onBar = label(track,
-					canForge and ("%d / %d  READY!"):format(progHave, req)
-						or ("%d / %d"):format(progHave, req),
+					(canForge and locked) and ("%d / %d  LOCKED"):format(progHave, req)
+						or (canForge and ("%d / %d  READY!"):format(progHave, req)
+						or ("%d / %d"):format(progHave, req)),
 					C.trackSize, Color3.new(1, 1, 1), Enum.Font.FredokaOne)
 				onBar.Size = UDim2.fromScale(1, 1)
 				onBar.TextStrokeColor3 = canForge and GOLDSTROKE or Color3.fromRGB(20, 60, 30)
@@ -8392,6 +8464,7 @@ end)()
 			-- GO GET PLANETS). Confirm flow preserved: lock, LEGENDARY+, or
 			-- consuming the equipped planet arms an orange SURE? tap first.
 			local goY = trackY + C.trackH + 10
+			goBottom = goY + C.goH + 5
 			local consumesEquipped = entry ~= nil and equippedKey == key and equippedForm == progFrom
 				and have - req <= 0
 			local confirmBits = {}
@@ -8402,18 +8475,16 @@ end)()
 					req, formWord(progFrom), dName:upper(),
 					math.max(0, have - req), formWord(progFrom + 1)))
 			end
-			if entry and isLocked(entry) then
-				table.insert(confirmBits, "IT'S LOCKED")
-			end
 			if consumesEquipped then
 				table.insert(confirmBits,
 					"THIS USES YOUR EQUIPPED PLANET — THE NEW ONE EQUIPS ITSELF")
 			end
 			-- The exact-quantities line alone doesn't force a confirm tap;
-			-- warnings (lock / legendary+ / equipped) do.
-			local needsConfirm = entry ~= nil
-				and (isLocked(entry) or dTier >= 4 or consumesEquipped)
-			local sideW = maxed and 0 or ((not entry) and math.clamp(resW - 248, 96, 170) or C.sideW)
+			-- warnings (legendary+ / equipped) do. (Locked never reaches here:
+			-- the button is the unlock until the server flips lk.)
+			local needsConfirm = entry ~= nil and (dTier >= 4 or consumesEquipped)
+			local sideW = maxed and 0 or ((not entry) and math.clamp(resW - 248, 96, 170)
+				or ((canForge and locked) and 0 or C.sideW))
 			local goW = resW - 48 - (sideW > 0 and sideW + 8 or 0)
 			local sideX = 24 + goW + 8
 			local goSub = entry and ("%d %s → 1 %s"):format(req, formWord(progFrom), formWord(progFrom + 1))
@@ -8462,7 +8533,30 @@ end)()
 				goSubLbl.TextStrokeTransparency = 0.3
 				goSubLbl.TextTruncate = Enum.TextTruncate.AtEnd
 				goSubLbl.ZIndex = 30
-				if entry and canForge then
+				local subFit = fitText(goSubLbl, 10, 12)
+				if entry and canForge and locked then
+					-- UNLOCK TO FORGE: gold, one tap fires ToggleLock; the
+					-- InvSync re-render turns this into FORGE!.
+					local UNLOCK_GOLD = Color3.fromRGB(222, 156, 32)
+					local UNLOCK_INK = Color3.fromRGB(110, 70, 12)
+					goBtn.BackgroundColor3 = UNLOCK_GOLD
+					lip.BackgroundColor3 = UNLOCK_INK
+					stroke(goBtn, UNLOCK_INK, 3.5, 0)
+					goMain.Text = "UNLOCK TO FORGE"
+					goMain.TextStrokeColor3 = GOLDSTROKE
+					goSubLbl.Text = "IT'S LOCKED — TAP TO UNLOCK, THEN FORGE"
+					goSubLbl.TextColor3 = Color3.fromRGB(255, 240, 200)
+					goSubLbl.TextStrokeColor3 = GOLDSTROKE
+					candyStates(goBtn, UNLOCK_GOLD, lip)
+					goBtn.MouseButton1Click:Connect(function()
+						if toggleLockRemote then
+							toggleLockRemote:FireServer(dName, dTier)
+							-- Optimistic flip; InvSync confirms and re-renders.
+							entry.lk = 0
+							renderForge()
+						end
+					end)
+				elseif entry and canForge then
 					goBtn.BackgroundColor3 = GO_GREEN
 					stroke(goBtn, Color3.fromRGB(24, 92, 44), 3.5, 0)
 					local st = candyStates(goBtn, GO_GREEN, lip)
@@ -8475,6 +8569,7 @@ end)()
 						goSubLbl.Position = UDim2.new(0, 6, 1, -20)
 						goSubLbl.Size = UDim2.new(1, -12, 0, 14)
 						goSubLbl.TextWrapped = false
+						subFit.MinTextSize = 10
 						goSubLbl.TextColor3 = Color3.fromRGB(220, 255, 230)
 						goSubLbl.TextStrokeColor3 = GO_INK
 						goSubLbl.Text = goSub
@@ -8488,9 +8583,10 @@ end)()
 							goSubLbl.Position = UDim2.new(0, 8, 0, 4)
 							goSubLbl.Size = UDim2.new(1, -16, 1, -8)
 							goSubLbl.TextWrapped = true
+							subFit.MinTextSize = 9 -- scales the 3-line confirm inside the button
 							goSubLbl.TextColor3 = Color3.new(1, 1, 1)
 							goSubLbl.TextStrokeColor3 = ARM_INK
-							goSubLbl.Text = table.concat(confirmBits, "\n") .. " — SURE?"
+							goSubLbl.Text = table.concat(confirmBits, "\n") .. " — TAP AGAIN TO FORGE!"
 							task.delay(3.5, function()
 								if goBtn.Parent and armed then disarm() end
 							end)
@@ -8526,7 +8622,9 @@ end)()
 						or "NO PLANETS YET"
 					goSubLbl.TextColor3 = Color3.fromRGB(170, 156, 196)
 					goSubLbl.TextStrokeTransparency = 1
-					goSubLbl.Text = entry and ("%d / %d — ROLL OR CRAFT TO GET MORE"):format(
+					-- Rolling / crafting yields BASE; an ASCENDED pile grows by forging.
+					goSubLbl.Text = entry and (progFrom >= 1 and "%d / %d — FORGE MORE BASE FIRST"
+						or "%d / %d — ROLL OR CRAFT TO GET MORE"):format(
 						fromForm ~= nil and have or 0, req) or goSub
 				end
 			else
@@ -8535,7 +8633,7 @@ end)()
 					28, short and 13 or 15)
 				stroke(mx, UI_GOLD, 2, 0.3)
 			end
-			if entry and canForge then
+			if entry and canForge and not locked then
 				local maxLip = Instance.new("Frame")
 				maxLip.Position = UDim2.new(0, sideX, 0, goY + 5)
 				maxLip.Size = UDim2.fromOffset(sideW, C.goH)
@@ -8560,6 +8658,7 @@ end)()
 				maxBtn.ZIndex = 29
 				maxBtn.Parent = resultCard
 				corner(maxBtn, 16)
+				fitText(maxBtn, 9, short and 12 or 14, true)
 				stroke(maxBtn, Color3.fromRGB(122, 16, 66), 3, 0)
 				local mst = candyStates(maxBtn, Color3.fromRGB(255, 84, 150), maxLip)
 				local maxArmed = false
@@ -8577,14 +8676,15 @@ end)()
 						maxArmed = true
 						mst.base = ARM_ORANGE
 						maxBtn.BackgroundColor3 = ARM_ORANGE
-						maxBtn.TextSize = 11
+						maxBtn.TextScaled = true
 						maxBtn.TextStrokeColor3 = ARM_INK
-						maxBtn.Text = table.concat(maxBits, "\n") .. " — SURE?"
+						maxBtn.Text = table.concat(maxBits, "\n") .. " — TAP AGAIN TO FORGE!"
 						task.delay(3.5, function()
 							if maxBtn.Parent and maxArmed then
 								maxArmed = false
 								mst.base = Color3.fromRGB(255, 84, 150)
 								maxBtn.BackgroundColor3 = mst.base
+								maxBtn.TextScaled = false
 								maxBtn.TextSize = short and 12 or 14
 								maxBtn.TextStrokeColor3 = Color3.fromRGB(122, 16, 66)
 								maxBtn.Text = "FORGE\nMAX"
@@ -8605,7 +8705,7 @@ end)()
 						combineAllRemote:FireServer(dName, dTier, progFrom)
 					end
 				end)
-			elseif entry and not maxed then
+			elseif entry and not maxed and not canForge then
 				-- Not forgeable: the side slot is the "HOW TO GET" link into
 				-- the index detail (where to find / craft more copies).
 				local howBtn = Instance.new("TextButton")
@@ -8662,6 +8762,16 @@ end)()
 					forgePage.Visible = false
 				end)
 			end
+		end
+
+		if narrow and midScroll and viaHook then
+			-- Opened through S.openForge: land the FORGE button on screen. The
+			-- canvas is auto-sized, so the scroll waits one frame for layout.
+			local visibleH = ph - 200
+			local target = math.max(0, 12 + goBottom + 8 - visibleH)
+			task.defer(function()
+				if midScroll.Parent then midScroll.CanvasPosition = Vector2.new(0, target) end
+			end)
 		end
 
 		-- -------------------- infoCard: FORGE INFO --------------------
@@ -8784,22 +8894,17 @@ end)()
 
 		-- -------------------- bottom strip: YOUR PLANETS --------------------
 		do
-			local ribW = narrow and 150 or 190
+			local ribW, scW = ctrl.ribW, ctrl.scW
 			local sr = mkRibbon(stripCard, UDim2.new(0, 10, 0, -14),
 				UDim2.fromOffset(ribW, narrow and 30 or 36),
 				Color3.fromRGB(255, 84, 170), "YOUR PLANETS", narrow and 12 or 13)
 			sr.ZIndex = 28
-			-- Controls band (search / rarity chips / ready-only), right-aligned.
-			-- Search hides on tight phones — nothing may collide with the ribbon.
-			local ctrlY = 4
+			-- Controls band (search / rarity chips / ready-only), right-aligned,
+			-- on the budget decided above — nothing may collide with the ribbon.
+			local ctrlY = short and 2 or 4
 			local ctrlH = narrow and 26 or 28
-			local chipS = narrow and 24 or 28
-			local onlyW = narrow and 108 or 118
-			local searchW = narrow and 110 or 170
-			local showSearch = pw >= 640
-			local ctrlSpan = 12 + onlyW + 8 + (#PusherMachine.Tiers + 1) * (chipS + 4)
-				+ (showSearch and (searchW + 10) or 0)
-			if pw - ctrlSpan - (ribW + 26) >= 150 then
+			local chipS, onlyW, searchW, showSearch = ctrl.chipS, ctrl.onlyW, ctrl.searchW, ctrl.showSearch
+			if scW - ctrl.span - (ribW + 16) >= 180 then
 				local rc = label(stripCard,
 					nReady > 0 and ("%d READY TO FORGE"):format(nReady) or "NONE READY — ROLL MORE!",
 					12, nReady > 0 and UI_GOLD or Color3.fromRGB(200, 180, 230), Enum.Font.GothamBlack)
@@ -8811,10 +8916,11 @@ end)()
 				rc.ZIndex = 29
 			end
 			local chipsRight = 12 + onlyW + 8
+			local chipCount = ctrl.showChips and (#PusherMachine.Tiers + 1) or 0
 			if showSearch then
 				local searchBox = Instance.new("TextBox")
 				searchBox.AnchorPoint = Vector2.new(1, 0)
-				searchBox.Position = UDim2.new(1, -(chipsRight + (#PusherMachine.Tiers + 1) * (chipS + 4) + 6), 0, ctrlY)
+				searchBox.Position = UDim2.new(1, -(chipsRight + chipCount * (chipS + 4) + 6), 0, ctrlY)
 				searchBox.Size = UDim2.fromOffset(searchW, ctrlH)
 				searchBox.BackgroundColor3 = DEEPWELL
 				searchBox.BorderSizePixel = 0
@@ -8841,7 +8947,7 @@ end)()
 					end
 				end)
 			end
-			for fi = 0, #PusherMachine.Tiers do
+			for fi = 0, ctrl.showChips and #PusherMachine.Tiers or -1 do
 				local isAll = fi == 0
 				local chipTier = not isAll and PusherMachine.Tiers[fi] or nil
 				local chipColor = isAll and UI_TEXT or chipTier.color
@@ -9096,6 +9202,18 @@ end)()
 			end
 		end
 	end
+
+	-- Closing the page (X, GO GET PLANETS, or any external Visible = false)
+	-- cancels every live tween and drops the two spinning viewports — nothing
+	-- animates on a hidden page. Every open path re-renders, so the pane
+	-- can go empty here.
+	forgePage:GetPropertyChangedSignal("Visible"):Connect(function()
+		if forgePage.Visible then return end
+		for _, tw in ipairs(liveTweens) do tw:Cancel() end
+		table.clear(liveTweens)
+		clearPane(content)
+		S.forgeGoBtn = nil
+	end)
 
 	-- Open/preselect hooks (rail button + VIEW IN FORGE + link rows).
 	function S.toggleForgePage(forceOpen)
