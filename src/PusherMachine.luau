@@ -555,8 +555,31 @@ PusherMachine.SpriteArt = {
 	shard = "rbxassetid://81373250314744",
 	drip = "rbxassetid://122765420894916",
 	note = "rbxassetid://133776696184298",
+	-- Pending hand-drawn sprites. "rbxassetid://0" means NOT UPLOADED YET:
+	-- spriteTex() below swaps in a motion-kin stand-in from the set above
+	-- until the real id is pasted here. assets/sprites/README.md explains
+	-- the upload + paste steps (draw, push through the asset pipeline,
+	-- paste the id here — nothing else changes).
+	heart = "rbxassetid://0",
+	diamond = "rbxassetid://0",
+	flame = "rbxassetid://0",
+	spiral = "rbxassetid://0",
+	leaf = "rbxassetid://0",
+	coin = "rbxassetid://0",
 }
 local ART = PusherMachine.SpriteArt
+-- Sprite fallback resolver: a key whose id is still the "rbxassetid://0"
+-- placeholder renders with fallbackKey's art (heart->petal, diamond->star4,
+-- flame->ember, spiral->smokeWisp, leaf->petal, coin->bokeh) — the motion
+-- signature still carries the identity, so no style ever renders blank.
+-- Existing styles keep direct ART refs.
+local function spriteTex(key, fallbackKey)
+	local id = ART[key]
+	if id == nil or id == "rbxassetid://0" then
+		return ART[fallbackKey]
+	end
+	return id
+end
 local SPRITE_STYLE = {
 	glowOrb = { tex = ART.glowOrb, sz = 0.42, spd = { 0.2, 0.5 }, life = { 0.7, 1.3 }, ay = 0, rot = 15 },
 	star4 = { tex = ART.star4, sz = 0.3, spd = { 0.25, 0.6 }, life = { 0.5, 1.0 }, ay = 0, rot = 120 },
@@ -573,6 +596,19 @@ local SPRITE_STYLE = {
 	shard = { tex = ART.shard, sz = 0.26, spd = { 0.6, 1.2 }, life = { 0.35, 0.7 }, ay = -0.25, rot = 160 },
 	drip = { tex = ART.drip, sz = 0.2, spd = { 0.2, 0.5 }, life = { 0.5, 0.9 }, ay = -0.9, rot = 0 },
 	note = { tex = ART.note, sz = 0.28, spd = { 0.25, 0.55 }, life = { 0.8, 1.3 }, ay = 0.35, rot = 40 },
+	-- Pending-art styles (see SpriteArt): tex resolves through spriteTex.
+	-- heart: floaty rise, wobbling like a petal blown upward.
+	heart = { tex = spriteTex("heart", "petal"), sz = 0.28, spd = { 0.15, 0.4 }, life = { 1.0, 1.6 }, ay = 0.35, rot = 40 },
+	-- diamond: crisp slow spin like star4, but bigger and longer-lived.
+	diamond = { tex = spriteTex("diamond", "star4"), sz = 0.4, spd = { 0.2, 0.5 }, life = { 0.6, 1.1 }, ay = 0, rot = 60 },
+	-- flame: rises like an ember but lives twice as long (a tongue, not a spark).
+	flame = { tex = spriteTex("flame", "ember"), sz = 0.34, spd = { 0.4, 0.9 }, life = { 0.7, 1.2 }, ay = 0.8, rot = 30 },
+	-- spiral: slow rot 30, drifts on a lazy updraft.
+	spiral = { tex = spriteTex("spiral", "smokeWisp"), sz = 0.5, spd = { 0.1, 0.3 }, life = { 1.0, 1.8 }, ay = 0.15, rot = 30 },
+	-- leaf: falls tumbling like a snowflake, a touch faster.
+	leaf = { tex = spriteTex("leaf", "petal"), sz = 0.26, spd = { 0.15, 0.4 }, life = { 1.0, 1.7 }, ay = -0.6, rot = 110 },
+	-- coin: pops up fast, then falls hard.
+	coin = { tex = spriteTex("coin", "bokeh"), sz = 0.26, spd = { 0.9, 1.6 }, life = { 0.5, 0.9 }, ay = -1.6, rot = 90 },
 }
 
 -- Compact spec format (300 entries must stay terse):
@@ -582,6 +618,15 @@ local SPRITE_STYLE = {
 --       c={rgb}, c2={rgb}, m="Neon"|...}
 --   fx={s=spriteName, c={rgb}, r=rate}  tr={rgb} trail
 --   lt={c={rgb}, b=brightness}  sh=true shimmer glaze  w=weight override
+--   Showpiece layers (LEGENDARY/SECRET; decor-rule parts, physics-neutral):
+--   fx2={s=spriteName, c={rgb}, r=rate}  second emitter. fx keeps its 8/s
+--       cap; fx2 gets what is left of a shared 10/s budget (the form +2
+--       lands on fx only)
+--   aura={c={rgb}, tp=0.6..0.85, sz=1.2..1.5}  one Neon Ball at the body's
+--       center, size D*sz, Transparency tp, no shadow: a soft glowing shell
+--   moons={n=1|2|3, c={rgb}, m=material, sz=0.16..0.26}  n static Ball
+--       moonlets (D*sz, Neon unless m) evenly spaced at radius D*0.85 on
+--       a plane tilted 20 deg off the equator
 PusherMachine.Planets = {
 	-- ======== COMMON (130) ========
 	{ n = "Bubblegum", t = 1, b = { 255, 120, 170 }, m = "SmoothPlastic", rf = 0.1 },
@@ -1131,13 +1176,16 @@ PusherMachine.Planets = {
 		ov = { s = "swirl", c = { { 214, 140, 30 }, { 255, 226, 140 } } },
 		rg = { s = "double", c = { 255, 215, 100 }, c2 = { 200, 140, 40 }, m = "Foil" },
 		fx = { s = "ember", c = { 255, 170, 50 }, r = 4 }, tr = { 255, 190, 70 }, lt = { c = { 255, 190, 90 }, b = 1.2 } },
-	-- ======== LEGENDARY (23 + 2 noRoll specials) ========
+	-- ======== LEGENDARY (29 + 2 noRoll specials) ========
+	-- Every LEGENDARY carries fx + tr + lt; about half add fx2/aura/moons.
 	{ n = "THE MOON", t = 4, b = { 225, 228, 235 }, m = "Glacier",
 		rg = { s = "halo", c = { 255, 255, 255 }, m = "Ice" },
-		fx = { s = "sparkDust", c = { 255, 255, 255 }, r = 3 }, tr = { 220, 225, 240 }, lt = { c = { 235, 240, 255 }, b = 1.2 } },
+		fx = { s = "sparkDust", c = { 255, 255, 255 }, r = 3 }, tr = { 220, 225, 240 }, lt = { c = { 235, 240, 255 }, b = 1.2 },
+		aura = { c = { 230, 236, 255 }, tp = 0.82, sz = 1.3 } },
 	{ n = "Foundry", t = 4, b = { 45, 35, 32 }, m = "CrackedLava",
 		rg = { s = "shards", c = { 80, 70, 66 } },
-		fx = { s = "ember", c = { 255, 140, 40 }, r = 5 }, tr = { 255, 120, 40 }, lt = { c = { 255, 110, 30 }, b = 1.5 } },
+		fx = { s = "ember", c = { 255, 140, 40 }, r = 5 }, tr = { 255, 120, 40 }, lt = { c = { 255, 110, 30 }, b = 1.5 },
+		fx2 = { s = "smokeWisp", c = { 70, 60, 56 }, r = 2 } },
 	{ n = "Pocketwatch", t = 4, b = { 190, 150, 80 }, m = "Metal", rf = 0.3,
 		ov = { s = "bands", c = { { 110, 80, 40 } } },
 		rg = { s = "orbit", c = { 205, 170, 90 } },
@@ -1145,37 +1193,44 @@ PusherMachine.Planets = {
 	{ n = "Prism", t = 4, b = { 245, 248, 255 }, m = "Glass", rf = 0.3, tp = 0.4,
 		ov = { s = "swirl", c = { { 255, 120, 180 }, { 120, 200, 255 } } },
 		rg = { s = "crossed", c = { 255, 255, 255 }, m = "Glass" },
-		fx = { s = "star4", c = { 255, 255, 255 }, r = 3 }, tr = { 200, 220, 255 }, lt = { c = { 255, 240, 255 }, b = 1 }, sh = true },
+		fx = { s = "star4", c = { 255, 255, 255 }, r = 3 }, tr = { 200, 220, 255 }, lt = { c = { 255, 240, 255 }, b = 1 }, sh = true,
+		fx2 = { s = "diamond", c = { 255, 190, 240 }, r = 2 } },
 	{ n = "Supercell", t = 4, b = { 70, 75, 85 }, m = "Slate",
 		ov = { s = "swirl", c = { { 50, 55, 65 }, { 95, 100, 110 } } },
 		rg = { s = "halo", c = { 255, 230, 80 }, m = "Neon" },
-		fx = { s = "bolt", c = { 255, 235, 100 }, r = 4 }, tr = { 200, 205, 220 }, lt = { c = { 255, 235, 120 }, b = 1.3 } },
+		fx = { s = "bolt", c = { 255, 235, 100 }, r = 4 }, tr = { 200, 205, 220 }, lt = { c = { 255, 235, 120 }, b = 1.3 },
+		fx2 = { s = "drip", c = { 180, 200, 235 }, r = 3 } },
 	{ n = "Golden Hour", t = 4, b = { 235, 170, 90 }, m = "Foil", rf = 0.25,
 		ov = { s = "bands", c = { { 255, 200, 120 } } },
 		rg = { s = "classic", c = { 255, 190, 110 }, m = "Foil" },
-		fx = { s = "bokeh", c = { 255, 210, 140 }, r = 3 }, tr = { 255, 200, 130 }, lt = { c = { 255, 190, 120 }, b = 1.2 } },
+		fx = { s = "bokeh", c = { 255, 210, 140 }, r = 3 }, tr = { 255, 200, 130 }, lt = { c = { 255, 190, 120 }, b = 1.2 },
+		aura = { c = { 255, 205, 130 }, tp = 0.8, sz = 1.3 } },
 	{ n = "Jukebox", t = 4, b = { 200, 30, 50 }, m = "SmoothPlastic", rf = 0.2,
 		ov = { s = "bands", c = { { 255, 220, 90 }, { 60, 220, 255 } } },
 		rg = { s = "double", c = { 60, 220, 255 }, c2 = { 255, 90, 200 }, m = "Neon" },
 		fx = { s = "note", c = { 255, 220, 90 }, r = 3 }, tr = { 60, 220, 255 }, lt = { c = { 255, 120, 180 }, b = 1.2 } },
 	{ n = "Whiteout", t = 4, b = { 240, 248, 255 }, m = "Ice", tp = 0.2,
 		rg = { s = "shards", c = { 220, 240, 255 }, m = "Ice" },
-		fx = { s = "snowflake", c = { 255, 255, 255 }, r = 6 }, tr = { 235, 245, 255 }, lt = { c = { 210, 235, 255 }, b = 1 } },
+		fx = { s = "snowflake", c = { 255, 255, 255 }, r = 6 }, tr = { 235, 245, 255 }, lt = { c = { 210, 235, 255 }, b = 1 },
+		aura = { c = { 255, 255, 255 }, tp = 0.78, sz = 1.32 } },
 	{ n = "Blossom", t = 4, b = { 255, 200, 215 }, m = "Marble",
 		ov = { s = "cap", c = { { 255, 240, 245 } } },
 		rg = { s = "classic", c = { 235, 195, 130 }, m = "Foil" },
-		fx = { s = "petal", c = { 255, 180, 200 }, r = 4 }, tr = { 255, 215, 225 }, lt = { c = { 255, 200, 215 }, b = 0.8 } },
+		fx = { s = "petal", c = { 255, 180, 200 }, r = 4 }, tr = { 255, 215, 225 }, lt = { c = { 255, 200, 215 }, b = 0.8 },
+		fx2 = { s = "leaf", c = { 150, 210, 120 }, r = 2 } },
 	{ n = "Breaker", t = 4, b = { 20, 140, 160 }, m = "Glass", tp = 0.3,
 		ov = { s = "swirl", c = { { 240, 255, 255 } } },
 		rg = { s = "classic", c = { 150, 230, 235 }, m = "Glass" },
 		fx = { s = "drip", c = { 225, 250, 252 }, r = 4 }, tr = { 120, 230, 230 }, lt = { c = { 80, 220, 220 }, b = 1 } },
 	{ n = "Comet", t = 4, b = { 200, 225, 255 }, m = "Ice", rf = 0.2, tp = 0.25,
 		rg = { s = "orbit", c = { 180, 210, 255 }, m = "Ice" },
-		fx = { s = "shard", c = { 220, 240, 255 }, r = 4 }, tr = { 180, 220, 255 }, lt = { c = { 190, 220, 255 }, b = 1.1 } },
+		fx = { s = "shard", c = { 220, 240, 255 }, r = 4 }, tr = { 180, 220, 255 }, lt = { c = { 190, 220, 255 }, b = 1.1 },
+		fx2 = { s = "sparkDust", c = { 200, 225, 255 }, r = 3 } },
 	{ n = "Milky Way", t = 4, b = { 240, 230, 215 }, m = "Marble",
 		ov = { s = "swirl", c = { { 190, 140, 90 }, { 255, 250, 240 } } },
 		rg = { s = "classic", c = { 220, 200, 170 }, m = "Foil" },
-		fx = { s = "sparkDust", c = { 255, 250, 230 }, r = 3 }, tr = { 240, 225, 200 }, lt = { c = { 255, 245, 225 }, b = 0.9 } },
+		fx = { s = "sparkDust", c = { 255, 250, 230 }, r = 3 }, tr = { 240, 225, 200 }, lt = { c = { 255, 245, 225 }, b = 0.9 },
+		moons = { n = 2, c = { 255, 250, 235 }, m = "Neon", sz = 0.16 } },
 	{ n = "Geode", t = 4, b = { 110, 100, 110 }, m = "Granite", tp = 0.4,
 		ov = { s = "core", c = { { 190, 120, 255 } } },
 		rg = { s = "shards", c = { 190, 130, 255 }, m = "Glass" },
@@ -1190,7 +1245,8 @@ PusherMachine.Planets = {
 	{ n = "Pinball", t = 4, b = { 230, 232, 238 }, m = "SmoothPlastic", rf = 0.35,
 		ov = { s = "bands", c = { { 255, 60, 60 }, { 60, 120, 255 } } },
 		rg = { s = "double", c = { 255, 80, 80 }, c2 = { 80, 140, 255 }, m = "Neon" },
-		fx = { s = "star4", c = { 255, 240, 150 }, r = 4 }, tr = { 255, 220, 120 }, lt = { c = { 255, 120, 120 }, b = 1.2 } },
+		fx = { s = "star4", c = { 255, 240, 150 }, r = 4 }, tr = { 255, 220, 120 }, lt = { c = { 255, 120, 120 }, b = 1.2 },
+		moons = { n = 2, c = { 230, 232, 238 }, m = "Metal", sz = 0.18 } },
 	{ n = "Creme Brulee", t = 4, b = { 235, 215, 180 }, m = "CrackedLava",
 		rg = { s = "classic", c = { 200, 150, 80 }, m = "Foil" },
 		fx = { s = "ember", c = { 255, 180, 90 }, r = 2 }, tr = { 245, 210, 160 }, lt = { c = { 255, 190, 110 }, b = 0.9 } },
@@ -1199,7 +1255,8 @@ PusherMachine.Planets = {
 		fx = { s = "bubble", c = { 255, 245, 200 }, r = 6 }, tr = { 250, 235, 190 }, lt = { c = { 255, 235, 180 }, b = 1 }, sh = true },
 	{ n = "Midnight", t = 4, b = { 20, 26, 58 }, m = "SmoothPlastic",
 		rg = { s = "halo", c = { 200, 210, 235 } },
-		fx = { s = "star4", c = { 240, 245, 255 }, r = 3 }, tr = { 90, 110, 200 }, lt = { c = { 150, 170, 255 }, b = 0.7 } },
+		fx = { s = "star4", c = { 240, 245, 255 }, r = 3 }, tr = { 90, 110, 200 }, lt = { c = { 150, 170, 255 }, b = 0.7 },
+		moons = { n = 1, c = { 245, 242, 220 }, m = "Neon", sz = 0.2 } },
 	{ n = "Static", t = 4, b = { 180, 182, 188 }, m = "Granite",
 		ov = { s = "bands", c = { { 30, 30, 34 }, { 240, 240, 244 } } },
 		rg = { s = "halo", c = { 255, 255, 255 }, m = "Neon" },
@@ -1207,52 +1264,153 @@ PusherMachine.Planets = {
 	{ n = "Wisp", t = 4, b = { 180, 255, 210 }, m = "ForceField", tp = 0.3,
 		ov = { s = "core", c = { { 140, 255, 180 } } },
 		rg = { s = "halo", c = { 160, 255, 190 }, m = "Neon" },
-		fx = { s = "smokeWisp", c = { 180, 255, 210 }, r = 3 }, tr = { 170, 255, 200 }, lt = { c = { 150, 255, 190 }, b = 1 } },
+		fx = { s = "smokeWisp", c = { 180, 255, 210 }, r = 3 }, tr = { 170, 255, 200 }, lt = { c = { 150, 255, 190 }, b = 1 },
+		aura = { c = { 160, 255, 200 }, tp = 0.8, sz = 1.3 } },
 	{ n = "Lodestone", t = 4, b = { 60, 62, 70 }, m = "Metal", rf = 0.15,
 		rg = { s = "crossed", c = { 95, 100, 110 } },
 		fx = { s = "bolt", c = { 120, 180, 255 }, r = 2 }, tr = { 100, 150, 255 }, lt = { c = { 120, 170, 255 }, b = 0.9 } },
 	{ n = "Disco", t = 4, b = { 225, 228, 235 }, m = "Foil", rf = 0.4,
 		rg = { s = "double", c = { 255, 90, 200 }, c2 = { 90, 200, 255 }, m = "Neon" },
-		fx = { s = "bokeh", c = { 255, 180, 240 }, r = 5 }, tr = { 200, 160, 255 }, lt = { c = { 255, 140, 220 }, b = 1.4 } },
+		fx = { s = "bokeh", c = { 255, 180, 240 }, r = 5 }, tr = { 200, 160, 255 }, lt = { c = { 255, 140, 220 }, b = 1.4 },
+		fx2 = { s = "star4", c = { 255, 255, 255 }, r = 3 } },
+	-- Showpieces: every layer the interpreter knows, on primitives alone.
+	{ n = "Dragon Egg", t = 4, b = { 120, 20, 24 }, m = "CrackedLava",
+		ov = { s = "cap", c = { { 255, 200, 80 } } },
+		fx = { s = "ember", c = { 255, 120, 30 }, r = 4 }, fx2 = { s = "flame", c = { 255, 180, 50 }, r = 3 },
+		aura = { c = { 255, 90, 30 }, tp = 0.8, sz = 1.3 },
+		tr = { 255, 110, 40 }, lt = { c = { 255, 120, 40 }, b = 1.3 } },
+	{ n = "Candy Nebula", t = 4, b = { 255, 150, 210 }, m = "Glass", rf = 0.2, tp = 0.3,
+		ov = { s = "swirl", c = { { 120, 190, 255 }, { 255, 230, 250 } } },
+		rg = { s = "halo", c = { 180, 200, 255 }, m = "Neon" },
+		fx = { s = "heart", c = { 255, 130, 190 }, r = 4 }, fx2 = { s = "bokeh", c = { 150, 200, 255 }, r = 3 },
+		tr = { 255, 170, 220 }, lt = { c = { 255, 170, 220 }, b = 1.2 }, sh = true },
+	{ n = "Rainbow Road", t = 4, b = { 240, 240, 245 }, m = "Foil", rf = 0.35,
+		ov = { s = "bands", c = { { 255, 70, 70 }, { 80, 220, 100 }, { 90, 140, 255 } } },
+		rg = { s = "double", c = { 255, 90, 90 }, c2 = { 90, 150, 255 }, m = "Neon" },
+		fx = { s = "star4", c = { 255, 255, 255 }, r = 4 }, fx2 = { s = "diamond", c = { 255, 220, 120 }, r = 3 },
+		tr = { 255, 200, 90 }, lt = { c = { 255, 240, 200 }, b = 1.3 } },
+	-- Tier echo of the ULTRA RARE Lava Cake (findSpec disambiguates by tier).
+	{ n = "Lava Cake", t = 4, b = { 88, 52, 34 }, m = "Marble",
+		ov = { s = "core", c = { { 255, 130, 30 } } },
+		rg = { s = "classic", c = { 210, 150, 70 }, m = "Foil" },
+		fx = { s = "drip", c = { 255, 120, 40 }, r = 4 }, fx2 = { s = "ember", c = { 255, 160, 60 }, r = 3 },
+		tr = { 255, 130, 50 }, lt = { c = { 255, 130, 50 }, b = 1.3 } },
+	{ n = "Bee Hive", t = 4, b = { 250, 200, 50 }, m = "Sand",
+		ov = { s = "bands", c = { { 36, 30, 26 }, { 36, 30, 26 } } },
+		rg = { s = "classic", c = { 200, 140, 40 }, m = "Sand" },
+		fx = { s = "glowOrb", c = { 255, 220, 90 }, r = 3 }, fx2 = { s = "coin", c = { 255, 190, 50 }, r = 3 },
+		moons = { n = 2, c = { 255, 210, 60 }, m = "Neon", sz = 0.16 },
+		tr = { 255, 200, 60 }, lt = { c = { 255, 200, 80 }, b = 1.2 } },
+	{ n = "Thunder Egg", t = 4, b = { 70, 72, 84 }, m = "Slate",
+		ov = { s = "core", c = { { 120, 200, 255 } } },
+		rg = { s = "crossed", c = { 120, 200, 255 }, c2 = { 255, 240, 140 }, m = "Neon" },
+		fx = { s = "bolt", c = { 140, 210, 255 }, r = 4 }, fx2 = { s = "shard", c = { 200, 230, 255 }, r = 3 },
+		tr = { 120, 200, 255 }, lt = { c = { 140, 210, 255 }, b = 1.3 } },
 	-- Special grant: DIAMOND PLANET tree node (UpDiamondPlanet). Never rolled.
 	{ n = "Diamond Nova", t = 4, noRoll = true, b = { 235, 245, 255 }, m = "Glass", rf = 0.45, tp = 0.35,
 		rg = { s = "crossed", c = { 150, 210, 255 }, c2 = { 210, 240, 255 }, m = "Glass" },
-		fx = { s = "shard", c = { 220, 245, 255 }, r = 4 }, tr = { 190, 225, 255 }, lt = { c = { 200, 235, 255 }, b = 1.3 }, sh = true },
+		fx = { s = "shard", c = { 220, 245, 255 }, r = 4 }, tr = { 190, 225, 255 }, lt = { c = { 200, 235, 255 }, b = 1.3 }, sh = true,
+		fx2 = { s = "diamond", c = { 255, 255, 255 }, r = 3 }, aura = { c = { 200, 235, 255 }, tp = 0.8, sz = 1.35 } },
 	-- Special grant: 7-star daily constellation prize. Never rolled.
 	{ n = "Constellation Prime", t = 4, noRoll = true, b = { 16, 24, 64 }, m = "SmoothPlastic",
 		ov = { s = "core", c = { { 90, 110, 220 } } },
 		rg = { s = "orbit", c = { 255, 210, 110 }, c2 = { 255, 230, 160 }, m = "Foil" },
-		fx = { s = "star4", c = { 255, 240, 190 }, r = 5 }, tr = { 255, 210, 110 }, lt = { c = { 190, 205, 255 }, b = 1.2 } },
-	-- ======== SECRET (8) ========
+		fx = { s = "star4", c = { 255, 240, 190 }, r = 5 }, tr = { 255, 210, 110 }, lt = { c = { 190, 205, 255 }, b = 1.2 },
+		moons = { n = 3, c = { 255, 230, 160 }, m = "Neon", sz = 0.16 } },
+	-- ======== SECRET (14) ========
+	-- Every SECRET: aura + fx + fx2 + tr + lt (b >= 1.4); most carry moons.
 	{ n = "THE SUN", t = 5, b = { 255, 138, 20 }, m = "Neon",
 		ov = { s = "swirl", c = { { 200, 70, 0 }, { 255, 200, 60 } } },
 		rg = { s = "halo", c = { 255, 235, 170 }, m = "Neon" },
-		fx = { s = "ember", c = { 255, 110, 0 }, r = 6 }, tr = { 255, 120, 0 }, lt = { c = { 255, 150, 40 }, b = 2 } },
+		fx = { s = "ember", c = { 255, 110, 0 }, r = 6 }, fx2 = { s = "flame", c = { 255, 200, 60 }, r = 3 },
+		aura = { c = { 255, 150, 30 }, tp = 0.7, sz = 1.45 },
+		moons = { n = 2, c = { 90, 140, 255 }, m = "SmoothPlastic", sz = 0.16 },
+		tr = { 255, 120, 0 }, lt = { c = { 255, 150, 40 }, b = 2 } },
 	{ n = "ECLIPSE", t = 5, b = { 14, 14, 18 }, m = "Metal", rf = 0.1,
 		rg = { s = "halo", c = { 255, 240, 200 }, m = "Neon" },
-		fx = { s = "ringFlare", c = { 255, 232, 180 }, r = 2 }, lt = { c = { 255, 230, 180 }, b = 1.2 }, sh = true },
+		fx = { s = "ringFlare", c = { 255, 232, 180 }, r = 2 }, fx2 = { s = "sparkDust", c = { 255, 240, 200 }, r = 3 },
+		aura = { c = { 255, 220, 150 }, tp = 0.82, sz = 1.22 },
+		moons = { n = 1, c = { 30, 30, 36 }, m = "Slate", sz = 0.2 },
+		tr = { 255, 225, 160 }, lt = { c = { 255, 230, 180 }, b = 1.4 }, sh = true },
 	{ n = "THE DEEP", t = 5, b = { 8, 28, 58 }, m = "Glass", tp = 0.45,
 		ov = { s = "core", c = { { 0, 255, 200 } } },
-		fx = { s = "bubble", c = { 120, 215, 255 }, r = 4 }, tr = { 0, 150, 140 }, lt = { c = { 0, 210, 175 }, b = 1 } },
+		fx = { s = "bubble", c = { 120, 215, 255 }, r = 4 }, fx2 = { s = "glowOrb", c = { 0, 255, 200 }, r = 2 },
+		aura = { c = { 0, 200, 170 }, tp = 0.8, sz = 1.3 },
+		moons = { n = 3, c = { 236, 240, 248 }, m = "SmoothPlastic", sz = 0.18 },
+		tr = { 0, 150, 140 }, lt = { c = { 0, 210, 175 }, b = 1.4 } },
 	{ n = "VESUVIUS", t = 5, b = { 58, 24, 18 }, m = "CrackedLava",
 		rg = { s = "shards", c = { 42, 36, 34 }, c2 = { 255, 90, 0 } },
-		fx = { s = "ember", c = { 255, 90, 0 }, r = 7 }, tr = { 255, 70, 0 }, lt = { c = { 255, 85, 0 }, b = 1.6 } },
+		fx = { s = "ember", c = { 255, 90, 0 }, r = 7 }, fx2 = { s = "smokeWisp", c = { 70, 56, 52 }, r = 3 },
+		aura = { c = { 255, 80, 0 }, tp = 0.8, sz = 1.3 },
+		moons = { n = 2, c = { 70, 40, 34 }, m = "CrackedLava", sz = 0.18 },
+		tr = { 255, 70, 0 }, lt = { c = { 255, 85, 0 }, b = 1.6 } },
 	{ n = "EVEREST", t = 5, b = { 198, 224, 240 }, m = "Glacier", rf = 0.2,
 		ov = { s = "cap", c = { { 255, 255, 255 } } },
 		rg = { s = "halo", c = { 180, 220, 255 }, m = "Ice" },
-		fx = { s = "snowflake", c = { 255, 255, 255 }, r = 3 }, lt = { c = { 185, 212, 255 }, b = 0.8 }, sh = true },
+		fx = { s = "snowflake", c = { 255, 255, 255 }, r = 3 }, fx2 = { s = "star4", c = { 255, 255, 255 }, r = 2 },
+		aura = { c = { 255, 255, 255 }, tp = 0.8, sz = 1.3 },
+		tr = { 225, 240, 255 }, lt = { c = { 185, 212, 255 }, b = 1.4 }, sh = true },
 	{ n = "THE STORM", t = 5, b = { 45, 50, 62 }, m = "Slate",
 		ov = { s = "swirl", c = { { 92, 100, 115 }, { 66, 74, 90 } } },
 		rg = { s = "double", c = { 70, 76, 90 } },
-		fx = { s = "bolt", c = { 255, 240, 120 }, r = 3 }, tr = { 150, 160, 185 }, lt = { c = { 255, 240, 150 }, b = 1 } },
+		fx = { s = "bolt", c = { 255, 240, 120 }, r = 3 }, fx2 = { s = "drip", c = { 170, 200, 240 }, r = 4 },
+		aura = { c = { 120, 130, 160 }, tp = 0.8, sz = 1.35 },
+		moons = { n = 2, c = { 60, 66, 80 }, m = "Slate", sz = 0.18 },
+		tr = { 150, 160, 185 }, lt = { c = { 255, 240, 150 }, b = 1.4 } },
 	{ n = "JACKPOT", t = 5, b = { 255, 200, 40 }, m = "Foil", rf = 0.4,
 		ov = { s = "bands", c = { { 220, 40, 50 } } },
 		rg = { s = "double", c = { 255, 215, 80 }, c2 = { 255, 160, 30 }, m = "Foil" },
-		fx = { s = "star4", c = { 255, 255, 185 }, r = 5 }, tr = { 255, 200, 60 }, lt = { c = { 255, 210, 80 }, b = 1.3 }, sh = true },
+		fx = { s = "star4", c = { 255, 255, 185 }, r = 5 }, fx2 = { s = "coin", c = { 255, 215, 90 }, r = 4 },
+		aura = { c = { 255, 210, 80 }, tp = 0.7, sz = 1.35 },
+		moons = { n = 3, c = { 255, 205, 60 }, m = "Foil", sz = 0.2 },
+		tr = { 255, 200, 60 }, lt = { c = { 255, 210, 80 }, b = 1.4 }, sh = true },
 	{ n = "GHOST", t = 5, b = { 220, 230, 255 }, m = "ForceField",
 		ov = { s = "core", c = { { 160, 200, 255 } } },
 		rg = { s = "halo", c = { 200, 220, 255 }, m = "Glass" },
-		fx = { s = "smokeWisp", c = { 205, 218, 255 }, r = 3 }, tr = { 190, 210, 255 }, lt = { c = { 172, 202, 255 }, b = 0.7 }, sh = true },
+		fx = { s = "smokeWisp", c = { 205, 218, 255 }, r = 3 }, fx2 = { s = "bokeh", c = { 220, 230, 255 }, r = 3 },
+		aura = { c = { 200, 215, 255 }, tp = 0.8, sz = 1.4 },
+		moons = { n = 2, c = { 200, 220, 255 }, m = "Neon", sz = 0.16 },
+		tr = { 190, 210, 255 }, lt = { c = { 172, 202, 255 }, b = 1.4 }, sh = true },
+	-- Showpieces.
+	{ n = "BLACK HOLE", t = 5, b = { 10, 8, 14 }, m = "Metal", rf = 0.05,
+		rg = { s = "orbit", c = { 150, 80, 255 }, c2 = { 255, 190, 255 }, m = "Neon" },
+		fx = { s = "spiral", c = { 170, 90, 255 }, r = 4 }, fx2 = { s = "bokeh", c = { 200, 150, 255 }, r = 3 },
+		aura = { c = { 140, 60, 255 }, tp = 0.7, sz = 1.5 },
+		moons = { n = 3, c = { 24, 18, 34 }, m = "Slate", sz = 0.18 },
+		tr = { 140, 60, 255 }, lt = { c = { 150, 70, 255 }, b = 1.5 } },
+	{ n = "GALAXY CORE", t = 5, b = { 18, 16, 48 }, m = "Glass", tp = 0.35,
+		ov = { s = "core", c = { { 120, 80, 255 } } },
+		rg = { s = "orbit", c = { 225, 200, 255 }, c2 = { 255, 240, 200 }, m = "Foil" },
+		fx = { s = "star4", c = { 255, 250, 230 }, r = 5 }, fx2 = { s = "spiral", c = { 170, 140, 255 }, r = 3 },
+		aura = { c = { 240, 235, 255 }, tp = 0.8, sz = 1.4 },
+		moons = { n = 2, c = { 255, 245, 220 }, m = "Neon", sz = 0.16 },
+		tr = { 170, 140, 255 }, lt = { c = { 190, 160, 255 }, b = 1.5 } },
+	{ n = "PHOENIX", t = 5, b = { 255, 110, 20 }, m = "Neon",
+		ov = { s = "swirl", c = { { 255, 210, 60 }, { 220, 30, 20 } } },
+		rg = { s = "halo", c = { 255, 210, 90 }, m = "Neon" },
+		fx = { s = "flame", c = { 255, 170, 40 }, r = 5 }, fx2 = { s = "ember", c = { 255, 90, 10 }, r = 4 },
+		aura = { c = { 255, 50, 20 }, tp = 0.7, sz = 1.4 },
+		tr = { 255, 90, 10 }, lt = { c = { 255, 120, 30 }, b = 1.8 } },
+	{ n = "DIAMOND HEART", t = 5, b = { 245, 240, 250 }, m = "Glass", rf = 0.5, tp = 0.3,
+		ov = { s = "core", c = { { 255, 120, 180 } } },
+		rg = { s = "crossed", c = { 255, 255, 255 }, c2 = { 255, 190, 220 }, m = "Glass" },
+		fx = { s = "diamond", c = { 255, 255, 255 }, r = 4 }, fx2 = { s = "heart", c = { 255, 150, 200 }, r = 3 },
+		aura = { c = { 255, 200, 225 }, tp = 0.8, sz = 1.3 },
+		tr = { 255, 190, 225 }, lt = { c = { 255, 210, 235 }, b = 1.4 }, sh = true },
+	{ n = "FROST KING", t = 5, b = { 170, 215, 245 }, m = "Ice", rf = 0.2, tp = 0.15,
+		ov = { s = "cap", c = { { 255, 255, 255 } } },
+		rg = { s = "double", c = { 235, 248, 255 }, c2 = { 160, 210, 255 }, m = "Ice" },
+		fx = { s = "snowflake", c = { 255, 255, 255 }, r = 4 }, fx2 = { s = "shard", c = { 200, 235, 255 }, r = 3 },
+		aura = { c = { 180, 225, 255 }, tp = 0.75, sz = 1.35 },
+		moons = { n = 3, c = { 225, 245, 255 }, m = "Ice", sz = 0.2 },
+		tr = { 200, 235, 255 }, lt = { c = { 190, 230, 255 }, b = 1.5 } },
+	{ n = "GOLDEN GOD", t = 5, b = { 255, 205, 50 }, m = "Foil", rf = 0.5,
+		ov = { s = "swirl", c = { { 255, 240, 170 }, { 220, 160, 30 } } },
+		rg = { s = "double", c = { 255, 225, 120 }, c2 = { 230, 170, 40 }, m = "Foil" },
+		fx = { s = "coin", c = { 255, 225, 110 }, r = 5 }, fx2 = { s = "star4", c = { 255, 255, 200 }, r = 4 },
+		aura = { c = { 255, 200, 60 }, tp = 0.7, sz = 1.4 },
+		moons = { n = 3, c = { 255, 215, 90 }, m = "Foil", sz = 0.22 },
+		tr = { 255, 210, 70 }, lt = { c = { 255, 215, 90 }, b = 1.8 }, sh = true },
 }
 local function tierOf(spec)
 	return PusherMachine.Tiers[spec.t or 1] or PusherMachine.Tiers[1]
@@ -1382,8 +1540,8 @@ function PusherMachine.rollOnce(freeLuck, minTier, boostMag, mods)
 end
 
 -- Interpreter for the compact catalog format. Every decor part is welded,
--- massless, and non-colliding (decorate), so a SECRET with ten parts rolls
--- with exactly the same physics as a bare COMMON. form (0|1|2) layers the
+-- massless, and non-colliding (decorate), so a SECRET with a dozen parts
+-- rolls with exactly the same physics as a bare COMMON. form (0|1|2) layers the
 -- fusion dressing (§ FORM DRESSING below) on top of the spec's own look —
 -- form parts obey the same decorate/weld rule, so a CELESTIAL rolls with
 -- exactly the same physics as its BASE.
@@ -1556,6 +1714,52 @@ local function makePlanet(spec, cf, anchored, parent, form)
 		glaze.CastShadow = false
 	end
 
+	-- Aura: one Neon shell over the body, translucent enough that Neon reads
+	-- as a halo, not a second ball. Its radius (0.6-0.75 D) clears the glaze
+	-- (0.53 D), the caps (reach 0.58 D) and every core (<= 0.28 D), so no
+	-- sphere surfaces fight; rings pass straight through it, which is the look.
+	local aura = spec.aura
+	if aura then
+		local asz = D * (aura.sz or 1.3)
+		local shell = deco({
+			Name = "Aura",
+			Shape = Enum.PartType.Ball,
+			Size = Vector3.new(asz, asz, asz),
+			CFrame = cf,
+			Color = c3(aura.c or spec.b),
+			Material = Enum.Material.Neon,
+			Transparency = aura.tp or 0.75,
+		})
+		shell.CastShadow = false
+	end
+
+	-- Moons: n tiny balls parked at fixed, evenly spaced spots on a circle
+	-- of radius 0.85 D (outside every spec ring, 0.56-0.69 D; form 2's outer
+	-- band shares the radius, and a moon on it simply reads as riding it).
+	-- The circle is tilted 20 deg off the equator on a random yaw, so the
+	-- moons never line up with the ring plane the same way twice. Static —
+	-- no driver, welded like every other decor part.
+	local moons = spec.moons
+	if moons then
+		local count = math.max(1, math.min(moons.n or 1, 3))
+		local msz = D * (moons.sz or 0.2)
+		local plane = CFrame.Angles(0, math.rad(math.random() * 360), 0)
+			* CFrame.Angles(math.rad(20), 0, 0)
+		local phase = math.rad(math.random() * 360)
+		for i = 1, count do
+			local a = phase + (i - 1) * (2 * math.pi / count)
+			deco({
+				Name = "Moon" .. i,
+				Shape = Enum.PartType.Ball,
+				Size = Vector3.new(msz, msz, msz),
+				CFrame = cf * plane
+					* CFrame.new(math.cos(a) * D * 0.85, 0, math.sin(a) * D * 0.85),
+				Color = c3(moons.c or spec.b),
+				Material = Enum.Material[moons.m or "Neon"],
+			})
+		end
+	end
+
 	----------------------------------------------------------------------------
 	-- FORM DRESSING (fusion §8). Layered ON TOP of the spec's own dressing.
 	-- Budgets: form 1 adds 4 parts, form 2 adds 12 (13 LEGENDARY / 14 SECRET).
@@ -1659,7 +1863,7 @@ local function makePlanet(spec, cf, anchored, parent, form)
 			})
 		elseif tier == 5 then
 			-- SECRET: two counter-tilted halos + a star4 emitter (rate 6 —
-			-- the one sanctioned extra emitter above the spec's own).
+			-- the one sanctioned extra emitter above the spec's own fx/fx2).
 			for i, tiltDeg in ipairs({ 28, -28 }) do
 				deco({
 					Name = "CelHalo" .. i,
@@ -1692,21 +1896,13 @@ local function makePlanet(spec, cf, anchored, parent, form)
 	if spec.lt then
 		pointLight(ball, c3(spec.lt.c), spec.lt.b or 0.8, 4.5)
 	end
-	-- Ascended+ forms sparkle: +2 rate on the spec's emitter (hard cap 8
-	-- stands); a spec with no fx of its own gets a rate-2 glowOrb in the
-	-- ring color instead.
-	if spec.fx or form >= 1 then
-		local fx = spec.fx
-		local style = (fx and SPRITE_STYLE[fx.s]) or SPRITE_STYLE.glowOrb
-		local rate = fx and (fx.r or 4) or 0
-		if form >= 1 then
-			rate = rate + 2
-		end
+	-- Sprite emitter in a style's motion signature (shared by fx and fx2).
+	local function emit(style, color, rate)
 		local emitter = Instance.new("ParticleEmitter")
 		emitter.Texture = style.tex
-		emitter.Color = ColorSequence.new(fx and c3(fx.c) or ringColor)
+		emitter.Color = ColorSequence.new(color)
 		emitter.LightEmission = 1
-		emitter.Rate = math.min(rate, 8)
+		emitter.Rate = rate
 		emitter.Lifetime = NumberRange.new(style.life[1], style.life[2])
 		emitter.Speed = NumberRange.new(style.spd[1], style.spd[2])
 		emitter.Acceleration = Vector3.new(0, style.ay or 0, 0)
@@ -1718,6 +1914,31 @@ local function makePlanet(spec, cf, anchored, parent, form)
 			NumberSequenceKeypoint.new(1, 0),
 		})
 		emitter.Parent = ball
+		return emitter
+	end
+	-- Ascended+ forms sparkle: +2 rate on the spec's emitter (hard cap 8
+	-- stands); a spec with no fx of its own gets a rate-2 glowOrb in the
+	-- ring color instead. The +2 lands on fx only, never on fx2.
+	local fxRate = 0
+	if spec.fx or form >= 1 then
+		local fx = spec.fx
+		local style = (fx and SPRITE_STYLE[fx.s]) or SPRITE_STYLE.glowOrb
+		local rate = fx and (fx.r or 4) or 0
+		if form >= 1 then
+			rate = rate + 2
+		end
+		fxRate = math.min(rate, 8)
+		emit(style, fx and c3(fx.c) or ringColor, fxRate)
+	end
+	-- Second emitter: fx and fx2 share a 10/s budget, so fx2 gets whatever
+	-- fx left over (and never more than the 8 per-emitter cap).
+	local fx2 = spec.fx2
+	if fx2 then
+		local rate2 = math.min(fx2.r or 3, 8, 10 - fxRate)
+		if rate2 > 0 then
+			local style2 = SPRITE_STYLE[fx2.s] or SPRITE_STYLE.glowOrb
+			emit(style2, c3(fx2.c or spec.b), rate2)
+		end
 	end
 	-- Ascended+ forms always leave a trail; ring color when the spec has none.
 	local trailColor = spec.tr and c3(spec.tr) or (form >= 1 and ringColor or nil)
