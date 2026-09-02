@@ -473,7 +473,8 @@ local function makeCapsule(cfg, cf, anchored, parent)
 		Color = cfg.capPlanet,
 		Material = Enum.Material.SmoothPlastic,
 		Reflectance = 0.05,
-		CustomPhysicalProperties = PhysicalProperties.new(1.2, 0.5, 0.35, 1, 1),
+		-- Same 0.3 elasticity as the planets: one pile, one feel.
+		CustomPhysicalProperties = PhysicalProperties.new(1.2, 0.5, 0.3, 1, 1),
 	}, parent)
 	-- Outer ring glows; inner ring is metal for contrast. Both are discs whose
 	-- plane cuts the ball's equator, tilted like Saturn. Kept to 1.45x the
@@ -1560,12 +1561,15 @@ local function makePlanet(spec, cf, anchored, parent, form)
 		Material = mat,
 		Transparency = spec.tp or 0,
 		Reflectance = spec.rf or 0.03,
-		-- Bouncier planets (owner order): lively landings; the frictionless
-		-- 0-elasticity mouth funnel keeps them from pinballing in the throat.
-		-- Elasticity 0.32 -> 0.5 (owner: "a bit more bouncy"): livelier landings
-		-- and the lucky hops the JACKPOT CUP is fed by. The frictionless
-		-- 0-elasticity mouth funnel still keeps them from pinballing.
-		CustomPhysicalProperties = PhysicalProperties.new(1.8, 0.6, 0.5, 1, 1),
+		-- Elasticity 0.3. The 0.5 "bouncier" pass popped the pile — the coins
+		-- document the popcorn line at ~0.4 (owner: "make planets bouncy
+		-- CORRECTLY, like the coins, so it isn't buggy"). 0.3 lands lively
+		-- and still settles, one notch above the coins' 0.22 so planets read
+		-- springier than coins without out-bouncing the pile (planet-on-coin
+		-- averages 0.26, planet-on-deck 0.15). The JACKPOT CUP is fed by a
+		-- dropped piece STRIKING a front-row piece — the launch speed comes
+		-- from the impact, not the rebound — so the lucky hop survives this.
+		CustomPhysicalProperties = PhysicalProperties.new(1.8, 0.6, 0.3, 1, 1),
 	}, parent)
 	ball:SetAttribute("Variation", spec.n)
 	ball:SetAttribute("Tier", spec.t or 1)
@@ -2557,16 +2561,16 @@ function PusherMachine.build(originCFrame, name, theme)
 	-- pair-averaging from lending it any grip.
 	-- Split around the JACKPOT CUP: its bowl cantilevers past this plane
 	-- (front wall outer face z -7.37), so the centre span is open below
-	-- y 6.95 — the solid pedestal and the cup's own 0.5-tall walls are the
-	-- containment there, and the 0.15 between the cup rim (6.80) and this
-	-- panel's bottom (6.95) passes nothing. Above the rim the panel is the
+	-- y 6.53 — the solid pedestal and the cup's own 0.5-tall walls are the
+	-- containment there, and the 0.15 between the cup rim (6.38) and this
+	-- panel's bottom (6.53) passes nothing. Above the rim the panel is the
 	-- bowl's BACKBOARD: a bounce that overshoots the bowl hits it and drops
 	-- back in. Side panels start at |x| 1.10, 0.03 clear of the flanks.
 	-- (The Glass at z -7.45 seals everything above y 4.45 behind all three.)
 	for _, wall in ipairs({
 		{ size = Vector3.new(4.7, 7.0, 0.10), x = -3.45, y = 4.5 },
 		{ size = Vector3.new(4.7, 7.0, 0.10), x = 3.45, y = 4.5 },
-		{ size = Vector3.new(2.4, 1.2, 0.10), x = 0, y = 7.55 },
+		{ size = Vector3.new(2.4, 1.62, 0.10), x = 0, y = 7.34 },
 	}) do
 		newPart({
 			Name = "FrontWall",
@@ -2655,11 +2659,12 @@ function PusherMachine.build(originCFrame, name, theme)
 	-- V1 lived at y 3.05 in the mouth and was invisible; v2 (floor 4.20)
 	-- cleared the LedgeFillet in world y but, being 1.4 studs nearer the
 	-- locked camera than the lip, still drew BELOW the ledge line on screen
-	-- (owner: "higher still, more like 45% more"). v3 lifts the whole
-	-- assembly 2.10: rim 6.80 (= 4.70 x 1.45). From camEye (0, 12.2, -13.8)
-	-- the front rim at z -7.37 now sits at 40.0 degrees of depression, the
-	-- lip edge (4.80, -5.11) at 40.4 and the LedgeFillet top at 41.1 — the
-	-- entire cup reads above the ledge, the bowl's mouth opening upward.
+	-- (owner: "higher still, more like 45% more"); v3 lifted the assembly
+	-- 2.10 (rim 6.80) and read too high (owner: "20% lower than now"). v4
+	-- keeps 80% of that lift: floor 5.88, rim 6.38. From camEye (0, 12.2,
+	-- -13.8) the front rim at z -7.37 sits at 42.2 degrees of depression and
+	-- the back rim at 36.6, against the lip edge (4.80, -5.11) at 40.4 — the
+	-- bowl's mouth straddles the ledge line and opens above it.
 	-- HOW IT IS FED: nothing the pusher shoves off the lip can climb 1.5
 	-- studs, so the tongue ramp is gone. A piece enters only by bouncing —
 	-- a fresh drop hitting the front pile (ball-on-ball elasticity 0.5
@@ -2677,7 +2682,7 @@ function PusherMachine.build(originCFrame, name, theme)
 	-- front wall as a crown (see the core block).
 	----------------------------------------------------------------------------
 	local CUP_Z = -6.50 -- bowl centre; interior z -7.25 .. -5.75
-	local CUP_FLOOR = 6.30 -- bowl floor top (rim 6.80, back lip 6.55)
+	local CUP_FLOOR = 5.88 -- bowl floor top (rim 6.38, back lip 6.13)
 	local cupFloor = newPart({
 		Name = "JackpotCupFloor",
 		Size = Vector3.new(2.14, 0.20, 1.74),
@@ -2864,63 +2869,49 @@ function PusherMachine.build(originCFrame, name, theme)
 	end
 
 	----------------------------------------------------------------------------
-	-- JACKPOT CORE — "SUPERNOVA SATURN" (judged polish final): the lane-4
-	-- centerpiece is a glowing gold planet wearing a tilted Saturn ring, two
-	-- neon moonlets parked on the ring (the CLIENT orbits them from the
-	-- stamped RingCF attribute), an 8-pip charge gauge seated on the ring's
-	-- leading arc, an ember vent at the crest, the live pot readout, and the
-	-- JACKPOT title. EVERY piece is decorate()'d (no collide/query/touch):
-	-- the center roll path is untouched — balls visibly plunge THROUGH the
-	-- glowing core into the basin, and that IS the absorb moment. The FROZEN
-	-- JackpotPin1/PinCollar1 deflectors sit inside the orb's glow on
-	-- purpose: the core is the halo around the carom gate. The ring is named
-	-- CoreRing — the name the client's celebration spin has always bound
-	-- (dead until now: the old halo was CoreHalo).
-	-- Constraint audit, rest AND mid-animation (|x| / world-y top): ring
-	-- 0.51 / 3.63, orb 0.39 / 3.68 (0.50 / 3.78 at HIT pop peak), moons 0.50
-	-- at orbit / ~3.68 (the HIT dive runs ring-local -z, pure pitch about x:
-	-- zero x drift, and it goes DOWN), pips 0.447, plates 0.51 / 4.098
-	-- (CoreTitle, max, already shipped) — all inside |x| <= 0.52, y <= 4.12.
+	-- JACKPOT CORE — "SUPERNOVA SATURN", compact: the JACKPOT title, a SMALL
+	-- glowing gold planet under it wearing a tilted Saturn ring (two neon
+	-- moonlets the CLIENT orbits from the stamped RingCF attribute, an 8-pip
+	-- charge gauge notched into the ring's leading arc, an ember vent at the
+	-- crest), and the live pot readout — a card that grows out of the cup's
+	-- front rim. The orb was a 0.78 ball that filled the card (owner: "remove
+	-- that glowing ball or make it WAY smaller, under the JACKPOT text"); it
+	-- is 0.36 now, ring 0.56, and sits between the title and the number.
+	-- EVERY piece is decorate()'d (no collide/query/touch): the bowl's
+	-- physics never sees it. Sizes ride CORE_S so the client's supernova
+	-- pop (BaseSize x 1.28) and orbit (OrbitRadius stamp) scale with it.
 	----------------------------------------------------------------------------
 	do
-		-- CROWN anchor (owner: "the jackpot card thingy moved up too", then
-		-- "higher still"): the core no longer rides the lane-4 wall plate
-		-- (hidden below the ledge line); it stands as a reclined billboard
-		-- just beyond the bowl's front wall and rides the cup — lifted 2.10
-		-- with it, its lowest part (PotPlate bottom, local y -0.98) at world
-		-- ~6.91, clear of the 6.80 rim. Every piece is still decorate()'d,
-		-- so the bowl's physics never sees it.
-		local coreCF = at(0, 7.80, -7.15, RECL)
-		local pivot = coreCF * CFrame.new(0, -0.05, -0.36) -- planet center
+		-- Anchor: a reclined billboard just beyond the bowl's front wall,
+		-- its lowest part (PotPlate bottom) 0.11 above the 6.38 rim.
+		local CORE_S = 0.46 -- 0.78 orb -> 0.36
+		local coreCF = at(0, 7.00, -7.15, RECL)
+		local pivot = coreCF * CFrame.new(0, 0.10, -0.36) -- planet center
 		local ringCF = pivot * CFrame.Angles(math.rad(-28), 0, 0) -- ring plane, top leans back
-		-- V3 composition (judged polish final): orb raised to the plate's
-		-- visual center — geometry-forced, the tilted ring's lower arc must
-		-- clear PotPlate top at dy -0.54 (audited gap 0.04) — and shrunk to
-		-- 0.78 so the ring reads as the silhouette. BaseColor/BaseSize
-		-- attrs give the client's mid-flash rebind and HIT supernova pop
-		-- clean restore anchors.
+		local ORB_D = 0.78 * CORE_S
+		local RING_D = 1.02 * CORE_S + 0.09 -- 0.56: reads as the silhouette
+		local ORBIT_R = 0.24 -- moonlet orbit radius (stamped for the client)
 		local coreOrb = decorate(newPart({
 			Name = "CoreOrb",
 			Shape = Enum.PartType.Ball,
-			Size = Vector3.new(0.78, 0.78, 0.78),
+			Size = Vector3.new(ORB_D, ORB_D, ORB_D),
 			CFrame = pivot,
 			Color = cfg.colGoldHot,
 			Material = Enum.Material.Neon,
 		}, cabinet))
 		coreOrb:SetAttribute("BaseColor", cfg.colGoldHot)
 		coreOrb:SetAttribute("BaseSize", coreOrb.Size)
-		local coreLight = pointLight(coreOrb, cfg.colGoldHot, 1.5, 6)
+		local coreLight = pointLight(coreOrb, cfg.colGoldHot, 1.5, 3.5)
 		coreLight.Name = "CoreLight"
-		-- The Saturn ring (replaces the flat CoreHalo inlay): tilted -28
-		-- degrees so it reads as a planet's ring from the locked camera, not
-		-- a target reticle. RingCF is STAMPED as an attribute — the client
-		-- orbit loop reads the stamp, never the live CFrame, so the
-		-- celebration spin and bind retries can never corrupt the orbit
-		-- plane.
+		-- The Saturn ring: tilted -28 degrees so it reads as a planet's ring
+		-- from the locked camera. RingCF and OrbitRadius are STAMPED as
+		-- attributes — the client orbit loop reads the stamps, never the live
+		-- CFrame, so the celebration spin and bind retries can never corrupt
+		-- the orbit plane.
 		local coreRing = decorate(newPart({
 			Name = "CoreRing",
 			Shape = Enum.PartType.Cylinder,
-			Size = Vector3.new(0.045, 1.02, 1.02),
+			Size = Vector3.new(0.045, RING_D, RING_D),
 			CFrame = ringCF * CFrame.Angles(0, math.rad(90), 0),
 			Color = cfg.colGold,
 			Material = Enum.Material.Neon,
@@ -2929,10 +2920,11 @@ function PusherMachine.build(originCFrame, name, theme)
 		coreRing:SetAttribute("BaseColor", cfg.colGold)
 		coreRing:SetAttribute("FillColor", Color3.fromRGB(255, 244, 214))
 		coreRing:SetAttribute("RingCF", ringCF)
+		coreRing:SetAttribute("OrbitRadius", ORBIT_R)
 		-- Moonlets: two neon balls parked ON the ring at their OrbitPhase
-		-- angles — the client re-seats them every Heartbeat from the RingCF
-		-- stamp (period 12s idle -> 1.2s at full charge), so the server pose
-		-- only matters for the pre-bind frame and streaming stragglers.
+		-- angles — the client re-seats them every Heartbeat from the stamps
+		-- (period 12s idle -> 1.2s at full charge), so the server pose only
+		-- matters for the pre-bind frame and streaming stragglers.
 		for moonIndex, moon in ipairs({
 			{ phase = 200, color = cfg.colTeal },
 			{ phase = 20, color = cfg.colMagenta },
@@ -2940,9 +2932,9 @@ function PusherMachine.build(originCFrame, name, theme)
 			local moonlet = decorate(newPart({
 				Name = "Moonlet" .. moonIndex,
 				Shape = Enum.PartType.Ball,
-				Size = Vector3.new(0.16, 0.16, 0.16),
+				Size = Vector3.new(0.08, 0.08, 0.08),
 				CFrame = ringCF * CFrame.Angles(0, 0, math.rad(moon.phase))
-					* CFrame.new(0, -0.42, -0.07),
+					* CFrame.new(0, -ORBIT_R, -0.04),
 				Color = moon.color,
 				Material = Enum.Material.Neon,
 			}, cabinet))
@@ -2951,18 +2943,19 @@ function PusherMachine.build(originCFrame, name, theme)
 			moonlet:SetAttribute("OrbitPhase", moon.phase)
 		end
 		-- Charge gauge: 8 pips seated on the ring's lower LEADING arc
-		-- (-63..+63 degrees in ring-local plane, radius 0.44), embedded
-		-- through both ring faces so they read as notches IN the ring.
-		-- Unfilled is colSign SmoothPlastic; the lit FillColor is NEAR-WHITE
-		-- (255, 244, 214) — never colGoldHot: gold-on-gold made the FULL
-		-- state (the one that sells) the lowest-contrast state.
+		-- (-63..+63 degrees in ring-local plane, radius 0.235 — 0.045 in
+		-- from the 0.28 edge), embedded through both ring faces so they read
+		-- as notches IN the ring. Unfilled is colSign SmoothPlastic; the lit
+		-- FillColor is NEAR-WHITE (255, 244, 214) — never colGoldHot: gold-
+		-- on-gold made the FULL state (the one that sells) the lowest-
+		-- contrast state.
 		for segIndex = 1, 8 do
 			local seg = decorate(newPart({
 				Name = "ChargeSeg" .. segIndex,
-				Size = Vector3.new(0.11, 0.05, 0.08),
+				Size = Vector3.new(0.055, 0.04, 0.06),
 				CFrame = ringCF
 					* CFrame.Angles(0, 0, math.rad(-63 + (segIndex - 1) * 18))
-					* CFrame.new(0, -0.44, 0),
+					* CFrame.new(0, -0.235, 0),
 				Color = cfg.colSign,
 			}, cabinet))
 			seg:SetAttribute("BaseColor", cfg.colSign)
@@ -2977,7 +2970,7 @@ function PusherMachine.build(originCFrame, name, theme)
 		local emberVent = decorate(newPart({
 			Name = "EmberVent",
 			Size = Vector3.new(0.10, 0.10, 0.10),
-			CFrame = coreCF * CFrame.new(0, 0.38, -0.36),
+			CFrame = pivot * CFrame.new(0, ORB_D / 2, 0),
 			Transparency = 1,
 		}, cabinet))
 		local emberEmit = Instance.new("ParticleEmitter")
@@ -2987,13 +2980,13 @@ function PusherMachine.build(originCFrame, name, theme)
 		emberEmit.LightEmission = 1
 		emberEmit.Rate = 0
 		emberEmit.Lifetime = NumberRange.new(0.35, 0.7)
-		emberEmit.Speed = NumberRange.new(0.5, 1.1)
-		emberEmit.Acceleration = Vector3.new(0, 0.9, 0)
+		emberEmit.Speed = NumberRange.new(0.3, 0.7)
+		emberEmit.Acceleration = Vector3.new(0, 0.6, 0)
 		emberEmit.SpreadAngle = Vector2.new(25, 25)
 		emberEmit.Rotation = NumberRange.new(-40, 40)
 		emberEmit.RotSpeed = NumberRange.new(-45, 45)
 		emberEmit.Size = NumberSequence.new({
-			NumberSequenceKeypoint.new(0, 0.3),
+			NumberSequenceKeypoint.new(0, 0.16),
 			NumberSequenceKeypoint.new(1, 0),
 		})
 		emberEmit.Parent = emberVent
@@ -3004,24 +2997,21 @@ function PusherMachine.build(originCFrame, name, theme)
 		dustEmit.LightEmission = 1
 		dustEmit.Rate = 0
 		dustEmit.Lifetime = NumberRange.new(0.4, 0.8)
-		dustEmit.Speed = NumberRange.new(0.4, 0.9)
+		dustEmit.Speed = NumberRange.new(0.25, 0.6)
 		dustEmit.Rotation = NumberRange.new(-40, 40)
 		dustEmit.RotSpeed = NumberRange.new(-60, 60)
 		dustEmit.Size = NumberSequence.new({
-			NumberSequenceKeypoint.new(0, 0.28),
+			NumberSequenceKeypoint.new(0, 0.15),
 			NumberSequenceKeypoint.new(1, 0),
 		})
 		dustEmit.Parent = emberVent
-		-- Pot readout: the live jackpot amount (client-owned text — the old
-		-- lane-4 CountLabel target is gone). 1.02 wide, not the drafted 1.30:
-		-- the amendment's own clearance rule (|x| <= 0.52 past the Jackpot
-		-- Blades) wins over its draft width. Center local z -0.24 (0.11
-		-- proud): 0.05 proud would interpenetrate LaneLED4 (front plane
-		-- local z -0.162) and the lane-4 HeaderFrame strips.
+		-- Pot readout: the live jackpot amount (client-owned text), the
+		-- card's bottom plate, right above the cup's rim. Center local z
+		-- -0.24 (0.11 proud of the reclined plane).
 		local potPlate = decorate(newPart({
 			Name = "PotPlate",
 			Size = Vector3.new(1.02, 0.44, 0.10),
-			CFrame = coreCF * CFrame.new(0, -0.76, -0.24),
+			CFrame = coreCF * CFrame.new(0, -0.44, -0.24),
 			Color = cfg.colSign,
 		}, cabinet))
 		local potGui = Instance.new("SurfaceGui")
@@ -3041,14 +3031,11 @@ function PusherMachine.build(originCFrame, name, theme)
 		potLabel.TextScaled = true
 		potLabel.Font = Enum.Font.FredokaOne
 		potLabel.Parent = potGui
-		-- Title plate above the orb, inside the charge arc's top gap. Top
-		-- edge world y 4.098 <= 4.10 (deck-lip sightline). Same 1.02 width
-		-- clamp as the pot; back face floats 0.015 proud of the lane-4
-		-- HeaderFrame strips' front plane.
+		-- Title plate on top, the small orb right under it.
 		local coreTitle = decorate(newPart({
 			Name = "CoreTitle",
 			Size = Vector3.new(1.02, 0.26, 0.08),
-			CFrame = coreCF * CFrame.new(0, 0.75, -0.20),
+			CFrame = coreCF * CFrame.new(0, 0.50, -0.20),
 			Color = cfg.colSign,
 		}, cabinet))
 		local titleGui = Instance.new("SurfaceGui")
@@ -4178,14 +4165,14 @@ function PusherMachine.build(originCFrame, name, theme)
 		CFrame = at(0, 2.225, -6.55),
 		Transparency = 1, CanCollide = false,
 	}, payout)
-	-- JACKPOT HOLE: the sensor inside the cup bowl (x +-0.9, y 6.33..6.78,
-	-- z -7.20..-5.80 — mirrors CUP_FLOOR 6.30 in the cabinet block). A piece
+	-- JACKPOT HOLE: the sensor inside the cup bowl (x +-0.9, y 5.91..6.36,
+	-- z -7.20..-5.80 — mirrors CUP_FLOOR 5.88 in the cabinet block). A piece
 	-- that lands in the bowl touches it on arrival; the server scores it as
 	-- lane 4 (the jackpot lane) regardless of x.
 	newPart({
 		Name = "JackpotHole",
 		Size = Vector3.new(1.8, 0.45, 1.4),
-		CFrame = at(0, 6.555, -6.50),
+		CFrame = at(0, 6.135, -6.50),
 		Transparency = 1, CanCollide = false,
 	}, payout)
 

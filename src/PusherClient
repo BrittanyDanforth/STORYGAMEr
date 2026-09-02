@@ -10288,7 +10288,7 @@ local aimNdcX = 0
 						local popOrb = orb
 						local popUp = TweenService:Create(popOrb,
 							TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-							{ Size = Vector3.new(1, 1, 1) })
+							{ Size = popSize * 1.28 })
 						popUp:Play()
 						popUp.Completed:Connect(function()
 							if popOrb.Parent then
@@ -12249,6 +12249,11 @@ end)()
 		return coreOrbSeenColor
 	end
 	S.coreOrbBase = coreOrbBase
+	-- Moonlet orbit radius: the builder stamps OrbitRadius on CoreRing
+	-- (0.24 on the compact core; 0.42 was the old full-size ring).
+	local function orbitR(ring)
+		return (ring and ring.Parent and ring:GetAttribute("OrbitRadius")) or 0.42
+	end
 	local function stopCoreAnticipation()
 		coreAnticipating = false
 		coreTweenOrb = nil
@@ -12316,7 +12321,7 @@ end)()
 				TweenService:Create(diveMoon,
 					TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
 					{ CFrame = ringStamp * CFrame.Angles(0, 0, moonTheta + phase)
-						* CFrame.new(0, -0.42, -0.97) }):Play()
+						* CFrame.new(0, -orbitR(ring), -0.07 - 0.9 * (orbitR(ring) / 0.42)) }):Play()
 				TweenService:Create(diveMoon,
 					TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
 					{ Transparency = 1 }):Play()
@@ -12326,7 +12331,7 @@ end)()
 						and bound.coreRing:GetAttribute("RingCF")
 					if stamp then
 						diveMoon.CFrame = stamp * CFrame.Angles(0, 0, moonTheta + phase)
-							* CFrame.new(0, -0.42, -0.07)
+							* CFrame.new(0, -orbitR(bound.coreRing), -0.07)
 					end
 					TweenService:Create(diveMoon,
 						TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
@@ -12400,7 +12405,7 @@ end)()
 						local phase = math.rad(moon:GetAttribute("OrbitPhase")
 							or (mi == 1 and 200 or 20))
 						moon.CFrame = ringStamp * CFrame.Angles(0, 0, moonTheta + phase)
-							* CFrame.new(0, -0.42, -0.07)
+							* CFrame.new(0, -orbitR(ring), -0.07)
 					end
 				end
 			end
