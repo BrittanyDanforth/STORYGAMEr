@@ -474,7 +474,7 @@ local function makeCapsule(cfg, cf, anchored, parent)
 		Material = Enum.Material.SmoothPlastic,
 		Reflectance = 0.05,
 		-- Same bounce pairing as the planets: one pile, one feel.
-		CustomPhysicalProperties = PhysicalProperties.new(1.2, 0.5, 0.5, 1, 6),
+		CustomPhysicalProperties = PhysicalProperties.new(1.2, 0.5, 0.6, 1, 8),
 	}, parent)
 	-- Outer ring glows; inner ring is metal for contrast. Both are discs whose
 	-- plane cuts the ball's equator, tilted like Saturn. Kept to 1.45x the
@@ -1565,13 +1565,15 @@ local function makePlanet(spec, cf, anchored, parent, form)
 		-- a WEIGHTED average, and the deck is 0 at weight 1 — so a 0.5 planet
 		-- at weight 1 landed at 0.25 (a 0.36-stud hop off a 5.5 drop, i.e.
 		-- nothing), and the 0.3 pass at 0.15 was invisible. The planet's own
-		-- number now dominates the pair: elasticity 0.5 at weight 6 lands on
-		-- the deck at 0.43 (a 1.0-stud first hop, settled in three), on a
-		-- coin at 0.46, on another planet at 0.5. The mouth funnel parts
-		-- carry weight 100 at 0 so the throat stays dead and nothing pinballs
-		-- there; the JACKPOT CUP's lucky hop is an impact launch off a
-		-- front-row piece and gets livelier with this, not rarer.
-		CustomPhysicalProperties = PhysicalProperties.new(1.8, 0.6, 0.5, 1, 6),
+		-- number now dominates the pair: elasticity 0.6 at weight 8 lands on
+		-- the deck at 0.53 (a 1.55-stud first hop off a 5.5 drop — owner:
+		-- "50% more bouncy" than the 0.5@6 pass, which is +54% in rebound
+		-- height), on a coin at 0.56, on another planet at 0.6. The mouth
+		-- funnel parts and the cheek ramps carry weight 100 at 0 so the
+		-- throat stays dead and nothing pinballs there; the JACKPOT CUP's
+		-- lucky hop is an impact launch off a front-row piece and gets
+		-- livelier with this, not rarer.
+		CustomPhysicalProperties = PhysicalProperties.new(1.8, 0.6, 0.6, 1, 8),
 	}, parent)
 	ball:SetAttribute("Variation", spec.n)
 	ball:SetAttribute("Tier", spec.t or 1)
@@ -2427,17 +2429,29 @@ function PusherMachine.build(originCFrame, name, theme)
 		-- so pieces falling at |x| > 5.0 used to land on this flat top and
 		-- sit there stranded forever. The wedge slopes inward, so they slide
 		-- into the mouth (and through the Collector) instead.
-		-- Z-window SHRUNK to -6.9..-5.1: the old full-depth ramp (z -8.2..-5.0)
-		-- funneled pieces down FORWARD of the PoolRim (-6.96) where the basin
-		-- no longer exists — they fell clean out of the cabinet (owner
-		-- screenshot). Pieces landing on the flat cheek top behind the ramp
-		-- are stranded-rescued by housekeeping at full Payout value.
+		-- Z-window -6.7..-5.1: a full-depth ramp (z -8.2..-5.0) once funneled
+		-- pieces down FORWARD of the PoolRim (-6.96) where the basin no
+		-- longer exists — they fell clean out of the cabinet. Pieces landing
+		-- on the flat cheek top behind the ramp are stranded-rescued by
+		-- housekeeping at full Payout value.
+		-- SMALLER + STEEPER + FRICTIONLESS (owner: "they're stacking up and
+		-- taking up a lot of space"): the old 1.7-wide, 0.9-tall, 28-degree
+		-- wedge ran out to x 6.7 under the side glass (nothing ever lands
+		-- past x ~5.4), sat proud of the deck plane, and at default friction
+		-- (0.45 paired with a planet, static angle 24 degrees) was barely
+		-- steeper than what holds a piece — so a corner pile grew on it.
+		-- Now 1.1 wide (x 5.0..6.1), 0.8 tall (crest 5.0, flush with the
+		-- deck), 36 degrees, and friction 0 at weight 100 like the LipRamp:
+		-- nothing can rest on it, nothing sleeps on it. Elasticity 0 at
+		-- weight 100 so the bouncy planets land dead and slide in.
 		newPart({
 			Name = "CheekRamp",
 			Shape = "Wedge",
-			Size = Vector3.new(1.8, 0.9, 1.7),
-			CFrame = at(side * 5.85, 4.64, -6.0, CFrame.Angles(0, math.rad(side * 90), 0)),
+			Size = Vector3.new(1.6, 0.8, 1.1),
+			CFrame = at(side * 5.55, 4.6, -5.9, CFrame.Angles(0, math.rad(side * 90), 0)),
 			Color = cfg.colBody,
+			CustomPhysicalProperties = PhysicalProperties.new(0.7, 0, 0, 100, 100),
+			CanQuery = false, CanTouch = false,
 		}, cabinet)
 		-- Dress panel on the cheek's spectator face.
 		local cheekPanel = newPart({
@@ -2563,16 +2577,16 @@ function PusherMachine.build(originCFrame, name, theme)
 	-- pair-averaging from lending it any grip.
 	-- Split around the JACKPOT CUP: its bowl cantilevers past this plane
 	-- (front wall outer face z -7.37), so the centre span is open below
-	-- y 6.15 — the solid pedestal and the cup's own 0.5-tall walls are the
-	-- containment there, and the 0.15 between the cup rim (6.00) and this
-	-- panel's bottom (6.15) passes nothing. Above the rim the panel is the
+	-- y 5.85 — the solid pedestal and the cup's own 0.5-tall walls are the
+	-- containment there, and the 0.15 between the cup rim (5.70) and this
+	-- panel's bottom (5.85) passes nothing. Above the rim the panel is the
 	-- bowl's BACKBOARD: a bounce that overshoots the bowl hits it and drops
 	-- back in. Side panels start at |x| 1.10, 0.03 clear of the flanks.
 	-- (The Glass at z -7.45 seals everything above y 4.45 behind all three.)
 	for _, wall in ipairs({
 		{ size = Vector3.new(4.7, 7.0, 0.10), x = -3.45, y = 4.5 },
 		{ size = Vector3.new(4.7, 7.0, 0.10), x = 3.45, y = 4.5 },
-		{ size = Vector3.new(2.4, 2.0, 0.10), x = 0, y = 7.15 },
+		{ size = Vector3.new(2.4, 2.3, 0.10), x = 0, y = 7.0 },
 	}) do
 		newPart({
 			Name = "FrontWall",
@@ -2663,11 +2677,11 @@ function PusherMachine.build(originCFrame, name, theme)
 	-- locked camera than the lip, still drew BELOW the ledge line on screen
 	-- (owner: "higher still, more like 45% more"); v3 lifted the assembly
 	-- 2.10 (rim 6.80) and read too high (owner: "20% lower than now"); v4
-	-- at 80% of that lift (rim 6.38) was "a bit too high still". v5 keeps
-	-- 62%: floor 5.50, rim 6.00. From camEye (0, 12.2, -13.8) the front rim
-	-- at z -7.37 sits at 43.9 degrees of depression and the back rim at
-	-- 38.3, against the lip edge (4.80, -5.11) at 40.4 — the bowl's mouth
-	-- straddles the ledge line and opens above it.
+	-- at 80% of that lift (rim 6.38) was "a bit too high still", v5 at 62%
+	-- (rim 6.00) "a little bit lower" again. v6: floor 5.20, rim 5.70. From
+	-- camEye (0, 12.2, -13.8) the front rim at z -7.37 sits at 45.3 degrees
+	-- of depression and the back rim at 39.6, against the lip edge (4.80,
+	-- -5.11) at 40.4 — the back rim just clears the ledge line on screen.
 	-- HOW IT IS FED: nothing the pusher shoves off the lip can climb 1.5
 	-- studs, so the tongue ramp is gone. A piece enters only by bouncing —
 	-- a fresh drop hitting the front pile (ball-on-ball elasticity 0.5
@@ -2685,7 +2699,7 @@ function PusherMachine.build(originCFrame, name, theme)
 	-- front wall as a crown (see the core block).
 	----------------------------------------------------------------------------
 	local CUP_Z = -6.50 -- bowl centre; interior z -7.25 .. -5.75
-	local CUP_FLOOR = 5.50 -- bowl floor top (rim 6.00, back lip 5.75)
+	local CUP_FLOOR = 5.20 -- bowl floor top (rim 5.70, back lip 5.45)
 	local cupFloor = newPart({
 		Name = "JackpotCupFloor",
 		Size = Vector3.new(2.14, 0.20, 1.74),
@@ -2755,12 +2769,20 @@ function PusherMachine.build(originCFrame, name, theme)
 	local RECL = CFrame.Angles(math.rad(25), 0, 0)
 	local reclCos = math.cos(math.rad(25))
 	local reclSin = math.sin(math.rad(25))
-	-- Plate heights per lane (3X / 10X / 25X / core): tops step 3.71 -> 4.12,
-	-- all under the 4.05..4.46 deck-lip sight cutoff band.
+	-- Plate heights per lane (3X / 10X / 25X / core). The locked camera's
+	-- sightline over the HeaderCrown's front edge (4.02 @ z -5.09) hides a
+	-- plate top above y = 4.02 - (zTop + 5.09) * 0.939, which with the 25-
+	-- degree recline caps a FULLY visible plate at h ~1.76. The outer
+	-- plates used to sit well under that (3X 1.55 / 10X 1.75) while the
+	-- 25X (1.90) lost its top 0.18 behind the crown; with the cheek ramps
+	-- shrunk beside them (owner: "polish the 3x 10x 25x sizes with their
+	-- new space") the skyline is flatter and bigger: 3X 1.72 (top 3.87,
+	-- all visible), 10X 1.76 (3.905, at the limit), 25X 1.78 (3.92, 0.03
+	-- hidden), core 2.00 (behind the JACKPOT CUP's pedestal now anyway).
 	-- Plate hinge line z -5.71: the plate planes ride ~0.18 PROUD of the
 	-- backer's front face (hinge -5.31 buried them 0.22 BEHIND the backer,
 	-- which hid every sign from the camera — found on the first live build).
-	local HEADER_HEIGHTS = { 1.55, 1.75, 1.90, 2.00, 1.90, 1.75, 1.55 }
+	local HEADER_HEIGHTS = { 1.72, 1.76, 1.78, 2.00, 1.78, 1.76, 1.72 }
 	local HEADER_HINGE_Z = -5.71
 	newPart({
 		Name = "HeaderBacker",
@@ -2886,8 +2908,8 @@ function PusherMachine.build(originCFrame, name, theme)
 	----------------------------------------------------------------------------
 	do
 		-- Anchor: a reclined billboard just beyond the bowl's front wall,
-		-- its lowest edge (PotPlate bottom) ~0.09 above the 6.00 rim.
-		local coreCF = at(0, 6.43, -7.15, RECL)
+		-- its lowest edge (PotPlate bottom) ~0.09 above the 5.70 rim.
+		local coreCF = at(0, 6.13, -7.15, RECL)
 		-- Charge bar: a dark backing strip with 8 dim-gold notches; lit
 		-- notches go Neon NEAR-WHITE (255, 244, 214) — never colGoldHot,
 		-- gold-on-gold made the FULL state (the one that sells) the lowest-
@@ -4120,14 +4142,14 @@ function PusherMachine.build(originCFrame, name, theme)
 		CFrame = at(0, 2.225, -6.55),
 		Transparency = 1, CanCollide = false,
 	}, payout)
-	-- JACKPOT HOLE: the sensor inside the cup bowl (x +-0.9, y 5.53..5.98,
-	-- z -7.20..-5.80 — mirrors CUP_FLOOR 5.50 in the cabinet block). A piece
+	-- JACKPOT HOLE: the sensor inside the cup bowl (x +-0.9, y 5.23..5.68,
+	-- z -7.20..-5.80 — mirrors CUP_FLOOR 5.20 in the cabinet block). A piece
 	-- that lands in the bowl touches it on arrival; the server scores it as
 	-- lane 4 (the jackpot lane) regardless of x.
 	newPart({
 		Name = "JackpotHole",
 		Size = Vector3.new(1.8, 0.45, 1.4),
-		CFrame = at(0, 5.755, -6.50),
+		CFrame = at(0, 5.455, -6.50),
 		Transparency = 1, CanCollide = false,
 	}, payout)
 
