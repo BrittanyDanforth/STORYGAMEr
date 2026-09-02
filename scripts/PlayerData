@@ -79,6 +79,8 @@ local ATTRS = {
 	{ "ThroneLevel", 0 },
 	{ "TutorialDone", false },
 	{ "TutGift", false },
+	{ "TutBoosted", false }, -- the 100X tutorial roll's RARE+ guarantee spent
+	{ "FirstForgeDone", false }, -- tutorial completion reward (first forge) paid
 	{ "FeverCount", 0 },
 	{ "AutoRoll", true },
 	{ "AutoDropOn", false },
@@ -136,6 +138,23 @@ function PlayerData.load(userId)
 					break
 				end
 				data = migrate(data)
+			end
+			-- Tutorial flags that predate their attrs (additive, NO version
+			-- bump): a doc that already used the free spin took its boosted
+			-- roll, and one holding a forged form has forged — seed both
+			-- true so a returning player is never handed the tutorial's
+			-- RARE+ guarantee or TUTORIAL COMPLETE bonus. Fresh flags
+			-- backfill false below.
+			if data.attrs.TutBoosted == nil then
+				data.attrs.TutBoosted = data.attrs.FreeSpinUsed == true
+			end
+			if data.attrs.FirstForgeDone == nil then
+				for _, entry in ipairs(data.inv or {}) do
+					if (entry.f1 or 0) > 0 or (entry.f2 or 0) > 0 then
+						data.attrs.FirstForgeDone = true
+						break
+					end
+				end
 			end
 			-- Backfill any attrs added after this doc was written.
 			for _, def in ipairs(ATTRS) do

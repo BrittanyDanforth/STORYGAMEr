@@ -7,7 +7,8 @@
 	(3 OrderedDataStores + the physical RankBoard), offline earnings, the
 	phase-2 product ladder (ProcessReceipt + personal/server boosts), tickets,
 	zone switching (live retheme rebuild), the Gold Rush event,
-	planet-roll announcements, payouts, and housekeeping.
+	planet-roll announcements, payouts, analytics (AnalyticsService funnel +
+	economy events), and housekeeping.
 
 	Setup in Studio (five objects):
 	1. ReplicatedStorage > ModuleScript "PusherMachine"  (src/PusherMachine.luau)
@@ -29,6 +30,7 @@ local MarketplaceService = game:GetService("MarketplaceService")
 local PolicyService = game:GetService("PolicyService")
 local DataStoreService = game:GetService("DataStoreService")
 local RunService = game:GetService("RunService")
+local AnalyticsService = game:GetService("AnalyticsService")
 
 local PusherMachine = require(ReplicatedStorage:WaitForChild("PusherMachine"))
 local GameConfig = require(ReplicatedStorage:WaitForChild("GameConfig"))
@@ -93,6 +95,48 @@ remotes:SetAttribute("SrvTixMag", 0)
 remotes:SetAttribute("SrvTixUntil", 0)
 for _, product in ipairs(GameConfig.Products) do
 	remotes:SetAttribute("PId_" .. product.key, product.id or 0)
+end
+
+--------------------------------------------------------------------------------
+-- Analytics (AnalyticsService): the ONBOARDING funnel (joined -> first_drop
+-- -> first_roll -> starter_gift -> claim_100x -> boosted_roll -> first_forge),
+-- the "purchase" funnel, and economy flows (tickets / robux). Every call is
+-- pcall'd — telemetry must never error gameplay. Roblox drops events past
+-- its per-server budget (~120/min + 20/min per player), so the per-coin
+-- ticket credit is coalesced (see creditTickets); everything else fires on
+-- rare moments.
+--------------------------------------------------------------------------------
+
+-- player -> { [step] = true }: a step fires once per session. The persisted
+-- flags at each call site already make it once EVER — this turns the repeat
+-- checks into a table hit instead of an API call.
+local onboardingSent = {}
+
+local function logOnboarding(player, step, name)
+	local sent = onboardingSent[player]
+	if not sent then
+		sent = {}
+		onboardingSent[player] = sent
+	end
+	if sent[step] then return end
+	sent[step] = true
+	pcall(AnalyticsService.LogOnboardingFunnelStepEvent, AnalyticsService, player, step, name)
+end
+
+-- Custom funnel step: funnel = its name, sessionId = one string per run.
+local function logFunnel(player, funnel, sessionId, step, name)
+	pcall(AnalyticsService.LogFunnelStepEvent, AnalyticsService, player, funnel, sessionId, step, name)
+end
+
+-- Economy flow: flow = Enum.AnalyticsEconomyFlowType.Source/Sink, txType =
+-- an Enum.AnalyticsEconomyTransactionType item (the API takes its .Name),
+-- amount/balance in whole units (a zero amount is not an event).
+local function logEconomy(player, flow, currency, amount, balance, txType, sku)
+	amount = math.floor(amount or 0)
+	if amount <= 0 then return end
+	local tx = (type(txType) == "string") and txType or txType.Name
+	pcall(AnalyticsService.LogEconomyEvent, AnalyticsService, player, flow, currency, amount,
+		math.max(0, math.floor(balance or 0)), tx, sku ~= nil and tostring(sku) or nil)
 end
 
 --------------------------------------------------------------------------------
@@ -258,6 +302,25 @@ end
 local currentZone = 1 -- declared here so creditTickets closes over the LOCAL
 local lastJackpotAt = -math.huge -- server-wide jackpot lockout clock
 
+-- Analytics: a collect credits per COIN (several a second under a good push,
+-- a torrent in Meteor Rain), so ticket credits are coalesced into ONE Source
+-- event per player per TIX_FLOW_SEC — a per-coin event would blow the
+-- AnalyticsService budget and starve the funnel steps. Remainder flushes on
+-- leave.
+local tixFlowPending = {} -- player -> tickets credited since the last event
+local tixFlowAt = {} -- player -> os.clock() of the last event
+local TIX_FLOW_SEC = 15
+
+local function flushTixFlow(player)
+	local pending = tixFlowPending[player] or 0
+	tixFlowPending[player] = 0
+	tixFlowAt[player] = os.clock()
+	if pending > 0 then
+		logEconomy(player, Enum.AnalyticsEconomyFlowType.Source, "tickets", pending,
+			player:GetAttribute("Tickets") or 0, Enum.AnalyticsEconomyTransactionType.Gameplay, "tickets")
+	end
+end
+
 -- rawReward skips multipliers (achievement/jackpot/offline payouts are flat).
 -- Scaled chain (phase 2): zone x throne x tree x rebirth x perk x group x
 -- fever x max(TixBoost, SrvTix) x Tickets2x pass, floored once at the end.
@@ -290,6 +353,10 @@ creditTickets = function(player, amount, rawReward)
 	end
 	player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + amount)
 	player:SetAttribute("TotalEarned", (player:GetAttribute("TotalEarned") or 0) + amount)
+	tixFlowPending[player] = (tixFlowPending[player] or 0) + amount
+	if os.clock() - (tixFlowAt[player] or 0) >= TIX_FLOW_SEC then
+		flushTixFlow(player)
+	end
 	checkAchievements(player)
 	return amount
 end
@@ -538,6 +605,8 @@ buyRemote.OnServerEvent:Connect(function(player, nodeId)
 	local tickets = player:GetAttribute("Tickets") or 0
 	if tickets < cost then return end
 	player:SetAttribute("Tickets", tickets - cost)
+	logEconomy(player, Enum.AnalyticsEconomyFlowType.Sink, "tickets", cost, tickets - cost,
+		Enum.AnalyticsEconomyTransactionType.Shop, nodeId)
 	tree[nodeId] = level + 1 -- table first, attribute second (protocol §6.4)
 	player:SetAttribute(nodeId, level + 1)
 	-- Special planet nodes grant their ball on purchase.
@@ -1452,6 +1521,9 @@ local function doDrop(player, xOffset)
 		local fan = (count > 1) and (i - (count + 1) / 2) * 0.9 or 0
 		spawnPlayerPlanet(player, math.clamp(xOffset + fan, -4.4, 4.4))
 	end
+	if (player:GetAttribute("TotalDrops") or 0) == 0 then
+		logOnboarding(player, 2, "first_drop")
+	end
 	player:SetAttribute("TotalDrops", (player:GetAttribute("TotalDrops") or 0) + count)
 	checkAchievements(player)
 	addFever(player, GameConfig.Fever.fillPerDrop * count)
@@ -1519,6 +1591,20 @@ local function resolveRoll(player, isAuto)
 	local pityLimit = math.max(30, GameConfig.Roll.pityLimit
 		+ GameConfig.statTotal(get, "pityLimitAdd"))
 	local minTier = (pity >= pityLimit) and GameConfig.Roll.pityMinTier or nil
+	-- Tutorial (boost step): the free 100X's roll — the first MANUAL roll
+	-- while LuckBoost > 0 — is guaranteed RARE+ so the boost provably
+	-- matters (the un-boosted first roll is forced COMMON on purpose, below;
+	-- two COMMONs in a row would read as "the boost did nothing"). Once
+	-- ever (TutBoosted persisted), never before TutorialDone so a boost
+	-- bought early can't collide with the forced-basic pull. Pity still
+	-- wins when it asks for more.
+	if not isAuto and player:GetAttribute("TutorialDone") == true
+		and GameConfig.boostMagOf(get) > 0 -- ACTIVE boost only: LuckBoost never zeroes on expiry
+		and player:GetAttribute("TutBoosted") ~= true then
+		minTier = math.max(minTier or 1, 2)
+		player:SetAttribute("TutBoosted", true)
+		logOnboarding(player, 6, "boosted_roll")
+	end
 	-- DEEP LUCK weight mods: the SAME mods feed every odds display, so the
 	-- numbers a player reads are the numbers the server rolls.
 	local inv = invByPlayer[player]
@@ -1603,6 +1689,7 @@ local function performRoll(player, isAuto)
 	local rolledSpec = resolveRoll(player, isAuto)
 	if not isAuto and not player:GetAttribute("TutorialDone") then
 		player:SetAttribute("TutorialDone", true) -- unlocks auto-roll
+		logOnboarding(player, 3, "first_roll")
 		-- Starter forge gift: enough copies to complete ONE forge recipe of
 		-- the first-rolled ball — the forge step of the tutorial. Granted
 		-- once ever (TutGift persisted). Copies are added directly and
@@ -1621,6 +1708,7 @@ local function performRoll(player, isAuto)
 				player:SetAttribute("TutGift", true)
 				dailyToastRemote:FireClient(player, "gift", 0, 0,
 					("+%d %s"):format(need, rolledSpec.n))
+				logOnboarding(player, 4, "starter_gift")
 			end
 		end
 	end
@@ -1699,6 +1787,16 @@ local function doCombine(player, name, tier, fromForm)
 	entry[toField] = (entry[toField] or 0) + 1
 	local newForm = fromForm + 1
 	coreChargeAdd(player, GameConfig.JackpotCore.charge.forge, "direct")
+	-- Tutorial completion reward, once ever (FirstForgeDone persisted): the
+	-- first forge is the tutorial's last step — a flat 500-ticket bonus and
+	-- the TUTORIAL COMPLETE celebration (kind "tutorial"; the 5th arg is the
+	-- display line).
+	if player:GetAttribute("FirstForgeDone") ~= true then
+		player:SetAttribute("FirstForgeDone", true)
+		creditTickets(player, 500, true)
+		dailyToastRemote:FireClient(player, "tutorial", 500, 0, "FIRST FORGE!")
+		logOnboarding(player, 7, "first_forge")
+	end
 	if entry[field] == 0
 		and player:GetAttribute("EquippedBall") == invKey(name, tier)
 		and (player:GetAttribute("EquippedForm") or 0) == fromForm then
@@ -2026,6 +2124,7 @@ spinRemote.OnServerEvent:Connect(function(player)
 	-- cooldown while a 90s boost burns down is the worst feeling in the
 	-- funnel (and the tutorial's ROLL AGAIN step must be pressable now).
 	player:SetAttribute("NextRollAt", workspace:GetServerTimeNow())
+	logOnboarding(player, 5, "claim_100x")
 end)
 
 -- Shop: JOIN THE GROUP claim (+25% luck & +25% tickets forever). GroupId
@@ -2057,6 +2156,9 @@ rebirthRemote.OnServerEvent:Connect(function(player)
 	local tickets = player:GetAttribute("Tickets") or 0
 	if tickets < cost then return end
 	player:SetAttribute("Tickets", 0)
+	-- The whole balance is the sink (rebirth wipes it; cost is only the gate).
+	logEconomy(player, Enum.AnalyticsEconomyFlowType.Sink, "tickets", tickets, 0,
+		Enum.AnalyticsEconomyTransactionType.Shop, "rebirth")
 	local tree = treeByPlayer[player]
 	if tree then
 		-- Filtered wipe: nodes flagged resetsOnRebirth = false (TWIN SURGE,
@@ -2084,6 +2186,8 @@ perkRemote.OnServerEvent:Connect(function(player, perkId)
 			local tickets = player:GetAttribute("Tickets") or 0
 			if tickets < perk.cost then return end
 			player:SetAttribute("Tickets", tickets - perk.cost)
+			logEconomy(player, Enum.AnalyticsEconomyFlowType.Sink, "tickets", perk.cost,
+				tickets - perk.cost, Enum.AnalyticsEconomyTransactionType.Shop, perk.id)
 			player:SetAttribute(perk.attr, perk.value)
 			return
 		end
@@ -2290,6 +2394,10 @@ MarketplaceService.ProcessReceipt = function(receiptInfo)
 	end
 	-- PURCHASE ACTIVE moment: toast before the save so it lands instantly.
 	dailyToastRemote:FireClient(player, "product", 0, 0, matched.name)
+	-- Analytics: the grant landed (the save below only decides the retry).
+	logEconomy(player, Enum.AnalyticsEconomyFlowType.Source, "robux", matched.robux or 0, 0,
+		Enum.AnalyticsEconomyTransactionType.IAP, matched.key)
+	logFunnel(player, "purchase", tostring(receiptInfo.PurchaseId), 1, "granted")
 	table.insert(doc.meta.receipts, receiptInfo.PurchaseId)
 	if #doc.meta.receipts > 50 then table.remove(doc.meta.receipts, 1) end
 	local snapshot = PlayerData.snapshot(player, invByPlayer[player],
@@ -2409,6 +2517,7 @@ local function initPlayer(player)
 	player:SetAttribute("DataLoaded", true)
 	syncInv(player)
 	leaderboardSyncRemote:FireClient(player, lbCache)
+	logOnboarding(player, 1, "joined")
 end
 
 Players.PlayerAdded:Connect(function(player)
@@ -2455,6 +2564,11 @@ Players.PlayerRemoving:Connect(function(player)
 	lastAutoDropAt[player] = nil
 	lastPlayStamp[player] = nil
 	lbLastSent[player] = nil
+	-- Analytics: flush the coalesced ticket credits, drop the session set.
+	flushTixFlow(player)
+	tixFlowPending[player] = nil
+	tixFlowAt[player] = nil
+	onboardingSent[player] = nil
 end)
 
 -- Autosave: 120s + per-player jitter so a full server doesn't burst-write.
