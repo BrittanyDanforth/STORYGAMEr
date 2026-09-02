@@ -1701,7 +1701,7 @@ local function performRoll(player, isAuto)
 	player:SetAttribute("NextRollAt", now + GameConfig.autoRollInterval(get))
 	local rolledSpec = resolveRoll(player, isAuto)
 	if not isAuto and not player:GetAttribute("TutorialDone") then
-		player:SetAttribute("TutorialDone", true) -- unlocks auto-roll
+		player:SetAttribute("TutorialDone", true) -- first roll done (auto-roll waits for FirstForgeDone)
 		logOnboarding(player, 3, "first_roll")
 		-- Starter forge gift: enough copies to complete ONE forge recipe of
 		-- the first-rolled ball — the forge step of the tutorial. Granted
@@ -2480,19 +2480,28 @@ local function initPlayer(player)
 		found = found + 1
 	end
 	player:SetAttribute("IndexFound", found)
-	-- Tutorial-complete backfill: FirstForgeDone gates auto-roll now. A
-	-- veteran from before the forge step existed (first roll done, free
-	-- 100X claimed, an ASCENDED or CELESTIAL in the inventory) must not
-	-- find auto-roll locked behind a coach they will never see — the
-	-- client's veteran gate reads the same three facts.
+	-- Tutorial-complete backfill: FirstForgeDone gates auto-roll now. An
+	-- established player must not find auto-roll locked behind a forge
+	-- step they were never handed: first roll done, free 100X claimed, and
+	-- EITHER the first roll predates the starter gift (TutGift never set —
+	-- the gift is granted only inside the first-roll branch, never
+	-- retried) OR an ASCENDED / CELESTIAL is already owned (PlayerData
+	-- seeds the flag for those docs too; kept as belt and braces). A new
+	-- account never trips this: TutGift lands with TutorialDone on the
+	-- very first roll.
 	if player:GetAttribute("FirstForgeDone") ~= true
 		and player:GetAttribute("TutorialDone") == true
 		and player:GetAttribute("FreeSpinUsed") == true then
+		local handedForgeStep = player:GetAttribute("TutGift") == true
+		local forgedAlready = false
 		for _, entry in pairs(invMap) do
 			if (entry.f1 or 0) > 0 or (entry.f2 or 0) > 0 then
-				player:SetAttribute("FirstForgeDone", true)
+				forgedAlready = true
 				break
 			end
+		end
+		if forgedAlready or not handedForgeStep then
+			player:SetAttribute("FirstForgeDone", true)
 		end
 	end
 	player:SetAttribute("StreakReady",
