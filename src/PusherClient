@@ -1783,11 +1783,19 @@ do
 	pityPanel.ZIndex = 12
 	pityPanel.Parent = roller
 	pixelPlate(pityPanel, Color3.fromRGB(15, 16, 24), 12, "card", 3)
-	local pityLabel = label(roller, "PITY 0/50", 12, UI_SUB, Enum.Font.GothamBold)
+	-- Kid words, no "pity": the strip says exactly what the bar counts down
+	-- to. Scaled under a 12px ceiling so the longest copy never paints past
+	-- the 232px strip (fixed 12px GothamBold is a hair over that budget).
+	local pityLabel = label(roller, "GUARANTEED ULTRA RARE IN 50 ROLLS", 12, UI_SUB, Enum.Font.GothamBold)
 	pityLabel.Position = UDim2.new(0, 24, 1, -48)
 	pityLabel.Size = UDim2.new(1, -48, 0, 14)
 	pityLabel.TextXAlignment = Enum.TextXAlignment.Left
+	pityLabel.TextScaled = true
 	pityLabel.ZIndex = 13
+	local pityFit = Instance.new("UITextSizeConstraint")
+	pityFit.MinTextSize = 8
+	pityFit.MaxTextSize = 12
+	pityFit.Parent = pityLabel
 	local pityBar = Instance.new("Frame")
 	pityBar.Position = UDim2.new(0, 24, 1, -30)
 	pityBar.Size = UDim2.new(1, -48, 0, 10)
@@ -1811,11 +1819,15 @@ do
 		local pity = math.min(player:GetAttribute("Pity") or 0, pityLimit)
 		TweenService:Create(pityFill, TweenInfo.new(0.25, Enum.EasingStyle.Quad),
 			{ Size = UDim2.new(pity / pityLimit, 0, 1, 0) }):Play()
-		if pity >= pityLimit then
-			pityLabel.Text = "NEXT ROLL: ULTRA RARE+ GUARANTEED"
+		-- Server guarantees when Pity >= limit AT roll time and bumps Pity
+		-- after each sub-ULTRA roll, so the guaranteed roll is (limit - pity)
+		-- failing rolls away PLUS the one that pays: +1, or the copy lies by one.
+		local left = math.max(pityLimit - pity + 1, 1)
+		if left <= 1 then
+			pityLabel.Text = "ULTRA RARE GUARANTEED NEXT ROLL!"
 			pityLabel.TextColor3 = UI_PURPLE
 		else
-			pityLabel.Text = ("PITY %d/%d — ULTRA+ AT FULL"):format(pity, pityLimit)
+			pityLabel.Text = ("GUARANTEED ULTRA RARE IN %d ROLLS"):format(left)
 			pityLabel.TextColor3 = UI_SUB
 		end
 	end
@@ -3441,13 +3453,134 @@ local function renderRanksPage()
 	for _, def in ipairs(RANK_BOARD_DEFS) do
 		table.insert(boardTabs, { id = def.id, label = def.label })
 	end
-	pillTabBar(boardTabs, ranksBoard, function(id)
+	local boardBar = pillTabBar(boardTabs, ranksBoard, function(id)
 		ranksBoard = id -- remembered across opens (state local)
 		renderPage()
 	end)
 	local boardDef = RANK_BOARD_DEFS[1]
 	for _, def in ipairs(RANK_BOARD_DEFS) do
 		if def.id == ranksBoard then boardDef = def end
+	end
+
+	-- Board identity: every value on the page wears the picked board's
+	-- colour (EARNED gold / REBIRTHS rebirth-red / FOUND index-pink) so a
+	-- screenshot says which board it is without reading the chips.
+	local BOARD_TINT = {
+		earned = UI_GOLD,
+		rebirth = Color3.fromRGB(210, 72, 98),
+		found = Color3.fromRGB(214, 86, 160),
+	}
+	local tint = BOARD_TINT[boardDef.id] or UI_GOLD
+	local INK = Color3.fromRGB(12, 13, 20) -- the one glyph-stroke colour here
+	local STAGE = Color3.fromRGB(16, 17, 26) -- dark brick behind podium/CTA
+	local tabLabel = ranksTab == "server" and "SERVER"
+		or ranksTab == "friends" and "FRIENDS" or "GLOBAL"
+	-- The shared pillTabBar paints the active pill gold; only the active
+	-- BOARD chip is recoloured here so the strip carries the identity too.
+	for _, pill in ipairs(boardBar:GetChildren()) do
+		if pill:IsA("TextButton") and pill.Text == boardDef.label then
+			pill.TextColor3 = tint
+			pill.BackgroundColor3 = tint:Lerp(UI_BG, 0.8)
+			local pillStroke = pill:FindFirstChildOfClass("UIStroke")
+			if pillStroke then pillStroke.Color = tint end
+		end
+	end
+
+	-- Entrance: each block fades in (text / plate / stroke transparency
+	-- 1 -> settled over 0.18s), staggered 0.02s per block, via the tween's
+	-- own delay so nothing yields. S.reducedMotion renders settled.
+	local fadeOrder = 0
+	-- Only animate when the VIEW changed (tab/board pick): the ~90s
+	-- LeaderboardSync and the friends fetch re-render under the reader,
+	-- and a full blink-to-transparent there reads as a glitch.
+	local fadeKey = tostring(ranksTab) .. "|" .. tostring(ranksBoard)
+	local animateEntrance = S.ranksFadeKey ~= fadeKey
+	S.ranksFadeKey = fadeKey
+	local function fadeIn(block)
+		if S.reducedMotion or not animateEntrance then return end
+		local info = TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out,
+			0, false, fadeOrder * 0.02)
+		fadeOrder = fadeOrder + 1
+		local function fade(obj, prop)
+			local target = obj[prop]
+			if target >= 1 then return end
+			obj[prop] = 1
+			TweenService:Create(obj, info, { [prop] = target }):Play()
+		end
+		fade(block, "BackgroundTransparency")
+		for _, obj in ipairs(block:GetDescendants()) do
+			if obj:IsA("TextLabel") or obj:IsA("TextButton") then
+				fade(obj, "TextTransparency")
+				fade(obj, "TextStrokeTransparency")
+				fade(obj, "BackgroundTransparency")
+			elseif obj:IsA("ImageLabel") then
+				fade(obj, "ImageTransparency")
+				fade(obj, "BackgroundTransparency")
+			elseif obj:IsA("Frame") then
+				fade(obj, "BackgroundTransparency")
+			elseif obj:IsA("UIStroke") then
+				fade(obj, "Transparency")
+			end
+		end
+	end
+
+	-- Round headshot on a dark disc with a coloured pixel-frame stroke.
+	local function headshot(parent, userId, size, x, y, color, thick, alpha)
+		local head = Instance.new("ImageLabel")
+		head.BackgroundColor3 = UI_BG
+		head.Position = UDim2.new(0, x, 0, y)
+		head.Size = UDim2.fromOffset(size, size)
+		head.BorderSizePixel = 0
+		head.ZIndex = 23
+		head.Parent = parent
+		corner(head, math.floor(size / 2))
+		stroke(head, color, thick, alpha)
+		setHeadshot(head, userId)
+		return head
+	end
+
+	-- FRIENDS retention lever: a pixel-brick INVITE FRIENDS button on a
+	-- dark stage — shown whenever the friends board has nobody but you.
+	local function inviteBlock(headline)
+		local cta = makeRow(132)
+		cta.BackgroundTransparency = 1
+		pixelPlate(cta, STAGE, 21, "card", 3)
+		pixelDither(cta, 22, 0.45)
+		local head = label(cta, headline, 16, UI_TEXT, Enum.Font.FredokaOne)
+		head.Position = UDim2.new(0, 12, 0, 12)
+		head.Size = UDim2.new(1, -24, 0, 22)
+		head.ZIndex = 23
+		local inv = Instance.new("TextButton")
+		inv.AnchorPoint = Vector2.new(0.5, 0)
+		inv.Position = UDim2.new(0.5, 0, 0, 42)
+		inv.Size = UDim2.fromOffset(240, 50)
+		inv.BackgroundTransparency = 1
+		inv.Text = ""
+		inv.AutoButtonColor = false
+		inv.ZIndex = 23
+		inv.Parent = cta
+		local invFace = pixelPlate(inv, UI_GREEN, 23, "btn", 3)
+		local invLbl = label(inv, "INVITE FRIENDS", 20, Color3.new(1, 1, 1), Enum.Font.FredokaOne)
+		invLbl.Size = UDim2.new(1, 0, 1, -8)
+		invLbl.TextStrokeColor3 = Color3.fromRGB(18, 74, 34)
+		invLbl.TextStrokeTransparency = 0.1
+		invLbl.ZIndex = 24
+		inv.MouseEnter:Connect(function()
+			invFace.ImageColor3 = pixelTint(Color3.fromRGB(104, 214, 124))
+		end)
+		inv.MouseLeave:Connect(function()
+			invFace.ImageColor3 = pixelTint(UI_GREEN)
+		end)
+		inv.MouseButton1Click:Connect(function()
+			pcall(function()
+				game:GetService("SocialService"):PromptGameInvite(player)
+			end)
+		end)
+		local sub = label(cta, "PLAY WITH FRIENDS, RACE THE BOARD!", 12, UI_GOLD, Enum.Font.GothamBlack)
+		sub.Position = UDim2.new(0, 12, 0, 102)
+		sub.Size = UDim2.new(1, -24, 0, 16)
+		sub.ZIndex = 23
+		fadeIn(cta)
 	end
 
 	-- Assemble the row list for the active tab.
@@ -3480,124 +3613,210 @@ local function renderRanksPage()
 		end
 	end
 
-	if not rows or #rows == 0 then
-		-- Studio / empty fallback.
-		for _ = 1, 3 do
-			local row = makeRow(44)
-			row.BackgroundTransparency = 0.4
-			local dash = label(row, "—", 14, UI_SUB, Enum.Font.GothamBold)
-			dash.Size = UDim2.fromScale(1, 1)
-			dash.ZIndex = 22
-		end
-		local msgRow = makeRow(34)
-		msgRow.BackgroundTransparency = 1
-		local msg = label(msgRow,
-			ranksTab == "friends" and "NO FRIENDS ON THE BOARD YET — INVITE SOMEONE!"
-				or "PUBLISH TO SEE GLOBAL RANKS", 13, UI_SUB, Enum.Font.GothamBlack)
-		msg.Size = UDim2.new(1, -8, 1, 0)
-		msg.Position = UDim2.new(0, 4, 0, 0)
-		msg.ZIndex = 22
-	else
-		-- Top-3 podium: 1st center (big), 2nd left, 3rd right — gold/silver/
-		-- bronze strokes, headshots, EXACT values.
-		local PODIUM = {
-			{ slot = 2, x = 0.5, size = 64, y = 6, tint = Color3.fromRGB(255, 200, 80) },
-			{ slot = 1, x = 0.17, size = 52, y = 20, tint = Color3.fromRGB(200, 204, 214) },
-			{ slot = 3, x = 0.83, size = 52, y = 20, tint = Color3.fromRGB(205, 127, 50) },
-		}
-		local podium = makeRow(128)
-		podium.BackgroundColor3 = Color3.fromRGB(16, 17, 26)
-		for _, pd in ipairs(PODIUM) do
-			local rankIdx = pd.slot == 1 and 2 or pd.slot == 2 and 1 or 3
-			local entry = rows[rankIdx]
-			if entry then
-				local head = Instance.new("ImageLabel")
-				head.BackgroundColor3 = UI_BG
-				head.AnchorPoint = Vector2.new(0.5, 0)
-				head.Position = UDim2.new(pd.x, 0, 0, pd.y)
-				head.Size = UDim2.fromOffset(pd.size, pd.size)
-				head.BorderSizePixel = 0
-				head.ZIndex = 22
-				head.Parent = podium
-				corner(head, math.floor(pd.size / 2))
-				stroke(head, pd.tint, rankIdx == 1 and 3 or 2, 0.05)
-				setHeadshot(head, entry.userId)
-				local medal = label(podium, "#" .. rankIdx, 12, pd.tint, Enum.Font.GothamBlack)
-				medal.AnchorPoint = Vector2.new(0.5, 0)
-				medal.Position = UDim2.new(pd.x, 0, 0, pd.y + pd.size + 2)
-				medal.Size = UDim2.fromOffset(40, 14)
-				medal.ZIndex = 22
-				local nm = label(podium, tostring(entry.name or "?"), 12,
-					entry.userId == player.UserId and UI_GOLD or UI_TEXT, Enum.Font.GothamBold)
-				nm.AnchorPoint = Vector2.new(0.5, 0)
-				nm.Position = UDim2.new(pd.x, 0, 0, pd.y + pd.size + 16)
-				nm.Size = UDim2.fromOffset(120, 14)
-				nm.TextTruncate = Enum.TextTruncate.AtEnd
-				nm.ZIndex = 22
-				local val = label(podium, formatCommas(entry.value or 0), 12, pd.tint, Enum.Font.GothamBlack)
-				val.AnchorPoint = Vector2.new(0.5, 0)
-				val.Position = UDim2.new(pd.x, 0, 0, pd.y + pd.size + 30)
-				val.Size = UDim2.fromOffset(120, 14)
-				val.ZIndex = 22
+	-- Your rank on THIS list (nil = not in the cached top-50 -> "50+"),
+	-- and how many friends actually share the friends board with you.
+	local myValue = player:GetAttribute(boardDef.attr) or 0
+	local myRank = nil
+	local friendsOnBoard = 0
+	if rows then
+		for i, entry in ipairs(rows) do
+			if entry.userId == player.UserId then
+				if not myRank then myRank = i end
+			else
+				friendsOnBoard = friendsOnBoard + 1
 			end
-		end
-
-		-- Rows 4-25: rank, name, short value; own row gets a gold stroke.
-		for i = 4, math.min(#rows, 25) do
-			local entry = rows[i]
-			local row = makeRow(44)
-			local isYou = entry.userId == player.UserId
-			if isYou then
-				row.BackgroundColor3 = Color3.fromRGB(44, 38, 20)
-				stroke(row, UI_GOLD, 1.6, 0.25)
-			end
-			local rk = label(row, "#" .. i, 13, UI_SUB, Enum.Font.GothamBlack)
-			rk.Position = UDim2.new(0, 12, 0, 0)
-			rk.Size = UDim2.fromOffset(44, 44)
-			rk.TextXAlignment = Enum.TextXAlignment.Left
-			rk.ZIndex = 22
-			local nm = label(row, tostring(entry.name or "?"), 14,
-				isYou and UI_GOLD or UI_TEXT, Enum.Font.GothamBold)
-			nm.Position = UDim2.new(0, 60, 0, 0)
-			nm.Size = UDim2.new(1, -180, 1, 0)
-			nm.TextTruncate = Enum.TextTruncate.AtEnd
-			nm.TextXAlignment = Enum.TextXAlignment.Left
-			nm.ZIndex = 22
-			local val = label(row, shortValue(entry.value or 0), 14, UI_GOLD, Enum.Font.GothamBlack)
-			val.AnchorPoint = Vector2.new(1, 0)
-			val.Position = UDim2.new(1, -14, 0, 0)
-			val.Size = UDim2.fromOffset(110, 44)
-			val.TextXAlignment = Enum.TextXAlignment.Right
-			val.ZIndex = 22
 		end
 	end
 
-	-- Pinned YOUR RANK row (exact + short; rank from cache else "50+").
+	-- ---- YOUR CARD, pinned FIRST: the number a kid screenshots ----
 	do
-		local myValue = player:GetAttribute(boardDef.attr) or 0
-		local myRank = nil
-		if rows then
-			for i, entry in ipairs(rows) do
-				if entry.userId == player.UserId then
-					myRank = i
-					break
-				end
+		local card = makeRow(84)
+		card.BackgroundTransparency = 1
+		pixelPlate(card, Color3.fromRGB(58, 46, 18), 21, "card", 3)
+		pixelDither(card, 22, 0.4)
+		headshot(card, player.UserId, 56, 14, 14, UI_GOLD, 2.4, 0.05)
+		local eyebrow = label(card, "YOU", 11, UI_GOLD, Enum.Font.GothamBlack)
+		eyebrow.Position = UDim2.new(0, 82, 0, 10)
+		eyebrow.Size = UDim2.new(1, -290, 0, 14)
+		eyebrow.TextXAlignment = Enum.TextXAlignment.Left
+		eyebrow.ZIndex = 23
+		local nm = label(card, player.DisplayName, 18, UI_TEXT, Enum.Font.GothamBlack)
+		nm.Position = UDim2.new(0, 82, 0, 24)
+		nm.Size = UDim2.new(1, -290, 0, 22)
+		nm.TextTruncate = Enum.TextTruncate.AtEnd
+		nm.TextXAlignment = Enum.TextXAlignment.Left
+		nm.ZIndex = 23
+		-- Motivator: the gap to the entry above you, from the same rows.
+		local motiv
+		if myRank == 1 then
+			motiv = "YOU'RE #1 — DEFEND IT!"
+		elseif myRank then
+			local above = rows[myRank - 1]
+			local need = math.floor((above.value or 0) - myValue + 1)
+			if need > 0 then
+				motiv = ("+%s TO PASS #%d"):format(formatCommas(need), myRank - 1)
+			else
+				motiv = ("PASSING #%d — BOARD UPDATING!"):format(myRank - 1)
+			end
+		elseif ranksTab == "friends" and not friendIds then
+			motiv = "FINDING YOUR FRIENDS..."
+		else
+			motiv = "REACH THE TOP 25!"
+		end
+		local mv = label(card, motiv, 12, Color3.fromRGB(255, 226, 150), Enum.Font.GothamBold)
+		mv.Position = UDim2.new(0, 82, 0, 50)
+		mv.Size = UDim2.new(1, -290, 0, 16)
+		mv.TextTruncate = Enum.TextTruncate.AtEnd
+		mv.TextXAlignment = Enum.TextXAlignment.Left
+		mv.ZIndex = 23
+		local rk = label(card, myRank and ("#" .. myRank)
+			or ((ranksTab == "friends" and not friendIds) and "..." or "50+"),
+			32, UI_GOLD, Enum.Font.FredokaOne)
+		rk.AnchorPoint = Vector2.new(1, 0)
+		rk.Position = UDim2.new(1, -14, 0, 6)
+		rk.Size = UDim2.fromOffset(200, 40)
+		rk.TextXAlignment = Enum.TextXAlignment.Right
+		rk.TextStrokeColor3 = INK
+		rk.TextStrokeTransparency = 0.4
+		rk.ZIndex = 23
+		local val = label(card, formatCommas(myValue) .. " " .. boardDef.label, 13, UI_TEXT, Enum.Font.GothamBlack)
+		val.AnchorPoint = Vector2.new(1, 0)
+		val.Position = UDim2.new(1, -14, 0, 50)
+		val.Size = UDim2.fromOffset(200, 16)
+		val.TextTruncate = Enum.TextTruncate.AtEnd
+		val.TextXAlignment = Enum.TextXAlignment.Right
+		val.ZIndex = 23
+		fadeIn(card)
+	end
+
+	if not rows or #rows == 0 then
+		if ranksTab == "friends" then
+			inviteBlock(friendIds and "NO FRIENDS ON THE BOARD YET" or "FINDING YOUR FRIENDS...")
+		else
+			-- Studio / empty fallback: ghost rows + an honest line.
+			for _ = 1, 3 do
+				local row = makeRow(44)
+				row.BackgroundTransparency = 0.4
+				local dash = label(row, "—", 14, UI_SUB, Enum.Font.GothamBold)
+				dash.Size = UDim2.fromScale(1, 1)
+				dash.ZIndex = 22
+			end
+			local msgRow = makeRow(34)
+			msgRow.BackgroundTransparency = 1
+			local msg = label(msgRow, "PUBLISH TO SEE GLOBAL RANKS", 13, UI_SUB, Enum.Font.GothamBlack)
+			msg.Size = UDim2.new(1, -8, 1, 0)
+			msg.Position = UDim2.new(0, 4, 0, 0)
+			msg.ZIndex = 22
+		end
+	else
+		-- ---- PODIUM: a stage. Dark brick behind, three pixel pedestals
+		-- (1st tallest, centre) in gold/silver/bronze, heads on the tier
+		-- stroke, name + EXACT value stacked above each pedestal. ----
+		local PODIUM = {
+			{ rank = 1, x = 0.5, size = 72, pedH = 62, tag = "1ST", tint = Color3.fromRGB(255, 200, 80) },
+			{ rank = 2, x = 0.17, size = 58, pedH = 44, tag = "2ND", tint = Color3.fromRGB(200, 204, 214) },
+			{ rank = 3, x = 0.83, size = 58, pedH = 32, tag = "3RD", tint = Color3.fromRGB(205, 127, 50) },
+		}
+		local stage = makeRow(206)
+		stage.BackgroundTransparency = 1
+		pixelPlate(stage, STAGE, 21, "card", 3)
+		pixelDither(stage, 22, 0.45)
+		local cap = label(stage, tabLabel .. " TOP 3 · " .. boardDef.label, 11, tint, Enum.Font.GothamBlack)
+		cap.Position = UDim2.new(0, 14, 0, 8)
+		cap.Size = UDim2.new(1, -28, 0, 14)
+		cap.TextXAlignment = Enum.TextXAlignment.Left
+		cap.ZIndex = 23
+		for _, pd in ipairs(PODIUM) do
+			local entry = rows[pd.rank]
+			local isYou = entry ~= nil and entry.userId == player.UserId
+			local ped = Instance.new("Frame")
+			ped.AnchorPoint = Vector2.new(0.5, 1)
+			ped.Position = UDim2.new(pd.x, 0, 1, -10)
+			ped.Size = UDim2.new(0.28, 0, 0, pd.pedH)
+			ped.BackgroundTransparency = 1
+			ped.ZIndex = 23
+			ped.Parent = stage
+			pixelPlate(ped, entry and pd.tint or pd.tint:Lerp(STAGE, 0.6), 23, "btn", 2)
+			local tag = label(ped, pd.tag, 14, entry and Color3.fromRGB(30, 26, 14) or UI_SUB,
+				Enum.Font.GothamBlack)
+			tag.Position = UDim2.new(0, 0, 0, 3)
+			tag.Size = UDim2.new(1, 0, 0, 22)
+			tag.ZIndex = 24
+			-- Stack grows upward off the pedestal top: value, name, head.
+			local baseY = -10 - pd.pedH
+			local nm = label(stage, entry and tostring(entry.name or "?") or "OPEN",
+				pd.rank == 1 and 14 or 12,
+				isYou and UI_GOLD or entry and UI_TEXT or UI_SUB,
+				isYou and Enum.Font.GothamBlack or Enum.Font.GothamBold)
+			nm.AnchorPoint = Vector2.new(0.5, 1)
+			nm.Position = UDim2.new(pd.x, 0, 1, baseY - 18)
+			nm.Size = UDim2.fromOffset(124, 16)
+			nm.TextTruncate = Enum.TextTruncate.AtEnd
+			nm.ZIndex = 23
+			if entry then
+				local val = label(stage, formatCommas(entry.value or 0),
+					pd.rank == 1 and 15 or 13, tint, Enum.Font.GothamBlack)
+				val.AnchorPoint = Vector2.new(0.5, 1)
+				val.Position = UDim2.new(pd.x, 0, 1, baseY - 2)
+				val.Size = UDim2.fromOffset(136, 16)
+				val.ZIndex = 23
+				local head = headshot(stage, entry.userId, pd.size, 0, 0, pd.tint,
+					pd.rank == 1 and 3 or 2, 0.05)
+				head.AnchorPoint = Vector2.new(0.5, 1)
+				head.Position = UDim2.new(pd.x, 0, 1, baseY - 36)
 			end
 		end
-		local row = makeRow(48)
-		row.BackgroundColor3 = Color3.fromRGB(44, 38, 20)
-		stroke(row, UI_GOLD, 1.8, 0.2)
-		local youText
-		if myRank then
-			youText = ("YOU — #%d · %s"):format(myRank, formatCommas(myValue))
-		else
-			youText = ("YOU — RANK 50+ · %s · KEEP PUSHING!"):format(formatCommas(myValue))
+		fadeIn(stage)
+
+		-- ---- ROWS 4-25: pixel-brick rows, rank plate by band, headshot,
+		-- name, EXACT value in the board colour. Your row stays gold. ----
+		for i = 4, math.min(#rows, 25) do
+			local entry = rows[i]
+			local isYou = entry.userId == player.UserId
+			local row = makeRow(44)
+			row.BackgroundTransparency = 1
+			local face = UI_ROW
+			if isYou then
+				face = Color3.fromRGB(64, 52, 20)
+			elseif i % 2 == 1 then
+				face = UI_ROW:Lerp(Color3.new(1, 1, 1), 0.05)
+			end
+			pixelPlate(row, face, 21, "btn", 2)
+			local rkPlate = Instance.new("Frame")
+			rkPlate.Position = UDim2.new(0, 6, 0, 3)
+			rkPlate.Size = UDim2.fromOffset(34, 34)
+			rkPlate.BackgroundTransparency = 1
+			rkPlate.ZIndex = 22
+			rkPlate.Parent = row
+			pixelPlate(rkPlate, isYou and UI_GOLD
+				or i <= 10 and UI_GOLD:Lerp(UI_ROW, 0.6)
+				or Color3.fromRGB(70, 74, 94), 22, "btn", 2)
+			local rk = label(rkPlate, "#" .. i, 13, isYou and INK or Color3.new(1, 1, 1), Enum.Font.GothamBlack)
+			rk.Size = UDim2.new(1, 0, 1, -5)
+			rk.TextStrokeColor3 = INK
+			rk.TextStrokeTransparency = isYou and 1 or 0.3
+			rk.ZIndex = 23
+			headshot(row, entry.userId, 30, 48, 5,
+				isYou and UI_GOLD or Color3.fromRGB(60, 62, 80), 1.4, isYou and 0.1 or 0.4)
+			local nm = label(row, tostring(entry.name or "?"), 14,
+				isYou and UI_GOLD or UI_TEXT, isYou and Enum.Font.GothamBlack or Enum.Font.GothamBold)
+			nm.Position = UDim2.new(0, 88, 0, 0)
+			nm.Size = UDim2.new(1, -236, 1, -5)
+			nm.TextTruncate = Enum.TextTruncate.AtEnd
+			nm.TextXAlignment = Enum.TextXAlignment.Left
+			nm.ZIndex = 22
+			local val = label(row, formatCommas(entry.value or 0), 14, tint, Enum.Font.GothamBlack)
+			val.AnchorPoint = Vector2.new(1, 0)
+			val.Position = UDim2.new(1, -12, 0, 0)
+			val.Size = UDim2.new(0, 140, 1, -5)
+			val.TextXAlignment = Enum.TextXAlignment.Right
+			val.ZIndex = 22
+			fadeIn(row)
 		end
-		local you = label(row, youText, 14, UI_GOLD, Enum.Font.GothamBlack)
-		you.Size = UDim2.new(1, -24, 1, 0)
-		you.Position = UDim2.new(0, 12, 0, 0)
-		you.TextXAlignment = Enum.TextXAlignment.Left
-		you.ZIndex = 22
+
+		if ranksTab == "friends" and friendsOnBoard == 0 then
+			inviteBlock("IT'S JUST YOU UP THERE!")
+		end
 	end
 
 	-- Cadence honesty footer (loop-leaderboard §5; 12px floor).
@@ -4148,12 +4367,12 @@ function renderPage()
 			("DISCOVERED %d / %d"):format(discoveredTotal, totalSpecs), 14,
 			UI_GOLD, Enum.Font.GothamBlack)
 		discLabel.Position = UDim2.new(0, 14, 0, 6)
-		discLabel.Size = UDim2.new(1, -28, 0, 18)
+		discLabel.Size = UDim2.new(1, -130, 0, 18) -- leaves room for the OWNED toggle
 		discLabel.TextXAlignment = Enum.TextXAlignment.Left
 		discLabel.ZIndex = 22
 		local discBar = Instance.new("Frame")
 		discBar.Position = UDim2.new(0, 14, 0, 30)
-		discBar.Size = UDim2.new(1, -28, 0, 8)
+		discBar.Size = UDim2.new(1, -130, 0, 8)
 		discBar.BackgroundColor3 = UI_BG
 		discBar.BorderSizePixel = 0
 		discBar.ZIndex = 22
@@ -4166,6 +4385,29 @@ function renderPage()
 		discFill.ZIndex = 23
 		discFill.Parent = discBar
 		corner(discFill, 4)
+		-- OWNED toggle at the right end of the header: hides the NOT FOUND
+		-- YET block so the book shows only what the player holds. Its state
+		-- lives on S (the main chunk is at the local cap); nil = show all.
+		local ownedOnly = S.indexOwnedOnly == true
+		local ownedToggle = Instance.new("TextButton")
+		ownedToggle.AnchorPoint = Vector2.new(1, 0.5)
+		ownedToggle.Position = UDim2.new(1, -14, 0.5, 0)
+		ownedToggle.Size = UDim2.fromOffset(92, 24)
+		ownedToggle.BackgroundColor3 = ownedOnly and Color3.fromRGB(52, 42, 18) or UI_ROW
+		ownedToggle.BorderSizePixel = 0
+		ownedToggle.Font = Enum.Font.GothamBlack
+		ownedToggle.TextSize = 11
+		ownedToggle.TextColor3 = ownedOnly and UI_GOLD or UI_SUB
+		ownedToggle.Text = ownedOnly and "SHOW ALL" or "OWNED ONLY"
+		ownedToggle.ZIndex = 22
+		ownedToggle.Parent = headerRow
+		corner(ownedToggle, 8)
+		stroke(ownedToggle, ownedOnly and UI_GOLD or Color3.fromRGB(60, 62, 82), 1.2,
+			ownedOnly and 0.25 or 0.3)
+		ownedToggle.MouseButton1Click:Connect(function()
+			S.indexOwnedOnly = not ownedOnly
+			renderPage()
+		end)
 
 		-- Search box: FocusLost re-renders (a per-keystroke rebuild would
 		-- steal the box's focus); the text survives via the state local.
@@ -4242,11 +4484,12 @@ function renderPage()
 		-- Sort chips.
 		local sortRow = makeRow(32)
 		sortRow.BackgroundTransparency = 1
+		-- Kid-clear labels; the ids are the state values and stay put.
 		local SORTS = {
-			{ id = "rarity", labelText = "RARITY" },
-			{ id = "name", labelText = "NAME" },
-			{ id = "owned", labelText = "MOST OWNED" },
-			{ id = "forge", labelText = "CAN FORGE" },
+			{ id = "rarity", labelText = "RAREST" },
+			{ id = "name", labelText = "A-Z" },
+			{ id = "owned", labelText = "MOST COPIES" },
+			{ id = "forge", labelText = "READY TO FORGE" },
 			{ id = "equipped", labelText = "EQUIPPED" },
 		}
 		for si, sortDef in ipairs(SORTS) do
@@ -4256,6 +4499,17 @@ function renderPage()
 			chipBtn.BorderSizePixel = 0
 			chipBtn.Font = Enum.Font.GothamBlack
 			chipBtn.TextSize = 12
+			-- Scaled with a floor: five chips squeeze on 2-col phones and
+			-- "READY TO FORGE" must never paint past the chip edge.
+			chipBtn.TextScaled = true
+			local chipFit = Instance.new("UITextSizeConstraint")
+			chipFit.MinTextSize = 9
+			chipFit.MaxTextSize = 12
+			chipFit.Parent = chipBtn
+			local chipPad = Instance.new("UIPadding")
+			chipPad.PaddingLeft = UDim.new(0, 4)
+			chipPad.PaddingRight = UDim.new(0, 4)
+			chipPad.Parent = chipBtn
 			chipBtn.Text = sortDef.labelText
 			chipBtn.ZIndex = 22
 			chipBtn.Parent = sortRow
@@ -4337,6 +4591,9 @@ function renderPage()
 			local key = spec.n .. "|" .. tier
 			local entry = invByKey[key]
 			local pass = indexFilter == 0 or tier == indexFilter
+			-- OWNED ONLY drops unfound planets entirely (same discovered
+			-- predicate as the DISCOVERED bar: presence in the inventory).
+			if pass and ownedOnly then pass = entry ~= nil end
 			if pass and searchLower ~= "" then
 				pass = entry ~= nil and spec.n:lower():find(searchLower, 1, true) ~= nil
 			end
@@ -4356,6 +4613,8 @@ function renderPage()
 			local at, bt = a.t or 1, b.t or 1
 			local ak, bk = a.n .. "|" .. at, b.n .. "|" .. bt
 			local ae, be = invByKey[ak], invByKey[bk]
+			-- Found planets always lead; unfound trail in EVERY sort.
+			if (ae ~= nil) ~= (be ~= nil) then return ae ~= nil end
 			if indexSort == "name" then
 				if a.n ~= b.n then return a.n < b.n end
 				return at < bt
@@ -4375,7 +4634,13 @@ function renderPage()
 				local ao, bo = totalOwnedOf(ae), totalOwnedOf(be)
 				if ao ~= bo then return ao > bo end
 			end
-			if at ~= bt then return at < bt end
+			-- RAREST: found planets rarest-first (the trophies), unfound
+			-- commonest-first (the next likely finds). Other sorts keep
+			-- their commonest-first tiebreak.
+			if at ~= bt then
+				if indexSort == "rarity" and ae ~= nil then return at > bt end
+				return at < bt
+			end
 			return a.n < b.n
 		end)
 
@@ -4389,11 +4654,65 @@ function renderPage()
 		local panelW = math.min(vpW * 0.94, 1380) - 28
 		local cols = math.clamp(math.floor(panelW / 168), 2, 6)
 		local CARD_H = 196
-		for base = 1, #specs, cols do
+		-- Row plan. The default RAREST view (no search) splits the list
+		-- into YOUR PLANETS / NOT FOUND YET, each under a section header
+		-- on its own grid rows (the second grid never shares a row with
+		-- the first). Other sorts and searches stay one flat grid. specs
+		-- is already sorted found-first, so the split is a prefix.
+		local gridRows = {}
+		local function planRows(from, to, header, headerColor)
+			if header then
+				table.insert(gridRows, { header = header, color = headerColor })
+			end
+			for base = from, to, cols do
+				local cards = {}
+				for col = 0, cols - 1 do
+					if base + col <= to then cards[col + 1] = specs[base + col] end
+				end
+				table.insert(gridRows, { cards = cards })
+			end
+		end
+		if indexSort == "rarity" and searchLower == "" then
+			local foundCount = 0
+			for _, spec in ipairs(specs) do
+				if invByKey[spec.n .. "|" .. (spec.t or 1)] then foundCount += 1 end
+			end
+			if foundCount > 0 then
+				planRows(1, foundCount, ("YOUR PLANETS — %d"):format(foundCount), UI_GOLD)
+			end
+			if foundCount < #specs then
+				planRows(foundCount + 1, #specs,
+					("NOT FOUND YET — %d"):format(#specs - foundCount), UI_SUB)
+			end
+		else
+			planRows(1, #specs, nil, nil)
+		end
+		if #specs == 0 then
+			-- Empty state (OWNED ONLY + a rarity with nothing owned, or a
+			-- search with no hits) — never a blank page for a kid.
+			local emptyRow = makeRow(40)
+			emptyRow.BackgroundTransparency = 1
+			local emptyText = label(emptyRow, "NOTHING HERE YET — ROLL TO FIND PLANETS!",
+				13, UI_SUB, Enum.Font.GothamBlack)
+			emptyText.Size = UDim2.fromScale(1, 1)
+			emptyText.ZIndex = 22
+		end
+		for _, planRow in ipairs(gridRows) do
+			if planRow.header then
+				local headRow = makeRow(30)
+				headRow.BackgroundTransparency = 1
+				local headText = label(headRow, planRow.header, 13, planRow.color,
+					Enum.Font.GothamBlack)
+				headText.Position = UDim2.new(0, 6, 0, 0)
+				headText.Size = UDim2.new(1, -12, 1, 0)
+				headText.TextXAlignment = Enum.TextXAlignment.Left
+				headText.ZIndex = 22
+				continue
+			end
 			local gridRow = makeRow(CARD_H)
 			gridRow.BackgroundTransparency = 1
 			for col = 0, cols - 1 do
-				local spec = specs[base + col]
+				local spec = planRow.cards[col + 1]
 				if spec then
 					local tier = spec.t or 1
 					local key = spec.n .. "|" .. tier
@@ -4799,6 +5118,28 @@ function renderPage()
 			Luck1000 = "60 SEC", Luck3500 = "30 SEC", RushNow = "INSTANT",
 			PotBoost = "INSTANT", SrvLuck100 = "90 SEC", SrvTix2x = "10 MIN",
 			SrvRush = "INSTANT" }
+		-- Copy alignment with GameConfig.Products: the scope caption reads the
+		-- product's `label` ("WHOLE SERVER") and timed pills derive from its
+		-- `duration`, so a config edit lands here with no client change; the
+		-- tables above stay as the fallback. NAMES stay local on purpose:
+		-- config names carry the duration ("2X TICKETS — 15 MIN") that §3b
+		-- moved into the pills, and the server names overrun the one-line
+		-- 17px name slot.
+		local function prodScope(key, fallback)
+			local prod = S.productInfo(key)
+			return (prod and prod.label) or fallback
+		end
+		local function prodPill(key)
+			local prod = S.productInfo(key)
+			local secs = prod and prod.duration
+			if secs then
+				if secs >= 120 and secs % 60 == 0 then
+					return ("%d MIN"):format(secs / 60)
+				end
+				return ("%d SEC"):format(secs)
+			end
+			return PILLS[key]
+		end
 		-- Luck-bearing products: hidden entirely for PaidRandomRestricted
 		-- players (§1 — fail-closed), and each carries the mandatory live
 		-- odds disclosure at its own magnitude.
@@ -4901,7 +5242,7 @@ function renderPage()
 			benefit.TextWrapped = true
 			benefit.TextXAlignment = Enum.TextXAlignment.Left
 			benefit.ZIndex = 23
-			durationPill(card, PILLS[key], srv and SRV_TINT or UI_GOLD)
+			durationPill(card, prodPill(key), srv and SRV_TINT or UI_GOLD)
 			S.oddsBlock(card, 12, mega and 84 or 64, -24, LUCK_MAG[key], true, 23)
 			priceButton(card, key, PRICES[key])
 		end
@@ -4960,13 +5301,13 @@ function renderPage()
 		-- ============ BOOSTS ============
 		shopHeader("Boosts", UI_GOLD)
 		simpleGrid({
-			{ key = "Tix2x15", pill = PILLS.Tix2x15, price = PRICES.Tix2x15,
+			{ key = "Tix2x15", pill = prodPill("Tix2x15"), price = PRICES.Tix2x15,
 				desc = "Every ticket pays DOUBLE." },
-			{ key = "Tix3x15", pill = PILLS.Tix3x15, price = PRICES.Tix3x15,
+			{ key = "Tix3x15", pill = prodPill("Tix3x15"), price = PRICES.Tix3x15,
 				desc = "Every ticket pays TRIPLE." },
-			{ key = "RushNow", pill = PILLS.RushNow, price = PRICES.RushNow,
+			{ key = "RushNow", pill = prodPill("RushNow"), price = PRICES.RushNow,
 				desc = "Starts a METEOR RAIN right now." },
-			{ key = "PotBoost", pill = PILLS.PotBoost, price = PRICES.PotBoost,
+			{ key = "PotBoost", pill = prodPill("PotBoost"), price = PRICES.PotBoost,
 				desc = "Adds 5,000 to the jackpot — everyone sees it." },
 		})
 		if not restricted then
@@ -5035,12 +5376,12 @@ function renderPage()
 			benefit.Size = UDim2.new(1, -180, 0, 20)
 			benefit.TextXAlignment = Enum.TextXAlignment.Left
 			benefit.ZIndex = 22
-			local scope = label(row, "EVERYONE IN THIS SERVER", 12, SRV_TINT, Enum.Font.Gotham)
+			local scope = label(row, prodScope(def.key, "EVERYONE IN THIS SERVER"), 12, SRV_TINT, Enum.Font.Gotham)
 			scope.Position = UDim2.new(0, 68, 0, 58)
 			scope.Size = UDim2.new(1, -180, 0, 16)
 			scope.TextXAlignment = Enum.TextXAlignment.Left
 			scope.ZIndex = 22
-			durationPill(row, PILLS[def.key], SRV_TINT)
+			durationPill(row, prodPill(def.key), SRV_TINT)
 			priceButton(row, def.key, PRICES[def.key])
 		end
 
@@ -5438,6 +5779,13 @@ end
 	local treeNodes = {}
 	S.treeNodes = treeNodes
 	local nodeDidPan = false -- set by the pan handler; suppresses node clicks
+	-- NODE CARD state. The card itself is built after the cheapest-target
+	-- tracker below (it falls back to that node); cardDef = the node a hover
+	-- or tap picked, showNodeCard(def) pins the card to it.
+	local cardDef = nil
+	local showNodeCard = nil
+	local shownDef = nil -- the node the card is CURRENTLY displaying (pinned or fallback)
+	local hoverToken = 0 -- desktop hover dwell: retarget only after the cursor settles
 
 	for _, def in ipairs(GameConfig.UpgradeTree) do
 		local branchColor = BRANCH_COLORS[def.branch] or UI_GOLD
@@ -5524,9 +5872,33 @@ end
 			costPill = costPill, costText = costText, maxBadge = maxBadge,
 			gateLabel = gateLabel, pulseScale = pulseScale, state = 0,
 		}
+		-- Desktop: hovering fills the NODE CARD, so a click still buys in one
+		-- go. Touch has no hover: the FIRST tap on a node inspects it (the
+		-- card shows what it does + BUY), the second tap buys.
+		if not touchDevice then
+			-- Dwell before retargeting: sliding the cursor from a hex down to
+			-- the card's BUY crosses other hexes, and an instant retarget
+			-- would swap which node that BUY spends on.
+			hex.MouseEnter:Connect(function()
+				hoverToken = hoverToken + 1
+				local token = hoverToken
+				task.delay(0.15, function()
+					if hoverToken == token and showNodeCard then showNodeCard(def) end
+				end)
+			end)
+			hex.MouseLeave:Connect(function()
+				hoverToken = hoverToken + 1
+			end)
+		end
 		hex.MouseButton1Click:Connect(function()
 			if nodeDidPan then return end
 			local ui = treeNodes[def.id]
+			-- Touch: first tap inspects UNLESS the card already shows this
+			-- node (pinned or the cheapest fallback) — then the tap buys.
+			if touchDevice and shownDef ~= def then
+				if showNodeCard then showNodeCard(def) end
+				return
+			end
 			if ui.state == 3 or ui.state == 4 then
 				if buyRemote then buyRemote:FireServer(def.id) end
 			end
@@ -5574,6 +5946,118 @@ end
 	end
 
 	local cheapestNode = nil -- def of the current CHEAPEST target
+
+	-- NODE CARD: the one surface that says what a node DOES before the
+	-- tickets leave. Docked over the bottom of the canvas; shows the
+	-- hovered/tapped node, else the cheapest target — never empty.
+	local nodeCard = Instance.new("Frame")
+	nodeCard.Name = "NodeCard"
+	nodeCard.AnchorPoint = Vector2.new(0.5, 1)
+	nodeCard.Position = UDim2.new(0.5, 0, 1, -12)
+	nodeCard.Size = UDim2.new(1, -48, 0, 78)
+	nodeCard.BackgroundTransparency = 1
+	nodeCard.Visible = false
+	nodeCard.ZIndex = 27
+	nodeCard.Active = true -- taps on the card never reach the pan clip
+	nodeCard.Parent = treePage
+	local nodeCardFit = Instance.new("UISizeConstraint")
+	nodeCardFit.MaxSize = Vector2.new(640, 78)
+	nodeCardFit.Parent = nodeCard
+	pixelPlate(nodeCard, Color3.fromRGB(15, 16, 24), 27, "card", 3)
+	pixelDither(nodeCard, 28, 0.45)
+	local cardName = label(nodeCard, "", 15, Color3.new(1, 1, 1), Enum.Font.GothamBlack)
+	cardName.Position = UDim2.new(0, 16, 0, 10)
+	cardName.Size = UDim2.new(1, -196, 0, 20)
+	cardName.TextXAlignment = Enum.TextXAlignment.Left
+	cardName.TextTruncate = Enum.TextTruncate.AtEnd
+	cardName.ZIndex = 29
+	local cardDesc = label(nodeCard, "", 12, UI_SUB, Enum.Font.GothamBold)
+	cardDesc.Position = UDim2.new(0, 16, 0, 32)
+	cardDesc.Size = UDim2.new(1, -196, 0, 36)
+	cardDesc.TextWrapped = true
+	cardDesc.TextXAlignment = Enum.TextXAlignment.Left
+	cardDesc.TextYAlignment = Enum.TextYAlignment.Top
+	cardDesc.ZIndex = 29
+	-- Right slot: a BUY brick when purchasable (green = affordable, red =
+	-- short), else a status caption (MAXED OUT / the gate text / LOCKED).
+	local cardBuy = Instance.new("TextButton")
+	cardBuy.AnchorPoint = Vector2.new(1, 0.5)
+	cardBuy.Position = UDim2.new(1, -14, 0.5, 0)
+	cardBuy.Size = UDim2.fromOffset(150, 44)
+	cardBuy.Text = ""
+	cardBuy.AutoButtonColor = false
+	cardBuy.BackgroundTransparency = 1
+	cardBuy.BorderSizePixel = 0
+	cardBuy.Visible = false
+	cardBuy.ZIndex = 29
+	cardBuy.Parent = nodeCard
+	local cardBuyPlate = pixelPlate(cardBuy, UI_GREEN, 29, "btn", 3)
+	local cardBuyText = label(cardBuy, "", 14, Color3.new(1, 1, 1), Enum.Font.GothamBlack)
+	cardBuyText.Size = UDim2.fromScale(1, 1)
+	cardBuyText.TextStrokeColor3 = Color3.new(0, 0, 0)
+	cardBuyText.TextStrokeTransparency = 0.4
+	cardBuyText.ZIndex = 30
+	local cardState = label(nodeCard, "", 12, UI_SUB, Enum.Font.GothamBold)
+	cardState.AnchorPoint = Vector2.new(1, 0.5)
+	cardState.Position = UDim2.new(1, -14, 0.5, 0)
+	cardState.Size = UDim2.fromOffset(160, 36)
+	cardState.TextWrapped = true
+	cardState.TextXAlignment = Enum.TextXAlignment.Right
+	cardState.Visible = false
+	cardState.ZIndex = 29
+
+	local function fillNodeCard(def)
+		local ui = treeNodes[def.id]
+		local state = ui and ui.state or 0
+		local lv = player:GetAttribute(def.id) or 0
+		if state == 1 then
+			-- Hidden "?" node: never leak what it is.
+			cardName.Text = "???"
+			cardDesc.Text = "Buy the upgrade before this one to reveal it."
+		else
+			cardName.Text = def.name .. "   Lv " .. lv .. "/" .. def.maxLv
+			cardDesc.Text = def.desc or ""
+		end
+		local buyable = state == 3 or state == 4
+		cardBuy.Visible = buyable
+		cardState.Visible = not buyable
+		if buyable then
+			local cost = GameConfig.treeCost(def, lv)
+			cardBuyText.Text = (state == 4 and "BUY  " or "NEED  ") .. tostring(cost)
+			cardBuyPlate.ImageColor3 = pixelTint(state == 4 and UI_GREEN
+				or Color3.fromRGB(120, 60, 60))
+		elseif state == 5 then
+			cardState.Text = "MAXED OUT"
+			cardState.TextColor3 = UI_GOLD
+		elseif state == 2 and ui and ui.gateLabel.Text ~= "" then
+			cardState.Text = ui.gateLabel.Text
+			cardState.TextColor3 = UI_SUB
+		else
+			cardState.Text = "LOCKED"
+			cardState.TextColor3 = UI_SUB
+		end
+	end
+	local function refreshNodeCard()
+		local def = cardDef or cheapestNode
+		shownDef = def
+		if def then
+			fillNodeCard(def)
+			nodeCard.Visible = true
+		else
+			nodeCard.Visible = false
+		end
+	end
+	showNodeCard = function(def)
+		cardDef = def
+		refreshNodeCard()
+	end
+	cardBuy.MouseButton1Click:Connect(function()
+		local def = cardDef or cheapestNode
+		local ui = def and treeNodes[def.id]
+		if ui and (ui.state == 3 or ui.state == 4) and buyRemote then
+			buyRemote:FireServer(def.id)
+		end
+	end)
 
 	function S.updateTreeStates()
 		local tickets = player:GetAttribute("Tickets") or 0
@@ -5707,6 +6191,7 @@ end
 			tn.descLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
 			tn.descLabel.TextStrokeTransparency = tinted and 0.3 or 1
 		end
+		refreshNodeCard()
 	end
 
 	-- Pan (drag + touch-drag, clamped). Deltas and clip sizes are converted back
@@ -5716,7 +6201,9 @@ end
 		local clipW = canvasClip.AbsoluteSize.X / scaleNow
 		local clipH = canvasClip.AbsoluteSize.Y / scaleNow
 		x = math.clamp(x, math.min(0, clipW - GameConfig.TreeCanvas.w * treeZoom), 0)
-		y = math.clamp(y, math.min(0, clipH - GameConfig.TreeCanvas.h * treeZoom), 0)
+		-- 90px band reserved for the docked node card: the lowest nodes must
+		-- be able to scroll clear of it at any zoom.
+		y = math.clamp(y, math.min(0, clipH - 90 - GameConfig.TreeCanvas.h * treeZoom), 0)
 		return x, y
 	end
 
@@ -5821,6 +6308,7 @@ end
 		local def = cheapestNode
 		if not def then return end
 		centerCanvasOn(def.pos.x, def.pos.y, true)
+		if showNodeCard then showNodeCard(def) end
 		local ui = treeNodes[def.id]
 		if ui then
 			task.spawn(function()
@@ -8889,6 +9377,7 @@ local aimNdcX = 0
 		task.spawn(function()
 			local lastPunch = 0
 			while holdActive and gui.Parent do
+				if S.welcomeUp then break end
 				if S.treePage.Visible then break end
 				if S.forgePage and S.forgePage.Visible then break end
 				if panel.Visible then break end
@@ -8914,6 +9403,7 @@ local aimNdcX = 0
 		if gameProcessed then return end
 		if input.KeyCode ~= Enum.KeyCode.Space then return end
 		if UserInputService:GetFocusedTextBox() ~= nil then return end
+		if S.welcomeUp then return end -- the welcome brick's scrim can't catch keys
 		if S.treePage.Visible then return end
 		if S.forgePage and S.forgePage.Visible then return end
 		if panel.Visible then return end
@@ -9478,6 +9968,12 @@ end)()
 				goldFlash()
 				showCelebration("PURCHASE ACTIVE!",
 					(extra and tostring(extra):upper()) or "THANK YOU!")
+			elseif kind == "tutorial" then
+				-- First successful forge: the server pays the tutorial bonus
+				-- (tickets=500, extra="FIRST FORGE!").
+				goldFlash()
+				showCelebration("TUTORIAL COMPLETE!",
+					((extra and tostring(extra)) or "") .. ("  ·  +%d TICKETS"):format(tickets or 0))
 			end
 		end)
 	end
@@ -10271,6 +10767,10 @@ end)()
 	local tutorialSkipped = false
 	local rolledDuringBoost = false -- rolled at least once while boosted
 	local forgedOnce = false -- CombineDone fired this session
+	-- WELCOME brick: up right now (coach hides behind it) / builder, defined
+	-- after refresh() below because LET'S GO! hands straight off to it.
+	local welcomeUp = false
+	local showWelcome = nil
 
 	-- Any ASCENDED (form-1) yet? Read off the main chunk's inventory mirror
 	-- ({n,t,c,f1,f2} entries from InvSync). A CELESTIAL (f2) counts too —
@@ -10432,6 +10932,20 @@ end)()
 			coach.Visible = false
 			return
 		end
+		-- WELCOME brick (first-ever session, before the DROP step): the
+		-- coach waits behind it, and it never opens over a page.
+		if welcomeUp then
+			coach.Visible = false
+			return
+		end
+		if not S.welcomeShown and (attrGet("TotalDrops") or 0) < 1
+			and attrGet("TutorialDone") ~= true and showWelcome
+			and not (panel.Visible or (S.treePage and S.treePage.Visible)
+				or (S.forgePage and S.forgePage.Visible)) then
+			showWelcome()
+			coach.Visible = false
+			return
+		end
 		local target, text = currentStep()
 		if text == nil then
 			-- They forged (or already owned) an ASCENDED — over for good.
@@ -10480,6 +10994,125 @@ end)()
 		end
 		msg.Text = text
 		coach.Visible = true
+	end
+
+	-- WELCOME brick: the first thing a brand-new account sees. One centered
+	-- pixel card over a tap-eating scrim; LET'S GO! hands off to the coach's
+	-- DROP step. S.welcomeShown is the session flag so a page toggle never
+	-- re-opens it; the attribute gate in refresh() keeps veterans out.
+	function showWelcome()
+		welcomeUp = true
+		S.welcomeUp = true -- the drop input section gates Space/hold on this
+		local scrim = Instance.new("Frame")
+		scrim.Name = "WelcomeScrim"
+		scrim.Size = UDim2.fromScale(1, 1)
+		scrim.BackgroundColor3 = Color3.fromRGB(6, 7, 12)
+		scrim.BackgroundTransparency = 0.55
+		scrim.BorderSizePixel = 0
+		scrim.ZIndex = 59
+		scrim.Active = true -- nothing under it takes the tap
+		scrim.Parent = gui
+
+		local brick = Instance.new("Frame")
+		brick.AnchorPoint = Vector2.new(0.5, 0.5)
+		brick.Position = UDim2.fromScale(0.5, 0.5)
+		brick.Size = UDim2.fromOffset(420, 230)
+		brick.BackgroundTransparency = 1
+		brick.ZIndex = 60
+		brick.Parent = scrim
+		pixelPlate(brick, Color3.fromRGB(26, 27, 40), 60, "card", 3)
+		pixelDither(brick, 61, 0.45)
+		local brickScale = Instance.new("UIScale")
+		brickScale.Parent = brick
+
+		local eyebrow = label(brick, "WELCOME!", 12, UI_GOLD, Enum.Font.GothamBlack)
+		eyebrow.Position = UDim2.new(0, 0, 0, 14)
+		eyebrow.Size = UDim2.new(1, 0, 0, 16)
+		eyebrow.ZIndex = 62
+		local title = label(brick, "DROP PLANETS. WIN TICKETS.", 26, Color3.new(1, 1, 1), Enum.Font.FredokaOne)
+		title.Position = UDim2.new(0, 16, 0, 32)
+		title.Size = UDim2.new(1, -32, 0, 36)
+		title.TextStrokeColor3 = Color3.fromRGB(10, 11, 18)
+		title.TextStrokeTransparency = 0.2
+		title.TextScaled = true
+		title.ZIndex = 62
+		local titleFit = Instance.new("UITextSizeConstraint")
+		titleFit.MinTextSize = 16
+		titleFit.MaxTextSize = 26
+		titleFit.Parent = title
+
+		for i, line in ipairs({
+			"Tap DROP PLANET to drop into the pusher",
+			("Roll FREE planets and collect all %d"):format(#PusherMachine.Planets),
+			"Forge 10 copies into 1 ASCENDED!",
+		}) do
+			local y = 80 + (i - 1) * 24
+			local bullet = Instance.new("ImageLabel")
+			bullet.Image = STAR_ART
+			bullet.ImageColor3 = UI_GOLD
+			bullet.BackgroundTransparency = 1
+			bullet.Position = UDim2.new(0, 40, 0, y + 3)
+			bullet.Size = UDim2.fromOffset(14, 14)
+			bullet.ZIndex = 62
+			bullet.Parent = brick
+			local row = label(brick, line, 14, UI_TEXT, Enum.Font.GothamBold)
+			row.Position = UDim2.new(0, 62, 0, y)
+			row.Size = UDim2.new(1, -78, 0, 20)
+			row.TextXAlignment = Enum.TextXAlignment.Left
+			row.TextScaled = true
+			row.ZIndex = 62
+			local rowFit = Instance.new("UITextSizeConstraint")
+			rowFit.MinTextSize = 10
+			rowFit.MaxTextSize = 14
+			rowFit.Parent = row
+		end
+
+		local goBtn = Instance.new("TextButton")
+		goBtn.AnchorPoint = Vector2.new(0.5, 1)
+		goBtn.Position = UDim2.new(0.5, 0, 1, -14)
+		goBtn.Size = UDim2.fromOffset(200, 52)
+		goBtn.Text = ""
+		goBtn.AutoButtonColor = false
+		goBtn.BackgroundTransparency = 1
+		goBtn.BorderSizePixel = 0
+		goBtn.ZIndex = 62
+		goBtn.Parent = brick
+		pixelPlate(goBtn, UI_GREEN, 62, "btn", 3)
+		local goText = label(goBtn, "LET'S GO!", 22, Color3.new(1, 1, 1), Enum.Font.FredokaOne)
+		goText.Size = UDim2.fromScale(1, 1)
+		goText.TextStrokeColor3 = Color3.fromRGB(10, 40, 16)
+		goText.TextStrokeTransparency = 0.2
+		goText.ZIndex = 63
+
+		local dismissed = false
+		goBtn.Activated:Connect(function()
+			if dismissed then return end
+			dismissed = true
+			S.welcomeShown = true
+			welcomeUp = false
+			S.welcomeUp = false
+			if S.reducedMotion then
+				scrim:Destroy()
+				refresh()
+				return
+			end
+			-- Squash to 0.9 + fade everything over 0.15s, then drop it.
+			local info = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+			TweenService:Create(brickScale, info, { Scale = 0.9 }):Play()
+			TweenService:Create(scrim, info, { BackgroundTransparency = 1 }):Play()
+			for _, inst in ipairs(brick:GetDescendants()) do
+				if inst:IsA("ImageLabel") then
+					TweenService:Create(inst, info, { ImageTransparency = 1 }):Play()
+				elseif inst:IsA("TextLabel") then
+					TweenService:Create(inst, info,
+						{ TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+				end
+			end
+			task.delay(0.15, function()
+				scrim:Destroy()
+				refresh()
+			end)
+		end)
 	end
 
 	-- roll2's client-local half: a MANUAL roll landing while the luck boost
