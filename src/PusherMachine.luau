@@ -1720,7 +1720,11 @@ local function makePlanet(spec, cf, anchored, parent, form)
 	-- sphere surfaces fight; rings pass straight through it, which is the look.
 	local aura = spec.aura
 	if aura then
-		local asz = D * (aura.sz or 1.3)
+		-- Clamped hard: Neon blooms, and a deck full of one equipped SECRET is
+		-- 30 shells stacked — at the spec'd 0.6-0.75 they fused into a white
+		-- cloud that hid the pile (owner screenshot). Floor 0.86 / cap 1.35 D
+		-- keeps a single ball haloed and a pile readable.
+		local asz = D * math.min(aura.sz or 1.3, 1.35)
 		local shell = deco({
 			Name = "Aura",
 			Shape = Enum.PartType.Ball,
@@ -1728,7 +1732,7 @@ local function makePlanet(spec, cf, anchored, parent, form)
 			CFrame = cf,
 			Color = c3(aura.c or spec.b),
 			Material = Enum.Material.Neon,
-			Transparency = aura.tp or 0.75,
+			Transparency = math.max(aura.tp or 0.86, 0.86),
 		})
 		shell.CastShadow = false
 	end
@@ -2531,36 +2535,29 @@ function PusherMachine.build(originCFrame, name, theme)
 		Color = cfg.colGold,
 		Material = Enum.Material.Neon,
 	}, cabinet)
-	-- Invisible safety pane over the pool rim: NOTHING may fly or funnel
-	-- past the basin's front plane and out of the cabinet (pieces escaped
-	-- live via the over-deep cheek ramps). Collidable, fully transparent.
-	-- FULL-HEIGHT (rim top to above the ledge): the first 1.8-tall version
-	-- left an exposed top edge at y 4.4 that planets chocked on (stress-test
-	-- log). Frictionless, and its top is open air — nothing behind to lean
-	-- against, so a piece touching the top edge tips back into the mouth.
-	-- Invisible DEFLECTOR SLIDE, third and final shape of the front catch.
-	-- Geometry history, all found live: a vertical pane grew a leanable
-	-- face (pieces propped on it), and a machine-leaning tilt raised its
-	-- top edge into the ledge corridor — an invisible fence that bounced
-	-- the whole deck flow backward (owner: "something having them not go
-	-- forward"). This slab runs HIGH over the mouth from (y 5.25, z -5.49)
-	-- down to (y 2.66, z -7.11) at ~58 degrees: normal pieces leaving the
-	-- ledge are always BELOW its surface line and never touch it; only
-	-- ballistic overfliers skim its frictionless top and get channeled
-	-- straight into the basin. Its underside is an overhang (unleanable),
-	-- and its bottom edge meets the PoolRimCap, sealing the old escape.
+	-- FRONT WALL — invisible containment, VERTICAL, in front of the pool rim.
+	-- History: three generations of an invisible "catch" lived in the lip
+	-- corridor (a leanable pane, a tilted fence, then a 32-degree deflector
+	-- slide whose top edge sat at y 4.65 / z -5.86). Each was tuned for the
+	-- piece sizes of its day; when planets grew to 1.15 the slide's top edge
+	-- landed INSIDE the arc a ball sweeps as it tips off the LipRamp, and a
+	-- ball came to rest cradled between the ramp edge behind it and the slab
+	-- edge in front — a stable two-point rest, never scored, never rescued
+	-- (owner screenshot: a full front row parked on it). The rule now: NO
+	-- collidable geometry within a ball diameter of the lip's tipping arc.
+	-- Containment is this wall at z -7.20 (0.04 clear of the PoolRimCap's
+	-- front face at -7.11, no shared plane): overfliers hit a frictionless,
+	-- dead vertical face and drop; a ball hugging it has its center at
+	-- z >= -6.63, i.e. OVER the basin, so it can only fall into the pocket or
+	-- onto the rim cap — both inside the Collector band. Runs y 1.0..8.0 so
+	-- nothing slips under or lobs over it. frictionWeight 100 keeps Roblox's
+	-- pair-averaging from lending it any grip.
 	newPart({
-		-- SHORTENED from 3.05: the old slide's top edge reached y 5.24 at
-		-- z -5.49 — an invisible fence exactly at the lip that BALLS leaned
-		-- on after tipping over the edge (GetPartsInPart caught it pinning a
-		-- perched planet; coins are thin enough to pass). Same plane, same
-		-- bottom edge (the basin exit gap is untouched); only the top edge
-		-- drops to y ~4.65 at z -5.86, safely below and beyond the ramp exit.
-		Name = "FrontCatch",
-		Size = Vector3.new(11.6, 2.35, 0.12),
-		CFrame = at(0, 3.655, -6.485, CFrame.Angles(math.rad(32), 0, 0)),
+		Name = "FrontWall",
+		Size = Vector3.new(11.6, 7.0, 0.10),
+		CFrame = at(0, 4.5, -7.20),
 		Transparency = 1,
-		CustomPhysicalProperties = PhysicalProperties.new(0.7, 0.05, 0, 1, 1),
+		CustomPhysicalProperties = PhysicalProperties.new(0.7, 0, 0, 100, 1),
 		CanQuery = false, CanTouch = false,
 	}, cabinet)
 	newPart({
@@ -4118,13 +4115,17 @@ function PusherMachine.build(originCFrame, name, theme)
 	-- Payout sensors and effects hosts
 	----------------------------------------------------------------------------
 
-	-- Band y 1.5..2.4: every rest surface in the mouth overlaps it (apron top
-	-- 1.90..2.35, basin ball center 2.13, flat coin top 1.80) — scored lane
-	-- is always the landing channel, and nothing rests unscored.
+	-- Band y 1.5..2.95, z -7.9..-5.2: EVERY rest surface in the mouth puts a
+	-- 1.15 ball's underside inside it — apron top 1.90..2.35, basin pocket
+	-- (ball center 2.13), a ball bridging two LaneBlade tops (bottom ~2.6),
+	-- a ball perched on the PoolRimCap (bottom 2.67), flat coin top 1.80.
+	-- Scored lane is always the landing channel, and nothing rests unscored.
+	-- The old 2.4 top left rim-cap perches and blade bridges un-collected;
+	-- 2.95 still keeps the header-wall roll visible before the collect.
 	newPart({
 		Name = "Collector",
-		Size = Vector3.new(10, 0.9, 2.6),
-		CFrame = at(0, 1.95, -6.5),
+		Size = Vector3.new(10, 1.45, 2.7),
+		CFrame = at(0, 2.225, -6.55),
 		Transparency = 1, CanCollide = false,
 	}, payout)
 

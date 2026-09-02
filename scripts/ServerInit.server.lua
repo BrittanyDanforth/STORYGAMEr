@@ -2880,7 +2880,12 @@ task.spawn(function()
 							paidRemote:FireAllClients(rescue)
 						end
 						child:Destroy()
-					elseif pos.Z < -5.05 and pos.Y > 1.2 and pos.Y < 5.0 then
+					elseif pos.Z < -5.2 and pos.Y > 1.2 and pos.Y < 5.4 then
+						-- Band is z < -5.2 (past the LipRamp's end at -5.11 — a
+						-- frictionless strip nothing can rest on) so the y ceiling
+						-- could rise to 5.4 without ever touching the deck's front
+						-- row at z >= -5.0: a still piece with its center out here
+						-- is off the floor and on geometry.
 						-- Mouth funnel region: PAST the ledge plane only — the
 						-- first -4.4 threshold reached onto the deck lip and
 						-- "rescued" legitimate slow pile coins (stress log).

@@ -98,7 +98,25 @@ CF.__index = function(t, k)
 end
 
 Color3 = {}
-function Color3.fromRGB(r, g, b) return { R = r / 255, G = g / 255, B = b / 255 } end
+local C3 = {}
+C3.__index = C3
+function Color3.new(r, g, b) return setmetatable({ R = r or 0, G = g or 0, B = b or 0 }, C3) end
+function Color3.fromRGB(r, g, b) return Color3.new(r / 255, g / 255, b / 255) end
+function Color3.fromHSV(h, s, v) return Color3.new(v, v, v) end
+function C3:Lerp(o, t) return Color3.new(self.R + (o.R - self.R) * t, self.G + (o.G - self.G) * t, self.B + (o.B - self.B) * t) end
+function C3:ToHSV() return 0, 0, (self.R + self.G + self.B) / 3 end
+
+-- Value-type constructors the builder grew into (all captured as plain
+-- tables — the renderer only reads geometry, never these).
+ColorSequence = { new = function(...) return { ... } end }
+ColorSequenceKeypoint = { new = function(t, c) return { t, c } end }
+NumberSequence = { new = function(...) return { ... } end }
+NumberSequenceKeypoint = { new = function(t, v, e) return { t, v, e } end }
+NumberRange = { new = function(a, b) return { Min = a, Max = b or a } end }
+Vector2 = { new = function(x, y) return { X = x or 0, Y = y or 0 } end }
+UDim = { new = function(s, o) return { Scale = s, Offset = o } end }
+Rect = { new = function(...) return { ... } end }
+Random = { new = function() return { NextNumber = function(_, a, b) a = a or 0; b = b or 1; return a + math.random() * (b - a) end, NextInteger = function(_, a, b) return math.random(a, b) end } end }
 
 Enum = setmetatable({}, { __index = function(t, k)
 	local sub = setmetatable({}, { __index = function(st, sk)
@@ -111,7 +129,14 @@ Enum = setmetatable({}, { __index = function(t, k)
 end })
 
 PhysicalProperties = { new = function(...) return { ... } end }
-UDim2 = { fromScale = function(x, y) return { x, y } end }
+UDim2 = {
+	fromScale = function(x, y) return { x, 0, y, 0 } end,
+	fromOffset = function(x, y) return { 0, x, 0, y } end,
+	new = function(a, b, c, d) return { a, b, c, d } end,
+}
+workspace = { GetServerTimeNow = function() return 0 end }
+os = os or {}
+os.clock = os.clock or function() return 0 end
 TweenInfo = { new = function(...) return { ... } end }
 
 local function runThunk(fn, ...)
@@ -144,6 +169,9 @@ Obj.__index = function(t, k)
 	local props = rawget(t, "__props")
 	if k == "Position" and props.CFrame then return props.CFrame.Position end
 	if props[k] ~= nil then return props[k] end
+	if k == "Touched" or k == "Changed" or k == "ChildAdded" or k == "AncestryChanged" or k == "Destroying" then
+		return { Connect = function() return { Disconnect = function() end } end }
+	end
 	for _, child in ipairs(rawget(t, "__children")) do
 		if child.__props.Name == k then return child end
 	end
@@ -172,6 +200,44 @@ Obj.__newindex = function(t, k, v)
 end
 
 Obj.methods = {}
+function Obj.methods:SetAttribute(name, value)
+	local attrs = rawget(self, "__attrs")
+	if not attrs then attrs = {}; rawset(self, "__attrs", attrs) end
+	attrs[name] = value
+end
+function Obj.methods:GetAttribute(name)
+	local attrs = rawget(self, "__attrs")
+	return attrs and attrs[name] or nil
+end
+function Obj.methods:GetAttributes()
+	return rawget(self, "__attrs") or {}
+end
+function Obj.methods:IsA(class)
+	local c = rawget(self, "__class")
+	if c == class then return true end
+	if class == "BasePart" then return c == "Part" or c == "WedgePart" or c == "MeshPart" end
+	if class == "GuiObject" then return c == "Frame" or c == "TextLabel" or c == "ImageLabel" or c == "TextButton" end
+	return false
+end
+function Obj.methods:GetDescendants()
+	local out = {}
+	local function walk(o)
+		for _, c in ipairs(rawget(o, "__children")) do
+			table.insert(out, c)
+			walk(c)
+		end
+	end
+	walk(self)
+	return out
+end
+function Obj.methods:FindFirstChildOfClass(class)
+	for _, child in ipairs(rawget(self, "__children")) do
+		if rawget(child, "__class") == class then return child end
+	end
+	return nil
+end
+function Obj.methods:GetPropertyChangedSignal() return { Connect = function() return { Disconnect = function() end } end } end
+function Obj.methods:WaitForChild(name) return self:FindFirstChild(name) end
 function Obj.methods:FindFirstChild(name)
 	for _, child in ipairs(rawget(self, "__children")) do
 		if child.__props.Name == name then return child end

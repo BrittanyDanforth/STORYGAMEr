@@ -41,7 +41,8 @@ local function walk(obj)
 		out[#out + 1] = string.format(
 			'{"name":"%s","shape":"%s","size":[%.4f,%.4f,%.4f],' ..
 			'"pos":[%.4f,%.4f,%.4f],"rot":[%s],' ..
-			'"color":[%.3f,%.3f,%.3f],"material":"%s","transparency":%s' ..
+			'"color":[%.3f,%.3f,%.3f],"material":"%s","transparency":%s,' ..
+			'"canCollide":%s' ..
 			'%s%s}',
 			esc(p.Name or "?"), shape,
 			size.X, size.Y, size.Z,
@@ -51,6 +52,8 @@ local function walk(obj)
 			color.R, color.G, color.B,
 			(p.Material and p.Material.Name) or "SmoothPlastic",
 			tostring(p.Transparency or 0),
+			-- Roblox default is CanCollide = true; decorate() / sensors set it false.
+			tostring(p.CanCollide ~= false),
 			text and (',"text":' .. text) or "",
 			#lights > 0 and (',"lights":[' .. table.concat(lights, ",") .. "]") or "")
 	end
