@@ -1,0 +1,78 @@
+{
+  "status": "PASS",
+  "asset_version": "0.2",
+  "inspected_individually_this_pass": [
+    "Preview_01_Room.png",
+    "Preview_02_Workstation.png",
+    "Preview_05_Desk_Detail.png"
+  ],
+  "retained_previously_inspected_views": [
+    "Preview_03_Bed_Window.png",
+    "Preview_04_Entrance.png"
+  ],
+  "retained_view_reason": "Their visible geometry, materials, lighting and framing are unchanged; the new worktop finish is a separate material.",
+  "preview_settings": {
+    "Preview_01_Room": {
+      "resolution": [
+        1600,
+        900
+      ],
+      "samples": 256,
+      "adaptive_threshold": 0.02
+    },
+    "Preview_02_Workstation": {
+      "resolution": [
+        1600,
+        900
+      ],
+      "samples": 256,
+      "adaptive_threshold": 0.02
+    },
+    "Preview_03_Bed_Window": {
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 128,
+      "adaptive_threshold": 0.035,
+      "retained_unchanged_content": true
+    },
+    "Preview_04_Entrance": {
+      "resolution": [
+        1280,
+        720
+      ],
+      "samples": 128,
+      "adaptive_threshold": 0.035,
+      "retained_unchanged_content": true
+    },
+    "Preview_05_Desk_Detail": {
+      "resolution": [
+        1600,
+        900
+      ],
+      "samples": 384,
+      "adaptive_threshold": 0.015
+    }
+  },
+  "quality_changes": [
+    "Multipart shaped mouse with split buttons, ribbed wheel, underside and wired USB connector",
+    "Complete 19 mm keyboard including modifiers, function keys and numpad; physical non-emissive legends",
+    "Laptop case seam, trackpad border, ports and rubber support feet",
+    "Contoured chair upholstery, piped seams, smoother shells and adjustment mechanism",
+    "Recessed parts tray, grounded screwdriver, detailed grip and tip",
+    "Tower support feet, grille surround, front I/O and side-panel gaskets",
+    "Notebook covers, page block and spine",
+    "Restrained worktop grain oriented along desk length"
+  ],
+  "layout_and_lighting_preserved": true,
+  "source_and_exports_match": true,
+  "actual_fbx_roundtrip": "PASS; original gameplay anchor positions and DoorLeaf parent preserved",
+  "mouse_contact": "PASS; evaluated mesh intersections connect recessed rubber core to both button shells, strain relief and cable",
+  "preview_assembly_note": "The three refreshed previews were rendered immediately before adding the recessed mouse cable core to bridge a 0.37 mm shell seam. Final source and exports include that small assembly correction; no layout, material or other visible prop shape changed. Completed renders were retained as representative views by review decision.",
+  "final_source_sha256": "3ee029e9c9747faeb6355b96343ab06ce37985541f3ff761ec8add71b040c5c9",
+  "remaining_limitations": [
+    "Some unretouched Cycles sampling grain remains",
+    "Unity lighting/material translation and runtime performance require in-engine validation"
+  ]
+}

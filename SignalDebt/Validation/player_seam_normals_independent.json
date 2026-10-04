@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "recorded_utc": "2026-10-04T07:40:26.030416+00:00",
+  "file": "UnityProject/Assets/Art/Characters/PlayerBody.fbx",
+  "sha256": "91e6157be52aabfa3395a8570fca3e771f41cb6d56f72eabc69828b52ed46db9",
+  "method": "Actual Blender FBX reimport; compare shared rest boundary positions, weights by bone name and custom per-loop normals in world space.",
+  "blender_normal_reference_exported": false,
+  "same_skinning_rig_and_rest_inputs_compared_in_common_world_space": true,
+  "camera_markers": {
+    "Player_EyeView": {
+      "body_basis_right_up_forward_m": [
+        0.0,
+        1.6140501499176025,
+        0.0993700623512268
+      ],
+      "parent_bone": "Head"
+    },
+    "Player_HeadPivot": {
+      "body_basis_right_up_forward_m": [
+        0.0,
+        1.4820001125335693,
+        6.47802878006587e-08
+      ],
+      "parent_bone": "Head"
+    }
+  },
+  "seams": [
+    {
+      "mesh": "Player_Leg_L",
+      "matching_boundary_vertices": 59,
+      "maximum_position_gap_m": 6.365778659755961e-08,
+      "maximum_bone_weight_difference": 0.0,
+      "minimum_imported_loop_normal_dot": 0.9999999212450348
+    },
+    {
+      "mesh": "Player_Leg_R",
+      "matching_boundary_vertices": 56,
+      "maximum_position_gap_m": 6.188916756855178e-08,
+      "maximum_bone_weight_difference": 0.0,
+      "minimum_imported_loop_normal_dot": 0.9999998910352588
+    }
+  ],
+  "inference": "After each mesh object transform is applied, identical rest positions, named-bone weights and normals receive identical output under the same correct imported-normal skinning transform with valid bind poses. Mesh object origins may differ. Recalculating normals separately from each deformed mesh can break shading continuity.",
+  "unity_import_policy": "ModelImporterNormals.Import; SignalDebtRigImporter version 3, inspected in source.",
+  "limitation": "Unity FBX import and rendered/skinned normal behavior were not executed. This verifies required exported inputs, not actual Unity rendering."
+}

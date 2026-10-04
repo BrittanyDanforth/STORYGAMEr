@@ -1,0 +1,51 @@
+{
+  "source_anchor_positions": {
+    "PlayerSpawn": [
+      2.049999952316284,
+      -1.8899999856948853,
+      0.02199999988079071
+    ],
+    "DeskSeat": [
+      1.6799999475479126,
+      0.9100000262260437,
+      0.02199999988079071
+    ],
+    "LaptopFocus": [
+      1.7300000190734863,
+      1.9605364799499512,
+      0.9950487613677979
+    ],
+    "DoorHinge": [
+      1.600000023841858,
+      -2.630000114440918,
+      0.023000000044703484
+    ],
+    "DoorInteract": [
+      2.319999933242798,
+      -2.380000114440918,
+      1.0950000286102295
+    ],
+    "BedInteract": [
+      -0.9750000238418579,
+      0.8600000143051147,
+      0.6299999952316284
+    ],
+    "BillInteract": [
+      0.4699999988079071,
+      2.5,
+      1.4800000190734863
+    ]
+  },
+  "central_blanket_minimum_z": 0.7173317670822144,
+  "mattress_top_z": 0.685,
+  "mouse_underside_outward_volume_m3": 3.578993736013264e-05,
+  "keyboard_key_pitch_metres": 0.018999934196472168,
+  "keyboard_legends_non_emissive": true,
+  "quality_pass_preserves_gameplay_anchor_positions": true,
+  "fbx_roundtrip_anchor_positions_match_metres": true,
+  "fbx_door_parent": "DoorHinge",
+  "fbx_mesh_objects": 924,
+  "glb_size_matches_header": true,
+  "glb_required_anchor_nodes_present": true,
+  "status": "PASS"
+}

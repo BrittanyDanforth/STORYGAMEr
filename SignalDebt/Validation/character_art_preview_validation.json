@@ -1,0 +1,79 @@
+{
+  "status": "PASS",
+  "files": [
+    {
+      "file": "Blender/Renders/Characters_Roster.png",
+      "sha256": "360e7d5bc294a19576000cb8ed954f47bed51f7e1e0a7d221f6b9a2ef2f7994a",
+      "size": [
+        2400,
+        1450
+      ],
+      "decode": "PASS"
+    },
+    {
+      "file": "Blender/Renders/Player_Skin_Bend.png",
+      "sha256": "1b60e36f44ad18ed8154268d73ef031a8917a96ebd8b978478a40005d239d85c",
+      "size": [
+        1400,
+        1400
+      ],
+      "decode": "PASS"
+    },
+    {
+      "file": "Blender/Renders/Player_Elbow_Close.png",
+      "sha256": "a7c0455aff2ce4de4070a5de6d122a72f754fb3ddacde8c474f3d77c1b96295a",
+      "size": [
+        1400,
+        1400
+      ],
+      "decode": "PASS"
+    },
+    {
+      "file": "Blender/Renders/Player_Knee_Close.png",
+      "sha256": "f95b9e287dc368f6849083d6a9ed281d04047101379229c4b70ee941663ce28f",
+      "size": [
+        1400,
+        1400
+      ],
+      "decode": "PASS"
+    },
+    {
+      "file": "Blender/Renders/CharacterDetails/Patrol_Officer_Equipment.png",
+      "sha256": "b120440653530b9e40ae03c146d0dcba3d37e6091dba7b2f29b98606457e7252",
+      "size": [
+        1440,
+        1440
+      ],
+      "decode": "PASS"
+    },
+    {
+      "file": "Blender/Renders/CharacterDetails/Patrol_Officer_UpperBody.png",
+      "sha256": "76f09826e41c7d46246be227dce33bcf7a1e5f773afa2f47145dbe4e1103030f",
+      "size": [
+        1440,
+        1440
+      ],
+      "decode": "PASS"
+    },
+    {
+      "file": "Blender/Renders/CharacterDetails/SWAT_Officer_Equipment.png",
+      "sha256": "e318e7d8677024375a4f33dd23e7f5188db1fefa2a61b2cabbba0a948bf5810b",
+      "size": [
+        1440,
+        1440
+      ],
+      "decode": "PASS"
+    },
+    {
+      "file": "Blender/Renders/CharacterDetails/SWAT_Officer_UpperBody.png",
+      "sha256": "ee58d0dc703c3721c1c3229403fc19b60b2b4211f431f90672c20b9514cbeb26",
+      "size": [
+        1440,
+        1440
+      ],
+      "decode": "PASS"
+    }
+  ],
+  "visual_review": "Reviewed actual final four police detail images, player bend/close images and corrected roster. Roster placement fixed. Known player deep-hip cloth crease remains a documented limitation; no new police art blocker observed.",
+  "source_equivalence": "Validation/character_roster_translation_fix.json"
+}

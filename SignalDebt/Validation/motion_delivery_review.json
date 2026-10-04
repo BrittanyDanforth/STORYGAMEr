@@ -1,0 +1,78 @@
+{
+  "source": "Blender/Character_Animation_Showcase.blend",
+  "source_sha256": "74a1a69a4d0c2e465ee6d7a38d6c8d96f096577df3d34f3b773f80ee1e6a9e01",
+  "review_scope": "Offline authored-motion preview framing, image readability and encoded-output quality.",
+  "inspected_proof_sha256": {
+    "Blender/Renders/Animation/SWAT_kick_001.png": "552413b49c6a71ecf444b46c39d356604e988517401a1baf6a8da4d8af112645",
+    "Blender/Renders/Animation/SWAT_kick_009.png": "7ac0cccf6dd8854e4ca5a0547361b982c13d964701b960a3d12cdec789d85773",
+    "Blender/Renders/Animation/SWAT_kick_017.png": "66d83e90d01ce74ff4631761aefa2388db99d8b810e5fa71c6238161f3d6deea",
+    "Blender/Renders/Animation/SWAT_kick_025.png": "af5cf4125d8c608b93131dcd23177877702e7eb453ac2c9fc1356919b0142c1f",
+    "Blender/Renders/Animation/SWAT_kick_038.png": "251bea0600791b116abfa7562636e4900064e4ba323fee512a4b62df88e64822",
+    "Blender/Renders/Animation/SWAT_kick_061.png": "11e861b4b526a7026255d1d861054210312d63ec691e5c2301ceb6a05bb529b7",
+    "Blender/Renders/Animation/Patrol_hold_001.png": "f32748f374ba7e219aafc20b95e71261855fdd24fc9d18faaff201d7aa8da2ef",
+    "Blender/Renders/Animation/Patrol_hold_023.png": "1416d992ba2ae886be29bd0e2990ffa7c5a9952d52d878779ae48bdebc0edbca",
+    "Blender/Renders/Animation/Patrol_hold_046.png": "2d015843144aa6eb034650ee3a1273ef96090110c29a0ee088405c3f1bb086c8",
+    "Blender/Renders/Animation/Patrol_grip_detail.png": "f4cdc075912bd47bad4f1cd30b5765ba970f655ebd4c92d0d36eb893e594de20",
+    "Blender/Renders/Animation/SWAT_Kick_Frame_Strip.png": "872f4992921f18404c7db2d79bd9dea732794bc5b3ed2583abf128e5641f3df1",
+    "Blender/Renders/Animation/Patrol_Hold_Frame_Strip.png": "0c8309c5ae1180d7d21b776a9bcac663f1fcfbbda35341a23022052768e25029",
+    "Blender/Renders/Animation/Patrol_UpperBody_Contact_Sheet.png": "b7652816b6b320c5e166c3c75313c59915f79a752404a91d274341737170d016"
+  },
+  "visual_inspection": {
+    "swat_still_frames": [
+      1,
+      9,
+      17,
+      25,
+      38,
+      61
+    ],
+    "patrol_full_body_still_frames": [
+      1,
+      23,
+      46
+    ],
+    "patrol_upper_body_still_frame": 46,
+    "patrol_upper_body_contact_sheet_output_frames": [
+      1,
+      16,
+      31,
+      46,
+      47,
+      61,
+      76,
+      91
+    ],
+    "decoded_swat_gif_frames_inspected": [
+      1,
+      25,
+      61
+    ],
+    "decoded_patrol_gif_frames_inspected": [
+      1,
+      46,
+      91
+    ],
+    "observations": [
+      "SWAT full body and kicking foot remain inside the review crop at inspected anticipation, contact and recovery poses.",
+      "Patrol wider front three-quarter framing shows both shoulder roots, elbow bends, wrists and prop at the inspected low-ready, transition and aimed poses.",
+      "No obvious upper-arm/chest overlap is visible in these inspected proof views; independent surface audit remains the geometric acceptance record.",
+      "Grip and body silhouette remain readable after GIF palette encoding."
+    ]
+  },
+  "coverage": {
+    "wide_motion_pngs": 61,
+    "patrol_raise_lower_pngs": 91,
+    "high_sample_stills": 10,
+    "fps": 30
+  },
+  "encoding_reports": [
+    "Validation/animation_preview_validation.json",
+    "Validation/hand_preview_validation.json"
+  ],
+  "render_manifests": [
+    "Validation/animation_motion_render.json",
+    "Validation/patrol_grip_render.json",
+    "Validation/animation_stills_render.json"
+  ],
+  "limits": "All rendered frames and both GIFs/MP4 were fully decoded; key poses and contact sheets were visually inspected. This is not a claim of watched real-time playback, universal collision freedom or Unity runtime verification."
+}

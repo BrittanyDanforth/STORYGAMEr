@@ -1,0 +1,332 @@
+{
+  "status": "PASS for the bounded source-art milestone",
+  "recorded_utc": "2026-10-04T07:50:51.053332+00:00",
+  "source_blend_sha256": "0912dd8f359174e06045af1c295aea7ff59a8bd4be52e3ddb0e9c3e40d2e6630",
+  "visual_review": {
+    "root": [
+      "Final roster",
+      "Standing first-person",
+      "Crouched first-person",
+      "Seated first-person",
+      "Seated side",
+      "Apartment hero/workstation/detail",
+      "SWAT contact and animation strips",
+      "Patrol grip and motion preview"
+    ],
+    "character_builder_reviewer": "All six final pose images plus roster and three deformation closeups",
+    "scope": "Actual Blender renders; not Unity screenshots."
+  },
+  "png_full_decode": "PASS",
+  "images": [
+    {
+      "file": "Blender/Previews/Preview_01_Room.png",
+      "size": [
+        1600,
+        900
+      ],
+      "sha256": "84263641ff7c7df7d40adfd785fd5cd8ec129e1d213299c753dc7db6b1df2d19"
+    },
+    {
+      "file": "Blender/Previews/Preview_02_Workstation.png",
+      "size": [
+        1600,
+        900
+      ],
+      "sha256": "5f599de0eed3df0501af33049da391260e6ab17344f41fe5236a0bf1ba25b744"
+    },
+    {
+      "file": "Blender/Previews/Preview_03_Bed_Window.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "f40bdd0024cb2690b6f1a674b8804a8d3331319be368247f4198380625aa696a"
+    },
+    {
+      "file": "Blender/Previews/Preview_04_Entrance.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "bc7507920c73a34ad9c0b8ece03ee7d6355a1766df6511313da108524415a742"
+    },
+    {
+      "file": "Blender/Previews/Preview_05_Desk_Detail.png",
+      "size": [
+        1600,
+        900
+      ],
+      "sha256": "7ad8fd12783f1ec3d8555caa2707801c867a2d5abc6cee8004e208976eb3c8a2"
+    },
+    {
+      "file": "Blender/Renders/Animation/Patrol_Hold_Frame_Strip.png",
+      "size": [
+        1200,
+        570
+      ],
+      "sha256": "172695813bdae8b2be7d103d1cc4930505fd91f54719a6a41f83076bd59899cf"
+    },
+    {
+      "file": "Blender/Renders/Animation/Patrol_grip_detail.png",
+      "size": [
+        600,
+        720
+      ],
+      "sha256": "1bf4525be3fd9809d6bde6955e07fff40791e4f17a5be5378ef5ba00c7888178"
+    },
+    {
+      "file": "Blender/Renders/Animation/Patrol_hold_001.png",
+      "size": [
+        600,
+        720
+      ],
+      "sha256": "4a95ae7a6cabaf09327293a013a1b90158694a59badf373b10808c57f7f35ae7"
+    },
+    {
+      "file": "Blender/Renders/Animation/Patrol_hold_023.png",
+      "size": [
+        600,
+        720
+      ],
+      "sha256": "d3ca3fb8c79c30bc09f066553b31e08f303b076bf375560ee5e7396601e2cba1"
+    },
+    {
+      "file": "Blender/Renders/Animation/Patrol_hold_046.png",
+      "size": [
+        600,
+        720
+      ],
+      "sha256": "9fc283c2feebe0b16b3a728511895c1f01f14d424cc052eace445b64d36f086e"
+    },
+    {
+      "file": "Blender/Renders/Animation/SWAT_Kick_Frame_Strip.png",
+      "size": [
+        1600,
+        570
+      ],
+      "sha256": "3be42a3188d92fe4ce08c3eedf5de68bfa553399cc4ce69d2497cb406f232591"
+    },
+    {
+      "file": "Blender/Renders/Animation/SWAT_kick_001.png",
+      "size": [
+        600,
+        720
+      ],
+      "sha256": "347505acf05f86441ae6b5ec769b6dc1c45caa61a364513e8db83593cf634773"
+    },
+    {
+      "file": "Blender/Renders/Animation/SWAT_kick_009.png",
+      "size": [
+        600,
+        720
+      ],
+      "sha256": "e897fb5c454d522e261f350970082a6d91f6ba0e9a5950475f1304e19edcd93e"
+    },
+    {
+      "file": "Blender/Renders/Animation/SWAT_kick_017.png",
+      "size": [
+        600,
+        720
+      ],
+      "sha256": "eced264ca44b3d7c20baf2968dcaf3e6c8f35ea84bf3570cef80e3b00cee61b5"
+    },
+    {
+      "file": "Blender/Renders/Animation/SWAT_kick_025.png",
+      "size": [
+        600,
+        720
+      ],
+      "sha256": "39a2e2a10b08ee2b7e68cd4dc48650fd0d16750a0755520718e70519e72f2501"
+    },
+    {
+      "file": "Blender/Renders/Animation/SWAT_kick_038.png",
+      "size": [
+        600,
+        720
+      ],
+      "sha256": "f3037517db9e4f8f0bb2b0bce858c004f0781b8457417dc679f11e91d191d954"
+    },
+    {
+      "file": "Blender/Renders/Animation/SWAT_kick_061.png",
+      "size": [
+        600,
+        720
+      ],
+      "sha256": "bc537fcdfa53e141cc59c00d10ef02b13cea18566323a2351fb56a61337d253f"
+    },
+    {
+      "file": "Blender/Renders/Characters_Roster.png",
+      "size": [
+        2400,
+        1450
+      ],
+      "sha256": "4597c0861bdb17d39d6565b7ab9b84798f84e4a63873a7dff2e326183063fe8b"
+    },
+    {
+      "file": "Blender/Renders/PlayerPoses/Crouched_FirstPerson.png",
+      "size": [
+        1600,
+        900
+      ],
+      "sha256": "29adbf6640507ad6386022942dddb4b6d1581dc26969d9678f28e589e264c9ad"
+    },
+    {
+      "file": "Blender/Renders/PlayerPoses/Crouched_Side.png",
+      "size": [
+        1200,
+        900
+      ],
+      "sha256": "c34606704ee24467934bf42317d970df9102d0e4c09eb0935b84b8841f86fd90"
+    },
+    {
+      "file": "Blender/Renders/PlayerPoses/Seated_FirstPerson.png",
+      "size": [
+        1600,
+        900
+      ],
+      "sha256": "122133f892c1f9c38da655629762e62d8d2dcf20f26830a230c577d7be02f8eb"
+    },
+    {
+      "file": "Blender/Renders/PlayerPoses/Seated_Side.png",
+      "size": [
+        1200,
+        900
+      ],
+      "sha256": "4af9cecb71caf2e35ac218858c92c3f5198ddfa8d91cdf659d79bcb31bd7a262"
+    },
+    {
+      "file": "Blender/Renders/PlayerPoses/Standing_FirstPerson.png",
+      "size": [
+        1600,
+        900
+      ],
+      "sha256": "e15875deeb98b61dcb915eebd270dd240b155483a6a668fd3b8e856349641332"
+    },
+    {
+      "file": "Blender/Renders/PlayerPoses/Standing_Side.png",
+      "size": [
+        1200,
+        900
+      ],
+      "sha256": "fb746951de2fb08c4925387dbe95a29feffa9f91d8ca67e80c913419e713c35f"
+    },
+    {
+      "file": "Blender/Renders/Player_Elbow_Close.png",
+      "size": [
+        1400,
+        1400
+      ],
+      "sha256": "3eb2632d42ff4c3379daf3bc3bb96c4e76aaef0f4ffa284261492b9559a8f05a"
+    },
+    {
+      "file": "Blender/Renders/Player_Knee_Close.png",
+      "size": [
+        1400,
+        1400
+      ],
+      "sha256": "d0dcd6d17e5c952de5b56d668dcd99cc4d6aba9b96b677b5dd9845135d38b857"
+    },
+    {
+      "file": "Blender/Renders/Player_Skin_Bend.png",
+      "size": [
+        1400,
+        1400
+      ],
+      "sha256": "7d1ae3e948e03ff3c57b00d6cbe56257dc977239a5e4c51b0525b3b78d3f5010"
+    },
+    {
+      "file": "UnityProject/Assets/Art/Apartment/Apartment.fbm/Cotton_Blanket_BaseColor.png",
+      "size": [
+        512,
+        512
+      ],
+      "sha256": "c4542464456e3ccd19a22db9d8ecfa9339d1e8ac624f3e541b0f2b37783cbb1b"
+    },
+    {
+      "file": "UnityProject/Assets/Art/Apartment/Apartment.fbm/Oak_Floor_BaseColor.png",
+      "size": [
+        512,
+        512
+      ],
+      "sha256": "9ef3ced558487b47ddebf9a89822a473ca6ad584ef4ca1ed89e91edeab530513"
+    },
+    {
+      "file": "UnityProject/Assets/Art/Apartment/Apartment.fbm/Plaster_BaseColor.png",
+      "size": [
+        512,
+        512
+      ],
+      "sha256": "ddfbf83fae75b0662a42e80ae8c45bd757dcb12e5893b80b6a927b17526b4491"
+    },
+    {
+      "file": "UnityProject/Assets/Art/Apartment/Apartment.fbm/Walnut_Desk_BaseColor.png",
+      "size": [
+        512,
+        512
+      ],
+      "sha256": "dd780e48ea7aaa18b73a812b81774c3565ddccb0f02d50428b0876bc24d96abd"
+    },
+    {
+      "file": "UnityProject/Assets/Art/Apartment/Apartment.fbm/Walnut_Worktop_BaseColor.png",
+      "size": [
+        512,
+        512
+      ],
+      "sha256": "33d258135a7b1638c2e396f53b9dc02a573d0bbab2e3bb61ef61fed66974a429"
+    },
+    {
+      "file": "UnityProject/Assets/Art/Apartment/Textures/Cotton_Blanket_BaseColor.png",
+      "size": [
+        512,
+        512
+      ],
+      "sha256": "c4542464456e3ccd19a22db9d8ecfa9339d1e8ac624f3e541b0f2b37783cbb1b"
+    },
+    {
+      "file": "UnityProject/Assets/Art/Apartment/Textures/Oak_Floor_BaseColor.png",
+      "size": [
+        512,
+        512
+      ],
+      "sha256": "9ef3ced558487b47ddebf9a89822a473ca6ad584ef4ca1ed89e91edeab530513"
+    },
+    {
+      "file": "UnityProject/Assets/Art/Apartment/Textures/Plaster_BaseColor.png",
+      "size": [
+        512,
+        512
+      ],
+      "sha256": "ddfbf83fae75b0662a42e80ae8c45bd757dcb12e5893b80b6a927b17526b4491"
+    },
+    {
+      "file": "UnityProject/Assets/Art/Apartment/Textures/Walnut_Desk_BaseColor.png",
+      "size": [
+        512,
+        512
+      ],
+      "sha256": "dd780e48ea7aaa18b73a812b81774c3565ddccb0f02d50428b0876bc24d96abd"
+    },
+    {
+      "file": "UnityProject/Assets/Art/Apartment/Textures/Walnut_Worktop_BaseColor.png",
+      "size": [
+        512,
+        512
+      ],
+      "sha256": "33d258135a7b1638c2e396f53b9dc02a573d0bbab2e3bb61ef61fed66974a429"
+    }
+  ],
+  "known_limits": [
+    "Early stylized character assets, not finished AAA production art.",
+    "Coarse upper-trouser crease in deep hip flexion and other cloth deformation polish remain.",
+    "Procedural locomotion lacks world-space foot locking and terrain adaptation.",
+    "Unity API compilation, import, PlayMode and target-GPU performance remain unverified."
+  ],
+  "hand_animation_followup": {
+    "recorded_utc": "2026-10-04T19:10:29.117096+00:00",
+    "technical_report": "Validation/wrist_grip_review.json",
+    "motion_validation": "Validation/hand_preview_validation.json",
+    "visual_acceptance": "Root and independent reviewer inspected SWAT wrist and patrol lowered/raised grip views. Root also inspected final high/low motion framing and final contact still. Prior sharply bent wrists and incomplete prop-grip approval are superseded.",
+    "source_sha256": "0c068eb70de9be878a683a3d43202a30fac87731cf0490a7daf27123e543c988",
+    "scope": "Requested wrist/finger correction; Unity still unverified."
+  }
+}

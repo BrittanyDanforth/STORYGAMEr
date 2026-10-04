@@ -1,0 +1,17 @@
+{
+  "scope": "Character geometry, skin weights, pose authoring and master-plan refinement. Runtime network boundary and apartment source unchanged.",
+  "checks": {
+    "UnityProject/Assets/Scripts/SignalDebtPlayer.cs": true,
+    "UnityProject/Assets/Scripts/SignalDebtNpcClient.cs": true,
+    "AI/relay.py": true,
+    "Blender/SignalDebt_Apartment.blend": true
+  },
+  "source_sha256": {
+    "UnityProject/Assets/Scripts/SignalDebtPlayer.cs": "49c6179459a6a6b2b1835b1494d2fd527046e55bd13316fdbef4ecb6d75b4b00",
+    "UnityProject/Assets/Scripts/SignalDebtNpcClient.cs": "b389729ae90dfa4fc769cc8131e1710e899c9c9918fe4e95db43e90e8453ee27",
+    "AI/relay.py": "1941fe1299d841815dcac52ab942b718a581a4de6c82960d0a1392594f1fcd19",
+    "Blender/SignalDebt_Apartment.blend": "3ee029e9c9747faeb6355b96343ab06ce37985541f3ff761ec8add71b040c5c9"
+  },
+  "paid_ai_calls_this_pass": 0,
+  "third_party_character_or_addon_imports_this_pass": 0
+}

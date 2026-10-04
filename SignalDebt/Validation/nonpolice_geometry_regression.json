@@ -1,0 +1,36 @@
+[
+  {
+    "file": "Mara_Victim.fbx",
+    "semantic_match": true,
+    "quantization_m": 1e-06,
+    "checks": [
+      "vertex_positions",
+      "topology",
+      "world_matrices",
+      "material_names",
+      "material_face_assignment",
+      "bone_parent_binding",
+      "vertex_weights",
+      "skeleton_coordinates_hierarchy"
+    ],
+    "before_sha256": "9828f0226fd049180881530028cd7ee1ca378665506a4aed54a913fc2ba24e5e",
+    "after_sha256": "15f0feb85a317d103fd89aff8af03945e58248d7f1fd4f8bdb6be741af5f47da"
+  },
+  {
+    "file": "Judge.fbx",
+    "semantic_match": true,
+    "quantization_m": 1e-06,
+    "checks": [
+      "vertex_positions",
+      "topology",
+      "world_matrices",
+      "material_names",
+      "material_face_assignment",
+      "bone_parent_binding",
+      "vertex_weights",
+      "skeleton_coordinates_hierarchy"
+    ],
+    "before_sha256": "8296ad6f28aa487736456c4e9cb50966c879e649134fd1e7affcd5bd16d42c08",
+    "after_sha256": "f0ff25b1ca20b232749a73e2e4370af6a4352472830d435ebf6d809e159c6fd4"
+  }
+]

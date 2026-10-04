@@ -1,0 +1,79 @@
+{
+  "source": "Blender/Character_Animation_Showcase.blend",
+  "source_sha256": "74a1a69a4d0c2e465ee6d7a38d6c8d96f096577df3d34f3b773f80ee1e6a9e01",
+  "corrected_hand_source": true,
+  "motion_pngs_verified": 61,
+  "stills_verified": 10,
+  "png_verify_and_full_decode": true,
+  "all_renders_newer_than_frozen_source": true,
+  "source_and_render_script_hashes_verified": true,
+  "motion_render_settings": {
+    "camera_location": [
+      -5.0,
+      0.0,
+      2.5999999046325684
+    ],
+    "camera_target": [
+      0.3,
+      0.4,
+      1.0
+    ],
+    "ortho_scale": 3.9000000953674316,
+    "samples": 48,
+    "size": [
+      864,
+      640
+    ],
+    "fps": 30,
+    "frames": [
+      1,
+      61
+    ]
+  },
+  "still_render_settings": {
+    "samples": 96,
+    "size": [
+      600,
+      720
+    ],
+    "views": [
+      "SWAT side with door contact visible",
+      "Patrol front three-quarter full body",
+      "Patrol upper body"
+    ]
+  },
+  "video": "Blender/Renders/Animation/Police_Animation_Review.mp4",
+  "video_sha256": "2535bfaafb518bde9c6cc39e0624f6a3816a8833eafc92e16c7aa4fda6166cdd",
+  "video_metadata": {
+    "codec_name": "h264",
+    "width": 864,
+    "height": 640,
+    "r_frame_rate": "30/1",
+    "duration": "2.033333",
+    "nb_frames": "61"
+  },
+  "video_full_decode_errors": 0,
+  "authoring_fps": 30,
+  "rendered_frame_step": 1,
+  "cycles_motion_samples": 48,
+  "cycles_still_samples": 96,
+  "camera_note": "SWAT side view exposes foot-to-door contact; patrol front-facing full body. Separate patrol GIF shows both shoulder roots and elbows.",
+  "endpoint_note": "61 displayed frames include both endpoints of a 2.0 second action.",
+  "limits": "Offline animation study. Does not establish Unity runtime performance or police gameplay.",
+  "proof_sha256": {
+    "SWAT_kick_001.png": "552413b49c6a71ecf444b46c39d356604e988517401a1baf6a8da4d8af112645",
+    "SWAT_kick_009.png": "7ac0cccf6dd8854e4ca5a0547361b982c13d964701b960a3d12cdec789d85773",
+    "SWAT_kick_017.png": "66d83e90d01ce74ff4631761aefa2388db99d8b810e5fa71c6238161f3d6deea",
+    "SWAT_kick_025.png": "af5cf4125d8c608b93131dcd23177877702e7eb453ac2c9fc1356919b0142c1f",
+    "SWAT_kick_038.png": "251bea0600791b116abfa7562636e4900064e4ba323fee512a4b62df88e64822",
+    "SWAT_kick_061.png": "11e861b4b526a7026255d1d861054210312d63ec691e5c2301ceb6a05bb529b7",
+    "Patrol_hold_001.png": "f32748f374ba7e219aafc20b95e71261855fdd24fc9d18faaff201d7aa8da2ef",
+    "Patrol_hold_023.png": "1416d992ba2ae886be29bd0e2990ffa7c5a9952d52d878779ae48bdebc0edbca",
+    "Patrol_hold_046.png": "2d015843144aa6eb034650ee3a1273ef96090110c29a0ee088405c3f1bb086c8",
+    "Patrol_grip_detail.png": "f4cdc075912bd47bad4f1cd30b5765ba970f655ebd4c92d0d36eb893e594de20"
+  },
+  "frame_strip_sha256": {
+    "SWAT_Kick_Frame_Strip.png": "872f4992921f18404c7db2d79bd9dea732794bc5b3ed2583abf128e5641f3df1",
+    "Patrol_Hold_Frame_Strip.png": "0c8309c5ae1180d7d21b776a9bcac663f1fcfbbda35341a23022052768e25029"
+  }
+}

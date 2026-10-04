@@ -1,0 +1,25 @@
+{
+  "test": "actual relay provider with restarted SQLite memory",
+  "retrieved_fact_ids": [
+    "payment_seen",
+    "repair_seen"
+  ],
+  "hidden_fact_excluded": true,
+  "provider_calls": 1,
+  "reply": {
+    "proposed_intent": "continue",
+    "speaker": "copy_shop_client",
+    "text": "Yeah, you got my order-folder service working again. I paid you the agreed 120 credits.",
+    "used_fact_ids": [
+      "repair_seen",
+      "payment_seen"
+    ],
+    "source_mode": "model",
+    "fallback_reason": "",
+    "request_id": "turn1",
+    "npc_id": "copy_shop_client",
+    "world_revision": 3,
+    "stale": false
+  },
+  "unity_runtime_tested": false
+}

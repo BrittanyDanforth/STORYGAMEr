@@ -1,0 +1,115 @@
+{
+  "status": "PASS within mathematical and source-inspection scope",
+  "recorded_utc": "2026-10-04T07:42:06.190368+00:00",
+  "player_fbx_sha256": "91e6157be52aabfa3395a8570fca3e771f41cb6d56f72eabc69828b52ed46db9",
+  "controller_sha256": "49c6179459a6a6b2b1835b1494d2fd527046e55bd13316fdbef4ecb6d75b4b00",
+  "actual_fbx_camera_markers": {
+    "Player_EyeView": {
+      "body_basis_right_up_forward_m": [
+        0.0,
+        1.6140501499176025,
+        0.0993700623512268
+      ],
+      "parent_bone": "Head"
+    },
+    "Player_HeadPivot": {
+      "body_basis_right_up_forward_m": [
+        0.0,
+        1.4820001125335693,
+        6.47802878006587e-08
+      ],
+      "parent_bone": "Head"
+    }
+  },
+  "source_checks": {
+    "head_reset_before_pose": true,
+    "head_parent_axis_is_player_right_transformed_to_parent_space": true,
+    "crouch_spine_lean_countered_once": true,
+    "camera_rotation_exact_player_yaw_and_pitch": true,
+    "eye_camera_cancels_only_reach_drop": true,
+    "legacy_fixed_crouch_eye_offset_removed": true,
+    "initialize_and_stand_update_eye_after_pose": true,
+    "seated_camera_unchanged": true,
+    "measured_eye_fallback_preserves_world_position_when_parented": true
+  },
+  "equation": "Camera = posed Head pivot + pitch-rotated rest eye offset; inherited 15*crouch spine lean is countered by head delta pitch-15*crouch. The procedural reachDrop is subtracted from body and added once to eye camera.",
+  "analytical_samples": [
+    {
+      "crouch_blend": 0,
+      "pitch_degrees": -75,
+      "camera_player_local_m": [
+        0,
+        1.6121611042641326,
+        -0.101831656849634
+      ]
+    },
+    {
+      "crouch_blend": 0,
+      "pitch_degrees": 0,
+      "camera_player_local_m": [
+        0,
+        1.61405,
+        0.09937
+      ]
+    },
+    {
+      "crouch_blend": 0,
+      "pitch_degrees": 75,
+      "camera_player_local_m": [
+        0,
+        1.4201930055474432,
+        0.15326935387330895
+      ]
+    },
+    {
+      "crouch_blend": 0,
+      "pitch_degrees": 86,
+      "camera_player_local_m": [
+        0,
+        1.392083402683593,
+        0.13866003363276352
+      ]
+    },
+    {
+      "crouch_blend": 1,
+      "pitch_degrees": -75,
+      "camera_player_local_m": [
+        0,
+        1.1753284624509324,
+        -0.04397504856898876
+      ]
+    },
+    {
+      "crouch_blend": 1,
+      "pitch_degrees": 0,
+      "camera_player_local_m": [
+        0,
+        1.1772173581867997,
+        0.15722660828064522
+      ]
+    },
+    {
+      "crouch_blend": 1,
+      "pitch_degrees": 75,
+      "camera_player_local_m": [
+        0,
+        0.9833603637342428,
+        0.21112596215395418
+      ]
+    },
+    {
+      "crouch_blend": 1,
+      "pitch_degrees": 86,
+      "camera_player_local_m": [
+        0,
+        0.9552507608703927,
+        0.19651664191340876
+      ]
+    }
+  ],
+  "limitations": [
+    "Pure geometry and code inspection; no Unity C# execution, Play Mode, camera-wall clipping, headroom or target-GPU test.",
+    "Analytical samples use the rounded measured source coordinates in player-local right/up/forward axes, before world translation; submicron FBX rounding and grounded sole offset are omitted.",
+    "Final visual acceptance of standing/crouched pose framing remains with root."
+  ]
+}

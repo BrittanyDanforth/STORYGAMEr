@@ -1,0 +1,189 @@
+{
+  "status": "PASS for rigid binding, occupancy and key-view fit review",
+  "source_sha256": {
+    "Blender/Character_Animation_Showcase.blend": "74a1a69a4d0c2e465ee6d7a38d6c8d96f096577df3d34f3b773f80ee1e6a9e01"
+  },
+  "scope": "Actual evaluated equipment vertices after skinning; first vs every authored frame in local bound-bone coordinates. This detects sliding/incorrect multi-bone binding, not hidden mesh-fit or triangle intersections. Fit is reviewed in multi-angle renders separately.",
+  "clips": {
+    "SWAT_DoorKick": {
+      "frames_sampled": 61,
+      "equipment_manifest": {
+        "carrier": "Chest",
+        "radio": "Chest/Hips",
+        "headgear": "Head",
+        "holster": {
+          "bone": "Hips",
+          "side": "anatomical right",
+          "occupied": true,
+          "occupant_material": "SWAT | inert holstered sidearm exterior"
+        },
+        "inert_prop_only": true,
+        "semantic_materials_preserved": true
+      },
+      "rigid_equipment_vertices_sampled": 12336,
+      "max_nonunit_weight_error": 1.7881393432617188e-07,
+      "max_relative_to_bound_bone_drift_m": 5.458416380303966e-07,
+      "bad_weight_bindings": [],
+      "holster_vertices": 496,
+      "holster_bounds_rig_space_m": [
+        [
+          -0.2705000042915344,
+          -0.20900000631809235
+        ],
+        [
+          -0.013999995775520802,
+          0.085999995470047
+        ],
+        [
+          0.8139628767967224,
+          0.9879999756813049
+        ]
+      ],
+      "stowed_prop_vertices": 192,
+      "held_prop_roots": [],
+      "occupancy": "SWAT holster contains one inert partial exterior; no held prop",
+      "binding_status": "PASS",
+      "fit_status": "Accepted in source-bound front/side/top/rear views; no runtime garment collision simulation claimed",
+      "exposed_stowed_prop_bounds_rig_space_m": [
+        [
+          -0.2540000081062317,
+          -0.22200000286102295
+        ],
+        [
+          -0.015999997034668922,
+          0.09200000017881393
+        ],
+        [
+          0.9434999227523804,
+          1.0104999542236328
+        ]
+      ]
+    },
+    "Patrol_LowReadyIdle": {
+      "frames_sampled": 61,
+      "equipment_manifest": {
+        "carrier": null,
+        "radio": "Chest/Hips",
+        "headgear": "Head",
+        "holster": {
+          "bone": "Hips",
+          "side": "anatomical right",
+          "occupied": false,
+          "occupant_material": null
+        },
+        "inert_prop_only": true,
+        "semantic_materials_preserved": true
+      },
+      "rigid_equipment_vertices_sampled": 3248,
+      "max_nonunit_weight_error": 1.7881393432617188e-07,
+      "max_relative_to_bound_bone_drift_m": 1.2013700229374393e-07,
+      "bad_weight_bindings": [],
+      "holster_vertices": 208,
+      "holster_bounds_rig_space_m": [
+        [
+          -0.2705000042915344,
+          -0.20900000631809235
+        ],
+        [
+          -0.017080072313547134,
+          0.06574954092502594
+        ],
+        [
+          0.8120681047439575,
+          0.9645375609397888
+        ]
+      ],
+      "stowed_prop_vertices": 0,
+      "held_prop_roots": [
+        "FictionalSidearm_Grip"
+      ],
+      "occupancy": "Patrol holster empty; one inert held prop",
+      "binding_status": "PASS",
+      "fit_status": "Accepted in source-bound front/side/top/rear views; no runtime garment collision simulation claimed"
+    },
+    "Patrol_LowReadyToAim": {
+      "frames_sampled": 46,
+      "equipment_manifest": {
+        "carrier": null,
+        "radio": "Chest/Hips",
+        "headgear": "Head",
+        "holster": {
+          "bone": "Hips",
+          "side": "anatomical right",
+          "occupied": false,
+          "occupant_material": null
+        },
+        "inert_prop_only": true,
+        "semantic_materials_preserved": true
+      },
+      "rigid_equipment_vertices_sampled": 3248,
+      "max_nonunit_weight_error": 1.7881393432617188e-07,
+      "max_relative_to_bound_bone_drift_m": 4.667775365017976e-07,
+      "bad_weight_bindings": [],
+      "holster_vertices": 208,
+      "holster_bounds_rig_space_m": [
+        [
+          -0.2705000042915344,
+          -0.20900000631809235
+        ],
+        [
+          -0.017080072313547134,
+          0.06574954092502594
+        ],
+        [
+          0.8120681047439575,
+          0.9645375609397888
+        ]
+      ],
+      "stowed_prop_vertices": 0,
+      "held_prop_roots": [
+        "FictionalSidearm_Grip"
+      ],
+      "occupancy": "Patrol holster empty; one inert held prop",
+      "binding_status": "PASS",
+      "fit_status": "Accepted in source-bound front/side/top/rear views; no runtime garment collision simulation claimed"
+    },
+    "Patrol_AimToLowReady": {
+      "frames_sampled": 46,
+      "equipment_manifest": {
+        "carrier": null,
+        "radio": "Chest/Hips",
+        "headgear": "Head",
+        "holster": {
+          "bone": "Hips",
+          "side": "anatomical right",
+          "occupied": false,
+          "occupant_material": null
+        },
+        "inert_prop_only": true,
+        "semantic_materials_preserved": true
+      },
+      "rigid_equipment_vertices_sampled": 3248,
+      "max_nonunit_weight_error": 1.7881393432617188e-07,
+      "max_relative_to_bound_bone_drift_m": 4.770699320310986e-07,
+      "bad_weight_bindings": [],
+      "holster_vertices": 208,
+      "holster_bounds_rig_space_m": [
+        [
+          -0.2705000042915344,
+          -0.20900000631809235
+        ],
+        [
+          -0.017080072313547134,
+          0.06574954092502594
+        ],
+        [
+          0.8120681047439575,
+          0.9645375609397888
+        ]
+      ],
+      "stowed_prop_vertices": 0,
+      "held_prop_roots": [
+        "FictionalSidearm_Grip"
+      ],
+      "occupancy": "Patrol holster empty; one inert held prop",
+      "binding_status": "PASS",
+      "fit_status": "Accepted in source-bound front/side/top/rear views; no runtime garment collision simulation claimed"
+    }
+  }
+}

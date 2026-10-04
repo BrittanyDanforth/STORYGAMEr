@@ -1,0 +1,379 @@
+{
+  "status": "PASS",
+  "recorded_utc": "2026-10-04T07:40:49.561104+00:00",
+  "scope": "Actual Blender FBX reimport; rest palm frame properly rotated to fingers forward and dorsal up. Not Unity execution or visual acceptance.",
+  "files": [
+    {
+      "file": "UnityProject/Assets/Art/Characters/PlayerBody.fbx",
+      "sha256": "91e6157be52aabfa3395a8570fca3e771f41cb6d56f72eabc69828b52ed46db9",
+      "rig": "Player_Rig",
+      "bones": 52,
+      "skinned_regions": [
+        {
+          "mesh": "Player_Leg_L",
+          "vertices": 2367,
+          "max_weight_sum_error": 1.1920928955078125e-07,
+          "mixed_weight_vertices": 1284
+        },
+        {
+          "mesh": "Player_Leg_R",
+          "vertices": 2342,
+          "max_weight_sum_error": 1.1920928955078125e-07,
+          "mixed_weight_vertices": 1274
+        },
+        {
+          "mesh": "PlayerHead",
+          "vertices": 5644,
+          "max_weight_sum_error": 1.1920928955078125e-07,
+          "mixed_weight_vertices": 0
+        },
+        {
+          "mesh": "Player_Chest",
+          "vertices": 3343,
+          "max_weight_sum_error": 1.1920928955078125e-07,
+          "mixed_weight_vertices": 1235
+        },
+        {
+          "mesh": "Player_Hips",
+          "vertices": 1317,
+          "max_weight_sum_error": 2.9802322387695312e-08,
+          "mixed_weight_vertices": 177
+        },
+        {
+          "mesh": "Player_Arm_R",
+          "vertices": 4501,
+          "max_weight_sum_error": 4.0978193283081055e-08,
+          "mixed_weight_vertices": 2563
+        },
+        {
+          "mesh": "Player_Arm_L",
+          "vertices": 4495,
+          "max_weight_sum_error": 4.190951585769653e-08,
+          "mixed_weight_vertices": 2554
+        },
+        {
+          "mesh": "Player_Neck",
+          "vertices": 162,
+          "max_weight_sum_error": 0.0,
+          "mixed_weight_vertices": 0
+        }
+      ],
+      "body_forward_length_m": 0.9499999861968199,
+      "body_up_length_m": 0.9499999861968199,
+      "anatomical_signed_right_m": {
+        "Left": -0.23560002446174622,
+        "Right": 0.23560002446174622
+      },
+      "posed_hand_anatomy": {
+        "Left": {
+          "thumb_root_centerward_m": 0.027549918740987778,
+          "thumb_tip_centerward_m": 0.06780799478292465,
+          "dorsal_up_dot": 0.9999999403953591,
+          "declared_nail_normal_up_dot": 0.9529255165074275,
+          "index_nearest_thumb": true,
+          "finger_joint_bend_dot_dorsal": {
+            "Index": [
+              -0.150656932964921,
+              -0.14169490709900856
+            ],
+            "Middle": [
+              -0.13891121465712786,
+              -0.13515750505030155
+            ],
+            "Ring": [
+              -0.14661645889282227,
+              -0.13960634358227253
+            ],
+            "Little": [
+              -0.16628462634980679,
+              -0.14783774130046368
+            ]
+          }
+        },
+        "Right": {
+          "thumb_root_centerward_m": 0.027549918740987778,
+          "thumb_tip_centerward_m": 0.06780799478292465,
+          "dorsal_up_dot": 0.9999999403953591,
+          "declared_nail_normal_up_dot": 0.9529255165074275,
+          "index_nearest_thumb": true,
+          "finger_joint_bend_dot_dorsal": {
+            "Index": [
+              -0.150656932964921,
+              -0.14169490709900856
+            ],
+            "Middle": [
+              -0.13891121465712786,
+              -0.13515750505030155
+            ],
+            "Ring": [
+              -0.14661645889282227,
+              -0.13960634358227253
+            ],
+            "Little": [
+              -0.16628462634980679,
+              -0.14783774130046368
+            ]
+          }
+        }
+      },
+      "palm_marker_distances": {
+        "Left": {
+          "wrist_to_tip_m": 0.06579716328234977,
+          "wrist_to_dorsal_marker_m": 0.04750004420970844
+        },
+        "Right": {
+          "wrist_to_tip_m": 0.06579716328234977,
+          "wrist_to_dorsal_marker_m": 0.04750004420970844
+        }
+      }
+    },
+    {
+      "file": "UnityProject/Assets/Art/Characters/Patrol_Officer.fbx",
+      "sha256": "8a064162c29eb33b6f3d944421e39658e0cf326faea74bfd90707dbfbc1c3fb1",
+      "rig": "Patrol_Officer_Rig",
+      "bones": 52,
+      "skinned_regions": [
+        {
+          "mesh": "Patrol_Officer_Leg_L",
+          "vertices": 2393,
+          "max_weight_sum_error": 1.1920928955078125e-07,
+          "mixed_weight_vertices": 1284
+        },
+        {
+          "mesh": "Patrol_Officer_Leg_R",
+          "vertices": 2368,
+          "max_weight_sum_error": 1.1920928955078125e-07,
+          "mixed_weight_vertices": 1274
+        },
+        {
+          "mesh": "Patrol_Officer_Neck",
+          "vertices": 162,
+          "max_weight_sum_error": 0.0,
+          "mixed_weight_vertices": 0
+        },
+        {
+          "mesh": "Patrol_Officer_Hips",
+          "vertices": 1887,
+          "max_weight_sum_error": 5.960464477539063e-08,
+          "mixed_weight_vertices": 177
+        },
+        {
+          "mesh": "Patrol_Officer_Arm_R",
+          "vertices": 4488,
+          "max_weight_sum_error": 4.0978193283081055e-08,
+          "mixed_weight_vertices": 2537
+        },
+        {
+          "mesh": "Patrol_Officer_Arm_L",
+          "vertices": 4482,
+          "max_weight_sum_error": 3.725290298461914e-08,
+          "mixed_weight_vertices": 2529
+        },
+        {
+          "mesh": "Patrol_Officer_Head",
+          "vertices": 5644,
+          "max_weight_sum_error": 1.1920928955078125e-07,
+          "mixed_weight_vertices": 0
+        },
+        {
+          "mesh": "Patrol_Officer_Chest",
+          "vertices": 3781,
+          "max_weight_sum_error": 1.1920928955078125e-07,
+          "mixed_weight_vertices": 1276
+        }
+      ],
+      "body_forward_length_m": 1.0000000000000009,
+      "body_up_length_m": 1.0000000000000009,
+      "anatomical_signed_right_m": {
+        "Left": -0.24799999594688416,
+        "Right": 0.24799999594688416
+      },
+      "posed_hand_anatomy": {
+        "Left": {
+          "thumb_root_centerward_m": 0.029000014066696167,
+          "thumb_tip_centerward_m": 0.07137683033943176,
+          "dorsal_up_dot": 0.9999998807907118,
+          "declared_nail_normal_up_dot": 0.9529259933445129,
+          "index_nearest_thumb": true,
+          "finger_joint_bend_dot_dorsal": {
+            "Index": [
+              -0.15065824426710606,
+              -0.14169680699706078
+            ],
+            "Middle": [
+              -0.13891154527664185,
+              -0.13516023196280003
+            ],
+            "Ring": [
+              -0.14661897532641888,
+              -0.13960441015660763
+            ],
+            "Little": [
+              -0.16628460586071014,
+              -0.14784127101302147
+            ]
+          }
+        },
+        "Right": {
+          "thumb_root_centerward_m": 0.029000014066696167,
+          "thumb_tip_centerward_m": 0.07137683033943176,
+          "dorsal_up_dot": 0.9999998807907118,
+          "declared_nail_normal_up_dot": 0.9529259933445129,
+          "index_nearest_thumb": true,
+          "finger_joint_bend_dot_dorsal": {
+            "Index": [
+              -0.15065824426710606,
+              -0.14169680699706078
+            ],
+            "Middle": [
+              -0.13891154527664185,
+              -0.13516023196280003
+            ],
+            "Ring": [
+              -0.14661897532641888,
+              -0.13960441015660763
+            ],
+            "Little": [
+              -0.16628460586071014,
+              -0.14784127101302147
+            ]
+          }
+        }
+      },
+      "palm_marker_distances": {
+        "Left": {
+          "wrist_to_tip_m": 0.06926040518729133,
+          "wrist_to_dorsal_marker_m": 0.05000002039610233
+        },
+        "Right": {
+          "wrist_to_tip_m": 0.06926040518729133,
+          "wrist_to_dorsal_marker_m": 0.05000002039610233
+        }
+      }
+    },
+    {
+      "file": "UnityProject/Assets/Art/Characters/SWAT_Officer.fbx",
+      "sha256": "23ae8ecdc69a9deae8b86eb2d6db444bfc6e881367c440f7ba81e90204b18081",
+      "rig": "SWAT_Officer_Rig",
+      "bones": 52,
+      "skinned_regions": [
+        {
+          "mesh": "SWAT_Officer_Leg_L",
+          "vertices": 2539,
+          "max_weight_sum_error": 1.1920928955078125e-07,
+          "mixed_weight_vertices": 1284
+        },
+        {
+          "mesh": "SWAT_Officer_Leg_R",
+          "vertices": 2514,
+          "max_weight_sum_error": 1.1920928955078125e-07,
+          "mixed_weight_vertices": 1274
+        },
+        {
+          "mesh": "SWAT_Officer_Neck",
+          "vertices": 162,
+          "max_weight_sum_error": 0.0,
+          "mixed_weight_vertices": 0
+        },
+        {
+          "mesh": "SWAT_Officer_Hips",
+          "vertices": 1887,
+          "max_weight_sum_error": 5.960464477539063e-08,
+          "mixed_weight_vertices": 177
+        },
+        {
+          "mesh": "SWAT_Officer_Arm_R",
+          "vertices": 4565,
+          "max_weight_sum_error": 4.423782229423523e-08,
+          "mixed_weight_vertices": 2588
+        },
+        {
+          "mesh": "SWAT_Officer_Arm_L",
+          "vertices": 4583,
+          "max_weight_sum_error": 3.725290298461914e-08,
+          "mixed_weight_vertices": 2608
+        },
+        {
+          "mesh": "SWAT_Officer_Head",
+          "vertices": 6078,
+          "max_weight_sum_error": 1.1920928955078125e-07,
+          "mixed_weight_vertices": 0
+        },
+        {
+          "mesh": "SWAT_Officer_Chest",
+          "vertices": 3705,
+          "max_weight_sum_error": 1.1920928955078125e-07,
+          "mixed_weight_vertices": 1250
+        }
+      ],
+      "body_forward_length_m": 1.0000000000000009,
+      "body_up_length_m": 1.0000000000000009,
+      "anatomical_signed_right_m": {
+        "Left": -0.2579200863838196,
+        "Right": 0.2579200863838196
+      },
+      "posed_hand_anatomy": {
+        "Left": {
+          "thumb_root_centerward_m": 0.02900015562772751,
+          "thumb_tip_centerward_m": 0.07137712836265564,
+          "dorsal_up_dot": 1.0000001192092922,
+          "declared_nail_normal_up_dot": 0.9529259933445227,
+          "index_nearest_thumb": true,
+          "finger_joint_bend_dot_dorsal": {
+            "Index": [
+              -0.1506560854579174,
+              -0.1417003721033371
+            ],
+            "Middle": [
+              -0.13891117181313956,
+              -0.13516060823286952
+            ],
+            "Ring": [
+              -0.14661724864766298,
+              -0.13960523345246614
+            ],
+            "Little": [
+              -0.16628702729156475,
+              -0.14783864097766922
+            ]
+          }
+        },
+        "Right": {
+          "thumb_root_centerward_m": 0.02900015562772751,
+          "thumb_tip_centerward_m": 0.07137712836265564,
+          "dorsal_up_dot": 1.0000001192092922,
+          "declared_nail_normal_up_dot": 0.9529259933445227,
+          "index_nearest_thumb": true,
+          "finger_joint_bend_dot_dorsal": {
+            "Index": [
+              -0.1506560854579174,
+              -0.1417003721033371
+            ],
+            "Middle": [
+              -0.13891117181313956,
+              -0.13516060823286952
+            ],
+            "Ring": [
+              -0.14661724864766298,
+              -0.13960523345246614
+            ],
+            "Little": [
+              -0.16628702729156475,
+              -0.14783864097766922
+            ]
+          }
+        }
+      },
+      "palm_marker_distances": {
+        "Left": {
+          "wrist_to_tip_m": 0.0692604736813914,
+          "wrist_to_dorsal_marker_m": 0.05000002738133805
+        },
+        "Right": {
+          "wrist_to_tip_m": 0.0692604736813914,
+          "wrist_to_dorsal_marker_m": 0.05000002738133805
+        }
+      }
+    }
+  ]
+}

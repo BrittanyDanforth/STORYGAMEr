@@ -1,0 +1,15 @@
+{
+  "suite": "AI/test_relay.py",
+  "tests_run": 27,
+  "failures": 0,
+  "errors": 0,
+  "paid_calls_in_suite": 0,
+  "result": "PASS",
+  "live_smoke_tests": "Separate results in api_smoke_result.json and live_relay_result.json",
+  "security_regressions": [
+    "redirect cannot contact target",
+    "fixed endpoint rejects schemes/hosts/paths",
+    "proxy and model/player text cannot choose destination",
+    "instruction-like response stays inert"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "source_blend_sha256": "3ef7be1d5a68042a999f6f2a33cac8fb26b70169532c2d844c4990b467ca1021",
+  "preview": "Actual rest character meshes rendered in Blender; pose and collision gates are separately recorded.",
+  "renders": {
+    "Patrol_Officer_UpperBody.png": {
+      "sha256": "76f09826e41c7d46246be227dce33bcf7a1e5f773afa2f47145dbe4e1103030f",
+      "bytes": 2509200
+    },
+    "Patrol_Officer_Equipment.png": {
+      "sha256": "b120440653530b9e40ae03c146d0dcba3d37e6091dba7b2f29b98606457e7252",
+      "bytes": 2294617
+    },
+    "SWAT_Officer_UpperBody.png": {
+      "sha256": "ee58d0dc703c3721c1c3229403fc19b60b2b4211f431f90672c20b9514cbeb26",
+      "bytes": 2571472
+    },
+    "SWAT_Officer_Equipment.png": {
+      "sha256": "e318e7d8677024375a4f33dd23e7f5188db1fefa2a61b2cabbba0a948bf5810b",
+      "bytes": 2314120
+    }
+  },
+  "equivalent_current_source_blend_sha256": "5d9cd3512cde24de6977878adbb251dbb880dc5a1f3b1fe4d9ddbeed59bd9f49",
+  "presentation_equivalence_report": "Validation/character_roster_translation_fix.json",
+  "provenance_note": "These exact images were rendered from source_blend_sha256. The only subsequent source change moves the patrol display rig to its own roster platform; this detail renderer explicitly normalizes the rig origin before each view. Every local mesh, weight, material, bone, pose and marker remains identical in the recorded equivalence proof."
+}

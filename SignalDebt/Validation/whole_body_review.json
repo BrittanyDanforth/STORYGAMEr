@@ -1,0 +1,276 @@
+{
+  "status": "PASS for requested body/gear correction; documented attachment-fold and runtime limitations remain",
+  "recorded_utc": "2026-10-04T19:53:18.143220+00:00",
+  "scope": "Independent read-only source geometry review, all214 police animation frames, original garment triangle crossings, actual9FBXreimports, equipment bone binding/holster occupancy, player preservation and12orthogonal+2close proof views.",
+  "source_sha256": {
+    "Blender/build_characters.py": "71130420b580ccc3dc57f0664bb63ef37c971764a6f40ddc968b3b678a88de81",
+    "Blender/animate_characters.py": "da836a8fefa33a64e932ce45cf160cac58c5a979f94618478b8123c3b17d10d4",
+    "Blender/Characters.blend": "5d9cd3512cde24de6977878adbb251dbb880dc5a1f3b1fe4d9ddbeed59bd9f49",
+    "Blender/Character_Animation_Showcase.blend": "74a1a69a4d0c2e465ee6d7a38d6c8d96f096577df3d34f3b773f80ee1e6a9e01",
+    "UnityProject/Assets/Art/Characters/rig_contract.json": "6249bca644163313ae18b2553a10c843e39c665ba55b12a44542d558add798ad",
+    "Blender/verify_upper_body_clearance.py": "0f472ae652e4ecfbfb1bae99a40bed1c379f6770c8b3806f8c776b39e2f2d951",
+    "Blender/verify_garment_surface_crossings.py": "1d577066eccc3c915258be3232a97c6b314a2822a714e5bd89effadd2d87bf7c",
+    "Blender/verify_police_equipment.py": "394310b0e760c1a7cf8879c8463cd549a29d6ca61f0039920600fe0a4c41feda",
+    "Blender/verify_player_semantic_geometry.py": "b604a840ecf5bb773c6dcf01187d27272f12c785e449e558e981b5658f8d8008",
+    "Blender/verify_roster_translation_equivalence.py": "36c8dfc8ab65953346104c5db4608e574ba8098ee98aa309d5d6e8db21c0d189",
+    "Blender/verify_wrist_animation.py": "6a0364a0c93ef4e0f969a2cf960c43cefc78bac692b19bdaf3fc11056fdd1a45",
+    "Blender/verify_characters.py": "20d536db156e015f791acba5cfac0213e0881c72cdb9a294f835232ebbf0c623",
+    "UnityProject/Assets/Scripts/SignalDebtPlayer.cs": "49c6179459a6a6b2b1835b1494d2fd527046e55bd13316fdbef4ecb6d75b4b00",
+    "UnityProject/Assets/Scripts/SignalDebtAnimationReview.cs": "fc52d3b340cc731845ca79dc2159a44cb8a9eab2f1be993dbe4d8d102b0cd6cd",
+    "UnityProject/Assets/Editor/SignalDebtAnimationBuilder.cs": "e66fdad253d9f6cde2089297d79b15ba284f996c76cbcd47812fbb25f6652c16",
+    "UnityProject/Assets/Editor/SignalDebtSceneBuilder.cs": "8c9673765e8e1029e7bf689f592fc3f01b8a478960caf6ecc58aaaf7a66ee70a",
+    "Blender/render_player_poses.py": "f1627fd73868c7ad4e655435b77f4fc63972c1f1260da735ef4fa666996246d3"
+  },
+  "files": [
+    {
+      "file": "UnityProject/Assets/Art/Characters/PlayerBody.fbx",
+      "sha256": "23518169b985f4425c90d0cc11edb0f701b79992009874aeedbe1eef976d4b90",
+      "kind": "base_character_fbx",
+      "status": "PASS actual Blender FBX readback",
+      "bones": 52,
+      "meshes": 8
+    },
+    {
+      "file": "UnityProject/Assets/Art/Characters/Mara_Victim.fbx",
+      "sha256": "15f0feb85a317d103fd89aff8af03945e58248d7f1fd4f8bdb6be741af5f47da",
+      "kind": "base_character_fbx",
+      "status": "PASS actual Blender FBX readback",
+      "bones": 52,
+      "meshes": 16
+    },
+    {
+      "file": "UnityProject/Assets/Art/Characters/Judge.fbx",
+      "sha256": "f0ff25b1ca20b232749a73e2e4370af6a4352472830d435ebf6d809e159c6fd4",
+      "kind": "base_character_fbx",
+      "status": "PASS actual Blender FBX readback",
+      "bones": 52,
+      "meshes": 16
+    },
+    {
+      "file": "UnityProject/Assets/Art/Characters/Patrol_Officer.fbx",
+      "sha256": "d75374b6fa0a21733d28c69701190959ba2cef625b87ba0801755099770c67cf",
+      "kind": "base_character_fbx",
+      "status": "PASS actual Blender FBX readback",
+      "bones": 52,
+      "meshes": 8
+    },
+    {
+      "file": "UnityProject/Assets/Art/Characters/SWAT_Officer.fbx",
+      "sha256": "7052c896491ad6890244c5faa28576d0e6c5d4de60c1aecf62798cfa510c469b",
+      "kind": "base_character_fbx",
+      "status": "PASS actual Blender FBX readback",
+      "bones": 52,
+      "meshes": 8
+    },
+    {
+      "file": "UnityProject/Assets/Art/Animations/SWAT_DoorKick.fbx",
+      "sha256": "4f1e01a9fc68567ece45ebe9723a16fa212f65c78a2f039dddfa7388164901bf",
+      "kind": "animated_character_fbx",
+      "status": "PASS actual Blender FBX readback",
+      "bones": 52,
+      "frames": [
+        1.0,
+        61.0
+      ],
+      "fps": 30.0,
+      "max_joint_head_roundtrip_error_m": 3.617300999865393e-06,
+      "max_evaluated_skin_roundtrip_error_m": 4.610145879269112e-06
+    },
+    {
+      "file": "UnityProject/Assets/Art/Animations/Patrol_LowReadyIdle.fbx",
+      "sha256": "eeb00742cf203073d0efef0aabdfac3ec74da738c1b1c92f7aa88a7be1966ae9",
+      "kind": "animated_character_fbx",
+      "status": "PASS actual Blender FBX readback",
+      "bones": 52,
+      "frames": [
+        1.0,
+        61.0
+      ],
+      "fps": 30.0,
+      "max_joint_head_roundtrip_error_m": 9.7030940936626e-07,
+      "max_evaluated_skin_roundtrip_error_m": 1.1151007583976025e-06
+    },
+    {
+      "file": "UnityProject/Assets/Art/Animations/Patrol_LowReadyToAim.fbx",
+      "sha256": "682c45c221018c455aed224f8304359823128d8f79ac1276a7a17f6e1e50fc3f",
+      "kind": "animated_character_fbx",
+      "status": "PASS actual Blender FBX readback",
+      "bones": 52,
+      "frames": [
+        1.0,
+        46.0
+      ],
+      "fps": 30.0,
+      "max_joint_head_roundtrip_error_m": 1.0546783045837968e-06,
+      "max_evaluated_skin_roundtrip_error_m": 1.1511568800415262e-06
+    },
+    {
+      "file": "UnityProject/Assets/Art/Animations/Patrol_AimToLowReady.fbx",
+      "sha256": "9ae71fce1b958efcb0bed37c22332599c2a76dbde2264fd6218e13a62afa6734",
+      "kind": "animated_character_fbx",
+      "status": "PASS actual Blender FBX readback",
+      "bones": 52,
+      "frames": [
+        1.0,
+        46.0
+      ],
+      "fps": 30.0,
+      "max_joint_head_roundtrip_error_m": 1.0277903102297534e-06,
+      "max_evaluated_skin_roundtrip_error_m": 1.1309185765639995e-06
+    }
+  ],
+  "surface_review": {
+    "report": "Validation/arm_body_clearance.json",
+    "sha256": "9b2e6ffd37fb28bb8e26068f72eb543a5da358fc229f63f327b6abd5a15d2466"
+  },
+  "exact_surface_crossings": {
+    "report": "Validation/garment_surface_crossings.json",
+    "sha256": "ce18090cdc25b578d7a674f3e967da0a7923534316379917ff8fdc6f5eac2b0d"
+  },
+  "equipment_review": {
+    "report": "Validation/police_equipment_review.json",
+    "sha256": "004550ec754620486228b51e03b1fc8dd12040991ccbc1a52673515e4f236210"
+  },
+  "player_preservation": {
+    "report": "Validation/player_art_preservation.json",
+    "sha256": "05a92a2ba18072fd224d820da1eb6eaac458cdaa60064f08285b81b8369db8f6",
+    "status": "PASS within explicit numeric tolerances",
+    "changed_sections": {}
+  },
+  "base_reimport": {
+    "report": "Validation/base_character_reimport_independent.json",
+    "sha256": "a2c8776d7b8d7aa587eaedf96ce61bfda6a15c09a591cd11eebd263cc95da6a6"
+  },
+  "animation_reimport": {
+    "report": "Validation/wrist_grip_reimport.json",
+    "sha256": "a192aae68daa167b2d6ba6a6b33e0574cd53617690d429a619f31c4af836bdc6"
+  },
+  "visual_review": {
+    "status": "ACCEPTED for the requested upper-arm/chest correction with explicit attachment-fold limitation",
+    "reviewed_by": "Independent visual review plus root visual adjudication",
+    "scope": "Final actual Blender front/side/top/rear key poses and two native720px attachment close views; all214 authored frames have actual-surface numerical checks.",
+    "residual": "Patrol has localized inner-axilla cloth folding at the joined sleeve/torso attachment: signed-envelope depth up to5.11mm; exact crossing triangle centroids within25.79mm of shared seam, farthest triangle corner30.81mm. Close-range seam shading and fit roughness remain. This is not a collision-free garment or final AAA art approval.",
+    "reason": "Upper-arm shafts, distal arms and forearms no longer disappear into the torso; remaining contacts are explicitly localized to the inner garment attachment and visible as a cloth crease. They are not hidden behind a broad anatomical-zone exemption.",
+    "images": [
+      {
+        "file": "Blender/Renders/UpperBodyAudit/Attachment_LeftFront.png",
+        "sha256": "d69e8b316407bf0dae0f21bd29ced310b9b8d6594fb6b83cede4c7d49686ae52",
+        "review": "Final four-view pose evidence or attachment close view; contact sheets assemble actual renders. Before/after sheet is explicitly historical on its left side."
+      },
+      {
+        "file": "Blender/Renders/UpperBodyAudit/Attachment_LeftRear.png",
+        "sha256": "a31ad84beccffd2125117231baa9121f809c5ddc9711be86518d81154c76cec2",
+        "review": "Final four-view pose evidence or attachment close view; contact sheets assemble actual renders. Before/after sheet is explicitly historical on its left side."
+      },
+      {
+        "file": "Blender/Renders/UpperBodyAudit/PatrolAim_Front.png",
+        "sha256": "cf768b535c8e728a80033b87c4c3a5003f2dae66bc6d664d4fdf0b381f127325",
+        "review": "Final four-view pose evidence or attachment close view; contact sheets assemble actual renders. Before/after sheet is explicitly historical on its left side."
+      },
+      {
+        "file": "Blender/Renders/UpperBodyAudit/PatrolAim_Rear.png",
+        "sha256": "6b6584376b46f3b04cfe55fae2b536002ce884604d28122b428f2c2d73939563",
+        "review": "Final four-view pose evidence or attachment close view; contact sheets assemble actual renders. Before/after sheet is explicitly historical on its left side."
+      },
+      {
+        "file": "Blender/Renders/UpperBodyAudit/PatrolAim_Side.png",
+        "sha256": "1876d92a1ebcc52937b8689ec49d6b9b2ebb2c81f165d1f8b3c7ea57b375fe40",
+        "review": "Final four-view pose evidence or attachment close view; contact sheets assemble actual renders. Before/after sheet is explicitly historical on its left side."
+      },
+      {
+        "file": "Blender/Renders/UpperBodyAudit/PatrolAim_Top.png",
+        "sha256": "89185d46c356fe5ca6974c43c1d786647c17049a667edd6710bc9001aff32732",
+        "review": "Final four-view pose evidence or attachment close view; contact sheets assemble actual renders. Before/after sheet is explicitly historical on its left side."
+      },
+      {
+        "file": "Blender/Renders/UpperBodyAudit/PatrolLow_Front.png",
+        "sha256": "669026d611c5e668275dbc4525e67dde3ee62c4294aec4f0d67c0f6c256dbedf",
+        "review": "Final four-view pose evidence or attachment close view; contact sheets assemble actual renders. Before/after sheet is explicitly historical on its left side."
+      },
+      {
+        "file": "Blender/Renders/UpperBodyAudit/PatrolLow_Rear.png",
+        "sha256": "6739d5b404aa0e026161928e1303da7bb2f51beaea60c52086b79f238ae3ea66",
+        "review": "Final four-view pose evidence or attachment close view; contact sheets assemble actual renders. Before/after sheet is explicitly historical on its left side."
+      },
+      {
+        "file": "Blender/Renders/UpperBodyAudit/PatrolLow_Side.png",
+        "sha256": "7bf1aea0d191c80c997b6a6b23c6491e16fc10441fccb4dab807a85580581d95",
+        "review": "Final four-view pose evidence or attachment close view; contact sheets assemble actual renders. Before/after sheet is explicitly historical on its left side."
+      },
+      {
+        "file": "Blender/Renders/UpperBodyAudit/PatrolLow_Top.png",
+        "sha256": "cc3f7e09c2dd6259e57a5c8136b23a5c39ac37e6cc054155760a28947d69f9cc",
+        "review": "Final four-view pose evidence or attachment close view; contact sheets assemble actual renders. Before/after sheet is explicitly historical on its left side."
+      },
+      {
+        "file": "Blender/Renders/UpperBodyAudit/Patrol_Shoulder_Before_After.png",
+        "sha256": "95e08ad25795e6286fbc2f093fee5991b2487a3a116ca6a54dd814d01c51840b",
+        "review": "Final four-view pose evidence or attachment close view; contact sheets assemble actual renders. Before/after sheet is explicitly historical on its left side."
+      },
+      {
+        "file": "Blender/Renders/UpperBodyAudit/Police_Four_View_Proof.png",
+        "sha256": "5219fe0248d0f186a2c8edf9af225382de70151b8864d1069f1faaa8847cf67b",
+        "review": "Final four-view pose evidence or attachment close view; contact sheets assemble actual renders. Before/after sheet is explicitly historical on its left side."
+      },
+      {
+        "file": "Blender/Renders/UpperBodyAudit/SWATContact_Front.png",
+        "sha256": "3755c4c017d11128004d65d30ecc9ae4a3aba6593b8b4eeb5db8da4678314b76",
+        "review": "Final four-view pose evidence or attachment close view; contact sheets assemble actual renders. Before/after sheet is explicitly historical on its left side."
+      },
+      {
+        "file": "Blender/Renders/UpperBodyAudit/SWATContact_Rear.png",
+        "sha256": "8e2959a5fa8d1d7fd877ad62c3a3f6eabe015f554bfc900adcc36ae5fb1f5bd9",
+        "review": "Final four-view pose evidence or attachment close view; contact sheets assemble actual renders. Before/after sheet is explicitly historical on its left side."
+      },
+      {
+        "file": "Blender/Renders/UpperBodyAudit/SWATContact_Side.png",
+        "sha256": "5c9b969395d33325e101e9d4570acc388097396a9907313916e4d4db66743456",
+        "review": "Final four-view pose evidence or attachment close view; contact sheets assemble actual renders. Before/after sheet is explicitly historical on its left side."
+      },
+      {
+        "file": "Blender/Renders/UpperBodyAudit/SWATContact_Top.png",
+        "sha256": "9650f9ce940e956c8e49c5290a71d39709a705522cabd61e3da241a448bffe89",
+        "review": "Final four-view pose evidence or attachment close view; contact sheets assemble actual renders. Before/after sheet is explicitly historical on its left side."
+      }
+    ],
+    "remaining_limitations": [
+      "Patrol has localized inner-axilla cloth folding at the joined sleeve/torso attachment: signed-envelope depth up to5.11mm; exact crossing triangle centroids within25.79mm of shared seam, farthest triangle corner30.81mm. Close-range seam shading and fit roughness remain. This is not a collision-free garment or final AAA art approval.",
+      "Key-view visual review is complemented by all-frame numeric sampling; no runtime blend, locomotion, collision solver or Unity PlayMode test.",
+      "No Unity editor compilation, executable build or target-GPU performance verification in this review.",
+      "Stylized early production source; facial animation, production topology and cloth deformation polish remain."
+    ]
+  },
+  "animation_input_provenance": {
+    "input_base_sha256": "3ef7be1d5a68042a999f6f2a33cac8fb26b70169532c2d844c4990b467ca1021",
+    "current_base_sha256": "5d9cd3512cde24de6977878adbb251dbb880dc5a1f3b1fe4d9ddbeed59bd9f49",
+    "equivalence": {
+      "report": "Validation/roster_translation_independent.json",
+      "sha256": "75f4ff1996c3675670c4591e209d6994190b003377de7d5c6a8a1f4462fd9d36"
+    },
+    "reason": "Animation was authored from the pre-roster-correction base. A later patrol root X translation only separates the cast in the roster; rig-local meshes,skeleton,poses,weights and anchors are exactly equivalent. The animation and exported FBXs were not regenerated by the presentation correction."
+  },
+  "retained_controller_evidence": {
+    "UnityProject/Assets/Scripts/SignalDebtPlayer.cs": {
+      "sha256": "49c6179459a6a6b2b1835b1494d2fd527046e55bd13316fdbef4ecb6d75b4b00",
+      "unchanged_since_previous_limited_controller_review": true
+    },
+    "UnityProject/Assets/Scripts/SignalDebtAnimationReview.cs": {
+      "sha256": "fc52d3b340cc731845ca79dc2159a44cb8a9eab2f1be993dbe4d8d102b0cd6cd",
+      "unchanged_since_previous_limited_controller_review": true
+    },
+    "UnityProject/Assets/Editor/SignalDebtAnimationBuilder.cs": {
+      "sha256": "e66fdad253d9f6cde2089297d79b15ba284f996c76cbcd47812fbb25f6652c16",
+      "unchanged_since_previous_limited_controller_review": true
+    },
+    "UnityProject/Assets/Editor/SignalDebtSceneBuilder.cs": {
+      "sha256": "8c9673765e8e1029e7bf689f592fc3f01b8a478960caf6ecc58aaaf7a66ee70a",
+      "unchanged_since_previous_limited_controller_review": true
+    },
+    "Blender/render_player_poses.py": {
+      "sha256": "f1627fd73868c7ad4e655435b77f4fc63972c1f1260da735ef4fa666996246d3",
+      "unchanged_since_previous_limited_controller_review": true
+    }
+  },
+  "prior_limited_review_superseded": "Validation/History/rig_controller_review_before_whole_body_fix.json; prior wrist pass did not cover shoulder/chest deformation.",
+  "animation_reimport_scope": "Every frame joint matrix comparison; evaluated skinned mesh position comparison at start, midpoint, frame25 and end as enumerated in wrist_grip_reimport.json. This is not a Unity importer test."
+}
