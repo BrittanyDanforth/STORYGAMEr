@@ -44,7 +44,7 @@
   "quality_pass_preserves_gameplay_anchor_positions": true,
   "fbx_roundtrip_anchor_positions_match_metres": true,
   "fbx_door_parent": "DoorHinge",
-  "fbx_mesh_objects": 924,
+  "fbx_mesh_objects": 947,
   "glb_size_matches_header": true,
   "glb_required_anchor_nodes_present": true,
   "status": "PASS"

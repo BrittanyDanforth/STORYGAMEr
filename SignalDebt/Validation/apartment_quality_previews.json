@@ -1,0 +1,53 @@
+{
+  "Preview_01_Room": {
+    "path": "Blender/Previews/QualityPass/Preview_01_Room.png",
+    "engine": "CYCLES",
+    "blender_version": "5.2.2 LTS",
+    "resolution": [
+      1600,
+      900
+    ],
+    "samples": 96,
+    "adaptive_threshold": 0.014999999664723873,
+    "denoising": true,
+    "denoiser": "OPENIMAGEDENOISE",
+    "threads": 4,
+    "render_seconds": 172.6,
+    "sha256": "af5351e033da64710f47d197a9fe71c87c951af2734a0bf59a7db9602e146e8d",
+    "source_sha256": "945aa347a46fd2e37d98d746782a8509b3def12f4203f8e9d8a56dd7f69a74bc"
+  },
+  "Preview_05_Desk_Detail": {
+    "path": "Blender/Previews/QualityPass/Preview_05_Desk_Detail.png",
+    "engine": "CYCLES",
+    "blender_version": "5.2.2 LTS",
+    "resolution": [
+      1600,
+      900
+    ],
+    "samples": 96,
+    "adaptive_threshold": 0.014999999664723873,
+    "denoising": true,
+    "denoiser": "OPENIMAGEDENOISE",
+    "threads": 4,
+    "render_seconds": 185.84,
+    "sha256": "f99899b7ac0ab0e4c11210201c2ddbe3a0eb5c65ce629e84a3267fc9c71d299d",
+    "source_sha256": "945aa347a46fd2e37d98d746782a8509b3def12f4203f8e9d8a56dd7f69a74bc"
+  },
+  "Preview_03_Bed_Window": {
+    "path": "Blender/Previews/QualityPass/Preview_03_Bed_Window.png",
+    "engine": "CYCLES",
+    "blender_version": "5.2.2 LTS",
+    "resolution": [
+      1600,
+      900
+    ],
+    "samples": 96,
+    "adaptive_threshold": 0.014999999664723873,
+    "denoising": true,
+    "denoiser": "OPENIMAGEDENOISE",
+    "threads": 4,
+    "render_seconds": 170.01,
+    "sha256": "ade021b15efce1ee6fa7154e9fd8dcee58980025da1d0f841301831f603ece2f",
+    "source_sha256": "945aa347a46fd2e37d98d746782a8509b3def12f4203f8e9d8a56dd7f69a74bc"
+  }
+}

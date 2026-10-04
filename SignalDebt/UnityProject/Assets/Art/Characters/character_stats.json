@@ -1,4 +1,22 @@
 {
+  "Patrol_Officer": {
+    "height_m_approx": 1.85,
+    "mesh_objects": 8,
+    "triangles": 61514,
+    "bones": 52,
+    "rig": "Continuous skinned limbs, articulated fingers; no animation clips in base",
+    "fbx": "Patrol_Officer.fbx",
+    "head_hidden_separately": true
+  },
+  "SWAT_Officer": {
+    "height_m_approx": 1.89,
+    "mesh_objects": 8,
+    "triangles": 76472,
+    "bones": 52,
+    "rig": "Continuous skinned limbs, articulated fingers; no animation clips in base",
+    "fbx": "SWAT_Officer.fbx",
+    "head_hidden_separately": true
+  },
   "Player": {
     "height_m_approx": 1.76,
     "mesh_objects": 8,
@@ -24,24 +42,6 @@
     "bones": 52,
     "rig": "Rigid-region first pass",
     "fbx": "Judge.fbx",
-    "head_hidden_separately": true
-  },
-  "Patrol_Officer": {
-    "height_m_approx": 1.85,
-    "mesh_objects": 8,
-    "triangles": 55440,
-    "bones": 52,
-    "rig": "Continuous skinned limbs, articulated fingers; no animation clips in base",
-    "fbx": "Patrol_Officer.fbx",
-    "head_hidden_separately": true
-  },
-  "SWAT_Officer": {
-    "height_m_approx": 1.89,
-    "mesh_objects": 8,
-    "triangles": 70380,
-    "bones": 52,
-    "rig": "Continuous skinned limbs, articulated fingers; no animation clips in base",
-    "fbx": "SWAT_Officer.fbx",
     "head_hidden_separately": true
   }
 }

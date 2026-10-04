@@ -1,0 +1,3308 @@
+{
+  "status": "PASS_BOUNDED_RENDER_EQUIVALENCE",
+  "exact_equivalence": false,
+  "equivalent_with_bounded_normals": true,
+  "normal_component_bound": 1e-06,
+  "equivalent_with_bounded_uvs": true,
+  "render_equivalence": true,
+  "uv_component_bound": 1e-06,
+  "shader_uses_uv_coordinates_or_images": false,
+  "shader_node_types": {
+    "Skin | warm light": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Officer | raised uniform panels": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Hardware | gunmetal": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Police | tailored fabric seam": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Officer | navy uniform": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Officer | restrained brass badge": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Uniform | warm white": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Police | radio molded shell": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Equipment | rubber and black cloth": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Face | restrained lips": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Face | ivory sclera": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Face | brown iris": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Face | pupil": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Hair | charcoal brown": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "SWAT | webbing": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "SWAT | charcoal protective vest": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Police | molded holster polymer": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Shoes | rubber sole": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Shoes | woven laces": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Fictional sidearm | textured grip": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Fictional sidearm | graphite": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ],
+    "Fictional sidearm | neutral inset": [
+      "ShaderNodeBsdfPrincipled",
+      "ShaderNodeOutputMaterial"
+    ]
+  },
+  "exact_geometry_topology_weights_materials_actions_poses": true,
+  "max_observed_uv_component_difference": 5.960464477539063e-08,
+  "rms_uv_component_difference": 2.532926952469016e-09,
+  "uv_comparisons": [
+    {
+      "field": "/objects/Patrol_Officer_Arm_L/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48070,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.2789769243681803e-13
+    },
+    {
+      "field": "/objects/Patrol_Officer_Arm_R/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48090,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.3145040611561853e-13
+    },
+    {
+      "field": "/objects/Patrol_Officer_Chest/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 52700,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.1368683772161603e-13
+    },
+    {
+      "field": "/objects/Patrol_Officer_Head/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 49360,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.8474111129762605e-13
+    },
+    {
+      "field": "/objects/Patrol_Officer_Hips/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 23088,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.195843755245733e-13
+    },
+    {
+      "field": "/objects/Patrol_Officer_Leg_L/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 21026,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.5187850976872141e-13
+    },
+    {
+      "field": "/objects/Patrol_Officer_Leg_R/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 20814,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.341149413747189e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Patrol_Officer_Arm_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48070,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.2789769243681803e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Patrol_Officer_Arm_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48090,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.3145040611561853e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Patrol_Officer_Chest/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 52700,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.1368683772161603e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Patrol_Officer_Head/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 49360,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.8474111129762605e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Patrol_Officer_Hips/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 23088,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.195843755245733e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Patrol_Officer_Leg_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 21026,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.5187850976872141e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Patrol_Officer_Leg_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 20814,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.341149413747189e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Sidearm flat muzzle inset/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.3290705182007514e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Sidearm frame/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.417888360170764e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Sidearm front sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 2.1316282072803006e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Sidearm grip/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.773159728050814e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Sidearm grip heel/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.707345624410664e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Sidearm guard front/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.618527782440651e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Sidearm guard lower/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.838973831690964e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Sidearm rear sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.128431095930864e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Sidearm solid slide/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.4210854715202004e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Patrol_Officer_Arm_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48070,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.2789769243681803e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Patrol_Officer_Arm_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48090,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.3145040611561853e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Patrol_Officer_Chest/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 52700,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.1368683772161603e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Patrol_Officer_Head/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 49360,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.8474111129762605e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Patrol_Officer_Hips/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 23088,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.195843755245733e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Patrol_Officer_Leg_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 21026,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.5187850976872141e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Patrol_Officer_Leg_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 20814,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.341149413747189e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Sidearm flat muzzle inset/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.3290705182007514e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Sidearm frame/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.417888360170764e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Sidearm front sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 2.1316282072803006e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Sidearm grip/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.773159728050814e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Sidearm grip heel/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.707345624410664e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Sidearm guard front/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.618527782440651e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Sidearm guard lower/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.838973831690964e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Sidearm rear sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.128431095930864e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Sidearm solid slide/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.4210854715202004e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Patrol_Officer_Arm_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48070,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.2789769243681803e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Patrol_Officer_Arm_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48090,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.3145040611561853e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Patrol_Officer_Chest/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 52700,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.1368683772161603e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Patrol_Officer_Head/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 49360,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.8474111129762605e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Patrol_Officer_Hips/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 23088,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.195843755245733e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Patrol_Officer_Leg_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 21026,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.5187850976872141e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Patrol_Officer_Leg_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 20814,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.341149413747189e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Sidearm flat muzzle inset/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.3290705182007514e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Sidearm frame/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.417888360170764e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Sidearm front sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 2.1316282072803006e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Sidearm grip/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.773159728050814e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Sidearm grip heel/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.707345624410664e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Sidearm guard front/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.618527782440651e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Sidearm guard lower/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.838973831690964e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Sidearm rear sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.128431095930864e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Sidearm solid slide/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.4210854715202004e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Patrol_Officer_Arm_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48070,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.2789769243681803e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Patrol_Officer_Arm_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48090,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.3145040611561853e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Patrol_Officer_Chest/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 52700,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.1368683772161603e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Patrol_Officer_Head/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 49360,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.8474111129762605e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Patrol_Officer_Hips/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 23088,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.195843755245733e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Patrol_Officer_Leg_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 21026,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.5187850976872141e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Patrol_Officer_Leg_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 20814,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.341149413747189e-13
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Sidearm flat muzzle inset/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.3290705182007514e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Sidearm frame/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.417888360170764e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Sidearm front sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 2.1316282072803006e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Sidearm grip/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.773159728050814e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Sidearm grip heel/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.707345624410664e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Sidearm guard front/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.618527782440651e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Sidearm guard lower/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.838973831690964e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Sidearm rear sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.128431095930864e-14
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Sidearm solid slide/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.4210854715202004e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Patrol_Officer_Arm_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48070,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.2789769243681803e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Patrol_Officer_Arm_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48090,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.3145040611561853e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Patrol_Officer_Chest/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 52700,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.1368683772161603e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Patrol_Officer_Head/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 49360,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.8474111129762605e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Patrol_Officer_Hips/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 23088,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.195843755245733e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Patrol_Officer_Leg_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 21026,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.5187850976872141e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Patrol_Officer_Leg_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 20814,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.341149413747189e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Sidearm flat muzzle inset/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.3290705182007514e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Sidearm frame/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.417888360170764e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Sidearm front sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 2.1316282072803006e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Sidearm grip/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.773159728050814e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Sidearm grip heel/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.707345624410664e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Sidearm guard front/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.618527782440651e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Sidearm guard lower/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.838973831690964e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Sidearm rear sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.128431095930864e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Sidearm solid slide/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.4210854715202004e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Patrol_Officer_Arm_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48070,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.2789769243681803e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Patrol_Officer_Arm_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48090,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.3145040611561853e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Patrol_Officer_Chest/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 52700,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.1368683772161603e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Patrol_Officer_Head/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 49360,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.8474111129762605e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Patrol_Officer_Hips/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 23088,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.195843755245733e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Patrol_Officer_Leg_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 21026,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.5187850976872141e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Patrol_Officer_Leg_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 20814,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.341149413747189e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Sidearm flat muzzle inset/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.3290705182007514e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Sidearm frame/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.417888360170764e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Sidearm front sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 2.1316282072803006e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Sidearm grip/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.773159728050814e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Sidearm grip heel/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.707345624410664e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Sidearm guard front/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.618527782440651e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Sidearm guard lower/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.838973831690964e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Sidearm rear sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.128431095930864e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Sidearm solid slide/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.4210854715202004e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Patrol_Officer_Arm_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48070,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.2789769243681803e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Patrol_Officer_Arm_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48090,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.3145040611561853e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Patrol_Officer_Chest/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 52700,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.1368683772161603e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Patrol_Officer_Head/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 49360,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.8474111129762605e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Patrol_Officer_Hips/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 23088,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.195843755245733e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Patrol_Officer_Leg_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 21026,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.5187850976872141e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Patrol_Officer_Leg_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 20814,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.341149413747189e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Sidearm flat muzzle inset/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.3290705182007514e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Sidearm frame/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.417888360170764e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Sidearm front sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 2.1316282072803006e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Sidearm grip/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.773159728050814e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Sidearm grip heel/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.707345624410664e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Sidearm guard front/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.618527782440651e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Sidearm guard lower/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.838973831690964e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Sidearm rear sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.128431095930864e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Sidearm solid slide/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.4210854715202004e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Patrol_Officer_Arm_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48070,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.2789769243681803e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Patrol_Officer_Arm_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48090,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.3145040611561853e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Patrol_Officer_Chest/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 52700,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.1368683772161603e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Patrol_Officer_Head/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 49360,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.8474111129762605e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Patrol_Officer_Hips/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 23088,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.195843755245733e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Patrol_Officer_Leg_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 21026,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.5187850976872141e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Patrol_Officer_Leg_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 20814,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.341149413747189e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Sidearm flat muzzle inset/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.3290705182007514e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Sidearm frame/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.417888360170764e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Sidearm front sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 2.1316282072803006e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Sidearm grip/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.773159728050814e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Sidearm grip heel/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.707345624410664e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Sidearm guard front/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.618527782440651e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Sidearm guard lower/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.838973831690964e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Sidearm rear sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.128431095930864e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Sidearm solid slide/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.4210854715202004e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Patrol_Officer_Arm_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48070,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.2789769243681803e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Patrol_Officer_Arm_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48090,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.3145040611561853e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Patrol_Officer_Chest/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 52700,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.1368683772161603e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Patrol_Officer_Head/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 49360,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.8474111129762605e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Patrol_Officer_Hips/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 23088,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.195843755245733e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Patrol_Officer_Leg_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 21026,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.5187850976872141e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Patrol_Officer_Leg_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 20814,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.341149413747189e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Sidearm flat muzzle inset/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.3290705182007514e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Sidearm frame/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.417888360170764e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Sidearm front sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 2.1316282072803006e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Sidearm grip/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.773159728050814e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Sidearm grip heel/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.707345624410664e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Sidearm guard front/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.618527782440651e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Sidearm guard lower/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.838973831690964e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Sidearm rear sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.128431095930864e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Sidearm solid slide/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.4210854715202004e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Patrol_Officer_Arm_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48070,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.2789769243681803e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Patrol_Officer_Arm_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48090,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.3145040611561853e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Patrol_Officer_Chest/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 52700,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.1368683772161603e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Patrol_Officer_Head/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 49360,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.8474111129762605e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Patrol_Officer_Hips/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 23088,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.195843755245733e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Patrol_Officer_Leg_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 21026,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.5187850976872141e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Patrol_Officer_Leg_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 20814,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.341149413747189e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Sidearm flat muzzle inset/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.3290705182007514e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Sidearm frame/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.417888360170764e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Sidearm front sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 2.1316282072803006e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Sidearm grip/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.773159728050814e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Sidearm grip heel/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.707345624410664e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Sidearm guard front/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.618527782440651e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Sidearm guard lower/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.838973831690964e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Sidearm rear sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.128431095930864e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Sidearm solid slide/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.4210854715202004e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Patrol_Officer_Arm_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48070,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.2789769243681803e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Patrol_Officer_Arm_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48090,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.3145040611561853e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Patrol_Officer_Chest/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 52700,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.1368683772161603e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Patrol_Officer_Head/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 49360,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.8474111129762605e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Patrol_Officer_Hips/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 23088,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.195843755245733e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Patrol_Officer_Leg_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 21026,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.5187850976872141e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Patrol_Officer_Leg_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 20814,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.341149413747189e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Sidearm flat muzzle inset/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.3290705182007514e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Sidearm frame/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.417888360170764e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Sidearm front sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 2.1316282072803006e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Sidearm grip/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.773159728050814e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Sidearm grip heel/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.707345624410664e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Sidearm guard front/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.618527782440651e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Sidearm guard lower/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.838973831690964e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Sidearm rear sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.128431095930864e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Sidearm solid slide/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.4210854715202004e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Patrol_Officer_Arm_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48070,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.2789769243681803e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Patrol_Officer_Arm_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48090,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.3145040611561853e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Patrol_Officer_Chest/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 52700,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.1368683772161603e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Patrol_Officer_Head/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 49360,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.8474111129762605e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Patrol_Officer_Hips/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 23088,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.195843755245733e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Patrol_Officer_Leg_L/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 21026,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.5187850976872141e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Patrol_Officer_Leg_R/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 20814,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.341149413747189e-13
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Sidearm flat muzzle inset/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.3290705182007514e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Sidearm frame/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.417888360170764e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Sidearm front sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 2.1316282072803006e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Sidearm grip/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.773159728050814e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Sidearm grip heel/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.707345624410664e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Sidearm guard front/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 4.618527782440651e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Sidearm guard lower/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.838973831690964e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Sidearm rear sight/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 6.128431095930864e-14
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Sidearm solid slide/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 768,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.4210854715202004e-14
+    },
+    {
+      "field": "/objects/Patrol_Officer_Arm_L/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48070,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.2789769243681803e-13
+    },
+    {
+      "field": "/objects/Patrol_Officer_Arm_R/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48090,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.3145040611561853e-13
+    },
+    {
+      "field": "/objects/Patrol_Officer_Chest/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 52700,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.1368683772161603e-13
+    },
+    {
+      "field": "/objects/Patrol_Officer_Head/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 49360,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.8474111129762605e-13
+    },
+    {
+      "field": "/objects/Patrol_Officer_Hips/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 23088,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 5.195843755245733e-13
+    },
+    {
+      "field": "/objects/Patrol_Officer_Leg_L/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 21026,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.5187850976872141e-13
+    },
+    {
+      "field": "/objects/Patrol_Officer_Leg_R/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 20814,
+      "max_component_difference": 5.960464477539063e-08,
+      "squared_error_sum": 1.341149413747189e-13
+    },
+    {
+      "field": "/objects/Sidearm flat muzzle inset/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48,
+      "max_component_difference": 0.0,
+      "squared_error_sum": 0.0
+    },
+    {
+      "field": "/objects/Sidearm frame/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48,
+      "max_component_difference": 0.0,
+      "squared_error_sum": 0.0
+    },
+    {
+      "field": "/objects/Sidearm front sight/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48,
+      "max_component_difference": 0.0,
+      "squared_error_sum": 0.0
+    },
+    {
+      "field": "/objects/Sidearm grip/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48,
+      "max_component_difference": 0.0,
+      "squared_error_sum": 0.0
+    },
+    {
+      "field": "/objects/Sidearm grip heel/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48,
+      "max_component_difference": 0.0,
+      "squared_error_sum": 0.0
+    },
+    {
+      "field": "/objects/Sidearm guard front/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48,
+      "max_component_difference": 0.0,
+      "squared_error_sum": 0.0
+    },
+    {
+      "field": "/objects/Sidearm guard lower/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48,
+      "max_component_difference": 0.0,
+      "squared_error_sum": 0.0
+    },
+    {
+      "field": "/objects/Sidearm rear sight/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48,
+      "max_component_difference": 0.0,
+      "squared_error_sum": 0.0
+    },
+    {
+      "field": "/objects/Sidearm solid slide/mesh/canonical_uvs/UVMap/uv_values_sha256",
+      "components": 48,
+      "max_component_difference": 0.0,
+      "squared_error_sum": 0.0
+    }
+  ],
+  "max_observed_normalized_normal_component_difference": 1.2407338967346249e-07,
+  "max_observed_raw_normal_component_difference": 1.7881393432617188e-07,
+  "rms_normalized_normal_component_difference": 4.079199245768862e-09,
+  "max_observed_normal_angle_degrees": 9.65982966984962e-06,
+  "normal_comparisons": [
+    {
+      "field": "/objects/Patrol_Officer_Arm_L/mesh/canonical_corner_normals_sha256",
+      "corners": 24035,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.635747377778614e-08,
+      "normalized_component_square_error_sum": 8.788017620291483e-13,
+      "max_angle_degrees": 6.60340545324546e-06
+    },
+    {
+      "field": "/objects/Patrol_Officer_Arm_R/mesh/canonical_corner_normals_sha256",
+      "corners": 24045,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.63277787535688e-08,
+      "normalized_component_square_error_sum": 8.175750684774069e-13,
+      "max_angle_degrees": 6.706130661423146e-06
+    },
+    {
+      "field": "/objects/Patrol_Officer_Chest/mesh/canonical_corner_normals_sha256",
+      "corners": 26350,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.062000427828565e-08,
+      "normalized_component_square_error_sum": 1.1253714893703914e-12,
+      "max_angle_degrees": 7.168653605247159e-06
+    },
+    {
+      "field": "/objects/Patrol_Officer_Head/mesh/canonical_corner_normals_sha256",
+      "corners": 24680,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 7.479673014287869e-08,
+      "normalized_component_square_error_sum": 3.3220787225350284e-12,
+      "max_angle_degrees": 5.580490601995041e-06
+    },
+    {
+      "field": "/objects/Patrol_Officer_Hips/mesh/canonical_corner_normals_sha256",
+      "corners": 11544,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/objects/Patrol_Officer_Leg_L/mesh/canonical_corner_normals_sha256",
+      "corners": 10513,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/objects/Patrol_Officer_Leg_R/mesh/canonical_corner_normals_sha256",
+      "corners": 10407,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/objects/Patrol_Officer_Neck/mesh/canonical_corner_normals_sha256",
+      "corners": 1600,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Patrol_Officer_Arm_L/canonical_corner_normals_sha256",
+      "corners": 24035,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.018860330778367e-08,
+      "normalized_component_square_error_sum": 1.2421101284866298e-12,
+      "max_angle_degrees": 6.713974385614802e-06
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Patrol_Officer_Arm_R/canonical_corner_normals_sha256",
+      "corners": 24045,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.424788960377128e-08,
+      "normalized_component_square_error_sum": 1.3768429841680108e-12,
+      "max_angle_degrees": 7.2158135567844915e-06
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Patrol_Officer_Chest/canonical_corner_normals_sha256",
+      "corners": 26350,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 7.736521245860217e-08,
+      "normalized_component_square_error_sum": 9.667325383873036e-13,
+      "max_angle_degrees": 5.913862571417893e-06
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Patrol_Officer_Head/canonical_corner_normals_sha256",
+      "corners": 24680,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 1.1077715333929206e-07,
+      "normalized_component_square_error_sum": 3.325129296893777e-12,
+      "max_angle_degrees": 7.596185077772208e-06
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Patrol_Officer_Hips/canonical_corner_normals_sha256",
+      "corners": 11544,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Patrol_Officer_Leg_L/canonical_corner_normals_sha256",
+      "corners": 10513,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Patrol_Officer_Leg_R/canonical_corner_normals_sha256",
+      "corners": 10407,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Patrol_Officer_Neck/canonical_corner_normals_sha256",
+      "corners": 1600,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Sidearm flat muzzle inset/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Sidearm frame/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Sidearm front sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Sidearm grip/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Sidearm grip heel/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Sidearm guard front/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Sidearm guard lower/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Sidearm rear sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/1/evaluated_meshes/Sidearm solid slide/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Patrol_Officer_Arm_L/canonical_corner_normals_sha256",
+      "corners": 24035,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.808807333033798e-08,
+      "normalized_component_square_error_sum": 1.384463015539928e-12,
+      "max_angle_degrees": 7.659587774252618e-06
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Patrol_Officer_Arm_R/canonical_corner_normals_sha256",
+      "corners": 24045,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 1.0187015242468789e-07,
+      "normalized_component_square_error_sum": 1.1987335655502666e-12,
+      "max_angle_degrees": 7.58481886636325e-06
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Patrol_Officer_Chest/canonical_corner_normals_sha256",
+      "corners": 26350,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 7.736521245860217e-08,
+      "normalized_component_square_error_sum": 9.667325383873036e-13,
+      "max_angle_degrees": 5.913862571417893e-06
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Patrol_Officer_Head/canonical_corner_normals_sha256",
+      "corners": 24680,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.619421781348336e-08,
+      "normalized_component_square_error_sum": 3.548488835913319e-12,
+      "max_angle_degrees": 7.049289520399806e-06
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Patrol_Officer_Hips/canonical_corner_normals_sha256",
+      "corners": 11544,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Patrol_Officer_Leg_L/canonical_corner_normals_sha256",
+      "corners": 10513,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Patrol_Officer_Leg_R/canonical_corner_normals_sha256",
+      "corners": 10407,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Patrol_Officer_Neck/canonical_corner_normals_sha256",
+      "corners": 1600,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Sidearm flat muzzle inset/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Sidearm frame/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Sidearm front sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Sidearm grip/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Sidearm grip heel/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Sidearm guard front/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Sidearm guard lower/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Sidearm rear sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/23/evaluated_meshes/Sidearm solid slide/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Patrol_Officer_Arm_L/canonical_corner_normals_sha256",
+      "corners": 24035,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.662029709645026e-08,
+      "normalized_component_square_error_sum": 1.2203998861177552e-12,
+      "max_angle_degrees": 6.966992156302825e-06
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Patrol_Officer_Arm_R/canonical_corner_normals_sha256",
+      "corners": 24045,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.763895825187774e-08,
+      "normalized_component_square_error_sum": 1.2433814162668998e-12,
+      "max_angle_degrees": 7.594329413571582e-06
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Patrol_Officer_Chest/canonical_corner_normals_sha256",
+      "corners": 26350,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 7.736521245860217e-08,
+      "normalized_component_square_error_sum": 9.667325383873036e-13,
+      "max_angle_degrees": 5.913862571417893e-06
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Patrol_Officer_Head/canonical_corner_normals_sha256",
+      "corners": 24680,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.591002314568442e-08,
+      "normalized_component_square_error_sum": 3.3669337087430606e-12,
+      "max_angle_degrees": 6.655913525616069e-06
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Patrol_Officer_Hips/canonical_corner_normals_sha256",
+      "corners": 11544,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Patrol_Officer_Leg_L/canonical_corner_normals_sha256",
+      "corners": 10513,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Patrol_Officer_Leg_R/canonical_corner_normals_sha256",
+      "corners": 10407,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Patrol_Officer_Neck/canonical_corner_normals_sha256",
+      "corners": 1600,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Sidearm flat muzzle inset/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Sidearm frame/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Sidearm front sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Sidearm grip/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Sidearm grip heel/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Sidearm guard front/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Sidearm guard lower/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Sidearm rear sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/25/evaluated_meshes/Sidearm solid slide/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Patrol_Officer_Arm_L/canonical_corner_normals_sha256",
+      "corners": 24035,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 7.897559395342313e-08,
+      "normalized_component_square_error_sum": 1.156503689880304e-12,
+      "max_angle_degrees": 6.881157495079197e-06
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Patrol_Officer_Arm_R/canonical_corner_normals_sha256",
+      "corners": 24045,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 8.465365997079033e-08,
+      "normalized_component_square_error_sum": 1.0601505908348445e-12,
+      "max_angle_degrees": 6.111650465135367e-06
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Patrol_Officer_Chest/canonical_corner_normals_sha256",
+      "corners": 26350,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 7.736521245860217e-08,
+      "normalized_component_square_error_sum": 9.667325383873036e-13,
+      "max_angle_degrees": 5.913862571417893e-06
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Patrol_Officer_Head/canonical_corner_normals_sha256",
+      "corners": 24680,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 1.023670835875734e-07,
+      "normalized_component_square_error_sum": 3.621346414787922e-12,
+      "max_angle_degrees": 7.476756287961751e-06
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Patrol_Officer_Hips/canonical_corner_normals_sha256",
+      "corners": 11544,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Patrol_Officer_Leg_L/canonical_corner_normals_sha256",
+      "corners": 10513,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Patrol_Officer_Leg_R/canonical_corner_normals_sha256",
+      "corners": 10407,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Patrol_Officer_Neck/canonical_corner_normals_sha256",
+      "corners": 1600,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Sidearm flat muzzle inset/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Sidearm frame/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Sidearm front sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Sidearm grip/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Sidearm grip heel/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Sidearm guard front/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Sidearm guard lower/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Sidearm rear sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_AimToLowReady/46/evaluated_meshes/Sidearm solid slide/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Patrol_Officer_Arm_L/canonical_corner_normals_sha256",
+      "corners": 24035,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 8.972698783971111e-08,
+      "normalized_component_square_error_sum": 1.0561386367032476e-12,
+      "max_angle_degrees": 5.925694054392688e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Patrol_Officer_Arm_R/canonical_corner_normals_sha256",
+      "corners": 24045,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.693590846682199e-08,
+      "normalized_component_square_error_sum": 1.064611459620411e-12,
+      "max_angle_degrees": 7.214923636202545e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Patrol_Officer_Chest/canonical_corner_normals_sha256",
+      "corners": 26350,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 7.736521245860217e-08,
+      "normalized_component_square_error_sum": 9.667325383873036e-13,
+      "max_angle_degrees": 5.913862571417893e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Patrol_Officer_Head/canonical_corner_normals_sha256",
+      "corners": 24680,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 1.023670835875734e-07,
+      "normalized_component_square_error_sum": 3.621346414787922e-12,
+      "max_angle_degrees": 7.476756287961751e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Patrol_Officer_Hips/canonical_corner_normals_sha256",
+      "corners": 11544,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Patrol_Officer_Leg_L/canonical_corner_normals_sha256",
+      "corners": 10513,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Patrol_Officer_Leg_R/canonical_corner_normals_sha256",
+      "corners": 10407,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Patrol_Officer_Neck/canonical_corner_normals_sha256",
+      "corners": 1600,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Sidearm flat muzzle inset/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Sidearm frame/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Sidearm front sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Sidearm grip/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Sidearm grip heel/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Sidearm guard front/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Sidearm guard lower/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Sidearm rear sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/1/evaluated_meshes/Sidearm solid slide/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Patrol_Officer_Arm_L/canonical_corner_normals_sha256",
+      "corners": 24035,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 8.370340787156039e-08,
+      "normalized_component_square_error_sum": 1.036755037918117e-12,
+      "max_angle_degrees": 5.914720332489646e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Patrol_Officer_Arm_R/canonical_corner_normals_sha256",
+      "corners": 24045,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.799374234287228e-08,
+      "normalized_component_square_error_sum": 1.0130295528505061e-12,
+      "max_angle_degrees": 6.9592765329829915e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Patrol_Officer_Chest/canonical_corner_normals_sha256",
+      "corners": 26350,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.172715453864555e-08,
+      "normalized_component_square_error_sum": 1.0998683907578437e-12,
+      "max_angle_degrees": 6.470054917453393e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Patrol_Officer_Head/canonical_corner_normals_sha256",
+      "corners": 24680,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 1.197654958540184e-07,
+      "normalized_component_square_error_sum": 3.882574778266131e-12,
+      "max_angle_degrees": 9.65982966984962e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Patrol_Officer_Hips/canonical_corner_normals_sha256",
+      "corners": 11544,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Patrol_Officer_Leg_L/canonical_corner_normals_sha256",
+      "corners": 10513,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Patrol_Officer_Leg_R/canonical_corner_normals_sha256",
+      "corners": 10407,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Patrol_Officer_Neck/canonical_corner_normals_sha256",
+      "corners": 1600,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Sidearm flat muzzle inset/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Sidearm frame/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Sidearm front sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Sidearm grip/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Sidearm grip heel/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Sidearm guard front/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Sidearm guard lower/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Sidearm rear sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/25/evaluated_meshes/Sidearm solid slide/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Patrol_Officer_Arm_L/canonical_corner_normals_sha256",
+      "corners": 24035,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 8.107908522347884e-08,
+      "normalized_component_square_error_sum": 1.1816041250668478e-12,
+      "max_angle_degrees": 5.896761899232987e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Patrol_Officer_Arm_R/canonical_corner_normals_sha256",
+      "corners": 24045,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.525795530151981e-08,
+      "normalized_component_square_error_sum": 1.093149337235727e-12,
+      "max_angle_degrees": 6.628199640619853e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Patrol_Officer_Chest/canonical_corner_normals_sha256",
+      "corners": 26350,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.596037703341054e-08,
+      "normalized_component_square_error_sum": 1.1202137308129062e-12,
+      "max_angle_degrees": 6.7982606698695455e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Patrol_Officer_Head/canonical_corner_normals_sha256",
+      "corners": 24680,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 1.2407338967346249e-07,
+      "normalized_component_square_error_sum": 4.035531936066365e-12,
+      "max_angle_degrees": 9.645355603457572e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Patrol_Officer_Hips/canonical_corner_normals_sha256",
+      "corners": 11544,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Patrol_Officer_Leg_L/canonical_corner_normals_sha256",
+      "corners": 10513,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Patrol_Officer_Leg_R/canonical_corner_normals_sha256",
+      "corners": 10407,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Patrol_Officer_Neck/canonical_corner_normals_sha256",
+      "corners": 1600,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Sidearm flat muzzle inset/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Sidearm frame/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Sidearm front sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Sidearm grip/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Sidearm grip heel/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Sidearm guard front/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Sidearm guard lower/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Sidearm rear sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/30/evaluated_meshes/Sidearm solid slide/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Patrol_Officer_Arm_L/canonical_corner_normals_sha256",
+      "corners": 24035,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 8.929964190329542e-08,
+      "normalized_component_square_error_sum": 9.754541231021811e-13,
+      "max_angle_degrees": 6.076235067923145e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Patrol_Officer_Arm_R/canonical_corner_normals_sha256",
+      "corners": 24045,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 1.1109369946193937e-07,
+      "normalized_component_square_error_sum": 1.0556995766113488e-12,
+      "max_angle_degrees": 7.587436278695361e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Patrol_Officer_Chest/canonical_corner_normals_sha256",
+      "corners": 26350,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 7.736521245860217e-08,
+      "normalized_component_square_error_sum": 9.667325383873036e-13,
+      "max_angle_degrees": 5.913862571417893e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Patrol_Officer_Head/canonical_corner_normals_sha256",
+      "corners": 24680,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 1.023670835875734e-07,
+      "normalized_component_square_error_sum": 3.621346414787922e-12,
+      "max_angle_degrees": 7.476756287961751e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Patrol_Officer_Hips/canonical_corner_normals_sha256",
+      "corners": 11544,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Patrol_Officer_Leg_L/canonical_corner_normals_sha256",
+      "corners": 10513,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Patrol_Officer_Leg_R/canonical_corner_normals_sha256",
+      "corners": 10407,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Patrol_Officer_Neck/canonical_corner_normals_sha256",
+      "corners": 1600,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Sidearm flat muzzle inset/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Sidearm frame/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Sidearm front sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Sidearm grip/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Sidearm grip heel/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Sidearm guard front/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Sidearm guard lower/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Sidearm rear sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyIdle/61/evaluated_meshes/Sidearm solid slide/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Patrol_Officer_Arm_L/canonical_corner_normals_sha256",
+      "corners": 24035,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 8.972698783971111e-08,
+      "normalized_component_square_error_sum": 1.0561386367032476e-12,
+      "max_angle_degrees": 5.925694054392688e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Patrol_Officer_Arm_R/canonical_corner_normals_sha256",
+      "corners": 24045,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.693590846682199e-08,
+      "normalized_component_square_error_sum": 1.064611459620411e-12,
+      "max_angle_degrees": 7.214923636202545e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Patrol_Officer_Chest/canonical_corner_normals_sha256",
+      "corners": 26350,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 7.736521245860217e-08,
+      "normalized_component_square_error_sum": 9.667325383873036e-13,
+      "max_angle_degrees": 5.913862571417893e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Patrol_Officer_Head/canonical_corner_normals_sha256",
+      "corners": 24680,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 1.023670835875734e-07,
+      "normalized_component_square_error_sum": 3.621346414787922e-12,
+      "max_angle_degrees": 7.476756287961751e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Patrol_Officer_Hips/canonical_corner_normals_sha256",
+      "corners": 11544,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Patrol_Officer_Leg_L/canonical_corner_normals_sha256",
+      "corners": 10513,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Patrol_Officer_Leg_R/canonical_corner_normals_sha256",
+      "corners": 10407,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Patrol_Officer_Neck/canonical_corner_normals_sha256",
+      "corners": 1600,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Sidearm flat muzzle inset/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Sidearm frame/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Sidearm front sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Sidearm grip/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Sidearm grip heel/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Sidearm guard front/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Sidearm guard lower/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Sidearm rear sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/1/evaluated_meshes/Sidearm solid slide/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Patrol_Officer_Arm_L/canonical_corner_normals_sha256",
+      "corners": 24035,
+      "raw_max_component_difference": 1.7881393432617188e-07,
+      "max_normalized_component_difference": 9.693598179705276e-08,
+      "normalized_component_square_error_sum": 1.4090443479775162e-12,
+      "max_angle_degrees": 7.598095280130881e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Patrol_Officer_Arm_R/canonical_corner_normals_sha256",
+      "corners": 24045,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.798108391301241e-08,
+      "normalized_component_square_error_sum": 1.2178308239484028e-12,
+      "max_angle_degrees": 7.4039836058942714e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Patrol_Officer_Chest/canonical_corner_normals_sha256",
+      "corners": 26350,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 7.736521245860217e-08,
+      "normalized_component_square_error_sum": 9.667325383873036e-13,
+      "max_angle_degrees": 5.913862571417893e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Patrol_Officer_Head/canonical_corner_normals_sha256",
+      "corners": 24680,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 1.1246837028355827e-07,
+      "normalized_component_square_error_sum": 3.071977113816591e-12,
+      "max_angle_degrees": 7.612896199881315e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Patrol_Officer_Hips/canonical_corner_normals_sha256",
+      "corners": 11544,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Patrol_Officer_Leg_L/canonical_corner_normals_sha256",
+      "corners": 10513,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Patrol_Officer_Leg_R/canonical_corner_normals_sha256",
+      "corners": 10407,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Patrol_Officer_Neck/canonical_corner_normals_sha256",
+      "corners": 1600,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Sidearm flat muzzle inset/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Sidearm frame/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Sidearm front sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Sidearm grip/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Sidearm grip heel/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Sidearm guard front/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Sidearm guard lower/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Sidearm rear sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/23/evaluated_meshes/Sidearm solid slide/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Patrol_Officer_Arm_L/canonical_corner_normals_sha256",
+      "corners": 24035,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 1.1922700038358158e-07,
+      "normalized_component_square_error_sum": 1.2840951932453588e-12,
+      "max_angle_degrees": 9.659346228484835e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Patrol_Officer_Arm_R/canonical_corner_normals_sha256",
+      "corners": 24045,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 1.0626761082210834e-07,
+      "normalized_component_square_error_sum": 1.2508593314034907e-12,
+      "max_angle_degrees": 7.5725871920162675e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Patrol_Officer_Chest/canonical_corner_normals_sha256",
+      "corners": 26350,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 7.736521245860217e-08,
+      "normalized_component_square_error_sum": 9.667325383873036e-13,
+      "max_angle_degrees": 5.913862571417893e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Patrol_Officer_Head/canonical_corner_normals_sha256",
+      "corners": 24680,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.559343056020353e-08,
+      "normalized_component_square_error_sum": 3.6191321410212442e-12,
+      "max_angle_degrees": 6.762502281792428e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Patrol_Officer_Hips/canonical_corner_normals_sha256",
+      "corners": 11544,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Patrol_Officer_Leg_L/canonical_corner_normals_sha256",
+      "corners": 10513,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Patrol_Officer_Leg_R/canonical_corner_normals_sha256",
+      "corners": 10407,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Patrol_Officer_Neck/canonical_corner_normals_sha256",
+      "corners": 1600,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Sidearm flat muzzle inset/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Sidearm frame/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Sidearm front sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Sidearm grip/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Sidearm grip heel/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Sidearm guard front/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Sidearm guard lower/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Sidearm rear sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/25/evaluated_meshes/Sidearm solid slide/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Patrol_Officer_Arm_L/canonical_corner_normals_sha256",
+      "corners": 24035,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.642481801908076e-08,
+      "normalized_component_square_error_sum": 1.3200178236898588e-12,
+      "max_angle_degrees": 7.289133000379968e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Patrol_Officer_Arm_R/canonical_corner_normals_sha256",
+      "corners": 24045,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 1.0578147835449414e-07,
+      "normalized_component_square_error_sum": 1.355977501601446e-12,
+      "max_angle_degrees": 7.52557792911958e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Patrol_Officer_Chest/canonical_corner_normals_sha256",
+      "corners": 26350,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 7.736521245860217e-08,
+      "normalized_component_square_error_sum": 9.667325383873036e-13,
+      "max_angle_degrees": 5.913862571417893e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Patrol_Officer_Head/canonical_corner_normals_sha256",
+      "corners": 24680,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 1.1077715333929206e-07,
+      "normalized_component_square_error_sum": 3.325129296893777e-12,
+      "max_angle_degrees": 7.596185077772208e-06
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Patrol_Officer_Hips/canonical_corner_normals_sha256",
+      "corners": 11544,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Patrol_Officer_Leg_L/canonical_corner_normals_sha256",
+      "corners": 10513,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Patrol_Officer_Leg_R/canonical_corner_normals_sha256",
+      "corners": 10407,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Patrol_Officer_Neck/canonical_corner_normals_sha256",
+      "corners": 1600,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Sidearm flat muzzle inset/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Sidearm frame/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Sidearm front sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Sidearm grip/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Sidearm grip heel/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Sidearm guard front/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Sidearm guard lower/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Sidearm rear sight/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/frames/Patrol_LowReadyToAim/46/evaluated_meshes/Sidearm solid slide/canonical_corner_normals_sha256",
+      "corners": 384,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/objects/Patrol_Officer_Arm_L/mesh/canonical_corner_normals_sha256",
+      "corners": 24035,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.635747377778614e-08,
+      "normalized_component_square_error_sum": 8.788017620291483e-13,
+      "max_angle_degrees": 6.60340545324546e-06
+    },
+    {
+      "field": "/objects/Patrol_Officer_Arm_R/mesh/canonical_corner_normals_sha256",
+      "corners": 24045,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.63277787535688e-08,
+      "normalized_component_square_error_sum": 8.175750684774069e-13,
+      "max_angle_degrees": 6.706130661423146e-06
+    },
+    {
+      "field": "/objects/Patrol_Officer_Chest/mesh/canonical_corner_normals_sha256",
+      "corners": 26350,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 9.062000427828565e-08,
+      "normalized_component_square_error_sum": 1.1253714893703914e-12,
+      "max_angle_degrees": 7.168653605247159e-06
+    },
+    {
+      "field": "/objects/Patrol_Officer_Head/mesh/canonical_corner_normals_sha256",
+      "corners": 24680,
+      "raw_max_component_difference": 1.1920928955078125e-07,
+      "max_normalized_component_difference": 7.479673014287869e-08,
+      "normalized_component_square_error_sum": 3.3220787225350284e-12,
+      "max_angle_degrees": 5.580490601995041e-06
+    },
+    {
+      "field": "/objects/Patrol_Officer_Hips/mesh/canonical_corner_normals_sha256",
+      "corners": 11544,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/objects/Patrol_Officer_Leg_L/mesh/canonical_corner_normals_sha256",
+      "corners": 10513,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/objects/Patrol_Officer_Leg_R/mesh/canonical_corner_normals_sha256",
+      "corners": 10407,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/objects/Patrol_Officer_Neck/mesh/canonical_corner_normals_sha256",
+      "corners": 1600,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/objects/Sidearm flat muzzle inset/mesh/canonical_corner_normals_sha256",
+      "corners": 24,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/objects/Sidearm frame/mesh/canonical_corner_normals_sha256",
+      "corners": 24,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/objects/Sidearm front sight/mesh/canonical_corner_normals_sha256",
+      "corners": 24,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/objects/Sidearm grip/mesh/canonical_corner_normals_sha256",
+      "corners": 24,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/objects/Sidearm grip heel/mesh/canonical_corner_normals_sha256",
+      "corners": 24,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/objects/Sidearm guard front/mesh/canonical_corner_normals_sha256",
+      "corners": 24,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/objects/Sidearm guard lower/mesh/canonical_corner_normals_sha256",
+      "corners": 24,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/objects/Sidearm rear sight/mesh/canonical_corner_normals_sha256",
+      "corners": 24,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    },
+    {
+      "field": "/objects/Sidearm solid slide/mesh/canonical_corner_normals_sha256",
+      "corners": 24,
+      "raw_max_component_difference": 0.0,
+      "max_normalized_component_difference": 0.0,
+      "normalized_component_square_error_sum": 0.0,
+      "max_angle_degrees": 0.0
+    }
+  ],
+  "includes_mesh_materials_weights_normals_actions_evaluated_poses": true,
+  "before_characters_sha256": "e2397e1920169824b795eb9e5c884f94e5bfbcaf0963939c978f61ab74c4e7cb",
+  "after_characters_sha256": "ab731a554c81b4f8777480bc4e8ee9f5f3bac1f3bf1fdc82f23aefffc3c41b78",
+  "before_animation_sha256": "73b57abbc7d3289784747d75fe3078313874aebef562c791f0ec80ebd299eb20",
+  "after_animation_sha256": "2193b84f69743159e2b50b8ae18e1a6a49e484b9b33f916f13bb7e1315c4d9d9",
+  "recorded_utc": "2026-10-04T21:38:38.411272+00:00",
+  "blender_version": "5.2.2 LTS",
+  "actor": "Patrol_Officer",
+  "numeric_tolerance_for_geometry_weights_materials_actions_poses": 0,
+  "sources": [
+    {
+      "file": "Characters.blend",
+      "before_source_path": "/workspace/SignalDebt-setup/equivalence-before/Blender/Characters.blend",
+      "after_source_path": "/workspace/STORYGAMEr/SignalDebt/Blender/Characters.blend",
+      "before_source_sha256": "e2397e1920169824b795eb9e5c884f94e5bfbcaf0963939c978f61ab74c4e7cb",
+      "after_source_sha256": "ab731a554c81b4f8777480bc4e8ee9f5f3bac1f3bf1fdc82f23aefffc3c41b78",
+      "before_actor_sha256": "c32d893218c6f2d361ab6e388806702907650cf08d9bacb7d4699826d70fe015",
+      "after_actor_sha256": "100cd6ba9fb69e19016aeb7d6110cd448014d57a2dcd01cbd16e6cab73fafa24",
+      "exact_equal": false,
+      "bounded_equal": true,
+      "difference_count": 0,
+      "differences": [],
+      "objects": 22,
+      "checked_frames": 0
+    },
+    {
+      "file": "Character_Animation_Showcase.blend",
+      "before_source_path": "/workspace/SignalDebt-setup/equivalence-before/Blender/Character_Animation_Showcase.blend",
+      "after_source_path": "/workspace/STORYGAMEr/SignalDebt/Blender/Character_Animation_Showcase.blend",
+      "before_source_sha256": "73b57abbc7d3289784747d75fe3078313874aebef562c791f0ec80ebd299eb20",
+      "after_source_sha256": "2193b84f69743159e2b50b8ae18e1a6a49e484b9b33f916f13bb7e1315c4d9d9",
+      "before_actor_sha256": "74a70bf38accb5dfd46336e0694be0ce2b5030aeb756bc69e152778531ab0f66",
+      "after_actor_sha256": "8ad0c910e63999209780b6cb288571fbc6ffee8e583453ac05309a107dcbaafb",
+      "exact_equal": false,
+      "bounded_equal": true,
+      "difference_count": 0,
+      "differences": [],
+      "objects": 32,
+      "checked_frames": 153
+    }
+  ],
+  "evaluated_pose_frames": 153,
+  "evaluated_mesh_frames_per_action": {
+    "Patrol_LowReadyIdle": [
+      1,
+      25,
+      30,
+      61
+    ],
+    "Patrol_LowReadyToAim": [
+      1,
+      23,
+      25,
+      46
+    ],
+    "Patrol_AimToLowReady": [
+      1,
+      23,
+      25,
+      46
+    ]
+  },
+  "method": "Exact geometry/attribute digests; oriented polygons and undirected edges are canonically ordered with associated edge/face attributes. Internal connectivity bookkeeping and basis-dependent encoded custom_normal values are replaced by canonical connectivity and decoded corner normals. Normalized decoded normal components and unused UV coordinates each have a predefined1e-6 bound; observed errors are reported. Every material must contain only Principled and Output nodes, so no shader uses UV or image inputs. Exact weights, materials, modifiers, hierarchy, root and object transforms, rest skeleton, initial pose and keyed action curves establish the same deterministic skinning inputs. All153 evaluated patrol bone poses and actor/prop world transforms are compared; deformed meshes, UVs and corner normals are independently compared at four stated frames per action. Camera, lights, world shader and stored render settings are included. Source-local render output file paths are omitted.",
+  "render_evidence_policy": "Existing render manifests retain their original whole-file source hashes. This separate equivalence proof does not change any image, GIF or render manifest, and is not a claim that entire source files are equal.",
+  "render_protocol_sha256": "48056f2f8e2b189a7fb0957989b1886336a3944e021cdf96a639ac04ae09991c",
+  "adoption_guard": {
+    "actor": "Patrol_Officer",
+    "required_manifest_source_sha256": "73b57abbc7d3289784747d75fe3078313874aebef562c791f0ec80ebd299eb20",
+    "required_final_animation_sha256": "2193b84f69743159e2b50b8ae18e1a6a49e484b9b33f916f13bb7e1315c4d9d9",
+    "required_status": "PASS_BOUNDED_RENDER_EQUIVALENCE",
+    "required_normal_component_bound": 1e-06,
+    "required_uv_component_bound": 1e-06,
+    "require_shader_uses_uv_coordinates_or_images": false,
+    "preserve_original_render_manifest_hashes": true
+  }
+}

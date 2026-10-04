@@ -1,0 +1,16 @@
+{
+  "manifest_files": 196,
+  "present_matching": 196,
+  "missing": [],
+  "content_mismatch": [],
+  "additional_files_except_manifest": [],
+  "actual_files": 197,
+  "unity_meta_files": 0,
+  "unity_generated_scene_files": 0,
+  "feature_catalog_entries": 320,
+  "feature_catalog_priority_counts": {
+    "S": 40,
+    "C": 217,
+    "L": 63
+  }
+}

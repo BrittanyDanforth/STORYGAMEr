@@ -1,0 +1,286 @@
+{
+  "blender_version": "5.2.2 LTS",
+  "source": "/workspace/STORYGAMEr/SignalDebt/Blender/Character_Animation_Showcase.blend",
+  "source_sha256": "73b57abbc7d3289784747d75fe3078313874aebef562c791f0ec80ebd299eb20",
+  "render_engine": "CYCLES",
+  "samples": 10,
+  "motion_frame_step": 2,
+  "images": {
+    "Patrol_000.png": {
+      "frame": 1,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "344e71a771cbee137359133b1570132f4d5f3f73975fb8db6dffe5d75de5ef54"
+    },
+    "Patrol_001.png": {
+      "frame": 3,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "efa00205b7baacecf2595828adb6457db303f4cda83225e2f5edafc15994f055"
+    },
+    "Patrol_002.png": {
+      "frame": 5,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "f0c18a928e4b43d4361c54b692edf7b77bfc2ee67fcf81eeb4723a86aa9730dc"
+    },
+    "Patrol_003.png": {
+      "frame": 7,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "8739fe5d63cc4d81d6db173d39fcd7cc439192d704b0975f6644ca827444239d"
+    },
+    "Patrol_004.png": {
+      "frame": 9,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "2518befa2f4ec50248dbf9ee8a51a1d7a77f6403cee6a03cc69003a092dda27d"
+    },
+    "Patrol_005.png": {
+      "frame": 11,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "b067340d873d4b106253cbd3de02b1e40362b21ee4727e2aed81a03860d697b2"
+    },
+    "Patrol_006.png": {
+      "frame": 13,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "6bc9dee257c803bd97ee5994ab3f3402d86d963ef124c247d63e6169d5192d4b"
+    },
+    "Patrol_007.png": {
+      "frame": 15,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "405b51a0959934f6a4384695d5a3af921b40e84dbbd93463424435509c8ea846"
+    },
+    "Patrol_008.png": {
+      "frame": 17,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "a77b13916469d103d034dd15fec74827b29efeae47521fd937be25e9b1080c43"
+    },
+    "Patrol_009.png": {
+      "frame": 19,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "2ebf6e27845515a53a50114d6ed3c01e3e5c0f99555976413d15ec5c302c36d8"
+    },
+    "Patrol_010.png": {
+      "frame": 21,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "21944120892b9c755cad7ae10d9c4240653e053be08907a819f4e46faf82e306"
+    },
+    "Patrol_011.png": {
+      "frame": 23,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "5bd157ff98d949198ad2f23f13ac749945f4aefba08e2441eeb8ed9da13ab67f"
+    },
+    "Patrol_012.png": {
+      "frame": 25,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "5ffa292268032276a2284e3a11524beb2a1c9817e842cf42fe5cff2e35e8732c"
+    },
+    "Patrol_013.png": {
+      "frame": 27,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "a87c063446c95eab9eb1885c430ccacdecf357bcf1eed9a51865936f8e4a072d"
+    },
+    "Patrol_014.png": {
+      "frame": 29,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "c3b9a7f6cfe81c7ef3e3725976d89fbc1085f927ff21c0f78bedc984429d59de"
+    },
+    "Patrol_015.png": {
+      "frame": 31,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "cbe504fdcbd4d1d4d83d3eec8acd1f16acceadf9a1356a8ae6d0d056ac43461b"
+    },
+    "Patrol_016.png": {
+      "frame": 33,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "ef790c85c21d9fb440b9c1f2e1b314e089a015c04a9ba01afa83e93728789998"
+    },
+    "Patrol_017.png": {
+      "frame": 35,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "8ca1df22ff3ef909371b7c945d031fa01d2bb5e4e5846905ddfab264518b63d8"
+    },
+    "Patrol_018.png": {
+      "frame": 37,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "554d8f38ac7bf7b631d97ec14d73be4de8eacddc51d4fe5467882e5392b9c0cc"
+    },
+    "Patrol_019.png": {
+      "frame": 39,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "3f9cc6d78e358a8044ead55327d2fc5b3df2c7eb23247337569d8bd831f51863"
+    },
+    "Patrol_020.png": {
+      "frame": 41,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "b0eff8e5cdcc12b9d7335562090813b783c49be4ba976afb6c9fd437a6c56181"
+    },
+    "Patrol_021.png": {
+      "frame": 43,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "7dfb8aaa2788a80e0481f9ea8f15ae260c82fa3ad84b305024bc5ce8ddd8f178"
+    },
+    "Patrol_022.png": {
+      "frame": 45,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "e70b3b6d2e4f2d36add0814b8e5515f0e073f1f5289fadc56494c5b9be360fab"
+    },
+    "Patrol_023.png": {
+      "frame": 46,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "265595b6ee7610c6d972f5d8bce0012f42bf04d047a711280d2270075c4950b3"
+    },
+    "Patrol_024.png": {
+      "frame": 44,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "1244d10845c22a9e43c69fa144650d3c5ee08761e71b8d2312150ed7e2027763"
+    },
+    "Patrol_025.png": {
+      "frame": 42,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "ea7c39e6e7c1f9190a42ced26ebf9b4bb1c45d6e93ac847e8ed2718d89ab94f2"
+    },
+    "Patrol_026.png": {
+      "frame": 40,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "f780c1376f460dbaadcd090c311551687e08067b34f56336f18c0fca616a0bbe"
+    },
+    "Patrol_027.png": {
+      "frame": 38,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "dec698f18e186608bd7d3db9faf1a1ab9690cf116d22a62cbb53166aa211fffd"
+    },
+    "Patrol_028.png": {
+      "frame": 36,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "c77276c21db10a6792655982cb8feb6582b910c8f62cc2dc92c609b82a493f39"
+    },
+    "Patrol_029.png": {
+      "frame": 34,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "ca3afd3956f1abea7ad455da18cd2f36d2644d6389a10144e943f0adfcc08b88"
+    },
+    "Patrol_030.png": {
+      "frame": 32,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "b829e6d7a79d4ab0ca5b9bf491fe1b3c6ae4d16f110da9a8ebc0eda169301ff6"
+    },
+    "Patrol_031.png": {
+      "frame": 30,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "b58cbf882fe2f8b823e9cd0a8534419f5d8392d8242e5d843373de5553b04742"
+    },
+    "Patrol_032.png": {
+      "frame": 28,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "67f28f282467df6725639df66f67b2b0437547b7763321f492e0f61e16a47713"
+    },
+    "Patrol_033.png": {
+      "frame": 26,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "c85ac6855dbd64681a89785a55a71e3963d4a7633055bc477db0edf24387abdf"
+    },
+    "Patrol_034.png": {
+      "frame": 24,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "9a297fdf59b35ebb3dea58b884f1920d9ace3dafbecb4e87e9ff7c64dcd0c1a3"
+    },
+    "Patrol_035.png": {
+      "frame": 22,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "4d22ed488ef9c07ea4b361e7b0bac430b9c029abd1610995b6df9f8ad50afc48"
+    },
+    "Patrol_036.png": {
+      "frame": 20,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "aec920d8bc3e1c8b0856bd843bcb8ad0a69b18c4b46b551cda9f5e7e7fefb04b"
+    },
+    "Patrol_037.png": {
+      "frame": 18,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "a9933f0b1db075b897f10d8e1f2cbbf40d1ea53cec911b0440e530a6d907d957"
+    },
+    "Patrol_038.png": {
+      "frame": 16,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "3cc3c4a71f255841cce6acea4c05b1c1937914127bca9364b60aece52b6f1439"
+    },
+    "Patrol_039.png": {
+      "frame": 14,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "ec86d61878686a56f902cbda685872c443f78467503bcb133f8441042415c578"
+    },
+    "Patrol_040.png": {
+      "frame": 12,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "c1e3807f5fa7d1d0b6bff309dbfd83a44c68bbe8ab05964f36775460cf2d86aa"
+    },
+    "Patrol_041.png": {
+      "frame": 10,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "3d47f5dca5bc775d5389f9f82ce4c18b14de634c7235014878b0e60223e05654"
+    },
+    "Patrol_042.png": {
+      "frame": 8,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "3a016cc72d7a28d413e7333460e37dbae2cd5102ab9b9cca3e1254340983e29b"
+    },
+    "Patrol_043.png": {
+      "frame": 6,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "12f13a965ee083b4c076a9cf58197e07181d38b0235f3e37893bcc99e4ce3596"
+    },
+    "Patrol_044.png": {
+      "frame": 4,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "dcd1e74fb6ed5ca55315eb8dc3e90d5f803600f298f822e1850253148037015a"
+    },
+    "Patrol_045.png": {
+      "frame": 2,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "2a3f262429bf1cb6b21093a434dac4dd18063225fe675741ce87eacdf8a789ad"
+    }
+  }
+}

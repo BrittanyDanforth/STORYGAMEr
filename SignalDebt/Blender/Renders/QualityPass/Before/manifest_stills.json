@@ -1,0 +1,46 @@
+{
+  "blender_version": "5.2.2 LTS",
+  "source": "/workspace/signaldebt-import/SignalDebt/Blender/Character_Animation_Showcase.blend",
+  "source_sha256": "74a1a69a4d0c2e465ee6d7a38d6c8d96f096577df3d34f3b773f80ee1e6a9e01",
+  "render_engine": "CYCLES",
+  "samples": 48,
+  "motion_frame_step": null,
+  "images": {
+    "PatrolLow_Front.png": {
+      "frame": 1,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "de725a221afe3caed4aab9ed244ef3d2d859a0432940c26b7cb0e375e77de962"
+    },
+    "PatrolLow_Side.png": {
+      "frame": 1,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "3d287e3190cff02f2c63860994acf045ac1e4818b845db286e92b1ce906a4d42"
+    },
+    "PatrolAim_Front.png": {
+      "frame": 46,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "fa10f4a944fb684806c3b54dc22c27c11def482b03c6824cda1c31c9d1d409b5"
+    },
+    "PatrolAim_Side.png": {
+      "frame": 46,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "8d8fa63a425278ceb16c565a6d4606fae80fd4ff44ac5425f3140a21154639e0"
+    },
+    "SWATContact_Front.png": {
+      "frame": 25,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "958b3e3401d9eff8ec59d93fd34345ff0e24c357fcb991fc7d51c29a4e0c5f9c"
+    },
+    "SWATContact_Side.png": {
+      "frame": 25,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "ec39eeb40462201c734550a148bd0e6fdb16849b68dce7d8e5982c7cfdf835b0"
+    }
+  }
+}

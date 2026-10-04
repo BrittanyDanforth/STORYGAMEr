@@ -1,0 +1,32 @@
+test_cached_reply_invalidated_by_same_revision_event (test_relay.DialogueTests.test_cached_reply_invalidated_by_same_revision_event) ... ok
+test_cancel_during_provider_discards_reply (test_relay.DialogueTests.test_cancel_during_provider_discards_reply) ... ok
+test_exact_completed_retry_bypasses_full_rate_limit (test_relay.DialogueTests.test_exact_completed_retry_bypasses_full_rate_limit) ... ok
+test_invented_fact_id_rejected (test_relay.DialogueTests.test_invented_fact_id_rejected) ... ok
+test_key_missing_and_provider_down_have_authored_fallback (test_relay.DialogueTests.test_key_missing_and_provider_down_have_authored_fallback) ... ok
+test_malformed_output_fails_closed (test_relay.DialogueTests.test_malformed_output_fails_closed) ... ok
+test_prompt_like_text_cannot_execute_or_mutate_world (test_relay.DialogueTests.test_prompt_like_text_cannot_execute_or_mutate_world) ... ok
+test_request_text_and_rate_limits (test_relay.DialogueTests.test_request_text_and_rate_limits) ... ok
+test_same_revision_resolution_during_provider_discards_old_promise (test_relay.DialogueTests.test_same_revision_resolution_during_provider_discards_old_promise) ... ok
+test_stale_revision_before_and_during_provider (test_relay.DialogueTests.test_stale_revision_before_and_during_provider) ... ok
+test_valid_model_output_and_request_idempotency (test_relay.DialogueTests.test_valid_model_output_and_request_idempotency) ... ok
+test_wrong_speaker_and_word_limit (test_relay.DialogueTests.test_wrong_speaker_and_word_limit) ... ok
+test_health_event_dialogue_end_to_end (test_relay.HttpTests.test_health_event_dialogue_end_to_end) ... ok
+test_oversize_request_and_browser_origin_rejected (test_relay.HttpTests.test_oversize_request_and_browser_origin_rejected) ... ok
+test_duplicate_is_idempotent_conflict_rejected (test_relay.MemoryTests.test_duplicate_is_idempotent_conflict_rejected) ... ok
+test_generation_persists_and_duplicate_event_does_not_advance_it (test_relay.MemoryTests.test_generation_persists_and_duplicate_event_does_not_advance_it) ... ok
+test_hidden_and_future_facts_are_excluded (test_relay.MemoryTests.test_hidden_and_future_facts_are_excluded) ... ok
+test_legacy_database_migrates_without_trusting_old_cached_reply (test_relay.MemoryTests.test_legacy_database_migrates_without_trusting_old_cached_reply) ... ok
+test_old_active_commitment_survives_recent_noise (test_relay.MemoryTests.test_old_active_commitment_survives_recent_noise) ... ok
+test_persists_events_and_known_by_after_restart (test_relay.MemoryTests.test_persists_events_and_known_by_after_restart) ... ok
+test_resolution_supersedes_only_for_npcs_who_learned_it (test_relay.MemoryTests.test_resolution_supersedes_only_for_npcs_who_learned_it) ... ok
+test_topic_history_survives_many_unrelated_commitments (test_relay.MemoryTests.test_topic_history_survives_many_unrelated_commitments) ... ok
+test_budget_stops_further_calls (test_relay.ProviderTests.test_budget_stops_further_calls) ... ok
+test_endpoint_guard_blocks_other_schemes_hosts_and_paths (test_relay.ProviderTests.test_endpoint_guard_blocks_other_schemes_hosts_and_paths) ... ok
+test_proxy_and_model_configuration_cannot_change_destination (test_relay.ProviderTests.test_proxy_and_model_configuration_cannot_change_destination) ... ok
+test_redirects_never_send_request_to_target (test_relay.ProviderTests.test_redirects_never_send_request_to_target) ... ok
+test_responses_payload_is_structured_bounded_and_not_stored (test_relay.ProviderTests.test_responses_payload_is_structured_bounded_and_not_stored) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 1.052s
+
+OK

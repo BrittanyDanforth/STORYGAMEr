@@ -1,0 +1,23 @@
+{
+  "health": {
+    "memory": "sqlite",
+    "model": "gpt-6-luna",
+    "protocol_version": 1,
+    "provider_configured": false,
+    "status": "ok"
+  },
+  "dialogue": {
+    "fallback_reason": "not_configured",
+    "npc_id": "copy_shop_client",
+    "proposed_intent": "ask_question",
+    "request_id": "readiness-2",
+    "source_mode": "authored_fallback",
+    "speaker": "copy_shop_client",
+    "stale": false,
+    "text": "What's giving you trouble? Tell me what happened before it stopped working.",
+    "used_fact_ids": [],
+    "world_revision": 0
+  },
+  "passed": true,
+  "scope": "Real relay process CLI, loopback health and fallback dialogue request, no API key."
+}

@@ -1,9 +1,11 @@
 """Round-trip base character FBXs: structure, orientation, weights, real deformation."""
-import bpy,json,math,hashlib
+import bpy,json,math,hashlib,sys
 from pathlib import Path
 from mathutils import Vector,Quaternion,Matrix
 root=Path(__file__).resolve().parents[1]
 directory=root/'UnityProject/Assets/Art/Characters'
+args=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
+output=Path(args[0]) if args else root/'Validation/quality_pass_base_character_roundtrip.json'
 reports=[]
 for filename in ['PlayerBody.fbx','Mara_Victim.fbx','Judge.fbx','Patrol_Officer.fbx','SWAT_Officer.fbx']:
     bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
@@ -36,7 +38,7 @@ for filename in ['PlayerBody.fbx','Mara_Victim.fbx','Judge.fbx','Patrol_Officer.
     points=[o.matrix_world@Vector(v) for o in meshes for v in o.bound_box]
     minima=[min(v[i] for v in points) for i in range(3)]
     maxima=[max(v[i] for v in points) for i in range(3)]
-    report={'file':filename,'file_sha256':hashlib.sha256((directory/filename).read_bytes()).hexdigest(),'meshes':len(meshes),'bones':len(rig.data.bones),'min_xyz':minima,'max_xyz':maxima,'source_left_verified':True,'orientation_markers':True,'round_trip_pass':True}
+    report={'file':filename,'file_sha256':hashlib.sha256((directory/filename).read_bytes()).hexdigest(),'blender_version':bpy.app.version_string,'meshes':len(meshes),'bones':len(rig.data.bones),'min_xyz':minima,'max_xyz':maxima,'source_left_verified':True,'orientation_markers':True,'round_trip_pass':True}
     if refined:
         max_error=0;zero=0;max_influences=0;mixed={}
         for o in meshes:
@@ -108,8 +110,11 @@ for filename in ['PlayerBody.fbx','Mara_Victim.fbx','Judge.fbx','Patrol_Officer.
         index={tuple(round(c,5) for c in hip.matrix_world@v.co):v.index for v in hip.data.vertices}
         pairs=[(index[tuple(round(c,5) for c in leg.matrix_world@v.co)],v.index) for v in leg.data.vertices if tuple(round(c,5) for c in leg.matrix_world@v.co) in index]
         def split_normals(o):
-            o.data.calc_normals_split();matrix=o.matrix_world.to_3x3().inverted().transposed()
-            return {loop.vertex_index:(matrix@loop.normal).normalized() for loop in o.data.loops}
+            if hasattr(o.data,'calc_normals_split'):o.data.calc_normals_split()
+            matrix=o.matrix_world.to_3x3().inverted().transposed()
+            # Blender 4.1+ exposes calculated split normals as corner_normals.
+            normals=o.data.corner_normals if hasattr(o.data,'corner_normals') else None
+            return {loop.vertex_index:(matrix@(normals[loop.index].vector if normals is not None else loop.normal)).normalized() for loop in o.data.loops}
         na=split_normals(hip);nb=split_normals(leg)
         minimum_dot=min(na[i].dot(nb[j]) for i,j in pairs)
         maximum_gap=max((hip.matrix_world@hip.data.vertices[i].co-leg.matrix_world@leg.data.vertices[j].co).length for i,j in pairs)
@@ -121,5 +126,6 @@ for filename in ['PlayerBody.fbx','Mara_Victim.fbx','Judge.fbx','Patrol_Officer.
         assert len(pairs)>=40 and minimum_dot>.999 and maximum_gap<1e-5 and maximum_weight_difference<1e-5
         report['exported_trouser_seam']={'shared_vertices':len(pairs),'minimum_rest_normal_dot':minimum_dot,'maximum_rest_position_gap_m':maximum_gap,'maximum_weight_difference':maximum_weight_difference,'normal_helper_excluded_from_export':True,'unity_import_normals':'Import; do not recalculate'}
     reports.append(report)
-with open(directory/'fbx_roundtrip_verification.json','w') as f:json.dump(reports,f,indent=2)
+output.parent.mkdir(parents=True,exist_ok=True)
+with open(output,'w') as f:json.dump(reports,f,indent=2)
 print('ROUNDTRIP_VERIFIED',json.dumps(reports))

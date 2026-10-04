@@ -1,6 +1,6 @@
 """Signal Debt: editable, stylized adult cast first-pass assets.
 
-Run with Blender 4.0.2 in background mode. Procedural source is reusable;
+Run with Blender 4.x or 5.x in background mode. Procedural source is reusable;
 the .blend retains real editable meshes, named materials, and simple rigs.
 Player and police limbs use continuous skinned geometry with articulated hands.
 Judge and victim retain their original rigid-region first pass.
@@ -10,11 +10,24 @@ import bmesh
 import math
 import sys
 import json
+import tempfile
+import shutil
 from pathlib import Path
 from mathutils import Vector,Matrix
 from mathutils.kdtree import KDTree
+from mathutils.bvhtree import BVHTree
+from mathutils.geometry import barycentric_transform
 
 ROOT = Path(__file__).resolve().parents[1]
+POLICE_ONLY = '--police-only' in sys.argv
+PRESERVE_SOURCE = ROOT / 'Blender/Characters.blend'
+if POLICE_ONLY and not PRESERVE_SOURCE.exists():
+    raise FileNotFoundError('--police-only requires the existing Characters.blend to preserve the other characters')
+if POLICE_ONLY:
+    preserve_dir=Path(tempfile.mkdtemp(prefix='signaldebt-preserve-'))
+    preserved_copy=preserve_dir/'Characters.blend'
+    shutil.copy2(PRESERVE_SOURCE,preserved_copy)
+    PRESERVE_SOURCE=preserved_copy
 OUT = ROOT / 'UnityProject/Assets/Art/Characters'
 RENDERS = ROOT / 'Blender/Renders'
 OUT.mkdir(parents=True, exist_ok=True)
@@ -192,7 +205,7 @@ def shaped_panel(name,outline,front_y,depth,material,bone,bevel_width=.004):
     # Mirrored outlines must remain outward-facing for one-sided engine materials.
     bm=bmesh.new();bm.from_mesh(mesh);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(mesh);bm.free()
     o=bpy.data.objects.new(name,mesh);register(o,name,material,bone,False)
-    mesh.use_auto_smooth=True
+    if hasattr(mesh, 'use_auto_smooth'):mesh.use_auto_smooth=True
     if bevel_width:bevel(o,bevel_width,3)
     normal=o.modifiers.new('Panel weighted corner normals','WEIGHTED_NORMAL');normal.keep_sharp=True
     return o
@@ -215,13 +228,20 @@ def police_shoulder_weights(position,weights,prefix):
     side='Left' if x>=0 else 'Right';u=side+'UpperArm';s=side+'Shoulder'
     width=1.04 if prefix=='SWAT_Officer' else 1.0
     # Axilla follows the shirt's narrowed side cut; shoulder cap is upper-arm driven.
-    inner=(.177+.020*max(0,min(1,(z-1.31)/.11)))*width
-    outer=(.233+.013*max(0,min(1,(z-1.32)/.11)))*width
+    inner=(.185+.008*max(0,min(1,(z-1.31)/.13)))*width
+    outer=(.252+.008*max(0,min(1,(z-1.32)/.13)))*width
     blend=max(0,min(1,(abs(x)-inner)/(outer-inner)))
     blend=blend*blend*(3-2*blend)
+    # The inner underarm is chest fabric, not a point on the humerus. Keep
+    # that shallow saddle anchored to the ribs while the outer sleeve swings
+    # forward; otherwise its mixed transform folds through the chest surface.
+    lateral=max(0,min(1,(abs(x)/width-.205)/.065))
+    lateral=lateral*lateral*(3-2*lateral)
+    axilla=math.exp(-((z-1.310)/.052)**2)*math.exp(-(y/.075)**2)*(1-lateral)
+    blend*=1-.80*axilla
     # Clavicle carries the high cap; the lower deltoid transfers into the arm.
     # A pure upper-arm cap swung its top corner upward into a sharp point.
-    arm_factor=max(.08,min(1,(1.438-z)/.095))
+    arm_factor=max(.08,min(1,(1.458-z)/.135))
     arm_factor=arm_factor*arm_factor*(3-2*arm_factor)
     result={'Chest':1-blend,s:blend*(1-arm_factor),u:blend*arm_factor}
     # Feather into the lower chest weights; a hard height cutoff produces a
@@ -336,10 +356,25 @@ def smooth_arm(prefix,side,shoulder,elbow,wrist,material):
     if prefix in ('Patrol_Officer','SWAT_Officer'):
         # A tailored sleeve with a flatter inner axilla and deltoid cap. Joint
         # lengths/hand proportions are unchanged from the approved rig contract.
-        samples=[(pos,rw*(.94 if i<5 else .98),rd*(.91 if i<5 else .96),weights)
-                 for i,(pos,rw,rd,weights) in enumerate(samples)]
-        samples[0]=(a+Vector((-sgn*.045,0,-.018)),.062,.059,{'Chest':.4,s:.3,u:.3})
-        samples[1]=(a,.079,.075,{s:.15,u:.85})
+        # The centerline follows the descending shoulder into the humerus.
+        # A reversed first ring and a large tube end formerly left a barrel cap
+        # and a pinched sleeve join after union and animation.
+        samples=[
+            (a+Vector((-sgn*.073,0,.021)),.058,.060,{'Chest':.65,s:.30,u:.05}),
+            (a+Vector((-sgn*.031,0,.009)),.069,.067,{'Chest':.18,s:.55,u:.27}),
+            (a.lerp(b,.12),.071,.068,{s:.25,u:.75}),
+            (a.lerp(b,.35),.069,.066,{u:1}),
+            (a.lerp(b,.61),.068,.065,{u:.98,l:.02}),
+            (a.lerp(b,.82),.064,.061,{u:.82,l:.18}),
+            (a.lerp(b,.95),.062,.059,{u:.62,l:.38}),
+            (b,.062,.059,{u:.50,l:.50}),
+            (b.lerp(c,.13),.062,.059,{u:.28,l:.72}),
+            (b.lerp(c,.29),.060,.057,{u:.07,l:.93}),
+            (b.lerp(c,.51),.055,.052,{l:1}),
+            (b.lerp(c,.78),.048,.045,{l:1}),
+            (b.lerp(c,.93),.044,.041,{l:.88,h:.12}),
+            (c,.043,.040,{l:.55,h:.45}),
+        ]
     weighted_tube(prefix+' continuous sleeve '+side,samples,material,'Arm_'+side,n=20)
 
 def smooth_leg(prefix,side,hip,knee,ankle,material):
@@ -523,6 +558,8 @@ def fuse_garment(prefix,names,regions,voxel=.013,rig=None):
     there are no intersecting closed caps at the shoulder or trouser/hip seams.
     """
     global parts
+    police_shirt=prefix in ('Patrol_Officer','SWAT_Officer') and not any('trousers' in name for name in names)
+    if police_shirt:voxel=.009
     objs=[o for o,b in parts if o.name in names]
     assert len(objs)==3,(prefix,names,[o.name for o in objs])
     parts=[(o,b) for o,b in parts if o not in objs]
@@ -538,15 +575,17 @@ def fuse_garment(prefix,names,regions,voxel=.013,rig=None):
     surface.matrix_world=source.matrix_world.copy();bpy.context.view_layer.objects.active=surface
     remesh=surface.modifiers.new('Joined continuous garment surface','REMESH');remesh.mode='VOXEL';remesh.voxel_size=voxel;remesh.use_smooth_shade=True
     bpy.ops.object.modifier_apply(modifier=remesh.name)
-    if prefix in ('Patrol_Officer','SWAT_Officer') and not any('trousers' in name for name in names):
-        # The deltoid cap meets the collar with a descending shoulder line.
-        # Do not let a horizontal tube end produce a raised sphere above it.
+    if police_shirt:
+        # Smoothly compress the high tube cap into a descending shoulder line.
+        # Unlike a hard min(z, ceiling), softplus has a continuous derivative:
+        # it retains a rounded deltoid instead of clipping a planar shelf.
         for vertex in surface.data.vertices:
             ceiling=1.487-.24*abs(vertex.co.x)-.12*abs(vertex.co.y)
-            if vertex.co.z>ceiling:vertex.co.z=ceiling
-    smooth=surface.modifiers.new('Relax shoulder and hip seam','SMOOTH');smooth.factor=.65;smooth.iterations=3
+            delta=(vertex.co.z-ceiling)/.020
+            vertex.co.z-=.90*.020*math.log1p(math.exp(min(delta,40)))
+    smooth=surface.modifiers.new('Relax shoulder and hip seam','SMOOTH');smooth.factor=.65;smooth.iterations=8 if police_shirt else 3
     bpy.ops.object.modifier_apply(modifier=smooth.name)
-    decimate=surface.modifiers.new('Midpoly garment reduction','DECIMATE');decimate.ratio=.60
+    decimate=surface.modifiers.new('Midpoly garment reduction','DECIMATE');decimate.ratio=.46 if police_shirt else .60
     bpy.ops.object.modifier_apply(modifier=decimate.name)
     lower_garment=any('trousers' in name for name in names)
     if lower_garment:
@@ -567,7 +606,29 @@ def fuse_garment(prefix,names,regions,voxel=.013,rig=None):
             sums=police_shoulder_weights(v.co,sums,prefix)
         keep=sorted(sums.items(),key=lambda p:p[1],reverse=True)[:4];total=sum(v for k,v in keep)
         weights.append({k:v/total for k,v in keep if v/total>1e-7})
-    surface.data.update();surface.data.calc_normals_split()
+    if police_shirt:
+        # Relax the analytic shoulder field over neighboring surface vertices.
+        # This prevents a visible crease at weight-band boundaries; identical
+        # weights are then copied to both sides of each renderer seam.
+        neighbors=[set() for _ in surface.data.vertices]
+        for edge in surface.data.edges:
+            a,b=edge.vertices;neighbors[a].add(b);neighbors[b].add(a)
+        for _ in range(5):
+            relaxed=[]
+            for vertex in surface.data.vertices:
+                i=vertex.index;old=weights[i]
+                influence=max(0,min(1,(vertex.co.z-1.22)/.06))*.45
+                if not neighbors[i] or influence==0:relaxed.append(old);continue
+                sums={bone:value*(1-influence) for bone,value in old.items()}
+                for other in neighbors[i]:
+                    for bone,value in weights[other].items():
+                        sums[bone]=sums.get(bone,0)+value*influence/len(neighbors[i])
+                keep=sorted(sums.items(),key=lambda item:item[1],reverse=True)[:4]
+                total=sum(value for _,value in keep)
+                relaxed.append({bone:value/total for bone,value in keep if value/total>1e-7})
+            weights=relaxed
+    surface.data.update()
+    if hasattr(surface.data, 'calc_normals_split'):surface.data.calc_normals_split()
     shared_normals=[v.normal.copy() for v in surface.data.vertices]
     if prefix=='Player' and lower_garment:
         # Blender split-normal fans diverge after deformation on separate render regions.
@@ -579,6 +640,50 @@ def fuse_garment(prefix,names,regions,voxel=.013,rig=None):
         proxy.modifiers.new('Continuous trouser skin reference','ARMATURE').object=rig
         proxy.hide_render=True;proxy.hide_set(True);proxy.display_type='WIRE';proxy['non_export_helper']=True
         normal_references[prefix]=proxy
+    if police_shirt:
+        # Epaulets are thin cloth ribbons laid on the actual garment. The old
+        # generic axial strip put its width vertically through the shoulder,
+        # producing a jagged exposed rim and an apparent hole in the sleeve.
+        tree=BVHTree.FromPolygons([v.co for v in surface.data.vertices],
+            [tuple(p.vertices) for p in surface.data.polygons])
+        surface.data.calc_loop_triangles()
+        binding_triangles=[tuple(t.vertices) for t in surface.data.loop_triangles]
+        patch_tree=BVHTree.FromPolygons([v.co for v in surface.data.vertices],binding_triangles,all_triangles=True)
+        for accessory,bone in parts:
+            if 'upper sleeve loop panel' in accessory.name:
+                # The sleeve profile can change while the panel stays attached.
+                # Project the thin patch onto the finished cloth and interpolate
+                # its actual skin weights; a fixed radial offset floats after
+                # narrowing the sleeve or during clavicle movement.
+                inverse=accessory.matrix_world.inverted()
+                normal=(accessory.matrix_world.to_3x3()@Vector((1,0,0))).normalized()
+                for v in accessory.data.vertices:
+                    thickness=v.co.x
+                    point=accessory.matrix_world@v.co
+                    hit,_,index,_=patch_tree.ray_cast(point+normal*.15,-normal,.4)
+                    if hit is None:raise RuntimeError('Sleeve patch projection missed garment')
+                    v.co=inverse@(hit+normal*(.0015+.30*thickness))
+                    ids=binding_triangles[index]
+                    bary=barycentric_transform(hit,*[surface.data.vertices[i].co for i in ids],
+                        Vector((1,0,0)),Vector((0,1,0)),Vector((0,0,1)))
+                    values={}
+                    for i,factor in zip(ids,bary):
+                        for group,value in weights[i].items():values[group]=values.get(group,0)+max(0,factor)*value
+                    kept=dict(sorted(values.items(),key=lambda item:item[1],reverse=True)[:4])
+                    for group in accessory.vertex_groups:group.remove([v.index])
+                    set_weights(accessory,v.index,kept)
+                continue
+            if not any(label in accessory.name for label in ('stitched epaulet','epaulet fastener')):continue
+            inverse=accessory.matrix_world.inverted()
+            lift=.0025 if 'stitched epaulet' in accessory.name else .007
+            for v in accessory.data.vertices:
+                thickness=v.co.z
+                point=accessory.matrix_world@v.co
+                hit,normal,index,distance=tree.ray_cast(Vector((point.x,point.y,2)),Vector((0,0,-1)),1)
+                if hit is not None:
+                    point.z=hit.z+lift+thickness;v.co=inverse@point
+                    for group in accessory.vertex_groups:group.remove([v.index])
+                    set_weights(accessory,v.index,police_shoulder_weights(point,{'Chest':1},prefix))
     material=source.data.materials[0]
     for region,selector in regions.items():
         polygons=[p for p in surface.data.polygons if selector(sum((surface.data.vertices[i].co for i in p.vertices),Vector())/len(p.vertices))]
@@ -640,9 +745,11 @@ def apply_and_join(rig,prefix):
         bpy.ops.object.join();o=bpy.context.object
         o.name=('PlayerHead' if prefix=='Player' and region=='Head' else prefix+'_'+region)
         if prefix in REFINED and o.data.attributes.get('sd_shared_normal') and not (prefix=='Player' and region.startswith('Arm_')):
-            o.data.calc_normals_split();attr=o.data.attributes['sd_shared_normal']
+            if hasattr(o.data, 'calc_normals_split'):o.data.calc_normals_split()
+            attr=o.data.attributes['sd_shared_normal']
             normals=[attr.data[v.index].vector.normalized() if attr.data[v.index].vector.length>.1 else v.normal.copy() for v in o.data.vertices]
-            o.data.normals_split_custom_set_from_vertices(normals);o.data.use_auto_smooth=True
+            o.data.normals_split_custom_set_from_vertices(normals)
+            if hasattr(o.data, 'use_auto_smooth'):o.data.use_auto_smooth=True
         matrix=o.matrix_world.copy();o.parent=rig
         if refined:
             o.parent_type='OBJECT';o.matrix_world=matrix
@@ -704,7 +811,7 @@ def character(name,kind,display_x):
         torso_sections=[((.970 if z==.87 else .977 if z==.89 else 1.012 if z==.99 else z),w,d,y) for z,w,d,y in torso_sections]
     elif kind in ('officer','swat'):
         torso_sections=[(.925,.170,.113,.012),(.946,.180,.118,.012),(1.025,.177,.119,.010),
-                        (1.115,.173,.125,.007),(1.230,.197,.136,.009),(1.325,.226,.136,.011),
+                        (1.115,.173,.125,.007),(1.230,.187,.136,.009),(1.325,.212,.136,.011),
                         (1.394,.235,.123,.011),(1.445,.178,.086,.010),(1.482,.080,.061,.010)]
     loft(name+' torso',[(z,w*width,d,y) for z,w,d,y in torso_sections],M[torso],'Chest',n=20,subdiv=1,power=.86)
     def cloth_front(x,z,offset=.007):
@@ -781,7 +888,8 @@ def character(name,kind,display_x):
             shaped_panel(name+' pentagonal pocket flap '+side,[(x-.053,1.331),(x+.053,1.331),(x+.047,1.312),(x,1.302),(x-.047,1.312)],lambda x,z:cloth_front(x,z,.016),.009,M['navy'],'Chest',.002)
             ellipsoid(name+' pocket button',(x,cloth_front(x,1.318,.019),1.318),(.004,.002,.004),M['metal'],'Chest',10,6)
             shaped_panel(name+' pointed collar '+side,[(sgn*.028,1.480),(sgn*.073,1.466),(sgn*.093,1.415),(sgn*.034,1.441)],lambda x,z:cloth_front(x,z,.008),.011,M['navylight'],'Chest',.004)
-            epaulet=strip(name+' stitched epaulet '+side,(sgn*.104,.006,1.451),(sgn*.225,.007,1.418),.032,.010,M['navylight'],'Shoulder_'+side)
+            epaulet=cube(name+' stitched epaulet '+side,(sgn*.1645,.0065,1.435),(.125,.032,.004),M['navylight'],'Shoulder_'+side,.0015)
+            epaulet.rotation_euler[1]=sgn*math.atan2(.033,.121)
             ellipsoid(name+' epaulet fastener',(sgn*.134,-.001,1.448),(.006,.005,.003),M['metal'],'Shoulder_'+side,10,6)
             sh,el,wr,*_=joints[side]
             for t in (.66,.77):
@@ -891,7 +999,21 @@ def character(name,kind,display_x):
 CAST=[('Player','player',-3.1),('Mara_Victim','victim',-1.55),('Judge','judge',0),('Patrol_Officer','officer',1.55),('SWAT_Officer','swat',3.1)]
 all_chars=[]
 for name,kind,x in CAST:
+    if POLICE_ONLY and kind not in ('officer','swat'):continue
     all_chars.append((name,*character(name,kind,x)))
+if POLICE_ONLY:
+    # Reuse the existing meshes, modifiers, skin and anchors verbatim for the
+    # player/civilian/judge; this scoped art pass must not remodel their bodies.
+    preserve_names=[name for name,kind,x in CAST if kind not in ('officer','swat')]
+    with bpy.data.libraries.load(str(PRESERVE_SOURCE),link=False) as (source,destination):
+        destination.collections=[name+' | editable character' for name in preserve_names]
+    for collection in destination.collections:
+        bpy.context.scene.collection.children.link(collection)
+        rig=next(o for o in collection.objects if o.type=='ARMATURE')
+        prefix=rig.name.removesuffix('_Rig')
+        objects=[o for o in collection.objects if o.type=='MESH' and o.get('body_region')]
+        all_chars.append((prefix,rig,objects,collection))
+    PRESERVE_SOURCE.unlink();preserve_dir.rmdir()
 
 stats={}
 for name,rig,objs,coll in all_chars:
@@ -904,7 +1026,7 @@ for name,rig,objs,coll in all_chars:
     old=rig.location.copy();rig.location=(0,0,0)
     bpy.context.view_layer.update()
     filename='PlayerBody.fbx' if name=='Player' else name+'.fbx'
-    if '--player-only-export' not in sys.argv or name=='Player':
+    if (not POLICE_ONLY or name in ('Patrol_Officer','SWAT_Officer')) and ('--player-only-export' not in sys.argv or name=='Player'):
         bpy.ops.export_scene.fbx(filepath=str(OUT/filename),use_selection=True,
             object_types={'ARMATURE','MESH','EMPTY'},global_scale=1.0,apply_unit_scale=True,
             apply_scale_options='FBX_SCALE_ALL',use_mesh_modifiers=True,
@@ -942,6 +1064,7 @@ camera_data.type='ORTHO';camera_data.ortho_scale=9.25
 bpy.context.scene.camera=camera
 scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=64
 scene.cycles.use_denoising=False
+scene.render.threads_mode='FIXED';scene.render.threads=4
 scene.render.resolution_x=2400;scene.render.resolution_y=1450;scene.render.resolution_percentage=100
 scene.view_settings.view_transform='AgX';scene.render.image_settings.file_format='PNG'
 scene.render.film_transparent=False
@@ -976,7 +1099,7 @@ Player-only `Player_EyeView` and `Player_HeadPivot` markers are parented to Head
 
 These are actual first-pass modeling and skinning assets, not finished production characters. No animation clips, embedded scripts, constraints, drivers, networking, or external textures are included in these base FBXs. SWAT has an inert holstered exterior prop; the patrol holster is empty for the held-prop animation. No prop has a mechanism or firing logic. The separate animation builder supplies police clips and the patrol held prop. Police garments now use tailored torso/armhole profiles and explicit axillary weight blending; equipment uses shaped panels, readable seams and low-profile attachments. The SWAT carrier has shoulder cutouts, webbing, fitted pouches, rear radio, ear protection, retention straps and shaped knee cups. Distinct equipment materials and `equipment_manifest_json` preserve occupancy/binding inspection after renderer merging. Generic rig integration is intended; no claim of verified Unity Humanoid import is made. A hidden Blender-only full-trouser normal reference prevents split-region shading seams after deformation; its transfer is limited to cloth vertices, excludes shoes/accessories, and is excluded from FBX. The actual exported shared seam positions, weights, and rest normals are verified. Unity must import supplied normals; runtime shading still needs editor validation. A coarse folded crease remains near the upper trouser leg under deep hip flexion; shared seam positions, weights, and rest normals match, so it is a polish limitation rather than an open seam. Facial animation, production topology retouching, clothing collision, polished locomotion, retargeting, and Unity Play Mode validation remain work.
 
-All five characters are fictional adults. Source material palettes and mesh regions remain editable. Mesh and triangle counts are in `character_stats.json`. FBX structural and deformation checks are in `fbx_roundtrip_verification.json`; those Blender reimport checks do not replace testing in the Unity editor.
+All five characters are fictional adults. Source material palettes and mesh regions remain editable. Mesh and triangle counts are in `character_stats.json`. Current FBX structural and deformation checks are in `Validation/quality_pass_base_character_roundtrip.json`; current clip readback is in `Validation/quality_pass_wrist_grip_reimport.json`. Older delivery reports remain historical. Blender reimport checks do not replace testing in the Unity editor.
 """)
 print('GEOMETRY_AND_RIG_CONTRACT_READY',flush=True)
 if '--skip-render' not in sys.argv:bpy.ops.render.render(write_still=True)

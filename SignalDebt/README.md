@@ -1,8 +1,12 @@
 # Signal Debt — apartment and character motion build
 
+The current cloud continuation is documented in [Quality pass — 4 October 2026](Documentation/Quality_Pass_2026-10-04.md). It uses verified official Blender **5.2.2 LTS**. Fresh environment and import checks are in `Validation/CloudSetup`; the original delivery reports below describe the earlier build unless explicitly regenerated.
+
+[Open the labelled comparisons, updated GIFs and apartment previews](REVIEW.md).
+
 This package starts the game with the apartment and the first paid repair. It contains actual Blender scene files and exports, a Unity 6 source project, and an optional local NPC dialogue relay. The courtroom, interrogation room, jail cell, shops, and larger city are the next environment milestones in the master plan.
 
-The updated 68-page master plan v0.9 is included in `Documentation/Hacker_Game_Master_Plan.docx` and `.pdf`; all 320 backlog features remain. Read `Validation/BUILD_STATUS.md` for completed checks and the remaining Unity acceptance pass.
+The supplied 68-page master plan v0.9 is included in `Documentation/Hacker_Game_Master_Plan.docx` and `.pdf`; all 320 backlog features remain. Read [Validation/README.md](Validation/README.md) for current evidence. `Validation/BUILD_STATUS.md` records the earlier upload's checks and Unity acceptance plan.
 
 `Documentation/SECURITY.md` records the runtime network boundary and security review: offline gameplay, optional loopback NPC relay, and the fixed OpenAI endpoint. Model replies are plain text with no authority to execute commands or alter game state.
 
@@ -35,7 +39,7 @@ Open `Blender/SignalDebt_Apartment.blend`. It contains the room, furniture, name
 `Blender/build_apartment.py` regenerates the scene and exports. With Blender available on your PATH:
 
 ```powershell
-blender --background --python Blender/build_apartment.py -- --samples 64
+blender --background --factory-startup --disable-autoexec --python-exit-code 1 --threads 4 --python Blender/build_apartment.py -- --samples 64
 ```
 
 The Unity interchange file is `UnityProject/Assets/Art/Apartment/Apartment.fbx`. The same folder includes a GLB, an OBJ fallback, base-color textures, and a collision/anchor manifest. `Blender/Previews` contains actual Blender renders of the modeled scene.
@@ -46,11 +50,11 @@ Preserve the named anchors `PlayerSpawn`, `DeskSeat`, `LaptopFocus`, `DoorHinge`
 
 The first-person controller keeps the full skeleton but hides head, neck, and chest from the camera. Arms, legs, hands, shoes, and the trouser waist remain visible; closed sleeve surfaces prevent exposed mesh interiors when looking down. Crouching and seating bend the limb joints while preserving body scale. Standing, seated, and crouched poses still require their final camera, chair, and clipping checks in Unity.
 
-`Blender/Character_Animation_Showcase.blend` and `UnityProject/Assets/Art/Animations` contain a door-kick study and patrol lowered/raised hold transitions. Actual motion previews and close-ups are in `Blender/Renders/Animation`; `Blender/ANIMATION_NOTES.md` describes the clip timing and validation scope. These assets are animation studies, not functioning police AI or combat.
+`Blender/Character_Animation_Showcase.blend` and `UnityProject/Assets/Art/Animations` contain a door-kick study and patrol lowered/raised hold transitions. Current motion previews and close-ups are in `Blender/Renders/QualityPass`; `Blender/Renders/Animation` preserves the uploaded previews. `Blender/ANIMATION_NOTES.md` describes the clip timing and validation scope. These assets are animation studies, not functioning police AI or combat.
 
 The body correction addresses the upper arms folding into the chest as well as the earlier wrist and finger problems. The patrol elbow plane is body-aware, and the police garments have explicit shoulder weighting and revised sleeve roots. The SWAT outfit has a shaped carrier, fitted straps, layered pouches, helmet components, ear protection, radio, and a belt-mounted holstered prop. `Documentation/Art_References.md` records the reference-only approach; all delivered geometry remains authored in this project.
 
-`Validation/whole_body_review.json` records the source, surface-clearance, visual, and exported-asset evidence for this pass. Earlier focused wrist approval did not establish shoulder quality and is superseded within this broader scope. The models remain stylized production studies, with Unity playback and final art acceptance still distinct from the offline checks.
+Current `Validation/quality_pass_*.json` reports record the revised source, surface-clearance, visual, and exported-asset evidence. `Validation/whole_body_review.json` belongs to the original upload. Wrist checks alone do not establish shoulder quality. The models remain stylized production studies, with Unity playback and final art acceptance still distinct from the offline checks.
 
 In Unity, choose **Signal Debt > Build Animation Review Scene**, then press Play. Use the clip buttons or keys **1–4**, **Space** to pause, right-drag to orbit, and the mouse wheel outside the controls to zoom. Each actor has a timeline scrubber; playback speed and front/side views are adjustable. The builder saves `Assets/Scenes/AnimationReview.unity` and preserves the apartment build settings. Its clip import and playback still need the Unity acceptance pass.
 

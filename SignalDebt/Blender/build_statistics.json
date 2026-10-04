@@ -1,54 +1,13 @@
 {
-  "objects": 945,
-  "mesh_objects": 806,
-  "base_polygons": 12370,
-  "materials": 39,
+  "objects": 968,
+  "mesh_objects": 821,
+  "base_polygons": 13584,
+  "materials": 41,
   "renders": true,
-  "blender_version": "4.0.2",
+  "blender_version": "5.2.2 LTS",
   "seed": 190426,
-  "quality_pass": "0.2",
-  "preview_settings": {
-    "Preview_01_Room": {
-      "resolution": [
-        1600,
-        900
-      ],
-      "samples": 256,
-      "adaptive_threshold": 0.02
-    },
-    "Preview_02_Workstation": {
-      "resolution": [
-        1600,
-        900
-      ],
-      "samples": 256,
-      "adaptive_threshold": 0.02
-    },
-    "Preview_03_Bed_Window": {
-      "resolution": [
-        1280,
-        720
-      ],
-      "samples": 128,
-      "adaptive_threshold": 0.035,
-      "retained_unchanged_content": true
-    },
-    "Preview_04_Entrance": {
-      "resolution": [
-        1280,
-        720
-      ],
-      "samples": 128,
-      "adaptive_threshold": 0.035,
-      "retained_unchanged_content": true
-    },
-    "Preview_05_Desk_Detail": {
-      "resolution": [
-        1600,
-        900
-      ],
-      "samples": 384,
-      "adaptive_threshold": 0.015
-    }
-  }
+  "quality_pass": "0.3.0",
+  "source_sha256": "945aa347a46fd2e37d98d746782a8509b3def12f4203f8e9d8a56dd7f69a74bc",
+  "preview_provenance_report": "Validation/apartment_quality_previews.json",
+  "geometry_validation_report": "Validation/apartment_quality_validation.json"
 }

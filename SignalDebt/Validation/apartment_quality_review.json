@@ -1,0 +1,134 @@
+{
+  "status": "PASS: source/interchange checks and all three rendered views reviewed",
+  "asset": "SignalDebt apartment quality pass",
+  "original_uploaded_commit": "5b6b70f",
+  "comparison_note": "Original uploaded previews are preserved unchanged and were not rerendered as an equal-settings baseline. New views were rendered in Blender 5.2.2 with 96 Cycles CPU samples and OpenImageDenoise; the comparison includes both authored asset refinements and cleaner rendering.",
+  "original_uploaded_previews": {
+    "Preview_01_Room": {
+      "path": "Blender/Previews/Preview_01_Room.png",
+      "label": "Original uploaded preview; retained unchanged",
+      "sha256": "84263641ff7c7df7d40adfd785fd5cd8ec129e1d213299c753dc7db6b1df2d19"
+    },
+    "Preview_05_Desk_Detail": {
+      "path": "Blender/Previews/Preview_05_Desk_Detail.png",
+      "label": "Original uploaded preview; retained unchanged",
+      "sha256": "7ad8fd12783f1ec3d8555caa2707801c867a2d5abc6cee8004e208976eb3c8a2"
+    },
+    "Preview_03_Bed_Window": {
+      "path": "Blender/Previews/Preview_03_Bed_Window.png",
+      "label": "Original uploaded preview; retained unchanged",
+      "sha256": "f40bdd0024cb2690b6f1a674b8804a8d3331319be368247f4198380625aa696a"
+    }
+  },
+  "new_previews": {
+    "Preview_01_Room": {
+      "path": "Blender/Previews/QualityPass/Preview_01_Room.png",
+      "engine": "CYCLES",
+      "blender_version": "5.2.2 LTS",
+      "resolution": [
+        1600,
+        900
+      ],
+      "samples": 96,
+      "adaptive_threshold": 0.014999999664723873,
+      "denoising": true,
+      "denoiser": "OPENIMAGEDENOISE",
+      "threads": 4,
+      "render_seconds": 172.6,
+      "sha256": "af5351e033da64710f47d197a9fe71c87c951af2734a0bf59a7db9602e146e8d",
+      "source_sha256": "945aa347a46fd2e37d98d746782a8509b3def12f4203f8e9d8a56dd7f69a74bc"
+    },
+    "Preview_05_Desk_Detail": {
+      "path": "Blender/Previews/QualityPass/Preview_05_Desk_Detail.png",
+      "engine": "CYCLES",
+      "blender_version": "5.2.2 LTS",
+      "resolution": [
+        1600,
+        900
+      ],
+      "samples": 96,
+      "adaptive_threshold": 0.014999999664723873,
+      "denoising": true,
+      "denoiser": "OPENIMAGEDENOISE",
+      "threads": 4,
+      "render_seconds": 185.84,
+      "sha256": "f99899b7ac0ab0e4c11210201c2ddbe3a0eb5c65ce629e84a3267fc9c71d299d",
+      "source_sha256": "945aa347a46fd2e37d98d746782a8509b3def12f4203f8e9d8a56dd7f69a74bc"
+    },
+    "Preview_03_Bed_Window": {
+      "path": "Blender/Previews/QualityPass/Preview_03_Bed_Window.png",
+      "engine": "CYCLES",
+      "blender_version": "5.2.2 LTS",
+      "resolution": [
+        1600,
+        900
+      ],
+      "samples": 96,
+      "adaptive_threshold": 0.014999999664723873,
+      "denoising": true,
+      "denoiser": "OPENIMAGEDENOISE",
+      "threads": 4,
+      "render_seconds": 170.01,
+      "sha256": "ade021b15efce1ee6fa7154e9fd8dcee58980025da1d0f841301831f603ece2f",
+      "source_sha256": "945aa347a46fd2e37d98d746782a8509b3def12f4203f8e9d8a56dd7f69a74bc"
+    }
+  },
+  "source_sha256": "945aa347a46fd2e37d98d746782a8509b3def12f4203f8e9d8a56dd7f69a74bc",
+  "model_and_material_changes": [
+    "Replaced beveled-cube pillows with closed crowned cloth shells, gathered perimeter shape, and modeled sewn seams; underside contact gap is 0.171 mm.",
+    "Replaced mattress seam slab with two curved welt seams fitted to the actual rounded surface; increased mattress bevel segmentation from 3 to 6.",
+    "Shaped headboard upholstery with a crowned center and sewn border; added side and foot hems that follow the existing blanket drape.",
+    "Added bed rail fasteners, desk handle mount plates and leg mounts, and chair rear captive screws.",
+    "Aligned walnut grain to each furniture board and reduced furniture grain contrast after inspecting the clean wide render.",
+    "Added original woven-cotton tangent normal and roughness textures on three textile materials, retained through FBX and GLB. Walnut retains its original smooth finish."
+  ],
+  "preserved_contracts": {
+    "all_original_anchors_and_colliders_unchanged": true,
+    "fbx_roundtrip_anchor_count": 10,
+    "door_parent": "DoorHinge"
+  },
+  "geometry_budget": {
+    "source_base_polygons": 13584,
+    "exported_fbx_polygons": 132415,
+    "exported_fbx_triangles": 256424,
+    "exported_fbx_mesh_objects": 947
+  },
+  "portable_material_texture_links": {
+    "Cotton Ivory Textile": [
+      "Woven_Cotton_Normal.png",
+      "Woven_Cotton_Roughness.png"
+    ],
+    "Cotton Teal": [
+      "Cotton_Blanket_BaseColor.png",
+      "Woven_Cotton_Normal.png",
+      "Woven_Cotton_Roughness.png"
+    ],
+    "Fabric Charcoal": [
+      "Woven_Cotton_Normal.png",
+      "Woven_Cotton_Roughness.png"
+    ]
+  },
+  "unity_import_checks_remaining": [
+    "Set Woven_Cotton_Normal.png Texture Type to Normal map; use linear data interpretation.",
+    "Treat Woven_Cotton_Roughness.png as linear data, with sRGB disabled.",
+    "If the active Unity shader expects smoothness, convert smoothness = 1 - roughness and pack it into the channel that shader requires.",
+    "Confirm named FBX material texture assignments, scale and visible detail in the actual Unity scene before claiming in-engine parity."
+  ],
+  "limits": [
+    "Unity Play Mode, first-person collision and target-hardware performance remain unverified.",
+    "This is an authored source/asset quality pass; no third-party model or texture assets were downloaded."
+  ],
+  "validation_report": "Validation/apartment_quality_validation.json",
+  "preview_provenance_report": "Validation/apartment_quality_previews.json",
+  "visual_review": {
+    "Preview_01_Room": "Reviewed at 1600px: coherent furniture silhouettes, sewn edges and clear contact shadows in the existing room layout.",
+    "Preview_05_Desk_Detail": "Reviewed at 1600px: readable keyboard/screen labels, visible shell and cable construction, and retained smooth walnut material response.",
+    "Preview_03_Bed_Window": "Reviewed at 1600px: crowned pillows, stitched pillow and blanket edges, rounded mattress welt, and headboard upholstery are visible; no new silhouette break was observed."
+  },
+  "provenance_validation": {
+    "all_three_png_hashes_match": true,
+    "all_three_rendered_from_current_source_sha256": true,
+    "all_three_original_uploaded_previews_unchanged": true,
+    "all_three_images_are_1600_by_900": true
+  }
+}

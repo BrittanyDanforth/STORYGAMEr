@@ -1,0 +1,14 @@
+{
+  "blender_version": "5.2.2 LTS",
+  "engine": "CYCLES",
+  "device": "CPU",
+  "samples": 8,
+  "resolution": [
+    128,
+    128
+  ],
+  "native_save": "passed",
+  "fbx_export": "passed",
+  "render": "passed",
+  "output_directory": "/workspace/SignalDebt-setup/validation/blender-s8q0_xwx"
+}

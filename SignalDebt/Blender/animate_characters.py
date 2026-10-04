@@ -300,8 +300,15 @@ measurements['SWAT_DoorKick']['evaluated_support_sole_lowest_z_m']=min(p.z for p
 raise_action=build_patrol('Patrol_LowReadyToAim',0,1,46)
 lower_action=build_patrol('Patrol_AimToLowReady',1,0,46)
 idle_action=build_patrol('Patrol_LowReadyIdle',0,0,61)
+def action_curves(action):
+    # Blender 4.4+ stores keyframes in layered Action channel bags; 5.x removed
+    # Action.fcurves. Walk the actual keyed bags rather than a legacy shim.
+    if hasattr(action,'fcurves'):return list(action.fcurves)
+    return [curve for layer in action.layers for strip in layer.strips
+            for bag in strip.channelbags for curve in bag.fcurves]
+
 for action in (kick,raise_action,lower_action,idle_action):
-    for fc in action.fcurves:
+    for fc in action_curves(action):
         for key in fc.keyframe_points:key.interpolation='LINEAR'
 
 # Fictional, nonfunctional handgun silhouette. No internals, ammunition or firing.
@@ -327,7 +334,7 @@ def cube(name,loc,size,mat,bevel=.01):
         mod=o.modifiers.new('Soft prop edge','BEVEL');mod.width=bevel;mod.segments=3
         # Blender 4.0 requires Auto Smooth for the weighted-normal modifier;
         # otherwise it reports a warning and leaves the small bevels unweighted.
-        o.data.use_auto_smooth=True
+        if hasattr(o.data, 'use_auto_smooth'):o.data.use_auto_smooth=True
         for polygon in o.data.polygons:polygon.use_smooth=True
         normal=o.modifiers.new('Weighted normals','WEIGHTED_NORMAL');normal.keep_sharp=True
     return o

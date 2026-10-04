@@ -1,6 +1,6 @@
 {
   "asset": "SignalDebt_Apartment",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "units": "metres",
   "room_internal_size_blender": [
     6.4,
@@ -664,7 +664,7 @@
       ]
     }
   ],
-  "textures": "Original baked base color PNGs in Textures. Uniform roughness/metallic and emission are material values.",
-  "materials_note": "FBX material translation varies by Unity pipeline. Diffuse colors/textures survive; rebuild transparency/emission as needed.",
+  "textures": "Original base color PNGs, plus woven cotton tangent normal and roughness PNGs in Textures. Walnut keeps its smooth material finish.",
+  "materials_note": "GLB includes normal/roughness maps. FBX material translation varies by Unity pipeline; assign supplied normal/roughness PNGs and rebuild transparency/emission as needed.",
   "scope": "Detailed first-pass apartment source and game geometry; not a claim of final AAA production readiness."
 }

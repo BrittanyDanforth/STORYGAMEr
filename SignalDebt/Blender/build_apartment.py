@@ -7,12 +7,14 @@ No downloaded assets or image-generated stand-ins. Units are metres, Blender Z u
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import os
 from pathlib import Path
 import random
 import sys
+import time
 from array import array
 
 import bpy
@@ -40,6 +42,8 @@ def parse_args():
     p.add_argument("--view", default=None, help="Optional named Preview camera to render alone")
     p.add_argument("--width", type=int, default=1280)
     p.add_argument("--height", type=int, default=720)
+    p.add_argument("--preview-dir", default=None, help="Output directory for this render pass")
+    p.add_argument("--no-denoise", action="store_true", help="Only for Blender builds without OpenImageDenoise")
     return p.parse_args(argv)
 
 
@@ -104,6 +108,9 @@ def create_texture(name, kind, base, size=512):
                 value = broad+noise-knots*(.025+.018*math.sin(warp*280))
                 if name == "Walnut_Worktop_BaseColor":
                     value *= .38
+                elif name == "Walnut_Desk_BaseColor":
+                    # Furniture boards share correct grain direction without striped contrast.
+                    value *= .45
             elif kind == "fabric":
                 weave = .009*(1 if ix%2 else -1)+.009*(1 if iy%2 else -1)
                 value = weave+noise*1.5+.012*math.sin(xx*13)*math.cos(yy*17)
@@ -117,6 +124,56 @@ def create_texture(name, kind, base, size=512):
     im.save()
     bpy.data.images.remove(im)
     return TEX_DIR / f"{name}.png"
+
+
+def cotton_surface_maps(name, roughness, size=512):
+    """Portable woven-cotton roughness and tangent normals; no painted wear."""
+    normal_pixels, rough_pixels = array('f'), array('f')
+    for y in range(size):
+        v = y / size
+        for x in range(size):
+            u = x / size
+            # Fine alternating yarns; the silhouette comes from the actual cloth mesh.
+            warp, weft = math.tau*128*u, math.tau*128*v
+            nx = .055*math.sin(warp)*(1+.25*math.cos(weft))
+            ny = .055*math.sin(weft)*(1-.25*math.cos(warp))
+            variation = .024*math.cos(warp)*math.cos(weft)
+            n = Vector((nx, ny, 1)).normalized()
+            normal_pixels.extend((n.x*.5+.5, n.y*.5+.5, n.z*.5+.5, 1))
+            r = min(1, max(0, roughness+variation))
+            rough_pixels.extend((r,r,r,1))
+    paths = {}
+    for suffix, pixels in (("Normal",normal_pixels),("Roughness",rough_pixels)):
+        image = bpy.data.images.new(f"{name}_{suffix}", width=size, height=size, alpha=False)
+        image.colorspace_settings.name = "Non-Color"
+        image.pixels.foreach_set(pixels)
+        image.filepath_raw = str(TEX_DIR / f"{name}_{suffix}.png")
+        image.file_format = "PNG"
+        image.save()
+        paths[suffix] = image.filepath_raw
+        bpy.data.images.remove(image)
+    return paths
+
+
+def attach_surface_maps(material_name, paths):
+    material = M[material_name]
+    nodes, links = material.node_tree.nodes, material.node_tree.links
+    shader = nodes.get("Principled BSDF")
+    for suffix in ("Normal", "Roughness"):
+        tex = nodes.new("ShaderNodeTexImage")
+        tex.image = bpy.data.images.load(paths[suffix], check_existing=True)
+        tex.image.colorspace_settings.name = "Non-Color"
+        tex.label = "Portable original " + suffix.lower()
+        if suffix == "Normal":
+            normal = nodes.new("ShaderNodeNormalMap")
+            normal.uv_map = "UVMap"
+            links.new(tex.outputs["Color"], normal.inputs["Color"])
+            links.new(normal.outputs["Normal"], shader.inputs["Normal"])
+        else:
+            links.new(tex.outputs["Color"], shader.inputs["Roughness"])
+    if "Sheen Weight" in shader.inputs and "Cotton" in material_name:
+        shader.inputs["Sheen Weight"].default_value = .13
+        shader.inputs["Sheen Roughness"].default_value = .8
 
 
 def box_uv(obj):
@@ -161,6 +218,16 @@ def box(name, loc, dims, material, group="Architecture", bevel=.008, rot=None):
     o.dimensions = dims
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
     box_uv(o)
+    if material in {"Walnut", "Desk Walnut"}:
+        # Longitudinal grain follows the board, including the vertical bed legs.
+        layer=o.data.uv_layers.active
+        for face in o.data.polygons:
+            normal_axis=max(range(3),key=lambda axis:abs(face.normal[axis]))
+            axes=[axis for axis in range(3) if axis!=normal_axis]
+            across,along=sorted(axes,key=lambda axis:dims[axis])
+            for li in face.loop_indices:
+                co=o.data.vertices[o.data.loops[li].vertex_index].co
+                layer.data[li].uv=(co[across]/dims[across]+.5,co[along]/dims[along]+.5)
     if rot:
         o.rotation_euler = rot
     return finish(o, name, material, group, bevel)
@@ -267,6 +334,8 @@ def materials():
     mat("Rubber", (.013,.018,.021), .9)
     mat("Fabric Charcoal", (.06,.08,.085), .94)
     mat("Cotton Ivory", (.63,.61,.53), .96)
+    mat("Cotton Ivory Textile", (.63,.61,.53), .96)
+    mat("Cotton Seam", (.43,.42,.36), .96)
     mat("Blanket Edge", (.07,.115,.12), .91)
     mat("Brass", (.41,.285,.11), .29, .65)
     mat("Paper", (.70,.68,.57), .92)
@@ -285,6 +354,9 @@ def materials():
     mat("City Window Cool", (.15,.28,.34), .5, emission=.25)
     mat("Circuit Board", (.025,.10,.075), .73)
     mat("Cardboard", (.33,.265,.17), .98)
+    cloth_maps = cotton_surface_maps("Woven_Cotton", .91)
+    for name in ("Cotton Ivory Textile", "Cotton Teal", "Fabric Charcoal"):
+        attach_surface_maps(name, cloth_maps)
 
 
 def architecture():
@@ -453,15 +525,21 @@ def bed():
         box(f"Bed_End_Rail_{y}",(-1.85,y,.36),(1.53,.07,.21),"Walnut",group,.012)
     for i in range(12):
         box(f"Bed_Slat_{i}",(-1.85,.27+i*.18,.415),(1.45,.062,.025),"Walnut",group,.005)
-    box("Mattress",(-1.85,1.28,.55),(1.48,2.17,.27),"Cotton Ivory",group,.09)
-    box("Mattress_Seam",(-1.85,1.28,.625),(1.49,2.18,.016),"Paper",group,.007)
+    mattress=box("Mattress",(-1.85,1.28,.55),(1.48,2.17,.27),"Cotton Ivory Textile",group,.09)
+    mattress.modifiers["Manufactured edge bevel"].segments=6
+    rounded_piping("Mattress_Upper_Welt",(-1.85,1.28,.625),1.4727,2.1627,.0864,.0025,"Cotton Seam",group)
+    rounded_piping("Mattress_Lower_Welt",(-1.85,1.28,.464),1.4633,2.1533,.0817,.0025,"Cotton Seam",group)
     box("Headboard",(-1.85,2.405,.77),(1.70,.10,1.16),"Walnut",group,.03)
-    box("Headboard_Upholstery",(-1.85,2.34,.91),(1.48,.066,.64),"Fabric Charcoal",group,.055)
+    tailored_cushion("Headboard_Upholstery",(-1.85,2.34,.91),1.48,.64,.066,
+                     "Fabric Charcoal",group,rot=(math.pi/2,0,0))
     for x in (-2.3,-1.85,-1.4):
         sphere(f"Headboard_Button_{x}",(x,2.301,.91),(.014,.007,.014),"Plastic Black",group)
     for x,angle in ((-2.20,-.04),(-1.50,.06)):
-        o=box(f"Pillow_{x}",(x,2.0,.748),(.64,.42,.16),"Cotton Ivory",group,.073)
-        o.rotation_euler=(0,0,angle)
+        pillow(f"Pillow_{x}",(x,2.0,.7515),.64,.42,angle)
+    # Actual recessed rail joints and fasteners, kept inside the existing bed bounds.
+    for x in (-2.47,-1.23):
+        cylinder(f"Bed_End_Rail_Fastener_{x}",(x,.131,.36),(x,.129,.36),.008,"Steel",group,20,.0005)
+        box(f"Bed_End_Rail_Fastener_Slot_{x}",(x,.1277,.36),(.008,.0006,.0012),"Rubber",group,.0002)
     # Draped blanket with geometric seams/folds instead of a flat cover slab.
     nx,ny=40,48
     verts=[];faces=[]
@@ -487,6 +565,12 @@ def bed():
     for i in range(nx+1):
         x,y,z=verts[ny*(nx+1)+i];points.append((x,y,z+.004))
     curve("Blanket_Bound_Edge",points,.006,"Blanket Edge",group)
+    # Bound side/foot edges follow the authored drape, including every corner.
+    for side,index in (("Left",0),("Right",nx)):
+        points=[(verts[j*(nx+1)+index][0],verts[j*(nx+1)+index][1],
+                 verts[j*(nx+1)+index][2]+.0015) for j in range(ny+1)]
+        curve("Blanket_"+side+"_Hem",points,.003,"Blanket Edge",group)
+    curve("Blanket_Foot_Hem",[(x,y,z+.0015) for x,y,z in verts[:nx+1]],.003,"Blanket Edge",group)
     box("Bedside_Chest",(-2.89,2.10,.30),(.40,.44,.55),"Walnut",group,.012)
     for z in (.22,.44):
         box(f"Bedside_Drawer_{z}",(-2.89,1.865,z),(.35,.022,.185),"Walnut",group,.006)
@@ -494,6 +578,50 @@ def bed():
     collider("Bed",(-1.85,1.28,.46),(1.67,2.36,.90))
     collider("BedsideChest",(-2.89,2.1,.3),(.40,.44,.60))
 
+
+
+def rounded_piping(name, center, width, depth, corner, gauge, material, group):
+    points=[]
+    for cx,cy,start in ((width/2-corner,depth/2-corner,0),
+                        (-width/2+corner,depth/2-corner,90),
+                        (-width/2+corner,-depth/2+corner,180),
+                        (width/2-corner,-depth/2+corner,270)):
+        for i in range(9):
+            angle=math.radians(start+i*90/8)
+            points.append((center[0]+cx+corner*math.cos(angle),
+                           center[1]+cy+corner*math.sin(angle),center[2]))
+    points.append(points[0])
+    return curve(name,points,gauge,material,group)
+
+
+def pillow(name, loc, width, depth, rotation):
+    """Closed sewn pillow with supported underside, crowned fill and gathered seam."""
+    verts=[];faces=[];n=64
+    rings=[(.22,-.066),(.68,-.067),(.94,-.031),(1.,0),(.94,.036),(.7,.063),(.22,.071)]
+    for r,z in rings:
+        for i in range(n):
+            a=math.tau*i/n
+            x=math.copysign(abs(math.cos(a))**.45,math.cos(a))*width*.5*r
+            y=math.copysign(abs(math.sin(a))**.45,math.sin(a))*depth*.5*r
+            gathers=.0025*math.sin(a*12+.3)*math.exp(-((r-.91)/.17)**2)
+            verts.append((x,y,z+gathers))
+    for ring in range(len(rings)-1):
+        for i in range(n):
+            a=ring*n+i;b=ring*n+(i+1)%n
+            faces.append((a,b,b+n,a+n))
+    faces.append(tuple(reversed(range(n))))
+    faces.append(tuple((len(rings)-1)*n+i for i in range(n)))
+    mesh=bpy.data.meshes.new(name);mesh.from_pydata(verts,[],faces);mesh.update()
+    obj=bpy.data.objects.new(name,mesh);collection("Bed").objects.link(obj)
+    obj.location=loc;obj.rotation_euler.z=rotation
+    box_uv(obj);finish(obj,name,"Cotton Ivory Textile","Bed",smooth=True)
+    sub=obj.modifiers.new("Soft sewn contour","SUBSURF");sub.levels=1;sub.render_levels=1
+    bpy.context.view_layer.update()
+    points=[tuple(obj.matrix_world@Vector(verts[3*n+i])) for i in range(n)]
+    points.append(points[0])
+    curve(name+"_Sewn_Edge",points,.0016,"Cotton Seam","Bed")
+    obj["quality_note"]="Closed contoured cloth shell; gathered stitched edge and supported underside."
+    return obj
 
 
 def formed_shell(name, origin, sections, material, group, span=(-1,1), resolution=20):
@@ -608,7 +736,6 @@ def mouse_and_tools():
 def desk_and_chair():
     group="Desk"
     top=box("Desk_Worktop",(1.83,1.87,.785),(2.14,.83,.055),"Desk Walnut",group,.010)
-    for uv in top.data.uv_layers.active.data:uv.uv=(uv.uv.y,uv.uv.x)
     box("Desk_Front_Edge",(1.83,1.463,.756),(2.10,.019,.018),"Desk Walnut",group,.005)
     for x in (.87,2.79):
         for y in (1.54,2.19):
@@ -620,12 +747,23 @@ def desk_and_chair():
     for z in (.535,.675):
         box(f"Desk_Drawer_Front_{z}",(2.60,1.54,z),(.389,.031,.126),"Walnut",group,.006)
         curve(f"Desk_Drawer_Handle_{z}",[(2.53,1.519,z),(2.53,1.486,z),(2.67,1.486,z),(2.67,1.519,z)],.008,"Steel",group)
+        for x in (2.53,2.67):
+            cylinder(f"Desk_Handle_Mount_{x}_{z}",(x,1.523,z),(x,1.516,z),.014,"Steel",group,24,.001)
+    for x in (.87,2.79):
+        for y in (1.54,2.19):
+            box(f"Desk_Leg_Mount_{x}_{y}",(x,y,.747),(.095,.075,.01),"Steel",group,.003)
     mouse_and_tools()
     # Ergonomic articulated chair, visible spokes, suspension, caster wheels, armrests.
     cx,cy=1.68,.91
     box("Chair_Seat_Base",(cx,cy,.463),(.51,.48,.045),"Plastic Black","Chair",.04)
     tailored_cushion("Chair_Seat_Cushion",(cx,cy,.514),.49,.46,.082,"Fabric Charcoal","Chair")
     back=box("Chair_Back_Shell",(cx,cy-.255,.85),(.485,.046,.55),"Plastic Black","Chair",.04,rot=(math.radians(7),0,0))
+    bpy.context.view_layer.update()
+    for x in (-.15,.15):
+        for z in (-.18,.18):
+            a=back.matrix_world@Vector((x,-.024,z))
+            b=back.matrix_world@Vector((x,-.027,z))
+            cylinder(f"Chair_Back_Captive_Screw_{x}_{z}",a,b,.008,"Paint Dark","Chair",20,.001)
     tailored_cushion("Chair_Back_Cushion",(cx,cy-.211,.86),.435,.485,.063,"Fabric Charcoal","Chair",rot=(math.radians(-83),0,0))
     box("Chair_Underseat_Mechanism",(cx,cy-.025,.416),(.22,.24,.044),"Steel","Chair",.014)
     curve("Chair_Adjustment_Lever",[(cx+.07,cy-.03,.415),(cx+.25,cy-.05,.411),(cx+.29,cy-.06,.431)],.007,"Steel","Chair")
@@ -872,8 +1010,10 @@ def setup_render(args):
     scene.render.engine="CYCLES"
     scene.cycles.device="CPU"
     scene.cycles.samples=args.samples
-    # Portable packaged Blender builds can lack OpenImageDenoiser entirely.
-    scene.cycles.use_denoising=False
+    # Official Blender includes OpenImageDenoise; retain an explicit distro fallback.
+    scene.cycles.use_denoising=not args.no_denoise
+    scene.cycles.denoiser="OPENIMAGEDENOISE"
+    scene.cycles.denoising_input_passes="RGB_ALBEDO_NORMAL"
     scene.cycles.adaptive_threshold=args.adaptive_threshold
     scene.cycles.max_bounces=7
     scene.cycles.diffuse_bounces=4
@@ -917,14 +1057,14 @@ def mesh_for_export():
 
 def export_files():
     manifest={
-        "asset":"SignalDebt_Apartment", "version":"0.2.0", "units":"metres",
+        "asset":"SignalDebt_Apartment", "version":"0.3.0", "units":"metres",
         "room_internal_size_blender":[6.4,5.2,2.8],
         "axis_conversion_note":"FBX axis_forward=-Z, axis_up=Y; collision centres supplied as x,z,y for Unity room assembly.",
         "import_note":"Use supplied box collision plan rather than mesh colliders on every detailed part. Root asset scale 1.0.",
         "door":{"pivot":"DoorHinge","mesh":"DoorLeaf","blender_closed_rotation_z":0,"blender_open_rotation_z_degrees":92},
         "anchors":{},"colliders":COLLIDERS,
-        "textures":"Original baked base color PNGs in Textures. Uniform roughness/metallic and emission are material values.",
-        "materials_note":"FBX material translation varies by Unity pipeline. Diffuse colors/textures survive; rebuild transparency/emission as needed.",
+        "textures":"Original base color PNGs, plus woven cotton tangent normal and roughness PNGs in Textures. Walnut keeps its smooth material finish.",
+        "materials_note":"GLB includes normal/roughness maps. FBX material translation varies by Unity pipeline; assign supplied normal/roughness PNGs and rebuild transparency/emission as needed.",
         "scope":"Detailed first-pass apartment source and game geometry; not a claim of final AAA production readiness."
     }
     bpy.context.view_layer.update()
@@ -972,27 +1112,49 @@ def render_previews(only=None):
     scene=bpy.context.scene
     views=("Preview_01_Room","Preview_02_Workstation","Preview_03_Bed_Window","Preview_04_Entrance","Preview_05_Desk_Detail")
     if only:
-        if only not in views:
+        requested=tuple(only.split(","))
+        if any(name not in views for name in requested):
             raise ValueError(f"Unknown preview camera {only}")
-        views=(only,)
+        views=requested
     for i,name in enumerate(views,1):
         scene.camera=bpy.data.objects[name]
         hinge=bpy.data.objects["DoorHinge"]
         hinge.rotation_euler.z=math.radians(78) if name=="Preview_04_Entrance" else 0
         scene.render.filepath=str(PREVIEW_DIR/f"{name}.png")
         print(f"RENDER {i}/{len(views)} {name}",flush=True)
+        started=time.monotonic()
         bpy.ops.render.render(write_still=True)
         print(f"RENDER COMPLETE {scene.render.filepath}",flush=True)
+        report_path=ROOT/"Validation"/"apartment_quality_previews.json"
+        report_path.parent.mkdir(exist_ok=True)
+        report=json.loads(report_path.read_text()) if report_path.exists() else {}
+        report[name]={"path":str(Path(scene.render.filepath).relative_to(ROOT)),
+            "engine":scene.render.engine,"blender_version":bpy.app.version_string,
+            "resolution":[scene.render.resolution_x,scene.render.resolution_y],
+            "samples":scene.cycles.samples,"adaptive_threshold":scene.cycles.adaptive_threshold,
+            "denoising":scene.cycles.use_denoising,"denoiser":scene.cycles.denoiser,
+            "threads":scene.render.threads,"render_seconds":round(time.monotonic()-started,2),
+            "sha256":hashlib.sha256(Path(scene.render.filepath).read_bytes()).hexdigest(),
+            "source_sha256":hashlib.sha256((BLEND_DIR/"SignalDebt_Apartment.blend").read_bytes()).hexdigest()}
+        report_path.write_text(json.dumps(report,indent=2))
 
 
 def main():
     args=parse_args()
+    global PREVIEW_DIR
+    if args.preview_dir:
+        PREVIEW_DIR=Path(args.preview_dir).resolve()
     for path in (BLEND_DIR,ART_DIR,TEX_DIR,PREVIEW_DIR):
         path.mkdir(parents=True,exist_ok=True)
     if args.render_only:
         bpy.ops.wm.open_mainfile(filepath=str(BLEND_DIR/"SignalDebt_Apartment.blend"), use_scripts=False)
         bpy.context.scene.cycles.samples=args.samples
         bpy.context.scene.cycles.adaptive_threshold=args.adaptive_threshold
+        bpy.context.scene.cycles.use_denoising=not args.no_denoise
+        bpy.context.scene.cycles.denoiser="OPENIMAGEDENOISE"
+        bpy.context.scene.cycles.denoising_input_passes="RGB_ALBEDO_NORMAL"
+        bpy.context.scene.render.threads_mode="FIXED"
+        bpy.context.scene.render.threads=4
         bpy.context.scene.render.resolution_x=args.width
         bpy.context.scene.render.resolution_y=args.height
         render_previews(args.view)

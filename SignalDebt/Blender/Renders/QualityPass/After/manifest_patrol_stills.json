@@ -1,0 +1,73 @@
+{
+  "blender_version": "5.2.2 LTS",
+  "source": "/workspace/STORYGAMEr/SignalDebt/Blender/Character_Animation_Showcase.blend",
+  "source_sha256": "73b57abbc7d3289784747d75fe3078313874aebef562c791f0ec80ebd299eb20",
+  "render_engine": "CYCLES",
+  "samples": 48,
+  "motion_frame_step": null,
+  "images": {
+    "PatrolLow_Front.png": {
+      "frame": 1,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "1465e99aeaede126b38989ded8ca8b96d1c6ca474b10141b82b8e6bad3cce95b"
+    },
+    "PatrolLow_Side.png": {
+      "frame": 1,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "dc4ae4fa77cb1ad925292faae1611b4c7f06a6ee63d0cada0198ee10e89db3f5"
+    },
+    "PatrolLow_Rear.png": {
+      "frame": 1,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "8b050f532bb752ef6234b3e17284db8592e240297c2d549778dad9d1877ce673"
+    },
+    "PatrolLow_Top.png": {
+      "frame": 1,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "7f967aec9e32bcf0671d1a304da2c57cb2b733f8e278e9141d51f858ce666bc2"
+    },
+    "PatrolAim_Front.png": {
+      "frame": 46,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "f1642b37afbb4607ac2402ed11623d052bc47e721c2345dd15e50542a84b42cf"
+    },
+    "PatrolAim_Side.png": {
+      "frame": 46,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "5a82254939f0348c732bcac5eeabf367e442d36b9f2b775368cc93f17ee91b99"
+    },
+    "PatrolAim_Rear.png": {
+      "frame": 46,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "2405e9b626538f3990fd28f5e5cdce26f5fcc49aa39327587ad9f59e259929cc"
+    },
+    "PatrolAim_Top.png": {
+      "frame": 46,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "2372d2bcb17c971cdfd1577a512bba54d65d861a038fa131f7d0711e0207bc11"
+    },
+    "PatrolGrip_Right.png": {
+      "frame": 46,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "92d0f10ad1d7e0eb5fc28784702bc4507e22efb2d94a424875415851c19a3276"
+    },
+    "PatrolGrip_Left.png": {
+      "frame": 46,
+      "rig": "Patrol_Officer",
+      "action": "Patrol_LowReadyToAim",
+      "sha256": "ca0e8bf17f420cbce0711c633616da6ac627ba4c5aa9a2e36c28a6285e493098"
+    }
+  },
+  "reuse_policy": "Actual earlier full-file render hash retained. Geometry, skin, materials, actions and all153 pose frames match final file; decoded normals and unused UV components differ within recorded1e-6 bounds. No UV/image shader nodes.",
+  "equivalence_report": "Validation/quality_pass_patrol_actor_equivalence.json",
+  "current_equivalent_actor_source_sha256": "2193b84f69743159e2b50b8ae18e1a6a49e484b9b33f916f13bb7e1315c4d9d9"
+}

@@ -1,16 +1,22 @@
 # Apartment source and exports
 
+The current quality continuation uses official **Blender 5.2.2 LTS**. From the
+SignalDebt root, activate it with `source Tools/blender-env.sh`. See
+`../Documentation/Quality_Pass_2026-10-04.md` and `../REVIEW.md` for the new
+geometry, material maps, labelled previews and current validation. The original
+0.2 preview descriptions below are retained as delivery history.
+
 `build_apartment.py` builds actual editable geometry for the Signal Debt starter apartment. It creates the packed source file `SignalDebt_Apartment.blend`, Unity interchange assets, original texture maps, a collision manifest, and five rendered views. The geometry and textures are generated from a fixed seed; no external asset downloads or generated illustration stand-ins are used.
 
-Run with a normal Blender 4.x installation:
+Run from this Blender directory with the verified Blender installation:
 
 ```sh
-blender -b --factory-startup --disable-autoexec -t 4 --python build_apartment.py -- --samples 256 --adaptive-threshold .015 --width 1600 --height 900
+blender -b --factory-startup --disable-autoexec --python-exit-code 1 -t 4 --python build_apartment.py -- --samples 256 --adaptive-threshold .015 --width 1600 --height 900
 ```
 
-Use `--no-render` to regenerate only the source and interchange assets. Use `--render-only` to render the existing saved source. For the closest inspection view, add `--view Preview_05_Desk_Detail --samples 384 --adaptive-threshold .015 --width 1600 --height 900`. All rendering uses Cycles CPU with four worker threads. Denoising is disabled for compatibility with Blender distributions compiled without OpenImageDenoiser. The entrance view poses the door open for review; the source and exports retain its closed default position.
+Use `--no-render` to regenerate only the source and interchange assets. Use `--render-only` to render the existing saved source. For the closest inspection view, add `--view Preview_05_Desk_Detail --samples 96 --adaptive-threshold .015 --width 1600 --height 900 --preview-dir Previews/QualityPass`. Rendering uses Cycles CPU with four worker threads and OpenImageDenoise. Use `--no-denoise` only with a Blender distribution that lacks that feature. The entrance view poses the door open for review; the source and exports retain its closed default position.
 
-The quality pass refreshes the room, workstation and desk detail views at 1600 × 900. The detail uses a 384-sample cap and .015 adaptive threshold; the wider views use a 256-sample cap and .02 adaptive threshold. The bed/window and entrance views retain their previous 1280 × 720, 128-sample renders because none of their visible assets changed. `visual_qa.json` records the final settings and inspection results. Adaptive sampling can converge earlier in individual pixels. The previews are unretouched Blender renders; some sampling grain remains.
+The current continuation renders the room, desk detail and bed/window views at 1600 × 900 with a 96-sample cap and denoising in `Previews/QualityPass`. `../Validation/apartment_quality_review.json` records their source and image hashes. The older 0.2 pass used higher sample caps without denoising; its `visual_qa.json` and original preview files remain historical evidence. Adaptive sampling can converge earlier in individual pixels.
 
 ## Workstation quality pass
 

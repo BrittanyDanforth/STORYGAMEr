@@ -1,0 +1,44 @@
+{
+  "root": "/workspace/signaldebt-import/SignalDebt",
+  "python_files": 30,
+  "all_python_parsed": true,
+  "blender_network_imports": {},
+  "subprocess_calls": [
+    {
+      "path": "Blender/finalize_animation_preview.py",
+      "line": 75,
+      "method": "run",
+      "shell_keyword": false
+    },
+    {
+      "path": "Blender/finalize_animation_preview.py",
+      "line": 79,
+      "method": "run",
+      "shell_keyword": false
+    },
+    {
+      "path": "Blender/finalize_animation_preview.py",
+      "line": 83,
+      "method": "check_output",
+      "shell_keyword": false
+    },
+    {
+      "path": "Blender/finalize_hand_previews.py",
+      "line": 42,
+      "method": "run",
+      "shell_keyword": false
+    },
+    {
+      "path": "Blender/finalize_hand_previews.py",
+      "line": 68,
+      "method": "run",
+      "shell_keyword": false
+    }
+  ],
+  "files_with_absolute_developer_paths": [],
+  "env_example": "OPENAI_API_KEY placeholder; no actual key present",
+  "credential_pattern_candidates": [],
+  "docx_macros": false,
+  "docx_external_relations": "12 ordinary hyperlinks",
+  "limitations": "Static inspection cannot rule out every dependency vulnerability or promise malware-free execution."
+}

@@ -49,7 +49,7 @@ To repeat the technical readback, run `blender --background --disable-autoexec -
 
 ## Reproduce the offline preview
 
-Use Blender 4.0.2 or a compatible Blender 4.x authoring installation. From the project folder, run:
+The current quality pass was authored and checked with official Blender 5.2.2 LTS. The authoring scripts support layered Actions in Blender 5 and retain Blender 4 API guards. See `QUALITY_PASS.md` for the scoped police rebuild and the current source-bound validation reports. From the project folder, run:
 
 ```text
 blender --background --disable-autoexec --python Blender/animate_characters.py -- --no-previews

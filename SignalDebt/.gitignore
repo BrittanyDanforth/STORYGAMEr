@@ -9,3 +9,5 @@ AI/data/
 AI/*.sqlite*
 **/__pycache__/
 *.blend1
+Blender/Renders/QualityPass/KickFrames/*.png
+Blender/Renders/QualityPass/PatrolFrames/*.png
