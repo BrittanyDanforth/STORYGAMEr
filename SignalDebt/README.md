@@ -1,8 +1,10 @@
 # Signal Debt — current game project and editable asset sources
 
-The game opens to a main menu and includes the apartment, physical laptop, persistent client workstation, a paid service repair, notice recovery and local saves. Sit at the laptop to animate into its screen, then stand up to return to first person. The [shared-folder work plan](Documentation/AI_WORK_SPLIT.md) assigns UI/save/build work to Codex and world/deeper gameplay work to the other AI. The full 320-feature backlog remains the target and is **not complete**.
+The game opens to a main menu and includes the apartment, physical laptop, persistent client workstation, a paid service repair, notice recovery and local saves. Sit at the laptop to animate into its screen, then stand up to return to first person. The current save-browser increment adds named checkpoints and restoration of preserved campaigns. The [shared-folder work plan](Documentation/AI_WORK_SPLIT.md) assigns UI/save/build work to Codex and world/deeper gameplay work to the other AI. The full 320-feature backlog remains the target and is **not complete**.
 
-The current proof-recovery checkpoint passed Unity compilation, save, conversation-boundary and layout checks, followed by Linux and Windows builds. The actual recovery/payment route was played on Linux; a final pass verified the corrected Inbox view and paid-campaign reload. See [current validation](Validation/ProofRecovery/README.md) for the exact revisions and scope, and [the evidence index](Validation/README.md) for historical results. The last live dialogue attempt returned HTTP 401, so natural-response quality remains unverified. Windows execution, audio output and target-PC performance are not established by cloud Linux testing.
+Save-browser r1 passed real Unity save-library, save-store and conversation checks, plus native Linux checkpoint, archive, recovery and failed-write scenarios. Final r2 passed targeted Linux checks for long-name display, clear save failures, successful retry and unchanged paid-campaign reload; both final Linux and Windows builds passed. Only SaveMenu changed for r2, so the r1 suites remain scoped evidence rather than claimed reruns. See [save-browser validation](Validation/SaveMenu/README.md) for exact revisions and limits. This increment adds no world or NPC systems and only partially addresses catalog feature F191; the final Windows player was not executed here.
+
+The earlier proof-recovery checkpoint passed Unity compilation, save, conversation-boundary and layout checks, followed by Linux and Windows builds. The actual recovery/payment route was played on Linux; a final pass verified the corrected Inbox view and paid-campaign reload. See [proof-recovery validation](Validation/ProofRecovery/README.md) and [the evidence index](Validation/README.md) for their recorded scope. The last live dialogue attempt returned HTTP 401, so natural-response quality remains unverified. Windows execution, audio output and target-PC performance are not established by cloud Linux testing.
 
 The [shop and save foundation](Documentation/Shop_Save_Foundation.md) provides versioned migration, purchase receipts and save-before-publish money changes. Its domain/save checks are separate from the shop encounter and art, which are still to be built. There is no playable shop in this increment.
 
@@ -28,7 +30,7 @@ The first scene uses the Built-in Render Pipeline with Standard materials. The p
 
 ## What to try first
 
-- Choose **New Game**, or **Continue** when a saved campaign is available. Starting over asks for confirmation and archives the existing local campaign.
+- Choose **New Game**, **Continue**, or **Load Game** to browse checkpoints and previous campaigns. Starting over asks for confirmation and archives the existing local campaign.
 - Walk around the room and look down at the visible arms, legs, and feet.
 - Look at the laptop and press **E** to sit; the camera moves into the ASTER desktop.
 - Open **Inbox**, read the copy-shop message and accept the job. The desktop also has **Client PC**, **Proofs**, **EXODISS** and **History**.
@@ -36,6 +38,7 @@ The first scene uses the Built-in Render Pipeline with Standard materials. The p
 - Accept the separate **160-credit notice-recovery offer** in Inbox. In **Proofs**, compare actual saved pages with the owner's reference, restore a version, and ask the owner to export the current notice. Incorrect drafts remain recoverable; all versions are preserved. Only a verified current export permits payment, after which the document becomes read-only.
 - Open **EXODISS** to inspect the receipt and make a partial rent payment.
 - Choose **Stand up** to animate out of the laptop and return to first person. Inspect the rent notice, open the entrance, or rest at the bed.
+- Open Pause to save a new checkpoint, optionally name it, or load an earlier one. Load confirmation preserves current progress in a safety checkpoint before switching. Cancel keeps the current campaign.
 - Quit and use **Continue** on the next launch to resume the saved repair, money, rent and event history. Recent chat is kept only during the current game session.
 
 Movement uses WASD, mouse look, Shift to move faster, and Ctrl or C to crouch. E interacts with the focused object. Esc opens Pause; Resume at the focused laptop returns to that desktop. Settings can be opened from the main menu or Pause, and Back/Esc closes Settings first. The editor builder creates the required legacy input axes. Input must be set to **Input Manager (Old)** or **Both** if you change project input settings later.
@@ -47,11 +50,14 @@ Extract the entire player folder to a writable location. The game creates `UserD
 | Path | Contents |
 | --- | --- |
 | `UserData/Saves/` | Campaign progress and supported recovery files. |
-| `UserData/Backups/Campaign-…/` | The local campaign archived by New Game. |
+| `UserData/Checkpoints/<id>/` | Separate manual checkpoints and automatic safety checkpoints made before loading. |
+| `UserData/Backups/Campaign-…/` | Campaigns archived by New Game, available through Load Game. |
 | `UserData/desktop.json` | Desktop preferences. |
 | `UserData/ai-settings.json` | Optional readable plaintext key, created only when explicitly saved in Settings. |
 
-Continue can import a supported older campaign from Unity's application-data folder when no local campaign exists. It preserves the old files and saves the imported campaign locally. Unrecoverable or newer-format local save families show an error instead of silently starting over. New Game archives local Saves while keeping desktop and AI settings separate; a failed archive/save prevents replacement. See the [menu update](Documentation/UI_Menu_Update.md) for migration details. Do not include personal `UserData` in shared builds or source packages.
+Continue can import a supported older campaign from Unity's application-data folder when no local campaign exists. Load Game also lists that location as **Earlier installation**, so a new portable campaign does not hide it. Importing reads the old files without changing them and saves the activated campaign locally. New Game archives local Saves while keeping desktop and AI settings separate; a failed archive/save prevents replacement.
+
+Checkpoints are separate snapshots, never merged ledgers. Loading first validates the selection and preserves current progress in a safety checkpoint. Missing, changed, damaged or newer-format selections cannot silently become a fresh campaign. A failed switch preserves the current campaign; any safety checkpoint already created remains available. Loading and starting over do not replace desktop preferences or AI settings. See [save-browser validation](Validation/SaveMenu/README.md) and the earlier [menu update](Documentation/UI_Menu_Update.md) for their respective scopes. Do not include personal `UserData` in shared builds or source packages.
 
 The current campaign filename is `signal-debt-save-v4.json`. Versions 1–3 migrate without replacing their original files. Old first-repair receipts remain paid, and migration starts the separate proof job unaccepted rather than inventing recovery work.
 

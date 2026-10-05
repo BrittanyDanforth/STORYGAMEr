@@ -5,8 +5,20 @@ history; their success labels do not validate the current source.
 
 Current checks from this cloud continuation are:
 
+- [SaveMenu/](SaveMenu/README.md): manual checkpoints with optional names,
+  safety snapshots before loading, previous New Game archives and read-only
+  earlier-installation imports. Real Unity r1 library checks passed 178/28,
+  save-store checks 358/51 and conversation checks 128/7 (assertions/cases).
+  Native Linux r1 covered activation, cancel, pagination, stale selections,
+  blocked writes, archive restoration, paid-state invariants and backup recovery.
+  Final r2 passed targeted Linux checks for long-name cards/confirmation,
+  explicit failure feedback, successful retry and unchanged paid-state reload.
+  Both final builds passed. Only SaveMenu changed: the r1 suites are retained
+  evidence, not r2 reruns. The final Windows player was not executed here.
+  This is partial F191 progress, with no new world or NPC systems.
+
 - [ProofRecovery/](ProofRecovery/README.md): persistent client workstation and
-  separate notice recovery, schema-4 migration, real Unity checks, current builds,
+  separate notice recovery, schema-4 migration, real Unity checks, recorded builds,
   native Linux recovery/payment and targeted final Inbox/reload acceptance.
   The archived neighborhood remains unintegrated work in progress.
 

@@ -11,6 +11,7 @@ namespace SignalDebt
         public string PreviousSavePath { get; private set; }
         public string VersionTwoSavePath { get; private set; }
         public string LegacySavePath { get; private set; }
+        public string LoadedPath { get; private set; }
         public string LastStatus { get; private set; }
         public bool HasSaveError { get; private set; }
         public bool LoadBlocked { get; private set; }
@@ -47,6 +48,7 @@ namespace SignalDebt
 
         public SignalDebtSaveData Load()
         {
+            LoadedPath = null;
             LoadBlocked = false;
             HasSaveError = false;
             Snapshot[] family = FindExistingFamily();
@@ -56,6 +58,7 @@ namespace SignalDebt
                 Snapshot selected = FirstValid(family);
                 if (selected == null)
                     return Block("The selected save family and its recovery files are unreadable. They were preserved; no older or new campaign was substituted.");
+                LoadedPath = selected.path;
                 LastStatus = family[0].path != SavePath ? "Earlier campaign imported. Its original save files remain unchanged."
                     : selected.path == SavePath ? "Local save restored"
                     : selected.path.EndsWith(".bak", StringComparison.Ordinal) ? "Recovered last good backup"

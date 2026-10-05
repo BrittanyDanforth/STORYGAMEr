@@ -1,0 +1,48 @@
+{
+  "build-linux": {
+    "utc_started": "2026-10-05T05:21:45.786052+00:00",
+    "utc_ended": "2026-10-05T05:22:18.104506+00:00",
+    "command": [
+      "/workspace/.local/opt/unity6000/Editor/Unity",
+      "-batchmode",
+      "-nographics",
+      "-quit",
+      "-job-worker-count",
+      "4",
+      "-projectPath",
+      "/workspace/SignalDebt-save-menu/runs/save-menu-r2/project",
+      "-logFile",
+      "/workspace/SignalDebt-save-menu/runs/save-menu-r2/logs/build-linux.log",
+      "-executeMethod",
+      "SignalDebt.CloudValidation.SignalDebtLinuxPlayerBuild.Build",
+      "-signalDebtLinuxOutput",
+      "/workspace/SignalDebt-save-menu/runs/save-menu-r2/builds/Linux"
+    ],
+    "elapsed_seconds": 32.243,
+    "process_exit_code": 0,
+    "shared_source_changes": []
+  },
+  "build-windows": {
+    "utc_started": "2026-10-05T05:24:24.385580+00:00",
+    "utc_ended": "2026-10-05T05:24:41.287839+00:00",
+    "command": [
+      "/workspace/.local/opt/unity6000/Editor/Unity",
+      "-batchmode",
+      "-nographics",
+      "-quit",
+      "-job-worker-count",
+      "4",
+      "-projectPath",
+      "/workspace/SignalDebt-save-menu/runs/save-menu-r2/project",
+      "-logFile",
+      "/workspace/SignalDebt-save-menu/runs/save-menu-r2/logs/build-windows.log",
+      "-executeMethod",
+      "SignalDebt.Editor.SignalDebtMasterBuild.BuildWindows",
+      "-signalDebtOutput",
+      "/workspace/SignalDebt-save-menu/runs/save-menu-r2/builds/Windows"
+    ],
+    "elapsed_seconds": 16.842,
+    "process_exit_code": 0,
+    "shared_source_changes": []
+  }
+}

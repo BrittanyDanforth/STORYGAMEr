@@ -85,20 +85,22 @@ namespace SignalDebt
             if (!hasCampaign) resume.GetComponentInChildren<Text>().color = new Color(0.38f, 0.47f, 0.51f);
             newGameButton = MakeButton("New Game", controls, RequestNewGame, !hasCampaign);
             Place(newGameButton.GetComponent<RectTransform>(), 132f, 466f, 468f, 62f);
+            Button load = MakeButton("Load Game", controls, LoadGame, false);
+            Place(load.GetComponent<RectTransform>(), 132f, 542f, 468f, 62f);
             Button settings = MakeButton("Settings", controls, Settings, false);
-            Place(settings.GetComponent<RectTransform>(), 132f, 542f, 468f, 62f);
+            Place(settings.GetComponent<RectTransform>(), 132f, 618f, 468f, 62f);
             Button quit = MakeButton("Quit", controls, Quit, false);
-            Place(quit.GetComponent<RectTransform>(), 132f, 618f, 468f, 62f);
-            ConnectNavigation(resume, newGameButton, settings, quit);
+            Place(quit.GetComponent<RectTransform>(), 132f, 694f, 468f, 62f);
+            ConnectNavigation(resume, newGameButton, load, settings, quit);
 
             string message = string.IsNullOrWhiteSpace(status)
                 ? hasCampaign ? "Continue your story." : "No saved campaign yet."
                 : status.Trim();
             if (message.Length > 240) message = message.Substring(0, 237) + "…";
             Text statusLabel = Label("Campaign status", frame, message, 18, Muted);
-            Place(statusLabel.rectTransform, 132f, 703f, 530f, 92f);
+            Place(statusLabel.rectTransform, 132f, 772f, 570f, 88f);
             Text controlsHint = Label("Controls", frame, "WASD  Move     Mouse  Look     E  Interact", 16, Muted);
-            Place(controlsHint.rectTransform, 132f, 822f, 560f, 32f);
+            Place(controlsHint.rectTransform, 132f, 862f, 560f, 28f);
 
             BuildConfirmation(canvasRect);
             Canvas.ForceUpdateCanvases();
@@ -172,7 +174,7 @@ namespace SignalDebt
             Text heading = Label("Confirmation heading", panel, "Start a new game?", 34, Ink);
             Place(heading.rectTransform, 38f, 60f, 624f, 53f);
             Text description = Label("Confirmation description", panel,
-                "Your current save will be preserved.", 23, Muted);
+                "Your current campaign will be kept in Load Game.\nManual checkpoints stay available too.", 23, Muted);
             Place(description.rectTransform, 38f, 127f, 624f, 77f);
             backButton = MakeButton("Back", panel, CancelNewGame, false);
             Place(backButton.GetComponent<RectTransform>(), 38f, 242f, 183f, 60f);
@@ -183,6 +185,7 @@ namespace SignalDebt
         }
 
         private void Continue() { if (game != null && hasCampaign) game.ContinueGame(); }
+        private void LoadGame() { if (game != null) game.OpenSaveMenu(); }
         private void Settings() { if (game != null) game.OpenAiSettings(); }
         private void Quit() { if (game != null) game.QuitGame(); }
         private void StartNewGame() { if (game != null) game.StartNewGame(); }

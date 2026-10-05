@@ -1,0 +1,94 @@
+{
+  "build-linux": {
+    "utc_started": "2026-10-05T05:05:40.880729+00:00",
+    "utc_ended": "2026-10-05T05:06:07.682089+00:00",
+    "command": [
+      "/workspace/.local/opt/unity6000/Editor/Unity",
+      "-batchmode",
+      "-nographics",
+      "-quit",
+      "-job-worker-count",
+      "4",
+      "-projectPath",
+      "/workspace/SignalDebt-save-menu/runs/save-menu-r1/project",
+      "-logFile",
+      "/workspace/SignalDebt-save-menu/runs/save-menu-r1/logs/build-linux.log",
+      "-executeMethod",
+      "SignalDebt.CloudValidation.SignalDebtLinuxPlayerBuild.Build",
+      "-signalDebtLinuxOutput",
+      "/workspace/SignalDebt-save-menu/runs/save-menu-r1/builds/Linux"
+    ],
+    "elapsed_seconds": 26.744,
+    "process_exit_code": 0,
+    "shared_source_changes": []
+  },
+  "conversation": {
+    "utc_started": "2026-10-05T05:05:21.138779+00:00",
+    "utc_ended": "2026-10-05T05:05:27.858102+00:00",
+    "command": [
+      "/workspace/.local/opt/unity6000/Editor/Unity",
+      "-batchmode",
+      "-nographics",
+      "-quit",
+      "-job-worker-count",
+      "4",
+      "-projectPath",
+      "/workspace/SignalDebt-save-menu/runs/save-menu-r1/project",
+      "-logFile",
+      "/workspace/SignalDebt-save-menu/runs/save-menu-r1/logs/conversation.log",
+      "-executeMethod",
+      "SignalDebt.Editor.SignalDebtConversationChecks.RunBatch",
+      "-signalDebtConversationReport",
+      "/workspace/SignalDebt-save-menu/runs/save-menu-r1/reports/conversation.json"
+    ],
+    "elapsed_seconds": 6.658,
+    "process_exit_code": 0,
+    "shared_source_changes": []
+  },
+  "save-library": {
+    "utc_started": "2026-10-05T05:05:01.345994+00:00",
+    "utc_ended": "2026-10-05T05:05:14.207329+00:00",
+    "command": [
+      "/workspace/.local/opt/unity6000/Editor/Unity",
+      "-batchmode",
+      "-nographics",
+      "-quit",
+      "-job-worker-count",
+      "4",
+      "-projectPath",
+      "/workspace/SignalDebt-save-menu/runs/save-menu-r1/project",
+      "-logFile",
+      "/workspace/SignalDebt-save-menu/runs/save-menu-r1/logs/save-library.log",
+      "-executeMethod",
+      "SignalDebt.Editor.SignalDebtSaveLibraryChecks.RunBatch",
+      "-signalDebtSaveLibraryReport",
+      "/workspace/SignalDebt-save-menu/runs/save-menu-r1/reports/save-library.json"
+    ],
+    "elapsed_seconds": 12.8,
+    "process_exit_code": 0,
+    "shared_source_changes": []
+  },
+  "save-store": {
+    "utc_started": "2026-10-05T05:05:14.347237+00:00",
+    "utc_ended": "2026-10-05T05:05:21.003158+00:00",
+    "command": [
+      "/workspace/.local/opt/unity6000/Editor/Unity",
+      "-batchmode",
+      "-nographics",
+      "-quit",
+      "-job-worker-count",
+      "4",
+      "-projectPath",
+      "/workspace/SignalDebt-save-menu/runs/save-menu-r1/project",
+      "-logFile",
+      "/workspace/SignalDebt-save-menu/runs/save-menu-r1/logs/save-store.log",
+      "-executeMethod",
+      "SignalDebt.Editor.SignalDebtSaveStoreChecks.RunBatch",
+      "-signalDebtSaveReport",
+      "/workspace/SignalDebt-save-menu/runs/save-menu-r1/reports/save-store.json"
+    ],
+    "elapsed_seconds": 6.59,
+    "process_exit_code": 0,
+    "shared_source_changes": []
+  }
+}

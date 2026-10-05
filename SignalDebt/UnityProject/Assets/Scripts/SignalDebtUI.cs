@@ -1197,6 +1197,7 @@ namespace SignalDebt
             Title("Paused");
             Card("CONTROLS", "WASD  Move     Mouse  Look     E  Interact\nCtrl  Crouch     Shift  Walk faster     Esc  Pause / resume");
             ActionButton("Return to game", CloseFromButton);
+            ActionButton("Save / Load", game.OpenSaveMenu, false);
             ActionButton("Settings", game.OpenAiSettings, false);
             ActionButton("Main menu", game.ReturnToMainMenu, false);
             ActionButton("Quit game", game.QuitGame, false);

@@ -1,0 +1,10 @@
+{
+    "passed": true,
+    "assertions": 358,
+    "cases": 51,
+    "unity_version": "6000.0.62f1",
+    "failure": "",
+    "genuine_unity_json": true,
+    "real_temporary_files": true,
+    "scope": "Schema4 proof/device serialization, read-only v1/v2/v3 migration, payment rollback and filesystem recovery; not scene or gameplay acceptance."
+}

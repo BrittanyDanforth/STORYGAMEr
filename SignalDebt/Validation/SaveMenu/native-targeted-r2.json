@@ -1,0 +1,60 @@
+{
+  "passed": true,
+  "revision": "save-menu-r2",
+  "player_exit_code": 0,
+  "runtime_assembly_sha256": "2f34bc606d7f1e56dc06d868f7b598b9e2c87dcacdd57dd40c1575b962909ee6",
+  "source_manifest_sha256": "ba89b0db9135cc462a8604d587e109bfb2ed1ac2a8a13ab56b173cc65ae74156",
+  "runtime_files_unchanged": 116,
+  "build_manifest_sha256": "eeee6abcb4bf181ebdc14723b53c11a5e9d95f388727f2d96855ab86e82c5961",
+  "driver": "Actual X11 XTest mouse/keyboard and framebuffer captures; uninstrumented Linux standalone,1200x800,llvmpipe.",
+  "checks": {
+    "failure-checks": {
+      "active_save_byte_unchanged": true,
+      "existing_checkpoints_preserved": true,
+      "checkpoint_directory_restored": true,
+      "continue_retained_paid_save_exactly": true
+    },
+    "paid-restart-checks": {
+      "balance": 360,
+      "job_paid": true,
+      "proof_paid": true,
+      "continue_preserved_exact_save": true,
+      "collect_again_and_quit_preserved_exact_save": true,
+      "provenance": "Loaded prior synthetic r1 persisted save in r2 player; no fresh proof route claimed."
+    },
+    "retry-checks": {
+      "retry_saved_one_checkpoint": true,
+      "retained_name": "etry save",
+      "active_unchanged": true,
+      "maximum_label_metadata_still_64": true
+    }
+  },
+  "visual_checks": {
+    "64_character_wide_label_card_ellipsized": true,
+    "64_character_label_confirmation_ellipsized": true,
+    "confirmation_date_balance_progress_visible": true,
+    "explicit_checkpoint_failure_takes_priority_over_listing_error": true,
+    "entered_name_retained_on_failure": true,
+    "retry_success_feedback_and_name_cleared": true,
+    "paid_laptop_proof_still_read_only_after_continue": true
+  },
+  "runtime_exceptions_detected": [],
+  "api_environment_removed": true,
+  "api_requests_used": false,
+  "credentials_copied": false,
+  "audio_verified": false,
+  "test_data": "Synthetic r1 campaign/checkpoints/archives copied for upgrade/restart regression. One metadata name extended to64W; campaign remains unchanged.",
+  "scope": "Targeted r2 UI fixes plus Continue/retry/paid-state smoke; complete r1 route not rerun.",
+  "limitations": [
+    "No fresh proof gameplay route; retained prior synthetic paid native campaign",
+    "No Windows execution, live AI, audio or target-hardware performance acceptance"
+  ],
+  "captures": [
+    "01-restarted-main.png",
+    "02-long-name-card.png",
+    "03-long-name-confirm.png",
+    "04-explicit-save-failure.png",
+    "05-retry-success.png",
+    "06-paid-after-restart.png"
+  ]
+}

@@ -13,16 +13,16 @@ Repository: `/workspace/STORYGAMEr`
 
 Current branch: `codex/signaldebt-pc-master`
 
-Base HEAD: `bb5525929cd73fb6a237cfc3440aaeb1425d648c`
+The save-browser increment builds on published baseline `85909f3`; see `git log` for the current revision.
 
-**Preserve the current work.** This handoff was created while substantial work was uncommitted; the user's later packaging request commits that checkpoint. Inspect `git status` for any newer changes. Both AIs see the same files immediately. Do not reset, clean, switch the shared branch, or replace the project with an older archive. A separate Git worktree does not automatically include uncommitted changes.
+**Preserve the current work.** This handoff was created while substantial work was uncommitted; the user's later packaging request committed that checkpoint. Inspect `git status` for any newer changes. Both AIs see the same files immediately. Do not reset, clean, switch the shared branch, or replace the project with an older archive. A separate Git worktree does not automatically include uncommitted changes.
 
 ## Ownership
 
 | Area | Owner | Files and responsibility |
 | --- | --- | --- |
-| Laptop presentation, concise apps, menus/settings | Codex | `Assets/Scripts/SignalDebtUI.cs`, `SignalDebtClientDesktop.cs`, `SignalDebtProofDesktop.cs`, `SignalDebtMainMenu.cs`, `SignalDebtAiSettings.cs`, `SignalDebtDesktopWindow.cs`, `SignalDebtComputerDisplay.cs` |
-| Save integration and campaign publication | Codex | `SignalDebtSaveData.cs`, `SignalDebtSaveStore.cs`, `SignalDebtLocalFiles.cs`, `SignalDebtApiKeyStore.cs`; Copy/migration methods in `SignalDebtShop.cs`; registration in `SignalDebtBootstrap.cs` |
+| Laptop presentation, concise apps, menus/settings | Codex | `Assets/Scripts/SignalDebtUI.cs`, `SignalDebtClientDesktop.cs`, `SignalDebtProofDesktop.cs`, `SignalDebtMainMenu.cs`, `SignalDebtSaveMenu.cs`, `SignalDebtAiSettings.cs`, `SignalDebtDesktopWindow.cs`, `SignalDebtComputerDisplay.cs` |
+| Save integration and campaign publication | Codex | `SignalDebtSaveData.cs`, `SignalDebtSaveStore.cs`, `SignalDebtSaveLibrary.cs`, `SignalDebtLocalFiles.cs`, `SignalDebtApiKeyStore.cs`; Copy/migration methods in `SignalDebtShop.cs`; registration in `SignalDebtBootstrap.cs` |
 | Checks, builds, packaging and acceptance records | Codex | `Assets/Editor/*Checks.cs`, existing domain test runners, build/package scripts, validation and delivery documentation |
 | Neighborhood art, layout, import and navigation | Other AI | `Assets/Editor/SignalDebtSceneBuilder.cs`, `SignalDebtNeighborhoodBuilder.cs`, new `Assets/Art/Neighborhood/`; external neighborhood generator/exporter and source art |
 | NPC personalities, knowledge, tasks, schedules and relationships | Other AI | `SignalDebtNpcCharacter.cs`, `SignalDebtNpcClient.cs`, `SignalDebtAiProvider.cs`, relevant `SignalDebt/AI/` code and new dedicated NPC modules |
@@ -38,13 +38,12 @@ The existing proof document/recovery modules now have bounded native acceptance.
 
 ### First: finish two concrete increments in parallel
 
-**Codex: finish the existing 160-credit notice-recovery integration — completed for this checkpoint.**
+**Codex: save/load browser — bounded r2 acceptance complete.**
 
-- Check the visual proof workspace at normal and maximized laptop sizes. Show document content and a small set of actions, without a scroll wall or answer-labelled versions.
-- Finish real Unity save migration checks for schemas 1, 2 and 3 into schema 4. Preserve earlier files and exactly-once payments.
-- Play wrong restore → specific failed owner check → undo/recover → actual export → collect 160 → reload → read-only result.
-- Check menus, pause, settings, physical laptop display and return to first person.
-- Fix defects found in that pass, then review again. Package a new Windows checkpoint only after the relevant checks pass.
+- Main-menu and Pause browsing covers current progress, optionally named manual checkpoints, New Game archives and the read-only earlier installation.
+- Checkpoints live under `UserData/Checkpoints`; existing archives remain under `UserData/Backups`. Loading validates the captured selection, preserves current progress in a safety checkpoint, then publishes the selected campaign. Settings remain separate and schema 4 is unchanged.
+- Actual Unity and native Linux r1 checks passed. The final r2 player passed targeted failure-message, long-name, retry and paid-campaign reload checks; both Linux and Windows builds passed. The r1 suites were not rerun for this SaveMenu-only change, and the Windows player was not executed here.
+- This is a partial contribution to F191, with no new world/NPC behavior. The completed 160-credit proof-recovery checkpoint and its evidence remain below.
 
 **Other AI: finish the compact neighborhood and prove it is walkable.**
 
@@ -76,7 +75,13 @@ Codex supplies understandable interfaces, persistence, reproducible checks and p
 
 ## Tested baseline versus unfinished source
 
-### Windows r5 is the tested PC checkpoint
+### Save browser has bounded final r2 acceptance
+
+`SignalDebtSaveLibraryChecks` passed 178 assertions across 28 real filesystem cases; existing SaveStore checks passed 358/51 and conversation checks 128/7. Native Linux r1 exercised named checkpoints, cancel, seated loading without a leftover desktop, safety snapshots, pagination, stale-selection rejection and Refresh, failed-write preservation, exact New Game archival/restoration, a paid-proof fixture load at 360 without another payment, and backup recovery with the selected snapshot's correct date and untouched originals.
+
+Final r2 passed native Linux checks: a 64-character wide name fits using measured ellipsis while confirmation facts remain visible and full saved metadata is retained; a failed save stays prominent without clearing the name or changing the active campaign; retry creates one checkpoint; Continue restores the prior paid 360-credit state exactly, with read-only laptop content and no duplicate payment. The player exited with code 0 and all 116 runtime files were unchanged. Both final Linux and Windows builds passed against the same 185 frozen source inputs; Windows execution remains unverified here. The r1 suites above were retained, not rerun, because only SaveMenu changed. See [SaveMenu evidence](../Validation/SaveMenu/README.md) for the exact revisions and limits. This does not complete F191 or the wider master plan, and introduces no gameplay-schema, neighborhood or NPC-design changes.
+
+### Windows r5 is an earlier built PC checkpoint
 
 `/workspace/SignalDebt-deliveries/SignalDebt_PC_Milestone_Windows_r5.zip`
 

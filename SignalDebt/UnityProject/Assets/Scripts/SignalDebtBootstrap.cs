@@ -24,8 +24,11 @@ namespace SignalDebt
         public string ProofWorkspaceFeedback { get; private set; }
         private SignalDebtSaveStore store;
         private GameObject startupFailure;
-        private GameObject mainMenu, aiSettings;
+        private GameObject mainMenu, aiSettings, saveMenu;
+        private SignalDebtSaveData campaignToStart;
         private bool pauseQueued;
+        public SignalDebtSaveLibrary SaveLibrary { get; private set; }
+        public bool CanSaveCheckpoint { get { return State != null && Player != null && campaignToStart == null; } }
         public string MenuStatus { get; private set; }
         public bool HasSavedCampaign
         {
@@ -42,6 +45,7 @@ namespace SignalDebt
             if (Instance != null && Instance != this) { Destroy(gameObject); return; }
             Instance = this;
             store = new SignalDebtSaveStore(SignalDebtLocalFiles.SaveDirectory);
+            SaveLibrary = new SignalDebtSaveLibrary(SignalDebtLocalFiles.DataDirectory, Application.persistentDataPath);
         }
 
         private void Start()
@@ -68,7 +72,7 @@ namespace SignalDebt
 
         public void ContinueGame()
         {
-            if (Player != null) return;
+            if (Player != null || campaignToStart != null) return;
             bool local = SignalDebtLocalFiles.HasCampaign(SignalDebtLocalFiles.SaveDirectory);
             string source = local ? SignalDebtLocalFiles.SaveDirectory : Application.persistentDataPath;
             if (!SignalDebtLocalFiles.HasCampaign(source))
@@ -85,7 +89,7 @@ namespace SignalDebt
 
         public void StartNewGame()
         {
-            if (Player != null) return;
+            if (Player != null || campaignToStart != null) return;
             if (!SignalDebtLocalFiles.ArchiveCampaign(out string error))
             { MenuStatus = error; ShowMainMenu(); return; }
             store = new SignalDebtSaveStore(SignalDebtLocalFiles.SaveDirectory);
@@ -133,7 +137,7 @@ namespace SignalDebt
 
         public void OpenAiSettings()
         {
-            if (aiSettings != null) return;
+            if (aiSettings != null || saveMenu != null || campaignToStart != null) return;
             SendMessage("CancelAllRequests", SendMessageOptions.DontRequireReceiver);
             if (Player != null && Ui != null && !Ui.IsPauseOpen) OpenPause();
             GameObject opened = null;
@@ -141,6 +145,60 @@ namespace SignalDebt
             aiSettings = opened;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+        }
+
+        public void OpenSaveMenu()
+        {
+            if (saveMenu != null || aiSettings != null || campaignToStart != null) return;
+            SendMessage("CancelAllRequests", SendMessageOptions.DontRequireReceiver);
+            if (Player != null && Ui != null && !Ui.IsPauseOpen) OpenPause();
+            GameObject opened = null;
+            opened = SignalDebtSaveMenu.Show(this, () => { if (saveMenu == opened) saveMenu = null; });
+            saveMenu = opened;
+            Time.timeScale = 0f;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+
+        public bool SaveCheckpoint(out string message)
+        { return SaveCheckpoint("Manual checkpoint", out message); }
+
+        public bool SaveCheckpoint(string label, out string message)
+        {
+            if (!CanSaveCheckpoint)
+            { message = "Start or continue a game before saving a checkpoint."; return false; }
+            if (!SaveLibrary.TryCreateCheckpoint(State, label, out var entry, out message)) return false;
+            message = "Checkpoint saved. You can return to this point from Load Game.";
+            return true;
+        }
+
+        public bool LoadSavedGame(SignalDebtSaveLibrary.Entry selection, out string message)
+        {
+            if (campaignToStart != null)
+            { message = "A game is already loading."; return false; }
+            if (!SaveLibrary.TryActivate(selection, State, out var loaded, out message)) return false;
+            // Publish only after both the recovery checkpoint and target autosave
+            // reached disk. Failed activation leaves the current session intact.
+            SendMessage("CancelAllRequests", SendMessageOptions.DontRequireReceiver);
+            TearDownCampaign();
+            store = new SignalDebtSaveStore(SignalDebtLocalFiles.SaveDirectory);
+            campaignToStart = loaded;
+            Time.timeScale = 0f;
+            StartCoroutine(BeginLoadedCampaign());
+            message = "Loading your saved game…";
+            return true;
+        }
+
+        private IEnumerator BeginLoadedCampaign()
+        {
+            // Old display/canvas OnDestroy handlers restore shared scene objects.
+            // Let them finish before binding the replacement laptop and player.
+            yield return null;
+            if (campaignToStart == null) yield break;
+            SignalDebtSaveData loaded = campaignToStart;
+            campaignToStart = null;
+            RemoveOwned(ref saveMenu);
+            BeginCampaign(loaded);
         }
 
         private void OpenPause()
@@ -172,9 +230,16 @@ namespace SignalDebt
 
         public void ReturnToMainMenu()
         {
+            if (campaignToStart != null) return;
             if (State != null && !store.Save(State))
             { ShowToast("Could not save. Your last saved game is unchanged."); return; }
             SendMessage("CancelAllRequests", SendMessageOptions.DontRequireReceiver);
+            TearDownCampaign();
+            ShowMainMenu();
+        }
+
+        private void TearDownCampaign()
+        {
             if (Player != null)
             {
                 Player.ComputerReady -= OnComputerReady;
@@ -187,7 +252,6 @@ namespace SignalDebt
             if (ComputerDisplay != null) { Destroy(ComputerDisplay.gameObject); ComputerDisplay = null; }
             if (notificationLight != null) { Destroy(notificationLight.gameObject); notificationLight = null; }
             State = null;
-            ShowMainMenu();
         }
 
         public void QuitGame()
@@ -210,6 +274,12 @@ namespace SignalDebt
 
         private void Update()
         {
+            if (campaignToStart != null) return;
+            if (saveMenu != null)
+            {
+                if (Input.GetKeyDown(KeyCode.Escape)) saveMenu.GetComponent<SignalDebtSaveMenu>().Close();
+                return;
+            }
             if (aiSettings != null)
             {
                 if (Input.GetKeyDown(KeyCode.Escape)) aiSettings.GetComponent<SignalDebtAiSettings>().Close();
@@ -432,13 +502,14 @@ namespace SignalDebt
         {
             // Regain control safely after Alt-Tab; a hidden desktop must never
             // leave the player's movement or cursor permanently captured.
-            if (!focused && aiSettings == null && Player != null && Ui != null && !Ui.IsPauseOpen && Player.IsSeated) CloseUi();
+            if (!focused && aiSettings == null && saveMenu == null && Player != null && Ui != null && !Ui.IsPauseOpen && Player.IsSeated) CloseUi();
         }
         private void OnApplicationPause(bool paused) { if (paused && store != null && State != null) store.Save(State); }
         private void OnApplicationQuit() { if (store != null && State != null) store.Save(State); }
         private void OnEnable()
         {
             if (Instance != this) return;
+            if (campaignToStart != null) { StartCoroutine(BeginLoadedCampaign()); return; }
             if (mainMenu != null)
             {
                 mainMenu.SetActive(true);
@@ -458,6 +529,7 @@ namespace SignalDebt
             Time.timeScale = 1f;
             SendMessage("CancelAllRequests", SendMessageOptions.DontRequireReceiver);
             RemoveOwned(ref aiSettings);
+            RemoveOwned(ref saveMenu);
             if (mainMenu != null) mainMenu.SetActive(false);
             if (Ui != null) Ui.Close();
             if (Player != null)
@@ -473,6 +545,7 @@ namespace SignalDebt
             Time.timeScale = 1f;
             RemoveOwned(ref mainMenu);
             RemoveOwned(ref aiSettings);
+            RemoveOwned(ref saveMenu);
             if (Player != null)
             {
                 Player.ComputerReady -= OnComputerReady;
