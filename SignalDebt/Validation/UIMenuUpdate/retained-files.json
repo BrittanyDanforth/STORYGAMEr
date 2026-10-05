@@ -1,0 +1,499 @@
+{
+  "retained_utc": "2026-10-05T01:18:15.486947+00:00",
+  "copy_policy": "Explicit allowlists; byte-for-byte original source/build/test reports and logs. NativeR1 contains only its acceptance report,30captures,4logs. NativeR2 follows its explicit27-file allowlist plus the original allowlist JSON. No recursive run-folder copy.",
+  "retained_source_file_count": 79,
+  "final_r2_acceptance_included": true,
+  "provider_network_calls_by_retained_tests": 0,
+  "credential_lookup_by_provider_tests": false,
+  "real_credentials_accessed_by_key_store_tests": false,
+  "text_credential_pattern_scan": "No key-shaped values, authorization header values, or API/access-token assignments found in retained JSON/logs. This is a bounded content check, not a general security certification.",
+  "excluded": [
+    "player binaries and Game directories",
+    "runtime UserData and campaign/settings fixtures",
+    "Unity projects and import caches",
+    "credentials/environment dumps",
+    "superseded provider first-run logs/reports"
+  ],
+  "files": [
+    {
+      "path": "ai-provider-check-result.json",
+      "source": "/workspace/SignalDebt-setup/unity/ai-provider-check-result.json",
+      "bytes": 4792,
+      "sha256": "004776589dd401ea25cf3c3cfecfc429cb6601c352d122033fcd2111ef6e09bd"
+    },
+    {
+      "path": "ai-provider-check.log",
+      "source": "/workspace/SignalDebt-setup/unity/ai-provider-check.log",
+      "bytes": 25260,
+      "sha256": "e5a9ecbbde24950934a87360b63187c6a81c54ba07fd829a74ddadbda924693d"
+    },
+    {
+      "path": "ai-provider-check-source-manifest.json",
+      "source": "/workspace/SignalDebt-setup/unity/ai-provider-check-source-manifest.json",
+      "bytes": 6577,
+      "sha256": "9344e602ccff7f9aaa312189c3d492903a26aeddadd243cdea1faeeb416834a7"
+    },
+    {
+      "path": "ai-key-store-check-result.json",
+      "source": "/workspace/SignalDebt-setup/unity/ai-key-store-check-result.json",
+      "bytes": 691,
+      "sha256": "945c7b2c34d9c231bb714fcd6ae48e9c20bc80e22a86416f4d10a61ab7b825b7"
+    },
+    {
+      "path": "ai-key-store-check.log",
+      "source": "/workspace/SignalDebt-setup/unity/ai-key-store-check.log",
+      "bytes": 26392,
+      "sha256": "c831dd08d57400f38fa9c7eb2f0657768b7d612608d7ea22d76d31a767fd15d1"
+    },
+    {
+      "path": "ai-key-store-check-source-manifest.json",
+      "source": "/workspace/SignalDebt-setup/unity/ai-key-store-check-source-manifest.json",
+      "bytes": 559,
+      "sha256": "68ac4f0dc30592c60417715f92316ddc683b389654f284416a053af30cb77224"
+    },
+    {
+      "path": "ui-menu-r1-source-manifest.json",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r1-source-manifest.json",
+      "bytes": 19465,
+      "sha256": "48cb604cebbe1847c3c9907e9e9739b88214828eeda493263bf468b80c5de0b0"
+    },
+    {
+      "path": "ui-menu-r1-source-before-import.json",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r1-source-before-import.json",
+      "bytes": 18480,
+      "sha256": "26800b287541e43c2d224ceefbb7be1cbcd91e87c08e37af22d588061ac7458b"
+    },
+    {
+      "path": "linux-ui-menu-r1-build-result.json",
+      "source": "/workspace/SignalDebt-setup/unity/linux-ui-menu-r1-build-result.json",
+      "bytes": 20931,
+      "sha256": "52fa0973367afc01b22aac34b6d63abc42917f7768b9bd77693f2ca94bd64a51"
+    },
+    {
+      "path": "linux-ui-menu-r1-build.log",
+      "source": "/workspace/SignalDebt-setup/unity/linux-ui-menu-r1-build.log",
+      "bytes": 202184,
+      "sha256": "dee0467b3654220d22e031b09b460d5716e2c97453c061d9a19004ff9fdb4611"
+    },
+    {
+      "path": "api-key-store-isolated-result.json",
+      "source": "/workspace/SignalDebt-setup/api-key-harness/bin/Release/net8.0/api-key-store-result.json",
+      "bytes": 1124,
+      "sha256": "e874fc3494c6e949586901c9e832bf8d9cd3d5a6a48d219b1a7f117dd11b4de0"
+    },
+    {
+      "path": "NativeR1/acceptance-r1.json",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/acceptance-r1.json",
+      "bytes": 14414,
+      "sha256": "f861328ef60ffa13873833ba7a659a57a9d1c09a9ee8ad3159bd433bfdd8fdfd"
+    },
+    {
+      "path": "NativeR1/campaign/captures/01-cold-menu.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/01-cold-menu.png",
+      "bytes": 42219,
+      "sha256": "8d41afa9a692b87f5f83d8edb61a0c8288b4beba70b6e2ca332be55429545551"
+    },
+    {
+      "path": "NativeR1/campaign/captures/02-settings-empty.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/02-settings-empty.png",
+      "bytes": 62864,
+      "sha256": "1627d2a8088c254497aae4d4fa406fbd012915b44d46446cbf1626f2bd694415"
+    },
+    {
+      "path": "NativeR1/campaign/captures/03-settings-empty-after-disabled-click.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/03-settings-empty-after-disabled-click.png",
+      "bytes": 62795,
+      "sha256": "f42cc419c71f810d3ccc43c73b2144dc24532b2d65afb2dbf535fca99e2bf928"
+    },
+    {
+      "path": "NativeR1/campaign/captures/04-settings-empty-connect-inert.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/04-settings-empty-connect-inert.png",
+      "bytes": 62795,
+      "sha256": "f42cc419c71f810d3ccc43c73b2144dc24532b2d65afb2dbf535fca99e2bf928"
+    },
+    {
+      "path": "NativeR1/campaign/captures/05-settings-masked-input.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/05-settings-masked-input.png",
+      "bytes": 60648,
+      "sha256": "99ead46af57b9777792ceea410b9c5c33c35f3f4af15973aaa81407116666ce1"
+    },
+    {
+      "path": "NativeR1/campaign/captures/06-settings-format-error.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/06-settings-format-error.png",
+      "bytes": 67160,
+      "sha256": "c1765f9eaaad4c8ca4d74acca4b072b9df5a092c834dc6aa31098d22094974ef"
+    },
+    {
+      "path": "NativeR1/campaign/captures/07-new-game-room.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/07-new-game-room.png",
+      "bytes": 350366,
+      "sha256": "3523f25c7b531ca677e9fcde5e6bfed845b125aa84b0f484b16fc7f887fb2bf5"
+    },
+    {
+      "path": "NativeR1/campaign/captures/08-enter-desktop.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/08-enter-desktop.png",
+      "bytes": 68437,
+      "sha256": "4f26cfd87bb5a6b7b681e474feb79d50e537ce1fc8a909a32ba79276f00828c8"
+    },
+    {
+      "path": "NativeR1/campaign/captures/09-inbox.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/09-inbox.png",
+      "bytes": 72095,
+      "sha256": "adbd34d98867857f8675611eacfed3b26d4db7df65186d57e69795b2eb33ae51"
+    },
+    {
+      "path": "NativeR1/campaign/captures/10-repair-inspect.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/10-repair-inspect.png",
+      "bytes": 70901,
+      "sha256": "8ba3b1e5d0aaf30369a5e70dffb7de6442443771a2e65429198db47a71d626ff"
+    },
+    {
+      "path": "NativeR1/campaign/captures/11-repair-connect.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/11-repair-connect.png",
+      "bytes": 80562,
+      "sha256": "a5e17e7fb8ba4fce205d39382672cdfd6b6a997b5607a18c6318e81273c6513a"
+    },
+    {
+      "path": "NativeR1/campaign/captures/12-wrong-choice.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/12-wrong-choice.png",
+      "bytes": 81437,
+      "sha256": "eb792053bbf452c9a25971780843628ced172e78a189362d66e4c0d770ee17c7"
+    },
+    {
+      "path": "NativeR1/campaign/captures/13-repair-test.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/13-repair-test.png",
+      "bytes": 72413,
+      "sha256": "45c5b248e0360aa52ecefaf33efe16a1051753298ab6add4d2a7cd9874d3dded"
+    },
+    {
+      "path": "NativeR1/campaign/captures/14-repair-collect.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/14-repair-collect.png",
+      "bytes": 75440,
+      "sha256": "6024ee8bc454034498a5e643e7227b090be2f6b0710363a43931781505d32876"
+    },
+    {
+      "path": "NativeR1/campaign/captures/15-repair-paid.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/15-repair-paid.png",
+      "bytes": 70125,
+      "sha256": "b7970f7ffe1e42ab0f922838590bc11d06d550959dc091c03013dea7d2ab0a9b"
+    },
+    {
+      "path": "NativeR1/campaign/captures/16-wallet.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/16-wallet.png",
+      "bytes": 80840,
+      "sha256": "4c5f2526099eca37bc1c21599673c4c722aee8e8b2bac6a677ef76a560392091"
+    },
+    {
+      "path": "NativeR1/campaign/captures/17-wallet-rent-paid.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/17-wallet-rent-paid.png",
+      "bytes": 82446,
+      "sha256": "16bc783f95c52056536d27c9bc9d45668d3a537d346911ba8c4373baa5ca872b"
+    },
+    {
+      "path": "NativeR1/campaign/captures/18-pause-at-pc.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/18-pause-at-pc.png",
+      "bytes": 57160,
+      "sha256": "131ca65bea31a90d36e6e69cd731469a8618db11063668af4e2e5d86621cf546"
+    },
+    {
+      "path": "NativeR1/campaign/captures/19-settings-from-pause.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/19-settings-from-pause.png",
+      "bytes": 61364,
+      "sha256": "84e6ee1453348807c51b5e16c584c717fbf3c1e3a0affcbd3de8a292f37f11e3"
+    },
+    {
+      "path": "NativeR1/campaign/captures/20-settings-back-to-pause.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/20-settings-back-to-pause.png",
+      "bytes": 55023,
+      "sha256": "5361b9f45630f9611e34532490d72cb43751adcf9bcca1f4ee78e4397c7012bd"
+    },
+    {
+      "path": "NativeR1/campaign/captures/21-resumed-same-wallet.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/21-resumed-same-wallet.png",
+      "bytes": 80473,
+      "sha256": "6d34ce492ba7a8ed83c4c330e5a0b540da61aef5516fe2fbcf3def3c144f67f0"
+    },
+    {
+      "path": "NativeR1/campaign/captures/22-stand-first-person.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/22-stand-first-person.png",
+      "bytes": 425003,
+      "sha256": "81b449655f0e64fd4d68bbdbfa72027c32c2200a49a12f9e9c550790236b36e9"
+    },
+    {
+      "path": "NativeR1/campaign/captures/23-return-main-menu.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/23-return-main-menu.png",
+      "bytes": 42053,
+      "sha256": "fe2fd163b230f540adaa1601b3ba95c18fb0ca8a5d5ae06793dfbaa532679b87"
+    },
+    {
+      "path": "NativeR1/campaign/captures/24-new-game-confirm.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/24-new-game-confirm.png",
+      "bytes": 40851,
+      "sha256": "c8ac6da267f659bd8cac011a94ebd97956f606350723fcc3090d364cb1ae2ae1"
+    },
+    {
+      "path": "NativeR1/campaign/captures/25-continued-room.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/25-continued-room.png",
+      "bytes": 354727,
+      "sha256": "1e16d3cfba08ab7fa9e84a99b2a3530287c042f2b7141e90c48398720fabbe58"
+    },
+    {
+      "path": "NativeR1/campaign/captures/26-restart-menu.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/26-restart-menu.png",
+      "bytes": 41564,
+      "sha256": "63e2a4d9318d1d7e8ec06a358b31c9de618af515a2c712a80f0dc7d9724a8049"
+    },
+    {
+      "path": "NativeR1/campaign/captures/27-restarted-wallet.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/27-restarted-wallet.png",
+      "bytes": 84330,
+      "sha256": "f6059a5c833c8fb43fc206b240ebca26c339f8476f0671ad245e0a5eae18a60d"
+    },
+    {
+      "path": "NativeR1/campaign/captures/28-new-campaign-room.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/captures/28-new-campaign-room.png",
+      "bytes": 352065,
+      "sha256": "3d6558cf480468305df96abd7fcf7af9397e09524b0546590d062015b4c939ad"
+    },
+    {
+      "path": "NativeR1/future/captures/01-menu-status.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/future/captures/01-menu-status.png",
+      "bytes": 50208,
+      "sha256": "b889e6bfa8c462df7c4b87ca8bc83b68a57a01f025e320a08d1cc8182631d682"
+    },
+    {
+      "path": "NativeR1/malformed/captures/01-menu-status.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/malformed/captures/01-menu-status.png",
+      "bytes": 47976,
+      "sha256": "f596295dc31fb99bdde2b8ea263dd0f90df0298a77cbadf698390fe9706835ed"
+    },
+    {
+      "path": "NativeR1/campaign/player.log",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/player.log",
+      "bytes": 10027,
+      "sha256": "efc34f6e074527e0a8fcc95e52e4a06c9354ea7ff5a0ff73f92e217d1da754a8"
+    },
+    {
+      "path": "NativeR1/campaign/restart-player.log",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/restart-player.log",
+      "bytes": 10026,
+      "sha256": "f5ff4475c8503d9edd99c7cefd1fd40ec51944bd8b2422ea3bf8dc8fbd0ed83c"
+    },
+    {
+      "path": "NativeR1/future/player.log",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/future/player.log",
+      "bytes": 9784,
+      "sha256": "4ebbcb9a208932a998400374addab957bc2145f4d46763230e539d1807717cae"
+    },
+    {
+      "path": "NativeR1/malformed/player.log",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-native/malformed/player.log",
+      "bytes": 9793,
+      "sha256": "a6a2c486a4ab85841f6cf46d6460579f29d87f906578a6cbab4f43c21f797dd2"
+    },
+    {
+      "path": "ui-menu-r2-source-manifest.json",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-source-manifest.json",
+      "bytes": 19487,
+      "sha256": "0a0c341197076aff364c6b0374da707dacf8d94bc69a436c886ba6718050e684"
+    },
+    {
+      "path": "windows-ui-menu-r2-build-result.json",
+      "source": "/workspace/SignalDebt-setup/unity/windows-ui-menu-r2-build-result.json",
+      "bytes": 24016,
+      "sha256": "012beca87d197c24e576ceeebf01eb563a2fd3023162e98e576e71a34ba0d8bb"
+    },
+    {
+      "path": "windows-ui-menu-r2-build.log",
+      "source": "/workspace/SignalDebt-setup/unity/windows-ui-menu-r2-build.log",
+      "bytes": 248094,
+      "sha256": "86c338b4da4452849a13f9f40fbae6235572c8e5a51e293850b61d2dc7f3548d"
+    },
+    {
+      "path": "linux-ui-menu-r2-build-result.json",
+      "source": "/workspace/SignalDebt-setup/unity/linux-ui-menu-r2-build-result.json",
+      "bytes": 21062,
+      "sha256": "dbc284d3eaab7a1236929b56bd64fd9707b785e5d7447e27d94b70505674f003"
+    },
+    {
+      "path": "linux-ui-menu-r2-build.log",
+      "source": "/workspace/SignalDebt-setup/unity/linux-ui-menu-r2-build.log",
+      "bytes": 201338,
+      "sha256": "9f2cce17cd9d8bde88cc7af809f995eb3753198208cb46b58ec63b0113cacf8c"
+    },
+    {
+      "path": "NativeR2/acceptance-r2.json",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/acceptance-r2.json",
+      "bytes": 14573,
+      "sha256": "c9f81912c145ae884ca9ea7248057495821bd8f3a57b8df73ba5359522597e86"
+    },
+    {
+      "path": "NativeR2/legacy-import/captures/01-legacy-cold-menu.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/legacy-import/captures/01-legacy-cold-menu.png",
+      "bytes": 41564,
+      "sha256": "63e2a4d9318d1d7e8ec06a358b31c9de618af515a2c712a80f0dc7d9724a8049"
+    },
+    {
+      "path": "NativeR2/legacy-import/captures/02-imported-room.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/legacy-import/captures/02-imported-room.png",
+      "bytes": 354635,
+      "sha256": "5b87c82dd2bd031d6488ee60a0e1286e16c627a91700133f5af8813c30a07cf4"
+    },
+    {
+      "path": "NativeR2/legacy-import/captures/03-imported-desktop.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/legacy-import/captures/03-imported-desktop.png",
+      "bytes": 68297,
+      "sha256": "df1376d22d8482ccd466b806e5d69d06297ad5c2f29ed39955cb984b732dc90a"
+    },
+    {
+      "path": "NativeR2/legacy-import/captures/04-imported-history.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/legacy-import/captures/04-imported-history.png",
+      "bytes": 76285,
+      "sha256": "bc43a93222248e1f75d79449c3aca414c23825bc8150977e4d6272d2aff48712"
+    },
+    {
+      "path": "NativeR2/legacy-import/captures/05-imported-wallet.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/legacy-import/captures/05-imported-wallet.png",
+      "bytes": 81494,
+      "sha256": "ff26e8936f532a347add1020a35bd2e2b90f0f9bd28e9ef030ac7b401c20883b"
+    },
+    {
+      "path": "NativeR2/legacy-import/captures/06-imported-receipts.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/legacy-import/captures/06-imported-receipts.png",
+      "bytes": 66654,
+      "sha256": "620a052984dfb5df216c04165775edee243230b43eb9b5e60e5b2464486e3230"
+    },
+    {
+      "path": "NativeR2/legacy-import/captures/07-repair-receipt-detail.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/legacy-import/captures/07-repair-receipt-detail.png",
+      "bytes": 65097,
+      "sha256": "e452ef63b5d2e572b23cb91d16424a7417895624738f1a22ffc10b2d48d327f1"
+    },
+    {
+      "path": "NativeR2/targeted/captures/01-laptop-target.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/targeted/captures/01-laptop-target.png",
+      "bytes": 364418,
+      "sha256": "56e798bcb9cb0e5cd9528b2f1f67d7dc6cb836964edc8bd8ce11371f6e91fbc4"
+    },
+    {
+      "path": "NativeR2/targeted/captures/02-before-seating-interruption.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/targeted/captures/02-before-seating-interruption.png",
+      "bytes": 381796,
+      "sha256": "748ed959d50b6dfd85d17c25bf6f0e6a22c204169874e63b6a2dfdf91a57d393"
+    },
+    {
+      "path": "NativeR2/targeted/captures/03-interrupted-entry-paused.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/targeted/captures/03-interrupted-entry-paused.png",
+      "bytes": 101992,
+      "sha256": "e5131c14f37f685c360fe8f14c351510a4d2c0a1b26c3142b8dc5199d2e1e078"
+    },
+    {
+      "path": "NativeR2/targeted/captures/04-visible-seat-transition.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/targeted/captures/04-visible-seat-transition.png",
+      "bytes": 323043,
+      "sha256": "1817f094fa2e584e0eda8db053f119c79e1c9afc9adadc9271864faa02fe5f68"
+    },
+    {
+      "path": "NativeR2/targeted/captures/05-transition-return-paused.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/targeted/captures/05-transition-return-paused.png",
+      "bytes": 101981,
+      "sha256": "31523fe37472e76acb57411b424b68f1ae4bb40c9d3007b465c6d03b9d6d3986"
+    },
+    {
+      "path": "NativeR2/targeted/captures/06-interruption-resume-room.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/targeted/captures/06-interruption-resume-room.png",
+      "bytes": 363462,
+      "sha256": "1264092d9686956e2599bceefb5f782e4eb7e181b33e05f2254a0acd15774fb2"
+    },
+    {
+      "path": "NativeR2/targeted/captures/07-inbox.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/targeted/captures/07-inbox.png",
+      "bytes": 376819,
+      "sha256": "bee35a51b7a094882af4b54cff7efa913d2d1ef40b4cba2e6d8871c0fbb69037"
+    },
+    {
+      "path": "NativeR2/targeted/captures/08-desktop-after-interruption.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/targeted/captures/08-desktop-after-interruption.png",
+      "bytes": 69538,
+      "sha256": "dbadf7bd45e52f4974ea44664673fcf55cb1731ff52c1063db2ccf7b1d442b37"
+    },
+    {
+      "path": "NativeR2/targeted/captures/09-inbox-ready.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/targeted/captures/09-inbox-ready.png",
+      "bytes": 73048,
+      "sha256": "d18105222f00c6783db75dc608fd86a8d8998b6441e388aa6177822305a78d1d"
+    },
+    {
+      "path": "NativeR2/targeted/captures/10-send-no-key-status.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/targeted/captures/10-send-no-key-status.png",
+      "bytes": 76864,
+      "sha256": "f5ad00df578d084308757c864644eb3708b67eea9fe3aee70ab69467290dc892"
+    },
+    {
+      "path": "NativeR2/targeted/captures/11-repair-usable-after-no-key.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/targeted/captures/11-repair-usable-after-no-key.png",
+      "bytes": 80978,
+      "sha256": "4ab363d612308cb424b7c109e0c2dead2363f15450e1050e3e85f02a16a6faf7"
+    },
+    {
+      "path": "NativeR2/targeted/captures/12-pause-settings-r2.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/targeted/captures/12-pause-settings-r2.png",
+      "bytes": 62099,
+      "sha256": "d8adba4d3c9419a8595a9dc151a4a5d730b787166bc0ec0b19052502488740fb"
+    },
+    {
+      "path": "NativeR2/targeted/captures/13-settings-resume-same-repair.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/targeted/captures/13-settings-resume-same-repair.png",
+      "bytes": 80754,
+      "sha256": "cbe83207330f70829c5c2c946c46078addd7637671eb75f6491e5bdaa7d4e75d"
+    },
+    {
+      "path": "NativeR2/targeted/captures/14-repeat-settings.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/targeted/captures/14-repeat-settings.png",
+      "bytes": 61704,
+      "sha256": "bd358d685c04f343d101ad7a52a81910109e250a021c817c3f2b3b4f57ef0733"
+    },
+    {
+      "path": "NativeR2/targeted/captures/15-repeat-resume.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/targeted/captures/15-repeat-resume.png",
+      "bytes": 80695,
+      "sha256": "7bfa035e25d4f25f00fbf8877ba63ad769f3691496d95d6863ed745f822d16bb"
+    },
+    {
+      "path": "NativeR2/targeted/captures/16-current-new-game-confirm.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/targeted/captures/16-current-new-game-confirm.png",
+      "bytes": 39979,
+      "sha256": "3e12f813c8a90634a0d2041d4332abf7ad9e8d7feea0158d59afa60de88a6e50"
+    },
+    {
+      "path": "NativeR2/targeted/player.log",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/targeted/player.log",
+      "bytes": 9917,
+      "sha256": "57494f15d6569525b86e7e1bb94b33405b0c156ecb107ea014cb16a71ed79a74"
+    },
+    {
+      "path": "NativeR2/legacy-import/player.log",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/legacy-import/player.log",
+      "bytes": 9932,
+      "sha256": "9b7bbb4edae6fc7056754e6c1e9906c58a10d93de61057b36cc7199afc004ac3"
+    },
+    {
+      "path": "NativeR2/targeted/seating-confirmed-input-timing.json",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/targeted/seating-confirmed-input-timing.json",
+      "bytes": 451,
+      "sha256": "afec6818a645458320145c865d762d7ffad6e0947febdf00bf2f55ce1aedd28e"
+    },
+    {
+      "path": "NativeR2/evidence-allowlist.json",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-native/evidence-allowlist.json",
+      "bytes": 1311,
+      "sha256": "e6d79f901a94dc7c6cf683a97529b388edd34a1a63faad45e6cb1ddff9a414c0"
+    }
+  ],
+  "updated_utc": "2026-10-05T01:31:10.676111+00:00",
+  "final_r2_builds_included": true,
+  "native_snapshots": [
+    "ui-menu-r1 broad20-check run",
+    "ui-menu-r2 targeted13-check follow-up"
+  ]
+}

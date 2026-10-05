@@ -1,0 +1,32 @@
+{
+  "source_blend_sha256": "3ef7be1d5a68042a999f6f2a33cac8fb26b70169532c2d844c4990b467ca1021",
+  "proof": "Actual base mesh/weights bent in Blender; not a Unity capture.",
+  "renders": {
+    "Player_Skin_Bend.png": {
+      "sha256": "1b60e36f44ad18ed8154268d73ef031a8917a96ebd8b978478a40005d239d85c",
+      "bytes": 2175959
+    },
+    "Player_Elbow_Close.png": {
+      "sha256": "a7c0455aff2ce4de4070a5de6d122a72f754fb3ddacde8c474f3d77c1b96295a",
+      "bytes": 2587023
+    },
+    "Player_Knee_Close.png": {
+      "sha256": "f95b9e287dc368f6849083d6a9ed281d04047101379229c4b70ee941663ce28f",
+      "bytes": 2498331
+    },
+    "Characters_Roster.png": {
+      "sha256": "360e7d5bc294a19576000cb8ed954f47bed51f7e1e0a7d221f6b9a2ef2f7994a",
+      "bytes": 4554471,
+      "source_blend_sha256": "5d9cd3512cde24de6977878adbb251dbb880dc5a1f3b1fe4d9ddbeed59bd9f49"
+    }
+  },
+  "render_sources": {
+    "Player_Skin_Bend.png": "3ef7be1d5a68042a999f6f2a33cac8fb26b70169532c2d844c4990b467ca1021",
+    "Player_Elbow_Close.png": "3ef7be1d5a68042a999f6f2a33cac8fb26b70169532c2d844c4990b467ca1021",
+    "Player_Knee_Close.png": "3ef7be1d5a68042a999f6f2a33cac8fb26b70169532c2d844c4990b467ca1021",
+    "Characters_Roster.png": "5d9cd3512cde24de6977878adbb251dbb880dc5a1f3b1fe4d9ddbeed59bd9f49"
+  },
+  "current_source_blend_sha256": "5d9cd3512cde24de6977878adbb251dbb880dc5a1f3b1fe4d9ddbeed59bd9f49",
+  "presentation_equivalence_report": "Validation/character_roster_translation_fix.json",
+  "provenance_note": "The three player deformation views retain their actual render-source hash. Only the patrol display-root translation changed afterward; exact local asset state equivalence is recorded. The roster was rerendered from the corrected current source."
+}

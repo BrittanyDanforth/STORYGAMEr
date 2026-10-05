@@ -1,0 +1,101 @@
+{
+  "scope": "Bounded exact source, commands, reports and framebuffer evidence. No runtime, campaign or credential files.",
+  "files": {
+    "README.md": {
+      "bytes": 4577,
+      "sha256": "92b25bdb48ee70ae714ab043f645e36e0e5cd245c5653822c0b67b944cf7e86d"
+    },
+    "Screenshots/explicit-failure-r2.png": {
+      "bytes": 88551,
+      "sha256": "df5d43702c804ca77326cd117242f15c44948ccb11765b283106a41b531c593f"
+    },
+    "Screenshots/long-name-card-r2.png": {
+      "bytes": 85533,
+      "sha256": "e04ad112365433c470c71f809eb13ae8f51e1cedcf730c84304d279afe234f51"
+    },
+    "Screenshots/long-name-confirm-r2.png": {
+      "bytes": 56688,
+      "sha256": "5bafba7e47e299ca31edc6852d63ec3c1ce0e927aa6e4c24ce06c38ab119e5c8"
+    },
+    "Screenshots/named-checkpoint-r1.png": {
+      "bytes": 74412,
+      "sha256": "d9761dd539a43b4d55012879180c6826ff30d1d73c7a44aa09f61e38eca62ea1"
+    },
+    "Screenshots/pagination-r1.png": {
+      "bytes": 59748,
+      "sha256": "087a576b2758be9ff9ec4450282f0a96de15d1fbc8d5c9a0235d13a8f48385d4"
+    },
+    "Screenshots/paid-proof-restored-r1.png": {
+      "bytes": 112444,
+      "sha256": "951bd509c1d3306e1369a95b5fbda8ac4113e3167acde0605ee0ecab3ea986d0"
+    },
+    "Screenshots/paid-restart-r2.png": {
+      "bytes": 141863,
+      "sha256": "f1fb5d0dc5114f7aa83dce74bb2c44810bc7076c6925689fca7b7b32c070979d"
+    },
+    "Screenshots/previous-campaign-r1.png": {
+      "bytes": 92708,
+      "sha256": "9171c69a296f3a495e4cb794808c47f0b226f28bd499d59eff562b63e79a8e1d"
+    },
+    "Screenshots/recovered-backup-r1.png": {
+      "bytes": 84642,
+      "sha256": "a3d398be9445f54c8bc491911238f176ff7d45d0053287f6a50100bb415e1f6d"
+    },
+    "Screenshots/restored-laptop-r1.png": {
+      "bytes": 61593,
+      "sha256": "7f3378953aed5a06d2e779fb39782044ca34edde7a5dbe2f0afcce045d065250"
+    },
+    "Screenshots/retry-success-r2.png": {
+      "bytes": 82383,
+      "sha256": "c6a92bf03d82f09aafdaa052d1d1cb4d994037b8e6daecab7fce61a65f167a11"
+    },
+    "build-summary.json": {
+      "bytes": 1758,
+      "sha256": "c9cbc2a6d5fa267813ea3605679dbc7c65dbe06c08302f2e9f6a971a77000f35"
+    },
+    "commands-r1.json": {
+      "bytes": 3145,
+      "sha256": "2fc77164968e75111e24ade21ce96c6f204e451ef4eff42ecc98021ef24c44f4"
+    },
+    "commands-r2.json": {
+      "bytes": 1553,
+      "sha256": "c067b9da4850e23192bfa33664728bbf1b2550894a711eed040bca1f4bb46e61"
+    },
+    "conversation.json": {
+      "bytes": 12001,
+      "sha256": "5b656ffbd6248a5879982b61e2e70e22be91a3223297c703cdcec76db031c25b"
+    },
+    "generated-scenes.json": {
+      "bytes": 1132,
+      "sha256": "b9cf5146a99079a6ee352de528b8007c10661486283c223261852e26fd09bb3c"
+    },
+    "native-functional-r1.json": {
+      "bytes": 3680,
+      "sha256": "b9583fa47d5608bb6e9d6fb4f8d9ce67dd8d5c1e2f6b8ad2c17b62a6831b52fd"
+    },
+    "native-targeted-r2.json": {
+      "bytes": 2508,
+      "sha256": "68d817251d93b758f9d9bdacf70a4a56532ea7f6f6b101c562f9a98ffe52816a"
+    },
+    "retained-suite-applicability.json": {
+      "bytes": 24274,
+      "sha256": "af223f3616ea809e7310d50c1908991048da4b77db08a6ba282daa11744188ab"
+    },
+    "save-library.json": {
+      "bytes": 445,
+      "sha256": "ae28cb1ebcfef2132f927f7d4ef135abeeb3265e176fcbee0b81973836126dce"
+    },
+    "save-store.json": {
+      "bytes": 341,
+      "sha256": "9aa181b72a82186294647cdefa550b8b0cf4aa12c1370ab92bdcb24141c3c65b"
+    },
+    "source-r1.json": {
+      "bytes": 66917,
+      "sha256": "45b2f8a6f769ff1cc358eecfe2ccd3e1849c02c6c7db4830b953492ef7533b44"
+    },
+    "source-r2.json": {
+      "bytes": 66950,
+      "sha256": "ba89b0db9135cc462a8604d587e109bfb2ed1ac2a8a13ab56b173cc65ae74156"
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "save-menu-r1-linux": {
+    "build_succeeded": true,
+    "process_exit_code": 0,
+    "unity_version": "6000.0.62f1",
+    "target": "linux",
+    "instrumented_runtime": false,
+    "runtime_assembly_sha256": "d0b512c96e6d82b63504548b9fcce90cf4119329045f31eabc99475cd198cd1e",
+    "csharp_errors": [],
+    "source_manifest_sha256": "45b2f8a6f769ff1cc358eecfe2ccd3e1849c02c6c7db4830b953492ef7533b44",
+    "files": 116,
+    "bytes": 98042283,
+    "full_external_manifest_sha256": "4e1e80e6b43b3ee425568d972be829998281a4c5e82ac16ef3b39866af650f76",
+    "native_executed_here": true
+  },
+  "save-menu-r2-linux": {
+    "build_succeeded": true,
+    "process_exit_code": 0,
+    "unity_version": "6000.0.62f1",
+    "target": "linux",
+    "instrumented_runtime": false,
+    "runtime_assembly_sha256": "2f34bc606d7f1e56dc06d868f7b598b9e2c87dcacdd57dd40c1575b962909ee6",
+    "csharp_errors": [],
+    "source_manifest_sha256": "ba89b0db9135cc462a8604d587e109bfb2ed1ac2a8a13ab56b173cc65ae74156",
+    "files": 116,
+    "bytes": 98044847,
+    "full_external_manifest_sha256": "eeee6abcb4bf181ebdc14723b53c11a5e9d95f388727f2d96855ab86e82c5961",
+    "native_executed_here": true
+  },
+  "save-menu-r2-windows": {
+    "build_succeeded": true,
+    "process_exit_code": 0,
+    "unity_version": "6000.0.62f1",
+    "target": "windows",
+    "instrumented_runtime": false,
+    "runtime_assembly_sha256": "1d0aa9c3bd6529366043e9c81e489cc95b77291da992f76e086ed4576793e682",
+    "csharp_errors": [],
+    "source_manifest_sha256": "ba89b0db9135cc462a8604d587e109bfb2ed1ac2a8a13ab56b173cc65ae74156",
+    "files": 134,
+    "bytes": 103510667,
+    "full_external_manifest_sha256": "549c4b8cc643a468d466a0e6b125b19712a2303631887aa8cc4f3e4b01f4d796",
+    "native_executed_here": false
+  }
+}

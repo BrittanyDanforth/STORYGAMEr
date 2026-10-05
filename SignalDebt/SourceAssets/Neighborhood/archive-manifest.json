@@ -1,0 +1,595 @@
+{
+  "status": "ARCHIVAL WIP ONLY \u2014 not imported or runtime accepted",
+  "files": [
+    {
+      "path": "Source/build_neighborhood.py",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/build_neighborhood.py",
+      "source_sha256": "ba12844cfb7d74b457b4c8feebdf3ca08c4f2d54304fa645e5c66ade562f7c9a",
+      "archive_sha256": "ba12844cfb7d74b457b4c8feebdf3ca08c4f2d54304fa645e5c66ade562f7c9a",
+      "bytes": 50385,
+      "portability_change": false
+    },
+    {
+      "path": "Source/export_neighborhood.py",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export_neighborhood.py",
+      "source_sha256": "5646ce1468eb8657b0f860e4102761552c7083367d693649eb9b6b8f365b53d3",
+      "archive_sha256": "5646ce1468eb8657b0f860e4102761552c7083367d693649eb9b6b8f365b53d3",
+      "bytes": 12723,
+      "portability_change": false
+    },
+    {
+      "path": "Plan/layout-v2.json",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/layout-v2.json",
+      "source_sha256": "13ef4cd17a9bd6ab1770a61070d58c823a6fd3c601c98ae3946ba103ffc44a6c",
+      "archive_sha256": "13ef4cd17a9bd6ab1770a61070d58c823a6fd3c601c98ae3946ba103ffc44a6c",
+      "bytes": 8623,
+      "portability_change": false
+    },
+    {
+      "path": "Plan/export-contract-sample.json",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-contract-sample.json",
+      "source_sha256": "fd4385cf6f5e604860dffd37b95bc283c2a3cbad5247d202c5a784b2bdfa3919",
+      "archive_sha256": "fd4385cf6f5e604860dffd37b95bc283c2a3cbad5247d202c5a784b2bdfa3919",
+      "bytes": 3930,
+      "portability_change": false
+    },
+    {
+      "path": "Plan/EXPORT_PLAN.md",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/EXPORT_PLAN.md",
+      "source_sha256": "48eab61fda99ad6e7a5a8fd43be5e2f45fdf09ca70c0289f23a84524aedff218",
+      "archive_sha256": "48eab61fda99ad6e7a5a8fd43be5e2f45fdf09ca70c0289f23a84524aedff218",
+      "bytes": 2809,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Neighborhood.fbx",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Neighborhood.fbx",
+      "source_sha256": "67685f92535e632892c15490911e805c1fb47d9e3822a6ef970659ff8397f9d4",
+      "archive_sha256": "67685f92535e632892c15490911e805c1fb47d9e3822a6ef970659ff8397f9d4",
+      "bytes": 59978124,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Southbank_Neighborhood_Export_Review.blend",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Southbank_Neighborhood_Export_Review.blend",
+      "source_sha256": "af9421618ec732f199141fd04a581c19ad02d417c2a87889c3dbcb0f58efadb4",
+      "archive_sha256": "af9421618ec732f199141fd04a581c19ad02d417c2a87889c3dbcb0f58efadb4",
+      "bytes": 4094546,
+      "portability_change": false
+    },
+    {
+      "path": "Export/neighborhood_collision_anchors.json",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/neighborhood_collision_anchors.json",
+      "source_sha256": "251aa7ef9e1db2961472619bf967f570676765b990ee96bac9a1e53211e3355c",
+      "archive_sha256": "251aa7ef9e1db2961472619bf967f570676765b990ee96bac9a1e53211e3355c",
+      "bytes": 220328,
+      "portability_change": false
+    },
+    {
+      "path": "Export/export-proof.json",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/export-proof.json",
+      "source_sha256": "68a3f2854d6427485bc4f093886001a8822657260b98641238a2b92ba4ed8efa",
+      "archive_sha256": "68a3f2854d6427485bc4f093886001a8822657260b98641238a2b92ba4ed8efa",
+      "bytes": 124008,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Asphalt_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Asphalt_BaseColor.png",
+      "source_sha256": "06ccd8709553f46ca8e0a649e9cb086046fb37ab488e941fc06dd4e5b124b959",
+      "archive_sha256": "06ccd8709553f46ca8e0a649e9cb086046fb37ab488e941fc06dd4e5b124b959",
+      "bytes": 260189,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Asphalt_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Asphalt_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/BackPaving_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/BackPaving_BaseColor.png",
+      "source_sha256": "0a79e8e11813333b3d10d2a6b22ed7414ae69108ccbbc4a5b7b9440064137e2b",
+      "archive_sha256": "0a79e8e11813333b3d10d2a6b22ed7414ae69108ccbbc4a5b7b9440064137e2b",
+      "bytes": 161872,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/BackPaving_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/BackPaving_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/BrownBrick_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/BrownBrick_BaseColor.png",
+      "source_sha256": "dccc3397bc0b6c305805363e098c8843e19f8fa80ebacb83fcb320444b1af0ca",
+      "archive_sha256": "dccc3397bc0b6c305805363e098c8843e19f8fa80ebacb83fcb320444b1af0ca",
+      "bytes": 55276,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/BrownBrick_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/BrownBrick_Normal.png",
+      "source_sha256": "bbec7698bf8a372a84b675a1d666daa17ce6d8a3356534ce02dc2d8e349b2135",
+      "archive_sha256": "bbec7698bf8a372a84b675a1d666daa17ce6d8a3356534ce02dc2d8e349b2135",
+      "bytes": 50693,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Cardboard_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Cardboard_BaseColor.png",
+      "source_sha256": "bbc294a2f3acd4702846d8378999ab9729bc69db9441bf190529527ca86519da",
+      "archive_sha256": "bbc294a2f3acd4702846d8378999ab9729bc69db9441bf190529527ca86519da",
+      "bytes": 227731,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Cardboard_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Cardboard_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/CivicStone_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/CivicStone_BaseColor.png",
+      "source_sha256": "2b068350900e4b752ad3c64e49f4d0288f18fb19488889fe7f1eb79020721986",
+      "archive_sha256": "2b068350900e4b752ad3c64e49f4d0288f18fb19488889fe7f1eb79020721986",
+      "bytes": 171704,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/CivicStone_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/CivicStone_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Cream_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Cream_BaseColor.png",
+      "source_sha256": "59f137d3f86c21f8f26c86eb740434a378bb00c6479a88312e79653c1e315526",
+      "archive_sha256": "59f137d3f86c21f8f26c86eb740434a378bb00c6479a88312e79653c1e315526",
+      "bytes": 135034,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Cream_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Cream_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Curb_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Curb_BaseColor.png",
+      "source_sha256": "81ff57a86d6df216fe63560d3f2e7b728d0a5d02f7159ca955721a75c547dc59",
+      "archive_sha256": "81ff57a86d6df216fe63560d3f2e7b728d0a5d02f7159ca955721a75c547dc59",
+      "bytes": 127813,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Curb_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Curb_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/DoorPanel_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/DoorPanel_BaseColor.png",
+      "source_sha256": "d6ef61dda6d59cfad9e331ab7812bdf42320e45070dae902ffdd817069da3aa1",
+      "archive_sha256": "d6ef61dda6d59cfad9e331ab7812bdf42320e45070dae902ffdd817069da3aa1",
+      "bytes": 132334,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/DoorPanel_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/DoorPanel_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Leaves_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Leaves_BaseColor.png",
+      "source_sha256": "bde25116b2eb0770d83f6c4f165b7e3d65bc675e3dfe7ef379c4d6f75fbf2d04",
+      "archive_sha256": "bde25116b2eb0770d83f6c4f165b7e3d65bc675e3dfe7ef379c4d6f75fbf2d04",
+      "bytes": 238643,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Leaves_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Leaves_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/LightWood_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/LightWood_BaseColor.png",
+      "source_sha256": "1512ef6b504abcb3156276cf5c30f5893756d4031e4bb145ab29efa8c7f51d2c",
+      "archive_sha256": "1512ef6b504abcb3156276cf5c30f5893756d4031e4bb145ab29efa8c7f51d2c",
+      "bytes": 231335,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/LightWood_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/LightWood_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Ochre_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Ochre_BaseColor.png",
+      "source_sha256": "d3ea42690610ad836b3be2ae65f4bfa2733efa94ba001e731f2ba9cf0b10337a",
+      "archive_sha256": "d3ea42690610ad836b3be2ae65f4bfa2733efa94ba001e731f2ba9cf0b10337a",
+      "bytes": 190838,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Ochre_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Ochre_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/PaleBrick_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/PaleBrick_BaseColor.png",
+      "source_sha256": "a472042f1a5dc2a3ad40f743a7e00f69fe29a716af08c094a8af948f9cd1be50",
+      "archive_sha256": "a472042f1a5dc2a3ad40f743a7e00f69fe29a716af08c094a8af948f9cd1be50",
+      "bytes": 57930,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/PaleBrick_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/PaleBrick_Normal.png",
+      "source_sha256": "bbec7698bf8a372a84b675a1d666daa17ce6d8a3356534ce02dc2d8e349b2135",
+      "archive_sha256": "bbec7698bf8a372a84b675a1d666daa17ce6d8a3356534ce02dc2d8e349b2135",
+      "bytes": 50693,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Paper_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Paper_BaseColor.png",
+      "source_sha256": "4ace13643aa9fe5816b4970fcfad7c051abde8c7f6c075690218459af2c4205b",
+      "archive_sha256": "4ace13643aa9fe5816b4970fcfad7c051abde8c7f6c075690218459af2c4205b",
+      "bytes": 61252,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Paper_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Paper_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Paving_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Paving_BaseColor.png",
+      "source_sha256": "dcc72bf3b0906dc19ed9215ba7d197c0748389eaa035fe5216a39d9beb4559cd",
+      "archive_sha256": "dcc72bf3b0906dc19ed9215ba7d197c0748389eaa035fe5216a39d9beb4559cd",
+      "bytes": 195977,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Paving_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Paving_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Plaster_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Plaster_BaseColor.png",
+      "source_sha256": "82e7875571593d981dbf37b1130427c08230e51294f85ab1ca5666a62557a3c0",
+      "archive_sha256": "82e7875571593d981dbf37b1130427c08230e51294f85ab1ca5666a62557a3c0",
+      "bytes": 218700,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Plaster_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Plaster_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Plastic_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Plastic_BaseColor.png",
+      "source_sha256": "544b48eb68c7ae9aa275bcc42ecc5f2a437abfd4dc8e34fc6587f1d6e8bf7611",
+      "archive_sha256": "544b48eb68c7ae9aa275bcc42ecc5f2a437abfd4dc8e34fc6587f1d6e8bf7611",
+      "bytes": 89544,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Plastic_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Plastic_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/PoliceBlue_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/PoliceBlue_BaseColor.png",
+      "source_sha256": "71692989fbd604e7bce153ad2f121200bdb2054369d90993050925e702abf2af",
+      "archive_sha256": "71692989fbd604e7bce153ad2f121200bdb2054369d90993050925e702abf2af",
+      "bytes": 161451,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/PoliceBlue_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/PoliceBlue_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/PrintRed_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/PrintRed_BaseColor.png",
+      "source_sha256": "87e90e3b28637614e78987390c1d8450f78045ec6c80bcad02c8ec2d0d6a0295",
+      "archive_sha256": "87e90e3b28637614e78987390c1d8450f78045ec6c80bcad02c8ec2d0d6a0295",
+      "bytes": 212162,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/PrintRed_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/PrintRed_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/RedBrick_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/RedBrick_BaseColor.png",
+      "source_sha256": "948e80f2bdd360578139e9e5dcf7fcb3aba64be52dba21e02264ddbcd69b3a2e",
+      "archive_sha256": "948e80f2bdd360578139e9e5dcf7fcb3aba64be52dba21e02264ddbcd69b3a2e",
+      "bytes": 57088,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/RedBrick_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/RedBrick_Normal.png",
+      "source_sha256": "bbec7698bf8a372a84b675a1d666daa17ce6d8a3356534ce02dc2d8e349b2135",
+      "archive_sha256": "bbec7698bf8a372a84b675a1d666daa17ce6d8a3356534ce02dc2d8e349b2135",
+      "bytes": 50693,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/RoadPaint_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/RoadPaint_BaseColor.png",
+      "source_sha256": "4ef7bc5539ac787ceb150af438602910c8d2f4a48ce21dcf9e38850d039fb796",
+      "archive_sha256": "4ef7bc5539ac787ceb150af438602910c8d2f4a48ce21dcf9e38850d039fb796",
+      "bytes": 95309,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/RoadPaint_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/RoadPaint_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/RoofSlate_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/RoofSlate_BaseColor.png",
+      "source_sha256": "ff77ba4e7168b2bb314259ce12cbece0b276442e78a046db0df9758379110c53",
+      "archive_sha256": "ff77ba4e7168b2bb314259ce12cbece0b276442e78a046db0df9758379110c53",
+      "bytes": 233288,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/RoofSlate_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/RoofSlate_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/RoofTile_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/RoofTile_BaseColor.png",
+      "source_sha256": "2cf3eceae3a36e108c512b4a6c7cd8ec4a5b01151e62f2775854d7867abd7a5e",
+      "archive_sha256": "2cf3eceae3a36e108c512b4a6c7cd8ec4a5b01151e62f2775854d7867abd7a5e",
+      "bytes": 231342,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/RoofTile_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/RoofTile_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/ShopFloor_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/ShopFloor_BaseColor.png",
+      "source_sha256": "87ac23e65d207fbe4ba76285cc0163a989c0ff4c504df2ad00f463b7d5c7f93e",
+      "archive_sha256": "87ac23e65d207fbe4ba76285cc0163a989c0ff4c504df2ad00f463b7d5c7f93e",
+      "bytes": 189937,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/ShopFloor_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/ShopFloor_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/ShopGreen_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/ShopGreen_BaseColor.png",
+      "source_sha256": "6adb744a826cc1978cf4b6aeafcc1cfaa10b0495b038b4eb95bc130b8618b240",
+      "archive_sha256": "6adb744a826cc1978cf4b6aeafcc1cfaa10b0495b038b4eb95bc130b8618b240",
+      "bytes": 252379,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/ShopGreen_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/ShopGreen_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Soil_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Soil_BaseColor.png",
+      "source_sha256": "05f972dfee330c99f00bc50c3e74570304543fa1f38e2713700a7195a2a2e357",
+      "archive_sha256": "05f972dfee330c99f00bc50c3e74570304543fa1f38e2713700a7195a2a2e357",
+      "bytes": 280416,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Soil_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Soil_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/StoneTrim_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/StoneTrim_BaseColor.png",
+      "source_sha256": "f2c5ce0da9137caa41514ff79e556aac3749185a6c0e26c269e2936136155754",
+      "archive_sha256": "f2c5ce0da9137caa41514ff79e556aac3749185a6c0e26c269e2936136155754",
+      "bytes": 134944,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/StoneTrim_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/StoneTrim_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Trim_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Trim_BaseColor.png",
+      "source_sha256": "6ff719e365b2803956b6210c038413587155cfdcb8d2ea07e9be8e80e46bc46e",
+      "archive_sha256": "6ff719e365b2803956b6210c038413587155cfdcb8d2ea07e9be8e80e46bc46e",
+      "bytes": 125229,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Trim_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Trim_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Wood_BaseColor.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Wood_BaseColor.png",
+      "source_sha256": "3aded79fa1321d9efe671cd19ed8b10a692ec6868a7cb68109aba48243b72bed",
+      "archive_sha256": "3aded79fa1321d9efe671cd19ed8b10a692ec6868a7cb68109aba48243b72bed",
+      "bytes": 242894,
+      "portability_change": false
+    },
+    {
+      "path": "Export/Textures/Wood_Normal.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/export-r5/Textures/Wood_Normal.png",
+      "source_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "archive_sha256": "6aba10129836ae30761fe5ca7fbb06c2632dd6d3ee4d7104dd4cb7332c70357e",
+      "bytes": 157576,
+      "portability_change": false
+    },
+    {
+      "path": "Review/ApartmentExit.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/geometry-r4/renders/ApartmentExit.png",
+      "source_sha256": "a8d683442806ddc78837c9f8e9d596263823b05a127cdd94edcef1f0f79ba5be",
+      "archive_sha256": "a8d683442806ddc78837c9f8e9d596263823b05a127cdd94edcef1f0f79ba5be",
+      "bytes": 1160633,
+      "portability_change": false
+    },
+    {
+      "path": "Review/DeliveryReturn.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/geometry-r4/renders/DeliveryReturn.png",
+      "source_sha256": "0cda46057a3e01e0ca0dc0e820778356fa4ebb73ba080b36f807cb0b6f541446",
+      "archive_sha256": "0cda46057a3e01e0ca0dc0e820778356fa4ebb73ba080b36f807cb0b6f541446",
+      "bytes": 1222609,
+      "portability_change": false
+    },
+    {
+      "path": "Review/PoliceApproach.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/geometry-r4/renders/PoliceApproach.png",
+      "source_sha256": "8183736275f79d97d8de85c14191388a3972a0d6d7cb06876a1f712590b47414",
+      "archive_sha256": "8183736275f79d97d8de85c14191388a3972a0d6d7cb06876a1f712590b47414",
+      "bytes": 1096695,
+      "portability_change": false
+    },
+    {
+      "path": "Review/ShopInterior.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/geometry-r4/renders/ShopInterior.png",
+      "source_sha256": "32d63cdb51271389548e77e06c2e49a8dc27b6fd8a3c3e0893f7f6a7349663a3",
+      "archive_sha256": "32d63cdb51271389548e77e06c2e49a8dc27b6fd8a3c3e0893f7f6a7349663a3",
+      "bytes": 1173385,
+      "portability_change": false
+    },
+    {
+      "path": "Review/StreetReverse.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/geometry-r4/renders/StreetReverse.png",
+      "source_sha256": "ee14d9a4cc101cfcdc3f29c9486bf2087073bc87783e173b83f67e2ffe7ad3dc",
+      "archive_sha256": "ee14d9a4cc101cfcdc3f29c9486bf2087073bc87783e173b83f67e2ffe7ad3dc",
+      "bytes": 1223311,
+      "portability_change": false
+    },
+    {
+      "path": "Review/WindowPassage.png",
+      "source": "/workspace/SignalDebt-neighborhood-prototype/geometry-r4/renders/WindowPassage.png",
+      "source_sha256": "407b7bec8ac1bce32db4b0a589934c724c190d83b76c25e52fdcf5536bfd9f92",
+      "archive_sha256": "407b7bec8ac1bce32db4b0a589934c724c190d83b76c25e52fdcf5536bfd9f92",
+      "bytes": 1148197,
+      "portability_change": false
+    }
+  ],
+  "metadata_files": [
+    {
+      "path": "README.md",
+      "sha256": "01c3b77ae10ea5530c14aedf0677ee8f5ce106a8e7cb258baf2678084b22b9af",
+      "bytes": 3729
+    },
+    {
+      "path": "portability-report.json",
+      "sha256": "59e1bfa01dbf54fbfd8bfef20f2b88c7d9640b5e578f5112051a74ce4060b9bf",
+      "bytes": 12593
+    }
+  ],
+  "verification": {
+    "all_71_copied_files_match_original_sha256": true,
+    "all_original_sources_unchanged": true,
+    "all_56_manifest_texture_paths_and_hashes_match": true,
+    "blend_relocated_outside_workspace_with_autoexec_disabled": true,
+    "archival_blend_rewritten": false,
+    "unity_import_performed": false,
+    "staging_or_commits_performed": false
+  },
+  "total_file_count": 74
+}

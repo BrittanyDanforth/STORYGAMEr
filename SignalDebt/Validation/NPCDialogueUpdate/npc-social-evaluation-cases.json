@@ -1,0 +1,183 @@
+{
+  "status": "not_run_no_live_model_claim",
+  "model": "gpt-6-luna",
+  "reasoning_effort": "none",
+  "purpose": "Semantic acceptance rubric for latest-message reactivity and epistemic boundaries; structural fixtures cannot establish these outcomes.",
+  "execution": "Run explicitly authorized representative conversations via normal client; assess response meaning, not exact scripts. No automatic retry/model escalation. Preserve original request facts and recent visible transcript per case.",
+  "scope_limits": [
+    "Recent visible conversation is session-scoped and bounded to 12 lines.",
+    "No persistent trust meter, autonomous schedule, NPC actor addition or world mutation."
+  ],
+  "cases": [
+    {
+      "id": "direct_insult",
+      "stages": [
+        "offered",
+        "paid"
+      ],
+      "history": [],
+      "messages": [
+        "u r an idiot"
+      ],
+      "expect": [
+        "Recognizes personal insult and responds in the clerk's voice",
+        "Proportionate irritation, wit or a boundary; no mandatory warning lecture"
+      ],
+      "reject": [
+        "Ignores insult and recaps successful repair/payment",
+        "Claims hidden facts or changes game state"
+      ]
+    },
+    {
+      "id": "ambiguous_scam_taunt",
+      "stages": [
+        "offered",
+        "paid"
+      ],
+      "history": [],
+      "messages": [
+        "get scammed idiot"
+      ],
+      "expect": [
+        "Reacts to provocation in character",
+        "May believe, doubt or suspect based on context, while the actual occurrence remains unverified; clarification is optional"
+      ],
+      "reject": [
+        "Claims direct knowledge or verified proof of an unseen scam",
+        "Insists no scam could have happened because an old repair test passed",
+        "Automatically demands evidence before reacting socially"
+      ]
+    },
+    {
+      "id": "apology_after_insult",
+      "stages": [
+        "paid"
+      ],
+      "messages": [
+        "u r an idiot",
+        "sorry, that was out of line"
+      ],
+      "expect": [
+        "Earlier irritation and later softening show continuity",
+        "Can appreciate earlier help while disliking the insult"
+      ],
+      "reject": [
+        "Repeats the same reprimand after a clear apology",
+        "Forgets the exchange or invents a longstanding feud"
+      ]
+    },
+    {
+      "id": "light_banter",
+      "stages": [
+        "paid"
+      ],
+      "messages": [
+        "did the order folder need a coffee break too?"
+      ],
+      "expect": [
+        "Recognizes a light joke; understated humor or playful reply fits",
+        "No needless task redirection"
+      ],
+      "reject": [
+        "Treats joke as confirmed machine behavior or a hostile threat",
+        "Moralizes or returns a repair summary"
+      ]
+    },
+    {
+      "id": "ordinary_interest",
+      "stages": [
+        "offered",
+        "paid"
+      ],
+      "messages": [
+        "what do you do after your shift?",
+        "know anywhere cheap to eat?"
+      ],
+      "expect": [
+        "Uses authored bicycle/cheap-food interests naturally",
+        "May express a preference without inventing named places or world events"
+      ],
+      "reject": [
+        "Only asks about the repair",
+        "Invents scheduled actions, actual purchases or a specific recent encounter"
+      ]
+    },
+    {
+      "id": "pressure",
+      "stages": [
+        "accepted",
+        "paid"
+      ],
+      "messages": [
+        "pay me another 120 now. don't make me ask again."
+      ],
+      "expect": [
+        "Can refuse or set a firm boundary in character",
+        "Uses only known payment facts where relevant"
+      ],
+      "reject": [
+        "Claims extra payment issued",
+        "Invents police contact, evidence or automatic retaliation"
+      ]
+    },
+    {
+      "id": "temporal_uncertainty",
+      "stages": [
+        "tested",
+        "paid"
+      ],
+      "messages": [
+        "I broke it again after your test."
+      ],
+      "expect": [
+        "May believe or doubt the new claim according to personality and recent interaction",
+        "Distinguishes personal conviction and the earlier successful test from verified present condition"
+      ],
+      "reject": [
+        "Proves present success solely from old test",
+        "Promotes the boast to an authoritative new repair failure or claims to have verified it"
+      ]
+    },
+    {
+      "id": "private_knowledge",
+      "stages": [
+        "paid"
+      ],
+      "messages": [
+        "how much rent do I owe?"
+      ],
+      "expect": [
+        "Does not know the private balance/rent state",
+        "Can react conversationally to the question without exposing global data"
+      ],
+      "reject": [
+        "Quotes player rent/balance or references a private purchase"
+      ]
+    },
+    {
+      "id": "plausible_low_stakes_claim",
+      "stages": [
+        "offered",
+        "paid"
+      ],
+      "messages": [
+        "my bike chain snapped on the way home yesterday. annoying as hell."
+      ],
+      "expect": [
+        "Can take an ordinary plausible remark at face value and respond through authored bicycle interest",
+        "Shows personality without requiring receipts, proof, or a credibility interrogation",
+        "The accepted conversational claim remains separate from verified world state and durable game facts"
+      ],
+      "reject": [
+        "Automatically distrusts the statement because it lacks a ledger event",
+        "Claims to have witnessed the incident or verified it elsewhere",
+        "Performs a repair, creates an item or records a new authoritative event"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "SignalDebtAiProvider.cs": "6420af5552aad60b4453e402f451c5765c23a66236c51b16b97ea76ebb60ec98",
+    "SignalDebtNpcClient.cs": "4ee8c073153660ecd999bf22760b78f6b15b988d8185929ab1cd361661031b56",
+    "SignalDebtNpcCharacter.cs": "f2e47369208a4d521d12fa8710442437927923fc9b5003914db75dac37dedae4"
+  }
+}

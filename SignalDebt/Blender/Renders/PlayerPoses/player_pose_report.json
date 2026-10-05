@@ -1,0 +1,132 @@
+{
+  "note": "Blender geometric proof mirroring controller poses; not Unity runtime validation.",
+  "source_blend_sha256": "0912dd8f359174e06045af1c295aea7ff59a8bd4be52e3ddb0e9c3e40d2e6630",
+  "player_fbx_sha256": "91e6157be52aabfa3395a8570fca3e771f41cb6d56f72eabc69828b52ed46db9",
+  "controller_source_sha256": "49c6179459a6a6b2b1835b1494d2fd527046e55bd13316fdbef4ecb6d75b4b00",
+  "poses": {
+    "Standing": {
+      "reach_based_pelvis_lowering_m": 0.0024676762159789867,
+      "LeftFoot": {
+        "target_error_m": 2.7597965312000395e-07,
+        "raw_reach_m": 0.7170310962796917,
+        "max_reach_m": 0.7210311238566283
+      },
+      "LeftHand": {
+        "target_error_m": 8.940696716308594e-08,
+        "raw_reach_m": 0.47835304164634423,
+        "max_reach_m": 0.4870095202985816
+      },
+      "RightFoot": {
+        "target_error_m": 2.3353784045662774e-07,
+        "raw_reach_m": 0.7170310987068084,
+        "max_reach_m": 0.7210311319950733
+      },
+      "RightHand": {
+        "target_error_m": 2.988602387924728e-07,
+        "raw_reach_m": 0.4783530250973912,
+        "max_reach_m": 0.4870095347659138
+      },
+      "eye_view_world_m": [
+        1.2449519634246826,
+        0.18313023447990417,
+        1.4397252798080444
+      ],
+      "camera_view_world_m": [
+        1.2449519634246826,
+        0.18313023447990417,
+        1.4421929121017456
+      ],
+      "renders": {
+        "Standing_Side.png": "fb746951de2fb08c4925387dbe95a29feffa9f91d8ca67e80c913419e713c35f",
+        "Standing_FirstPerson.png": "e15875deeb98b61dcb915eebd270dd240b155483a6a668fd3b8e856349641332"
+      }
+    },
+    "Crouched": {
+      "reach_based_pelvis_lowering_m": 0,
+      "LeftFoot": {
+        "target_error_m": 2.3231269923947672e-06,
+        "raw_reach_m": 0.30696210440533567,
+        "max_reach_m": 0.7210311238566283
+      },
+      "LeftHand": {
+        "target_error_m": 2.2302015940987714e-07,
+        "raw_reach_m": 0.45828137128049934,
+        "max_reach_m": 0.4870095202985816
+      },
+      "RightFoot": {
+        "target_error_m": 2.1897897183994768e-06,
+        "raw_reach_m": 0.3069621035520236,
+        "max_reach_m": 0.7210311319950733
+      },
+      "RightHand": {
+        "target_error_m": 1.7881393432617188e-07,
+        "raw_reach_m": 0.45828133165246265,
+        "max_reach_m": 0.4870095347659138
+      },
+      "eye_view_world_m": [
+        1.2477025985717773,
+        0.24092143774032593,
+        1.00536048412323
+      ],
+      "camera_view_world_m": [
+        1.2477025985717773,
+        0.24092143774032593,
+        1.00536048412323
+      ],
+      "renders": {
+        "Crouched_Side.png": "c34606704ee24467934bf42317d970df9102d0e4c09eb0935b84b8841f86fd90",
+        "Crouched_FirstPerson.png": "29adbf6640507ad6386022942dddb4b6d1581dc26969d9678f28e589e264c9ad"
+      }
+    },
+    "Seated": {
+      "reach_based_pelvis_lowering_m": 0,
+      "LeftFoot": {
+        "target_error_m": 2.7111924685345076e-06,
+        "raw_reach_m": 0.3912438677554213,
+        "max_reach_m": 0.7210311238566283
+      },
+      "LeftHand": {
+        "target_error_m": 3.816559456248789e-07,
+        "raw_reach_m": 0.42120238487618405,
+        "max_reach_m": 0.4870095202985816
+      },
+      "RightFoot": {
+        "target_error_m": 2.1622606691380803e-06,
+        "raw_reach_m": 0.39124384244491944,
+        "max_reach_m": 0.7210311319950733
+      },
+      "RightHand": {
+        "target_error_m": 6.107658604359387e-07,
+        "raw_reach_m": 0.4212025297035173,
+        "max_reach_m": 0.4870095347659138
+      },
+      "LeftSkin": {
+        "min_skin_height_m": 0.8581842184066772,
+        "key_top_height_m": 0.8557999730110168,
+        "skin_clearance_above_keytop_m": 0.0023842453956604004,
+        "finger_forward_dot": 0.9999999459832907,
+        "raw_dorsal_marker_up_dot": 0.9529255628585815,
+        "projected_dorsal_up_dot": 1.0
+      },
+      "RightSkin": {
+        "min_skin_height_m": 0.8581845760345459,
+        "key_top_height_m": 0.8557999730110168,
+        "skin_clearance_above_keytop_m": 0.0023846030235290527,
+        "finger_forward_dot": 0.9999999415595084,
+        "raw_dorsal_marker_up_dot": 0.9529262781143188,
+        "projected_dorsal_up_dot": 1.0
+      },
+      "camera_view_world_m": [
+        1.6961638927459717,
+        1.2496155500411987,
+        1.2019999027252197
+      ],
+      "renders": {
+        "Seated_Side.png": "4af9cecb71caf2e35ac218858c92c3f5198ddfa8d91cdf659d79bcb31bd7a262",
+        "Seated_FirstPerson.png": "122133f892c1f9c38da655629762e62d8d2dcf20f26830a230c577d7be02f8eb"
+      }
+    }
+  },
+  "first_person_vertical_fov_degrees": 76,
+  "first_person_aspect": "16:9"
+}

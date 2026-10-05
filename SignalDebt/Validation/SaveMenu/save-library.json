@@ -1,0 +1,11 @@
+{
+    "passed": true,
+    "assertions": 178,
+    "cases": 28,
+    "unity_version": "6000.0.62f1",
+    "failure": "",
+    "genuine_unity_json": true,
+    "real_temporary_files": true,
+    "unix_symlink_cases_executed": true,
+    "scope": "Immutable manual checkpoints, independent campaign activation, safety snapshots, archive migration, stale/missing/invalid selections and filesystem failure preservation. UI/native interaction is separate."
+}

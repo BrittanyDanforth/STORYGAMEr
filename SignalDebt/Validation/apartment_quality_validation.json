@@ -1,0 +1,172 @@
+{
+  "blender_version": "5.2.2 LTS",
+  "asset": "SignalDebt_Apartment",
+  "scope": "Authored Blender geometry, material maps and FBX/GLB interchange. Unity playback and hardware performance are not established.",
+  "blender_build_hash": "d13f752e3b9c",
+  "source_sha256": "945aa347a46fd2e37d98d746782a8509b3def12f4203f8e9d8a56dd7f69a74bc",
+  "source_objects": 968,
+  "base_polygons": 13584,
+  "denoiser": {
+    "enabled": true,
+    "name": "OPENIMAGEDENOISE",
+    "threads": 4
+  },
+  "closed_pillow_shells": {
+    "Pillow_-2.2": {
+      "base_vertices": 448,
+      "evaluated_vertices": 1666,
+      "signed_volume_m3": 0.0251085013676158,
+      "nonmanifold_edges": 0,
+      "minimum_z": 0.6851708292961121,
+      "mattress_surface_gap_m": 0.00017082929611200726
+    },
+    "Pillow_-1.5": {
+      "base_vertices": 448,
+      "evaluated_vertices": 1666,
+      "signed_volume_m3": 0.0251085013676158,
+      "nonmanifold_edges": 0,
+      "minimum_z": 0.6851708292961121,
+      "mattress_surface_gap_m": 0.00017082929611200726
+    }
+  },
+  "mattress_welt_surface_contact": {
+    "Mattress_Upper_Welt": {
+      "minimum_center_offset_m": 0.0018412374483887106,
+      "maximum_center_offset_m": 0.00272130955272587,
+      "piping_radius_m": 0.0024999999441206455
+    },
+    "Mattress_Lower_Welt": {
+      "minimum_center_offset_m": 0.0013994666951475665,
+      "maximum_center_offset_m": 0.002728653242229484,
+      "piping_radius_m": 0.0024999999441206455
+    }
+  },
+  "portable_pbr_materials": {
+    "Cotton Ivory Textile": {
+      "Woven_Cotton_Normal.png": "Non-Color",
+      "Woven_Cotton_Roughness.png": "Non-Color"
+    },
+    "Cotton Teal": {
+      "Woven_Cotton_Normal.png": "Non-Color",
+      "Woven_Cotton_Roughness.png": "Non-Color"
+    },
+    "Fabric Charcoal": {
+      "Woven_Cotton_Normal.png": "Non-Color",
+      "Woven_Cotton_Roughness.png": "Non-Color"
+    }
+  },
+  "construction_details": [
+    "Mattress_Upper_Welt",
+    "Mattress_Lower_Welt",
+    "Headboard_Upholstery_Piped_Seam",
+    "Blanket_Left_Hem",
+    "Blanket_Right_Hem",
+    "Blanket_Foot_Hem"
+  ],
+  "all_anchor_positions": {
+    "DoorHinge": [
+      1.600000023841858,
+      -2.630000114440918,
+      0.023000000044703484
+    ],
+    "LaptopLidPivot": [
+      1.7300000190734863,
+      1.9450000524520874,
+      0.8450000286102295
+    ],
+    "LaptopFocus": [
+      1.7300000190734863,
+      1.9605364799499512,
+      0.9950487613677979
+    ],
+    "PCBenchTarget": [
+      1.0099999904632568,
+      1.6799999475479126,
+      1.0870000123977661
+    ],
+    "Service_Manual_Pivot": [
+      2.490000009536743,
+      1.840000033378601,
+      0.8125
+    ],
+    "PlayerSpawn": [
+      2.049999952316284,
+      -1.8899999856948853,
+      0.02199999988079071
+    ],
+    "DeskSeat": [
+      1.6799999475479126,
+      0.9100000262260437,
+      0.02199999988079071
+    ],
+    "DoorInteract": [
+      2.319999933242798,
+      -2.380000114440918,
+      1.0950000286102295
+    ],
+    "BedInteract": [
+      -0.9750000238418579,
+      0.8600000143051147,
+      0.6299999952316284
+    ],
+    "BillInteract": [
+      0.4699999988079071,
+      2.5,
+      1.4800000190734863
+    ]
+  },
+  "all_original_anchors_and_colliders_unchanged": true,
+  "fbx_mesh_objects": 947,
+  "fbx_evaluated_polygons": 132415,
+  "fbx_evaluated_triangles": 256424,
+  "fbx_pbr_map_links": {
+    "Cotton Ivory Textile": [
+      "Woven_Cotton_Normal.png",
+      "Woven_Cotton_Roughness.png"
+    ],
+    "Cotton Teal": [
+      "Cotton_Blanket_BaseColor.png",
+      "Woven_Cotton_Normal.png",
+      "Woven_Cotton_Roughness.png"
+    ],
+    "Fabric Charcoal": [
+      "Woven_Cotton_Normal.png",
+      "Woven_Cotton_Roughness.png"
+    ]
+  },
+  "unity_pbr_import_note": "FBX map links survive Blender reimport. Unity Standard/URP roughness-to-smoothness interpretation and Play Mode have not been verified here.",
+  "unity_import_checks_remaining": [
+    "Set Woven_Cotton_Normal.png Texture Type to Normal map; use linear data interpretation.",
+    "Treat Woven_Cotton_Roughness.png as linear data, with sRGB disabled.",
+    "If the active Unity shader expects smoothness, convert smoothness = 1 - roughness and pack it into the channel that shader requires.",
+    "Confirm named FBX material texture assignments, scale and visible detail in the actual Unity scene before claiming in-engine parity."
+  ],
+  "fbx_roundtrip_all_anchor_positions_match_metres": true,
+  "glb_portable_pbr_materials": {
+    "Cotton Teal": {
+      "normal_texture": {
+        "index": 1
+      },
+      "metallic_roughness_texture": {
+        "index": 3
+      }
+    },
+    "Fabric Charcoal": {
+      "normal_texture": {
+        "index": 4
+      },
+      "metallic_roughness_texture": {
+        "index": 5
+      }
+    },
+    "Cotton Ivory Textile": {
+      "normal_texture": {
+        "index": 9
+      },
+      "metallic_roughness_texture": {
+        "index": 10
+      }
+    }
+  },
+  "status": "PASS"
+}

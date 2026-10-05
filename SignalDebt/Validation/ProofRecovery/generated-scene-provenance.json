@@ -1,0 +1,50 @@
+{
+  "recorded_utc": "2026-10-05T04:22:54.071029+00:00",
+  "revision": "proof-ui-r3",
+  "source_snapshot": "/workspace/SignalDebt-setup/unity/proof-ui-r3-validation",
+  "scope": "Root may copy changed scene/marker outputs after targeted native acceptance only if shared originals still match frozen inputs. Recheck immediately before copy; no copy performed by this report.",
+  "linux_generated_scene": {
+    "path": "Assets/Scenes/Apartment.unity",
+    "sha256": "be1e5d986afcb40f28d42a2a7d51698674e81e8f189a1f0168255feeb40bac69",
+    "bytes": 62975,
+    "source": "Actual SceneBuilder generation in frozen isolated project; shared repository scene untouched."
+  },
+  "windows_generated_scene": {
+    "path": "Assets/Scenes/Apartment.unity",
+    "sha256": "b366ecdcd16219f35068c46f78bd2cc0fe0540aea05d5d3416be5e32141d9275",
+    "bytes": 62944,
+    "source": "Actual SceneBuilder generation in frozen isolated project; shared repository scene untouched."
+  },
+  "files": [
+    {
+      "path": "Assets/Scenes/Apartment.unity",
+      "snapshot_file": "/workspace/SignalDebt-setup/unity/proof-ui-r3-validation/Assets/Scenes/Apartment.unity",
+      "frozen_repository_sha256": "f8b49b977ba20520418baf67994042ef5514d527f61d9ada96ffda903ef083c9",
+      "generated_snapshot_sha256": "b366ecdcd16219f35068c46f78bd2cc0fe0540aea05d5d3416be5e32141d9275",
+      "current_shared_repository_sha256": "f8b49b977ba20520418baf67994042ef5514d527f61d9ada96ffda903ef083c9",
+      "generated_changed_from_frozen": true,
+      "original_still_matches_frozen": true,
+      "bytes": 62944
+    },
+    {
+      "path": "Assets/Scenes/Apartment.unity.meta",
+      "snapshot_file": "/workspace/SignalDebt-setup/unity/proof-ui-r3-validation/Assets/Scenes/Apartment.unity.meta",
+      "frozen_repository_sha256": "68b86d621c7179d263bdb7c9bb7fb43f9c86c741475f90833bd1957c5da93e22",
+      "generated_snapshot_sha256": "68b86d621c7179d263bdb7c9bb7fb43f9c86c741475f90833bd1957c5da93e22",
+      "current_shared_repository_sha256": "68b86d621c7179d263bdb7c9bb7fb43f9c86c741475f90833bd1957c5da93e22",
+      "generated_changed_from_frozen": false,
+      "original_still_matches_frozen": true,
+      "bytes": 155
+    },
+    {
+      "path": "Assets/Scenes/.signal-debt-built",
+      "snapshot_file": "/workspace/SignalDebt-setup/unity/proof-ui-r3-validation/Assets/Scenes/.signal-debt-built",
+      "frozen_repository_sha256": "478822984a9c59df8bd79f39819cd27f8b8628718ae6e4ed6eeb3950227f09df",
+      "generated_snapshot_sha256": "906e5a3a772a3ca031ad33b70d30a490a50839e45256eff0964388a669fe1c3d",
+      "current_shared_repository_sha256": "478822984a9c59df8bd79f39819cd27f8b8628718ae6e4ed6eeb3950227f09df",
+      "generated_changed_from_frozen": true,
+      "original_still_matches_frozen": true,
+      "bytes": 87
+    }
+  ]
+}

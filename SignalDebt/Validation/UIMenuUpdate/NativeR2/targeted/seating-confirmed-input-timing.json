@@ -1,0 +1,26 @@
+[
+  {
+    "key": "e",
+    "down_seconds": 0.30372526199971617
+  },
+  {
+    "key": "e",
+    "up_seconds": 0.9038761100000556
+  },
+  {
+    "capture": "04-visible-seat-transition.png",
+    "seconds": 1.1266835229998833
+  },
+  {
+    "key": "Escape",
+    "down_seconds": 1.1267626120006753
+  },
+  {
+    "key": "Escape",
+    "up_seconds": 1.3269465760004096
+  },
+  {
+    "capture": "05-transition-return-paused.png",
+    "seconds": 3.4183333780001703
+  }
+]

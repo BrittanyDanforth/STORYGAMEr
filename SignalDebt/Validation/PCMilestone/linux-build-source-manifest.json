@@ -1,0 +1,23 @@
+{
+  "build_target": "StandaloneLinux64",
+  "source_sha256": {
+    "Assets/Editor/SignalDebtAnimationBuilder.cs": "e66fdad253d9f6cde2089297d79b15ba284f996c76cbcd47812fbb25f6652c16",
+    "Assets/Editor/SignalDebtComputerPlayModeChecks.cs": "aa3ae2ce62dc85c8535915d579a5efa4ce8b327a1bb279a5a1f8016caf254ef5",
+    "Assets/Editor/SignalDebtComputerTests.cs": "577b1ea7907fa8a3246986701b85ab49d8b3ba89fb9571ce5b017e102677e105",
+    "Assets/Editor/SignalDebtDomainTests.cs": "2c98810506bd0fe7b4bb079668352c0a793dfb6c0725a48e814dd12c31c2a02f",
+    "Assets/Editor/SignalDebtMasterBuild.cs": "c426e453696f4aba18a16ba647ab0fda7a5b1e650be2e423b51d45823a757458",
+    "Assets/Editor/SignalDebtSceneBuilder.cs": "1ab60d1e0a18ca81d28576e757da78cb2181303b147991e6976c6a03a7cbad32",
+    "Assets/Scripts/SignalDebtAnimationReview.cs": "fc52d3b340cc731845ca79dc2159a44cb8a9eab2f1be993dbe4d8d102b0cd6cd",
+    "Assets/Scripts/SignalDebtBootstrap.cs": "1584665c9266333e9533faebb15762ed0bae98903f3bb644dd904108af32abf5",
+    "Assets/Scripts/SignalDebtComputerDisplay.cs": "7cb583baf7ecb48814402e0a99d9ba81b7f2910e7a93fd0f8e28f269b8c9677c",
+    "Assets/Scripts/SignalDebtComputerSession.cs": "a760c39edc420800d82014a88f73238a957a6546f333ffd98dad3bacb0f54988",
+    "Assets/Scripts/SignalDebtDesktopWindow.cs": "b2ad2fd6e63bc441aaad835af4daed4b45e39e7ec373992e04d69d0fa454217e",
+    "Assets/Scripts/SignalDebtDoorProxy.cs": "7a9ed86519c038aeee9d6819b8f7b815cd113c0c5364f75447cd20fbd6e51051",
+    "Assets/Scripts/SignalDebtInteractable.cs": "a7ef12884677c6b1c1427b2ebcf2060863e4312bbf238de79ea8ad5dc7183a0e",
+    "Assets/Scripts/SignalDebtNpcClient.cs": "b389729ae90dfa4fc769cc8131e1710e899c9c9918fe4e95db43e90e8453ee27",
+    "Assets/Scripts/SignalDebtPlayer.cs": "f2b3b66f55ea18036f78fb35fffa4f01ddf7e1a36ff1fa4a90427c6037269d24",
+    "Assets/Scripts/SignalDebtSaveData.cs": "ae6460a9f7a096e5145b231768e794a4712e60a9dfcb52902a0a854b3381b1ae",
+    "Assets/Scripts/SignalDebtSaveStore.cs": "ae4c8d4b15c599a8e5103834a45d563ea4f3eb7185ecaa87d980280d194fba30",
+    "Assets/Scripts/SignalDebtUI.cs": "cbc83872bd6c8753b163af72852991d35671542351f3fb4c91a1836c295a0188"
+  }
+}

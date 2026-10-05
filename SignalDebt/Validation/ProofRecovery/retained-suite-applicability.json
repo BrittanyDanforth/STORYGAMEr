@@ -1,0 +1,53 @@
+{
+  "scope": "R3 changes only UI.cs saved Inbox preferences. These unchanged relevant source hashes justify retaining earlier suites; Conversation was rerun because it exercises UI.cs. Native scope remains version-specific.",
+  "current_revision": "proof-ui-r3",
+  "changed_from_r2": [
+    "Assets/Scripts/SignalDebtUI.cs"
+  ],
+  "suites": {
+    "save_store": {
+      "tested_revision": "proof-ui-r1",
+      "all_listed_dependencies_byte_identical": true,
+      "dependencies_sha256": {
+        "Assets/Scripts/SignalDebtSaveData.cs": "58ac3ae21b5922ba102d0b173e9907ef2eb6c664529cbcbdc17e806e2c372da6",
+        "Assets/Scripts/SignalDebtShop.cs": "daa8c2e3c11c3ca00aa622444607f67a4b48c0a3c93aa08722e1bf3b7daa2383",
+        "Assets/Scripts/SignalDebtClientDevice.cs": "ccd1a6eb95e69daa2c6e23df8480415311bafb793f147e0da9be64ea50e43d4e",
+        "Assets/Scripts/SignalDebtClientRepair.cs": "f0a353deea2020a93e54b27c0ecea0ab7a0cbfca8e04b6b421721ef4a5db58e7",
+        "Assets/Scripts/SignalDebtProofDocument.cs": "7660f8d471e8bc67aa76b70614ee800546ee24b453ae7d7f176c9b678bf3947c",
+        "Assets/Scripts/SignalDebtProofRecovery.cs": "2ab3e64f4ecfb09043a876616c23d81bdc5a22bf5d664ca1880a8bac1a3472c4",
+        "Assets/Scripts/SignalDebtSaveStore.cs": "13c469cb58cd5d40aa88bad3498dcba08d97d747ca987256c831edd34699404c",
+        "Assets/Scripts/SignalDebtLocalFiles.cs": "bf2a1359a5a963cd94eaa1cdc0fc843ff421febbc7b747871a9bb0499b58c2f6",
+        "Assets/Editor/SignalDebtSaveStoreChecks.cs": "865ab4aa158038570f79f5aed451d6f2709817ce8ad6d503ff793c69abd94885"
+      }
+    },
+    "provider": {
+      "tested_revision": "proof-ui-r2",
+      "all_listed_dependencies_byte_identical": true,
+      "dependencies_sha256": {
+        "Assets/Scripts/SignalDebtSaveData.cs": "58ac3ae21b5922ba102d0b173e9907ef2eb6c664529cbcbdc17e806e2c372da6",
+        "Assets/Scripts/SignalDebtShop.cs": "daa8c2e3c11c3ca00aa622444607f67a4b48c0a3c93aa08722e1bf3b7daa2383",
+        "Assets/Scripts/SignalDebtClientDevice.cs": "ccd1a6eb95e69daa2c6e23df8480415311bafb793f147e0da9be64ea50e43d4e",
+        "Assets/Scripts/SignalDebtClientRepair.cs": "f0a353deea2020a93e54b27c0ecea0ab7a0cbfca8e04b6b421721ef4a5db58e7",
+        "Assets/Scripts/SignalDebtProofDocument.cs": "7660f8d471e8bc67aa76b70614ee800546ee24b453ae7d7f176c9b678bf3947c",
+        "Assets/Scripts/SignalDebtProofRecovery.cs": "2ab3e64f4ecfb09043a876616c23d81bdc5a22bf5d664ca1880a8bac1a3472c4",
+        "Assets/Scripts/SignalDebtAiProvider.cs": "6420af5552aad60b4453e402f451c5765c23a66236c51b16b97ea76ebb60ec98",
+        "Assets/Scripts/SignalDebtNpcCharacter.cs": "af2f4f01db5ce5f406f41a880cfe3cb2c774f8edf7827d4810eb76f2a2214772",
+        "Assets/Scripts/SignalDebtNpcClient.cs": "caff717ddfb17c666796114e31d34c956e904d6e87d621313c912b28d10d7ea7",
+        "Assets/Editor/SignalDebtAiProviderChecks.cs": "70f0238f44ca1cbd61960f54b992d2f5a693df9f68a5966898feae57198bd0ac"
+      }
+    },
+    "proof_layout": {
+      "tested_revision": "proof-ui-r2",
+      "all_listed_dependencies_byte_identical": true,
+      "dependencies_sha256": {
+        "Assets/Scripts/SignalDebtSaveData.cs": "58ac3ae21b5922ba102d0b173e9907ef2eb6c664529cbcbdc17e806e2c372da6",
+        "Assets/Scripts/SignalDebtShop.cs": "daa8c2e3c11c3ca00aa622444607f67a4b48c0a3c93aa08722e1bf3b7daa2383",
+        "Assets/Scripts/SignalDebtClientDevice.cs": "ccd1a6eb95e69daa2c6e23df8480415311bafb793f147e0da9be64ea50e43d4e",
+        "Assets/Scripts/SignalDebtClientRepair.cs": "f0a353deea2020a93e54b27c0ecea0ab7a0cbfca8e04b6b421721ef4a5db58e7",
+        "Assets/Scripts/SignalDebtProofDocument.cs": "7660f8d471e8bc67aa76b70614ee800546ee24b453ae7d7f176c9b678bf3947c",
+        "Assets/Scripts/SignalDebtProofRecovery.cs": "2ab3e64f4ecfb09043a876616c23d81bdc5a22bf5d664ca1880a8bac1a3472c4",
+        "Assets/Scripts/SignalDebtProofDesktop.cs": "89e78b8dd9332c60e623c596ab076e90791737ee7760ba3d1756dec69a862787"
+      }
+    }
+  }
+}

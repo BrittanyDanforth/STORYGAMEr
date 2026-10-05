@@ -1,0 +1,22 @@
+{
+  "model": "gpt-6-luna",
+  "test": "live supplied-memory smoke test",
+  "gameplay_validated": false,
+  "http_status": 200,
+  "status": "completed",
+  "output": [
+    "{\"text\":\"You restored my order folder, and I paid you 120 fictional credits.\",\"used_fact_ids\":[\"evt_repair_001\",\"evt_payment_002\"]}"
+  ],
+  "usage": {
+    "input_tokens": 147,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 43,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 190
+  }
+}

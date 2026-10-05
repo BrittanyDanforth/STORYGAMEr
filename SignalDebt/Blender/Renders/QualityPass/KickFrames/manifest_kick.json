@@ -1,0 +1,196 @@
+{
+  "blender_version": "5.2.2 LTS",
+  "source": "/workspace/SignalDebt-setup/character-final-stage/SignalDebt/Blender/Character_Animation_Showcase.blend",
+  "source_sha256": "2193b84f69743159e2b50b8ae18e1a6a49e484b9b33f916f13bb7e1315c4d9d9",
+  "render_engine": "CYCLES",
+  "samples": 12,
+  "motion_frame_step": 2,
+  "images": {
+    "Kick_001.png": {
+      "frame": 1,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "8fe44678055c23140e8dfb0586b534649d423d00652e725412211b9ae6fa2e67"
+    },
+    "Kick_003.png": {
+      "frame": 3,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "a11d161687f8cf25af6a793a8ea47a756d255f1d27a2cd6828298c1088b40789"
+    },
+    "Kick_005.png": {
+      "frame": 5,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "4670498a18c97b1e09c9248f30e4e9a74b58f4c9a0b9e2caf3dd4464c6334271"
+    },
+    "Kick_007.png": {
+      "frame": 7,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "1f8c2b7f9aa5dfc4b34536df6d6be5f279483322b0ede36735cbf2fea1737379"
+    },
+    "Kick_009.png": {
+      "frame": 9,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "8dae7d6e1d174accf76b54c82ffe84075ae9818b8b630b25e3e003ad3fd9a274"
+    },
+    "Kick_011.png": {
+      "frame": 11,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "911d7ba908f003c37c2ce7c0ba0a41d9b195b929c8cc06c7fec233f1bc58177b"
+    },
+    "Kick_013.png": {
+      "frame": 13,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "3125b0107ce7e6460fc873afbbeb101c304df69ff334ac99e48551d544c39bc3"
+    },
+    "Kick_015.png": {
+      "frame": 15,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "ed452ad77daf59e3e2aec9a1f54233e5e2aa975a82205c541b8f5c4109c13df0"
+    },
+    "Kick_017.png": {
+      "frame": 17,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "15ac9b49d39492b0838cc6b74de6de43b8a13cb1551ccb3830b1a7b0fc9d98c4"
+    },
+    "Kick_019.png": {
+      "frame": 19,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "1f2db10cc58919d0194faaf38362d4db7de50162054f7750d2332b1ce19c4f50"
+    },
+    "Kick_021.png": {
+      "frame": 21,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "f27b221da4959817b447cc0a5721157e484450ca723f5dfd46c6e207a6c2d3b1"
+    },
+    "Kick_023.png": {
+      "frame": 23,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "5f40f5c9927d798f9a265dd2b018daccce01ce76445b3a5332692ec759e2bcc8"
+    },
+    "Kick_025.png": {
+      "frame": 25,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "6ad8e8ceff35b16d335d022b13067193895b7f5d0b44af606ebe62fd5b6af92f"
+    },
+    "Kick_027.png": {
+      "frame": 27,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "21b892a9817638d926826d9a35e36a60db57606f0ad92a50cabd5ce180b1a8d3"
+    },
+    "Kick_029.png": {
+      "frame": 29,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "2aeead3035f4bfc017102ef12b045f666f90735af3a1e905c75202928def5202"
+    },
+    "Kick_031.png": {
+      "frame": 31,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "61d71dc49d2685e022d3ae1c86c20560f9b4f6b0449148ee83262b7af8605a8d"
+    },
+    "Kick_033.png": {
+      "frame": 33,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "6a886d166b3788d035036496317dca213b196971dfd0de0b10a24bcf3101454d"
+    },
+    "Kick_035.png": {
+      "frame": 35,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "207b822b26903460801f4b7b1321e17272982e698b8798a05be1ad47ffbae26e"
+    },
+    "Kick_037.png": {
+      "frame": 37,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "621f5ec82dbf6f4469ae9b7c229164c14258fdf6f377f52c68c62b38abfbc88e"
+    },
+    "Kick_039.png": {
+      "frame": 39,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "9ca4c050f61fc25a26ea69358baf2439cb5afb15a9611a156c9252b4666f17e4"
+    },
+    "Kick_041.png": {
+      "frame": 41,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "476b7b6097dcb3a969743740cab674ced7f067e32aab8e32e65682abb2e7bb2b"
+    },
+    "Kick_043.png": {
+      "frame": 43,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "66c0886b571c613bf8c8f51431be9ce1cdf6370d4aab8f43c2b97597f06e7c3d"
+    },
+    "Kick_045.png": {
+      "frame": 45,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "266bb503f38fe5be26e0d92019e0f291da695702f4b3c12793ba20564528143b"
+    },
+    "Kick_047.png": {
+      "frame": 47,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "cfb4a41b376188a772799750cd69b42e77a4edb1ab149d1aadbf4280e77b008b"
+    },
+    "Kick_049.png": {
+      "frame": 49,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "a1ce2857e54024cd239807e7f33db1cb56d5adfbbcb60046a541e7606b0a2f2e"
+    },
+    "Kick_051.png": {
+      "frame": 51,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "1bd40341d4c51ba860c503f0f945c5af1e60e545c32251e7c2db6d59d7ca8baf"
+    },
+    "Kick_053.png": {
+      "frame": 53,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "5a391de2b68dc6fea00752d9ece891fca477a66ac6c14ffb84883365c3bcf46d"
+    },
+    "Kick_055.png": {
+      "frame": 55,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "c7d18907ed0e19810acc5c3486285d8474bf369d0bc0d4fc411955d45928db0f"
+    },
+    "Kick_057.png": {
+      "frame": 57,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "2e17adc6a665c62541f5fdcc8ca7c420dab15ff8adef8d9901749610e9b58f1d"
+    },
+    "Kick_059.png": {
+      "frame": 59,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "79b7621a41362cbf0dfe00f50f8caa69682daad517df3d4b5e609f4aa6d71941"
+    },
+    "Kick_061.png": {
+      "frame": 61,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "5f687195c2e040e3e7138574ee6e61538725803c0a1858529de7e02b701afa4a"
+    }
+  }
+}

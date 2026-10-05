@@ -1,0 +1,47 @@
+{
+  "status": "IMPROVED_SOURCE_WITH_REMAINING_LOCAL_ARMHOLE_FOLDS",
+  "blender_version": "5.2.2 LTS",
+  "source_sha256": {
+    "Blender/Characters.blend": "ab731a554c81b4f8777480bc4e8ee9f5f3bac1f3bf1fdc82f23aefffc3c41b78",
+    "Blender/Character_Animation_Showcase.blend": "2193b84f69743159e2b50b8ae18e1a6a49e484b9b33f916f13bb7e1315c4d9d9"
+  },
+  "changes": [
+    "Rounded police shoulder contour replaces clipped shelf; slimmer continuous sleeve and narrower armhole.",
+    "Smooth axillary skin weights hold inner garment against ribs.",
+    "Thin patrol epaulets fitted onto shirt surface.",
+    "SWAT sleeve panels fitted to final cloth with interpolated skin weights.",
+    "Blender5 layered Actions and mesh-normal API compatibility."
+  ],
+  "scope_preservation": "Existing rest skeleton contract, authored hand/prop poses, player and nonpolice source assets retained; source-bound checks record numeric tolerances and three unchanged nonpoliceFBXs.",
+  "fbx_files_checked": 9,
+  "authored_animation_frames_checked": 214,
+  "patrol_actual_surface_penetration_mm": {
+    "fresh_uploaded_source_baseline": {
+      "Left": 5.109095945954323,
+      "Right": 3.912859596312046
+    },
+    "updated_source": {
+      "Left": 1.8791038310155272,
+      "Right": 1.0187590960413218
+    }
+  },
+  "rendered_evidence": "Actual Cycles scene renders; GIF format/palette conversion with an identification banner. Patrol prior render hash retained and reusable under measured normal/unusedUV bounds; corrected SWAT uses final source directly.",
+  "limitations": [
+    "Small proximal patrol armhole triangle crossings remain; this is not a no-intersection approval.",
+    "Characters remain stylized early source art; facial animation, production retopology and LOD remain unfinished.",
+    "Unity Play Mode, runtime blending/cloth and GTX1080Ti performance unverified."
+  ],
+  "reports": {
+    "quality_pass_base_character_roundtrip.json": "ca971cafabefcb234ac7ea9f4b1601cf260e3b35e0e17c9911b9b75d8c82d185",
+    "quality_pass_garment_surface_crossings.json": "11e9493859599b348d2969cc1f2213001ce0fc5ad5c47c3ec5b020c2e06d9865",
+    "quality_pass_baseline_arm_body_clearance.json": "1f36b6ae0d32f99cbe1eb307fee58a49d55f18e1418c89bbd5ff04bc42b565e8",
+    "quality_pass_patrol_actor_equivalence.json": "924b69ff825fdaa1854718f5203354165599cd1c218947c5e143821f609272e0",
+    "quality_pass_render_delivery.json": "f2771c22d759fc0de72d2441539192f1aaaa5060e9a3efee1d56a380e1ee2e03",
+    "quality_pass_preservation.json": "7c4b2f871e894ea9f28fbd6cc8dce73c4b18b16afea87fb015a6e29ecd864cac",
+    "quality_pass_arm_body_clearance.json": "3b524a20523649357adfd3977c73df889a712e95c42fcbe29a8d4fb16dc9abe9",
+    "quality_pass_wrist_grip_reimport.json": "8f96dba6bfb5253cb138c005946b9fd8f6a9ce51d9925de7977349417d4899a4"
+  },
+  "clip_verifier_report_status": "PENDING visual review",
+  "technical_roundtrip_assertions_completed": true,
+  "visual_review": "Front/side/rear/top stills and decoded GIF poses inspected. Shoulder shelf and SWAT floating panels corrected; remaining local patrol seam folds explicitly retained as unfinished polish."
+}

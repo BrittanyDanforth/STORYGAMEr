@@ -1,0 +1,13 @@
+{
+  "channel": "8.0",
+  "sdk_version": "8.0.425",
+  "runtime_version": "8.0.31",
+  "url": "https://builds.dotnet.microsoft.com/dotnet/Sdk/8.0.425/dotnet-sdk-8.0.425-linux-x64.tar.gz",
+  "sha512": "934b8060a7190e5909ad1fd0785db542f487b3bbf6cdd14826b02095fdd0d0394298b1634085eff302928fccc33f7c1a7253e9b87df555fc36fce819bcd2e798",
+  "metadata_source": "https://builds.dotnet.microsoft.com/dotnet/release-metadata/8.0/releases.json",
+  "archive_sha512_verified": true,
+  "archive_bytes": 216833108,
+  "installed_directory": "/workspace/.local/opt/dotnet",
+  "dotnet_launcher_sha256": "7dda7a639bc35fba05c40d308b0296450aa4e628d109245a6312c385da9b0931",
+  "original_harness_sources_unchanged": true
+}

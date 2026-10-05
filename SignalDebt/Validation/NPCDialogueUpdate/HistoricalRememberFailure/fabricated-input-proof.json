@@ -1,0 +1,7 @@
+{
+  "origin": "Deliberately fabricated noncredential solely for native settings persistence/invalid authentication test.",
+  "input_length": 42,
+  "sha256": "13d587f5ffc9e142c040fe0fb4d3c4d40b35c0219189a61045eb6e0b4b797120",
+  "environment_key_unset_at_launch": true,
+  "real_credential_used": false
+}

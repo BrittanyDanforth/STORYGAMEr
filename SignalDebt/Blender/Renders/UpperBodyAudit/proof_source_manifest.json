@@ -1,0 +1,65 @@
+{
+  "source": "Blender/Character_Animation_Showcase.blend",
+  "source_sha256": "74a1a69a4d0c2e465ee6d7a38d6c8d96f096577df3d34f3b773f80ee1e6a9e01",
+  "note": "Contact sheets assemble actual Blender frames; no mesh or pixel repainting. Before image is prior delivered-asset audit render.",
+  "renders": [
+    {
+      "file": "Blender/Renders/UpperBodyAudit/PatrolLow_Front.png",
+      "sha256": "669026d611c5e668275dbc4525e67dde3ee62c4294aec4f0d67c0f6c256dbedf"
+    },
+    {
+      "file": "Blender/Renders/UpperBodyAudit/PatrolLow_Side.png",
+      "sha256": "7bf1aea0d191c80c997b6a6b23c6491e16fc10441fccb4dab807a85580581d95"
+    },
+    {
+      "file": "Blender/Renders/UpperBodyAudit/PatrolLow_Top.png",
+      "sha256": "cc3f7e09c2dd6259e57a5c8136b23a5c39ac37e6cc054155760a28947d69f9cc"
+    },
+    {
+      "file": "Blender/Renders/UpperBodyAudit/PatrolLow_Rear.png",
+      "sha256": "6739d5b404aa0e026161928e1303da7bb2f51beaea60c52086b79f238ae3ea66"
+    },
+    {
+      "file": "Blender/Renders/UpperBodyAudit/PatrolAim_Front.png",
+      "sha256": "cf768b535c8e728a80033b87c4c3a5003f2dae66bc6d664d4fdf0b381f127325"
+    },
+    {
+      "file": "Blender/Renders/UpperBodyAudit/PatrolAim_Side.png",
+      "sha256": "1876d92a1ebcc52937b8689ec49d6b9b2ebb2c81f165d1f8b3c7ea57b375fe40"
+    },
+    {
+      "file": "Blender/Renders/UpperBodyAudit/PatrolAim_Top.png",
+      "sha256": "89185d46c356fe5ca6974c43c1d786647c17049a667edd6710bc9001aff32732"
+    },
+    {
+      "file": "Blender/Renders/UpperBodyAudit/PatrolAim_Rear.png",
+      "sha256": "6b6584376b46f3b04cfe55fae2b536002ce884604d28122b428f2c2d73939563"
+    },
+    {
+      "file": "Blender/Renders/UpperBodyAudit/SWATContact_Front.png",
+      "sha256": "3755c4c017d11128004d65d30ecc9ae4a3aba6593b8b4eeb5db8da4678314b76"
+    },
+    {
+      "file": "Blender/Renders/UpperBodyAudit/SWATContact_Side.png",
+      "sha256": "5c9b969395d33325e101e9d4570acc388097396a9907313916e4d4db66743456"
+    },
+    {
+      "file": "Blender/Renders/UpperBodyAudit/SWATContact_Top.png",
+      "sha256": "9650f9ce940e956c8e49c5290a71d39709a705522cabd61e3da241a448bffe89"
+    },
+    {
+      "file": "Blender/Renders/UpperBodyAudit/SWATContact_Rear.png",
+      "sha256": "8e2959a5fa8d1d7fd877ad62c3a3f6eabe015f554bfc900adcc36ae5fb1f5bd9"
+    }
+  ],
+  "sheets": [
+    {
+      "file": "Blender/Renders/UpperBodyAudit/Police_Four_View_Proof.png",
+      "sha256": "5219fe0248d0f186a2c8edf9af225382de70151b8864d1069f1faaa8847cf67b"
+    },
+    {
+      "file": "Blender/Renders/UpperBodyAudit/Patrol_Shoulder_Before_After.png",
+      "sha256": "95e08ad25795e6286fbc2f093fee5991b2487a3a116ca6a54dd814d01c51840b"
+    }
+  ]
+}

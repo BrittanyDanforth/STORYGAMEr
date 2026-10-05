@@ -1,0 +1,985 @@
+{
+  "scope": "Delivered files excluding this manifest. v0.9 shoulder, clothing, equipment, and master-plan pass. Historical evidence is explicitly separate.",
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 181,
+      "sha256": "8a88ab65d4d20ad4ea33e0f9edfeba4e6f601a3539934c1295ec4cc602d5195e"
+    },
+    {
+      "path": "AI/.env.example",
+      "bytes": 443,
+      "sha256": "285f9d2a793f67c9ca8fa378e9dab465be2c6c7dc0161a1575ae239e8e33fde4"
+    },
+    {
+      "path": "AI/.gitignore",
+      "bytes": 30,
+      "sha256": "e50d972b7a42ecee40f4ae2f54881ff935acbf04a432c2bb248f7b6e5b858f87"
+    },
+    {
+      "path": "AI/README.md",
+      "bytes": 13790,
+      "sha256": "9e1df128108b79260fd896248d71c3c923d419fd71bbc7bf3ef37861a95e905d"
+    },
+    {
+      "path": "AI/relay.py",
+      "bytes": 28981,
+      "sha256": "1941fe1299d841815dcac52ab942b718a581a4de6c82960d0a1392594f1fcd19"
+    },
+    {
+      "path": "AI/test_relay.py",
+      "bytes": 21141,
+      "sha256": "42bf5c1d4181a80a880289309c87aae538706c25149df8bf5d38766ef226f61d"
+    },
+    {
+      "path": "Blender/ANIMATION_NOTES.md",
+      "bytes": 9129,
+      "sha256": "bd782658f83120834faf448233db1968f8251cd63da8ae86c24b6ca15b82af8e"
+    },
+    {
+      "path": "Blender/CHARACTER_ART_NOTES.md",
+      "bytes": 3962,
+      "sha256": "d2ad5b912dcfd18b557d19935557a107df5b92bdf535ac349b77430720a3035c"
+    },
+    {
+      "path": "Blender/Character_Animation_Showcase.blend",
+      "bytes": 23379712,
+      "sha256": "74a1a69a4d0c2e465ee6d7a38d6c8d96f096577df3d34f3b773f80ee1e6a9e01"
+    },
+    {
+      "path": "Blender/Characters.blend",
+      "bytes": 23093144,
+      "sha256": "5d9cd3512cde24de6977878adbb251dbb880dc5a1f3b1fe4d9ddbeed59bd9f49"
+    },
+    {
+      "path": "Blender/Previews/Preview_01_Room.png",
+      "bytes": 2470249,
+      "sha256": "84263641ff7c7df7d40adfd785fd5cd8ec129e1d213299c753dc7db6b1df2d19"
+    },
+    {
+      "path": "Blender/Previews/Preview_02_Workstation.png",
+      "bytes": 2453936,
+      "sha256": "5f599de0eed3df0501af33049da391260e6ab17344f41fe5236a0bf1ba25b744"
+    },
+    {
+      "path": "Blender/Previews/Preview_03_Bed_Window.png",
+      "bytes": 1634604,
+      "sha256": "f40bdd0024cb2690b6f1a674b8804a8d3331319be368247f4198380625aa696a"
+    },
+    {
+      "path": "Blender/Previews/Preview_04_Entrance.png",
+      "bytes": 1508483,
+      "sha256": "bc7507920c73a34ad9c0b8ece03ee7d6355a1766df6511313da108524415a742"
+    },
+    {
+      "path": "Blender/Previews/Preview_05_Desk_Detail.png",
+      "bytes": 2379348,
+      "sha256": "7ad8fd12783f1ec3d8555caa2707801c867a2d5abc6cee8004e208976eb3c8a2"
+    },
+    {
+      "path": "Blender/README.md",
+      "bytes": 6070,
+      "sha256": "2621e64312eaa73c9436ba091539c1efcda311d21eec6a329acf743321cfddc6"
+    },
+    {
+      "path": "Blender/Renders/Animation/Patrol_Grip_Review.gif",
+      "bytes": 4354626,
+      "sha256": "d2d38142cd3ee665d0f9ba0e5c5b14c854863561aa0cca815935d5000989cd7f"
+    },
+    {
+      "path": "Blender/Renders/Animation/Patrol_Hold_Frame_Strip.png",
+      "bytes": 391589,
+      "sha256": "0c8309c5ae1180d7d21b776a9bcac663f1fcfbbda35341a23022052768e25029"
+    },
+    {
+      "path": "Blender/Renders/Animation/Patrol_UpperBody_Contact_Sheet.png",
+      "bytes": 437425,
+      "sha256": "b7652816b6b320c5e166c3c75313c59915f79a752404a91d274341737170d016"
+    },
+    {
+      "path": "Blender/Renders/Animation/Patrol_grip_detail.png",
+      "bytes": 534519,
+      "sha256": "f4cdc075912bd47bad4f1cd30b5765ba970f655ebd4c92d0d36eb893e594de20"
+    },
+    {
+      "path": "Blender/Renders/Animation/Patrol_hold_001.png",
+      "bytes": 568206,
+      "sha256": "f32748f374ba7e219aafc20b95e71261855fdd24fc9d18faaff201d7aa8da2ef"
+    },
+    {
+      "path": "Blender/Renders/Animation/Patrol_hold_023.png",
+      "bytes": 567760,
+      "sha256": "1416d992ba2ae886be29bd0e2990ffa7c5a9952d52d878779ae48bdebc0edbca"
+    },
+    {
+      "path": "Blender/Renders/Animation/Patrol_hold_046.png",
+      "bytes": 566270,
+      "sha256": "2d015843144aa6eb034650ee3a1273ef96090110c29a0ee088405c3f1bb086c8"
+    },
+    {
+      "path": "Blender/Renders/Animation/Police_Animation_Review.mp4",
+      "bytes": 268825,
+      "sha256": "2535bfaafb518bde9c6cc39e0624f6a3816a8833eafc92e16c7aa4fda6166cdd"
+    },
+    {
+      "path": "Blender/Renders/Animation/SWAT_Door_Kick.gif",
+      "bytes": 2887807,
+      "sha256": "dcc5b86a66665e674e1e01bd628386191a789ec947ca248a236cb1c7d7479b74"
+    },
+    {
+      "path": "Blender/Renders/Animation/SWAT_Kick_Frame_Strip.png",
+      "bytes": 627453,
+      "sha256": "872f4992921f18404c7db2d79bd9dea732794bc5b3ed2583abf128e5641f3df1"
+    },
+    {
+      "path": "Blender/Renders/Animation/SWAT_kick_001.png",
+      "bytes": 591788,
+      "sha256": "552413b49c6a71ecf444b46c39d356604e988517401a1baf6a8da4d8af112645"
+    },
+    {
+      "path": "Blender/Renders/Animation/SWAT_kick_009.png",
+      "bytes": 591803,
+      "sha256": "7ac0cccf6dd8854e4ca5a0547361b982c13d964701b960a3d12cdec789d85773"
+    },
+    {
+      "path": "Blender/Renders/Animation/SWAT_kick_017.png",
+      "bytes": 601468,
+      "sha256": "66d83e90d01ce74ff4631761aefa2388db99d8b810e5fa71c6238161f3d6deea"
+    },
+    {
+      "path": "Blender/Renders/Animation/SWAT_kick_025.png",
+      "bytes": 601743,
+      "sha256": "af5cf4125d8c608b93131dcd23177877702e7eb453ac2c9fc1356919b0142c1f"
+    },
+    {
+      "path": "Blender/Renders/Animation/SWAT_kick_038.png",
+      "bytes": 607592,
+      "sha256": "251bea0600791b116abfa7562636e4900064e4ba323fee512a4b62df88e64822"
+    },
+    {
+      "path": "Blender/Renders/Animation/SWAT_kick_061.png",
+      "bytes": 596718,
+      "sha256": "11e861b4b526a7026255d1d861054210312d63ec691e5c2301ceb6a05bb529b7"
+    },
+    {
+      "path": "Blender/Renders/CharacterDetails/Patrol_Officer_Equipment.png",
+      "bytes": 2294617,
+      "sha256": "b120440653530b9e40ae03c146d0dcba3d37e6091dba7b2f29b98606457e7252"
+    },
+    {
+      "path": "Blender/Renders/CharacterDetails/Patrol_Officer_UpperBody.png",
+      "bytes": 2509200,
+      "sha256": "76f09826e41c7d46246be227dce33bcf7a1e5f773afa2f47145dbe4e1103030f"
+    },
+    {
+      "path": "Blender/Renders/CharacterDetails/SWAT_Officer_Equipment.png",
+      "bytes": 2314120,
+      "sha256": "e318e7d8677024375a4f33dd23e7f5188db1fefa2a61b2cabbba0a948bf5810b"
+    },
+    {
+      "path": "Blender/Renders/CharacterDetails/SWAT_Officer_UpperBody.png",
+      "bytes": 2571472,
+      "sha256": "ee58d0dc703c3721c1c3229403fc19b60b2b4211f431f90672c20b9514cbeb26"
+    },
+    {
+      "path": "Blender/Renders/CharacterDetails/character_detail_manifest.json",
+      "bytes": 1396,
+      "sha256": "491776e692594fc2244fd1a879c39db1e6c7d554038002c59ed6e02ca1b45a90"
+    },
+    {
+      "path": "Blender/Renders/Characters_Roster.png",
+      "bytes": 4554471,
+      "sha256": "360e7d5bc294a19576000cb8ed954f47bed51f7e1e0a7d221f6b9a2ef2f7994a"
+    },
+    {
+      "path": "Blender/Renders/PlayerPoses/Crouched_FirstPerson.png",
+      "bytes": 2380833,
+      "sha256": "29adbf6640507ad6386022942dddb4b6d1581dc26969d9678f28e589e264c9ad"
+    },
+    {
+      "path": "Blender/Renders/PlayerPoses/Crouched_Side.png",
+      "bytes": 1483464,
+      "sha256": "c34606704ee24467934bf42317d970df9102d0e4c09eb0935b84b8841f86fd90"
+    },
+    {
+      "path": "Blender/Renders/PlayerPoses/Seated_FirstPerson.png",
+      "bytes": 1736899,
+      "sha256": "122133f892c1f9c38da655629762e62d8d2dcf20f26830a230c577d7be02f8eb"
+    },
+    {
+      "path": "Blender/Renders/PlayerPoses/Seated_Side.png",
+      "bytes": 1420679,
+      "sha256": "4af9cecb71caf2e35ac218858c92c3f5198ddfa8d91cdf659d79bcb31bd7a262"
+    },
+    {
+      "path": "Blender/Renders/PlayerPoses/Standing_FirstPerson.png",
+      "bytes": 2344636,
+      "sha256": "e15875deeb98b61dcb915eebd270dd240b155483a6a668fd3b8e856349641332"
+    },
+    {
+      "path": "Blender/Renders/PlayerPoses/Standing_Side.png",
+      "bytes": 1474978,
+      "sha256": "fb746951de2fb08c4925387dbe95a29feffa9f91d8ca67e80c913419e713c35f"
+    },
+    {
+      "path": "Blender/Renders/PlayerPoses/player_pose_report.json",
+      "bytes": 4624,
+      "sha256": "c6c85c7cd0803cda9b13d6fb576eed154b0739dac0df52ba001a6aac0544e9a7"
+    },
+    {
+      "path": "Blender/Renders/Player_Elbow_Close.png",
+      "bytes": 2587023,
+      "sha256": "a7c0455aff2ce4de4070a5de6d122a72f754fb3ddacde8c474f3d77c1b96295a"
+    },
+    {
+      "path": "Blender/Renders/Player_Knee_Close.png",
+      "bytes": 2498331,
+      "sha256": "f95b9e287dc368f6849083d6a9ed281d04047101379229c4b70ee941663ce28f"
+    },
+    {
+      "path": "Blender/Renders/Player_Skin_Bend.png",
+      "bytes": 2175959,
+      "sha256": "1b60e36f44ad18ed8154268d73ef031a8917a96ebd8b978478a40005d239d85c"
+    },
+    {
+      "path": "Blender/Renders/UpperBodyAudit/Attachment_LeftFront.png",
+      "bytes": 779505,
+      "sha256": "d69e8b316407bf0dae0f21bd29ced310b9b8d6594fb6b83cede4c7d49686ae52"
+    },
+    {
+      "path": "Blender/Renders/UpperBodyAudit/Attachment_LeftRear.png",
+      "bytes": 747707,
+      "sha256": "a31ad84beccffd2125117231baa9121f809c5ddc9711be86518d81154c76cec2"
+    },
+    {
+      "path": "Blender/Renders/UpperBodyAudit/History/PatrolLow_Side_Before.png",
+      "bytes": 489756,
+      "sha256": "18b4fd748336ed898faab85b2670407fec0b8377286d10ccb86add537e721111"
+    },
+    {
+      "path": "Blender/Renders/UpperBodyAudit/PatrolAim_Front.png",
+      "bytes": 535639,
+      "sha256": "cf768b535c8e728a80033b87c4c3a5003f2dae66bc6d664d4fdf0b381f127325"
+    },
+    {
+      "path": "Blender/Renders/UpperBodyAudit/PatrolAim_Rear.png",
+      "bytes": 486318,
+      "sha256": "6b6584376b46f3b04cfe55fae2b536002ce884604d28122b428f2c2d73939563"
+    },
+    {
+      "path": "Blender/Renders/UpperBodyAudit/PatrolAim_Side.png",
+      "bytes": 499208,
+      "sha256": "1876d92a1ebcc52937b8689ec49d6b9b2ebb2c81f165d1f8b3c7ea57b375fe40"
+    },
+    {
+      "path": "Blender/Renders/UpperBodyAudit/PatrolAim_Top.png",
+      "bytes": 487675,
+      "sha256": "89185d46c356fe5ca6974c43c1d786647c17049a667edd6710bc9001aff32732"
+    },
+    {
+      "path": "Blender/Renders/UpperBodyAudit/PatrolLow_Front.png",
+      "bytes": 544464,
+      "sha256": "669026d611c5e668275dbc4525e67dde3ee62c4294aec4f0d67c0f6c256dbedf"
+    },
+    {
+      "path": "Blender/Renders/UpperBodyAudit/PatrolLow_Rear.png",
+      "bytes": 498162,
+      "sha256": "6739d5b404aa0e026161928e1303da7bb2f51beaea60c52086b79f238ae3ea66"
+    },
+    {
+      "path": "Blender/Renders/UpperBodyAudit/PatrolLow_Side.png",
+      "bytes": 499653,
+      "sha256": "7bf1aea0d191c80c997b6a6b23c6491e16fc10441fccb4dab807a85580581d95"
+    },
+    {
+      "path": "Blender/Renders/UpperBodyAudit/PatrolLow_Top.png",
+      "bytes": 480100,
+      "sha256": "cc3f7e09c2dd6259e57a5c8136b23a5c39ac37e6cc054155760a28947d69f9cc"
+    },
+    {
+      "path": "Blender/Renders/UpperBodyAudit/Patrol_Shoulder_Before_After.png",
+      "bytes": 590807,
+      "sha256": "95e08ad25795e6286fbc2f093fee5991b2487a3a116ca6a54dd814d01c51840b"
+    },
+    {
+      "path": "Blender/Renders/UpperBodyAudit/Police_Four_View_Proof.png",
+      "bytes": 1023187,
+      "sha256": "5219fe0248d0f186a2c8edf9af225382de70151b8864d1069f1faaa8847cf67b"
+    },
+    {
+      "path": "Blender/Renders/UpperBodyAudit/SWATContact_Front.png",
+      "bytes": 566236,
+      "sha256": "3755c4c017d11128004d65d30ecc9ae4a3aba6593b8b4eeb5db8da4678314b76"
+    },
+    {
+      "path": "Blender/Renders/UpperBodyAudit/SWATContact_Rear.png",
+      "bytes": 523636,
+      "sha256": "8e2959a5fa8d1d7fd877ad62c3a3f6eabe015f554bfc900adcc36ae5fb1f5bd9"
+    },
+    {
+      "path": "Blender/Renders/UpperBodyAudit/SWATContact_Side.png",
+      "bytes": 529696,
+      "sha256": "5c9b969395d33325e101e9d4570acc388097396a9907313916e4d4db66743456"
+    },
+    {
+      "path": "Blender/Renders/UpperBodyAudit/SWATContact_Top.png",
+      "bytes": 520846,
+      "sha256": "9650f9ce940e956c8e49c5290a71d39709a705522cabd61e3da241a448bffe89"
+    },
+    {
+      "path": "Blender/Renders/UpperBodyAudit/proof_source_manifest.json",
+      "bytes": 2637,
+      "sha256": "dbecee9ea72bf70035a1bae2962c8503e093ce7b90f24d35c412b0337c49ce04"
+    },
+    {
+      "path": "Blender/Renders/geometry_qa_manifest.json",
+      "bytes": 1741,
+      "sha256": "974a7f0360096c1b1c5717b1e76b922c11990539ef54f272d0f801c9340899d1"
+    },
+    {
+      "path": "Blender/SignalDebt_Apartment.blend",
+      "bytes": 9039124,
+      "sha256": "3ee029e9c9747faeb6355b96343ab06ce37985541f3ff761ec8add71b040c5c9"
+    },
+    {
+      "path": "Blender/animate_characters.py",
+      "bytes": 27528,
+      "sha256": "da836a8fefa33a64e932ce45cf160cac58c5a979f94618478b8123c3b17d10d4"
+    },
+    {
+      "path": "Blender/apartment_manifest.json",
+      "bytes": 10554,
+      "sha256": "78910503849b9a2f405764d65ca285df1ec4740bdbd3509aa58aaa8894668b46"
+    },
+    {
+      "path": "Blender/assemble_body_review_proofs.py",
+      "bytes": 2330,
+      "sha256": "7d0b87419531926306e3738fb9d8c73a85ce0ca93e76fe7ea6f0eb144cd03d7e"
+    },
+    {
+      "path": "Blender/asset_security_check.json",
+      "bytes": 9319,
+      "sha256": "fdfe3db1d41f841d70e99d53a91e33cc70785ade443976c48fc9025d0e7aeb83"
+    },
+    {
+      "path": "Blender/asset_verification.json",
+      "bytes": 1267,
+      "sha256": "2cd73039393ee2b4113ca647224dc09aead77831cf35e3a81db7ce8eb3274eb5"
+    },
+    {
+      "path": "Blender/build_apartment.py",
+      "bytes": 55866,
+      "sha256": "039485cccf68620d9ab45f645b9bff9ff72d78a36998e10a46615c14af71bb51"
+    },
+    {
+      "path": "Blender/build_characters.py",
+      "bytes": 68012,
+      "sha256": "71130420b580ccc3dc57f0664bb63ef37c971764a6f40ddc968b3b678a88de81"
+    },
+    {
+      "path": "Blender/build_statistics.json",
+      "bytes": 1040,
+      "sha256": "46f42af732027803dac12d97cc87e441c53b4d72f6ed034b55e4234262638c4b"
+    },
+    {
+      "path": "Blender/export_report.json",
+      "bytes": 102,
+      "sha256": "a196db02020f2dea3fc9a5ce911207adc2f5f3948b5595e2c5cfe15a208d8ca2"
+    },
+    {
+      "path": "Blender/finalize_animation_preview.py",
+      "bytes": 5717,
+      "sha256": "c0440e106c6aebcf894803afe0bd229a6bd3ff9f98b57a5b704a7ab5f5a45c42"
+    },
+    {
+      "path": "Blender/finalize_hand_previews.py",
+      "bytes": 7688,
+      "sha256": "688e41a93531159ef9814e9784094995c978a21c10423c9973dfa88cff2bd445"
+    },
+    {
+      "path": "Blender/finalize_whole_body_review.py",
+      "bytes": 9377,
+      "sha256": "9403ef49946489684f8c2aed72bc6c02dbb26ac7363ef118857792cd30e587fd"
+    },
+    {
+      "path": "Blender/mouse_contact_verification.json",
+      "bytes": 951,
+      "sha256": "acc285ae1e112f222450287b4a5859c15239280769a76e38fa29fd1551fb8b65"
+    },
+    {
+      "path": "Blender/preview_render_manifest.py",
+      "bytes": 1989,
+      "sha256": "a93b7e64fb87eb08bcc3f9b140091f7827c28a54c02fe7b006b808adb92f3dd7"
+    },
+    {
+      "path": "Blender/render_animation_motion.py",
+      "bytes": 2321,
+      "sha256": "9edc25f3d7bcc936a0602edb97efdb6f2c77cbf75d6985b371cc90aa6c6a27d7"
+    },
+    {
+      "path": "Blender/render_animation_stills.py",
+      "bytes": 2706,
+      "sha256": "7d65db5ff6075ec4fa450ede6336d822ac5d636c732b92730cdd609a11280724"
+    },
+    {
+      "path": "Blender/render_attachment_close.py",
+      "bytes": 1231,
+      "sha256": "9b7928aa80e9e7533a099387c41bb731e65b55f0076377b8931c1841e4f70072"
+    },
+    {
+      "path": "Blender/render_character_roster.py",
+      "bytes": 1809,
+      "sha256": "506c0b2dfdfdb685727ca8bdf17e2a4d90c9c2a4ecbde82cec3ebb152cb6954f"
+    },
+    {
+      "path": "Blender/render_patrol_grip_motion.py",
+      "bytes": 2799,
+      "sha256": "72bc1efeb7beae329eaed4f2cdc832fec23465edb81ce15b63ce43cfd63007d9"
+    },
+    {
+      "path": "Blender/render_player_poses.py",
+      "bytes": 11332,
+      "sha256": "f1627fd73868c7ad4e655435b77f4fc63972c1f1260da735ef4fa666996246d3"
+    },
+    {
+      "path": "Blender/render_police_character_details.py",
+      "bytes": 1793,
+      "sha256": "cca542c48525db9b53b547d8c20e266eb5e4ee4504cb6d502394596b9b29db6f"
+    },
+    {
+      "path": "Blender/render_skin_deformation.py",
+      "bytes": 2960,
+      "sha256": "86bfb4b53571104b6103f7e9d4ff41c9e012c815d96ff700c0986517d97a7acd"
+    },
+    {
+      "path": "Blender/render_upper_body_audit.py",
+      "bytes": 1786,
+      "sha256": "54ba8d169c4f0040c22c0d968482fda6375f5538099b0968c05f5e7dd65e1c48"
+    },
+    {
+      "path": "Blender/verify_apartment.py",
+      "bytes": 3748,
+      "sha256": "64f2e4a692520c79e0d73ac636fadc59300f26da2e2681a707a05486de01c4a7"
+    },
+    {
+      "path": "Blender/verify_asset_security.py",
+      "bytes": 7036,
+      "sha256": "5e0e128f81eda8de39ffd9a940d9c48baa01a817354aeb27b39120d5e9d05477"
+    },
+    {
+      "path": "Blender/verify_characters.py",
+      "bytes": 9215,
+      "sha256": "20d536db156e015f791acba5cfac0213e0881c72cdb9a294f835232ebbf0c623"
+    },
+    {
+      "path": "Blender/verify_garment_surface_crossings.py",
+      "bytes": 6293,
+      "sha256": "1d577066eccc3c915258be3232a97c6b314a2822a714e5bd89effadd2d87bf7c"
+    },
+    {
+      "path": "Blender/verify_player_semantic_geometry.py",
+      "bytes": 6400,
+      "sha256": "b604a840ecf5bb773c6dcf01187d27272f12c785e449e558e981b5658f8d8008"
+    },
+    {
+      "path": "Blender/verify_police_equipment.py",
+      "bytes": 5161,
+      "sha256": "394310b0e760c1a7cf8879c8463cd549a29d6ca61f0039920600fe0a4c41feda"
+    },
+    {
+      "path": "Blender/verify_police_surface_orientation.py",
+      "bytes": 2062,
+      "sha256": "42e2930e0889bb5aeb7a40a297a21efbd599331641ff88d702eaf4ee85cbc71f"
+    },
+    {
+      "path": "Blender/verify_roster_translation_equivalence.py",
+      "bytes": 3005,
+      "sha256": "36c8dfc8ab65953346104c5db4608e574ba8098ee98aa309d5d6e8db21c0d189"
+    },
+    {
+      "path": "Blender/verify_upper_body_clearance.py",
+      "bytes": 13255,
+      "sha256": "0f472ae652e4ecfbfb1bae99a40bed1c379f6770c8b3806f8c776b39e2f2d951"
+    },
+    {
+      "path": "Blender/verify_wrist_animation.py",
+      "bytes": 9088,
+      "sha256": "6a0364a0c93ef4e0f969a2cf960c43cefc78bac692b19bdaf3fc11056fdd1a45"
+    },
+    {
+      "path": "Blender/visual_qa.json",
+      "bytes": 2897,
+      "sha256": "61a3ebef01c8dc1050b861e8f05bcdc3465660f222e94805234d5683b35ae400"
+    },
+    {
+      "path": "Documentation/Art_References.md",
+      "bytes": 2715,
+      "sha256": "4d5de83bdcc3b05f3f574ede1769fb74e83b1e30c7fff370f545dbf6a7066746"
+    },
+    {
+      "path": "Documentation/Hacker_Game_Master_Plan.docx",
+      "bytes": 126622,
+      "sha256": "372361ac6bb18a50216c91bf80103c79a3fc1ab21880efe33014c5647c8925bd"
+    },
+    {
+      "path": "Documentation/Hacker_Game_Master_Plan.pdf",
+      "bytes": 715439,
+      "sha256": "8cd917bb07209fbbb2266da128d2ad9bbc475ed0a6bfb7e1f9cc0c79e9482a62"
+    },
+    {
+      "path": "Documentation/SECURITY.md",
+      "bytes": 6029,
+      "sha256": "3326b22d5de89ed623f934b53405c136d0fd6bff1551cdf3140b1731f9b77cb6"
+    },
+    {
+      "path": "Documentation/Source/README.md",
+      "bytes": 463,
+      "sha256": "830007f66a3113f800ebdfbf94f97b50a77b0fc5701125781f3e2e95d77fdf63"
+    },
+    {
+      "path": "Documentation/Source/build_document.py",
+      "bytes": 9362,
+      "sha256": "7f5ca348bd8076d7f72114abefaa60971593b970177e58a1adf018e388dbeb94"
+    },
+    {
+      "path": "Documentation/Source/feature_catalog.md",
+      "bytes": 51583,
+      "sha256": "b0c6e0271668c7acc2c66ea24569e40b474de86591a922a75f366c5d13e23294"
+    },
+    {
+      "path": "Documentation/Source/master_content.md",
+      "bytes": 165413,
+      "sha256": "17a3a0a6d6f8dafca02e35e9c545be3cbfa5bf9ac062f3f31e1a206169239085"
+    },
+    {
+      "path": "Documentation/model_selection.md",
+      "bytes": 5445,
+      "sha256": "48c419ed82d5fbb3ec2151004a2623c192dc64a19053e4cea9f8662fff963130"
+    },
+    {
+      "path": "Documentation/unity_notes.md",
+      "bytes": 12366,
+      "sha256": "064c7a802f4d3f2025af0d817a321d424e0a44b343fb62c090d2f471139baef8"
+    },
+    {
+      "path": "README.md",
+      "bytes": 8173,
+      "sha256": "d1560b5d2fe3347ed4380d3e50285c33abe996d3427089c94af83d1a440417a2"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Animations/Patrol_AimToLowReady.fbx",
+      "bytes": 2830524,
+      "sha256": "9ae71fce1b958efcb0bed37c22332599c2a76dbde2264fd6218e13a62afa6734"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Animations/Patrol_LowReadyIdle.fbx",
+      "bytes": 2878044,
+      "sha256": "eeb00742cf203073d0efef0aabdfac3ec74da738c1b1c92f7aa88a7be1966ae9"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Animations/Patrol_LowReadyToAim.fbx",
+      "bytes": 2830604,
+      "sha256": "682c45c221018c455aed224f8304359823128d8f79ac1276a7a17f6e1e50fc3f"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Animations/SWAT_DoorKick.fbx",
+      "bytes": 3085148,
+      "sha256": "4f1e01a9fc68567ece45ebe9723a16fa212f65c78a2f039dddfa7388164901bf"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Animations/animation_manifest.json",
+      "bytes": 242323,
+      "sha256": "f2d2e85c82d40e50a32482cc36559f2a626221ae161a6b0b448173f2cca501a8"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Apartment/Apartment.fbm/Cotton_Blanket_BaseColor.png",
+      "bytes": 364262,
+      "sha256": "c4542464456e3ccd19a22db9d8ecfa9339d1e8ac624f3e541b0f2b37783cbb1b"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Apartment/Apartment.fbm/Oak_Floor_BaseColor.png",
+      "bytes": 330754,
+      "sha256": "9ef3ced558487b47ddebf9a89822a473ca6ad584ef4ca1ed89e91edeab530513"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Apartment/Apartment.fbm/Plaster_BaseColor.png",
+      "bytes": 282805,
+      "sha256": "ddfbf83fae75b0662a42e80ae8c45bd757dcb12e5893b80b6a927b17526b4491"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Apartment/Apartment.fbm/Walnut_Desk_BaseColor.png",
+      "bytes": 316193,
+      "sha256": "dd780e48ea7aaa18b73a812b81774c3565ddccb0f02d50428b0876bc24d96abd"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Apartment/Apartment.fbm/Walnut_Worktop_BaseColor.png",
+      "bytes": 255443,
+      "sha256": "33d258135a7b1638c2e396f53b9dc02a573d0bbab2e3bb61ef61fed66974a429"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Apartment/Apartment.fbx",
+      "bytes": 6449548,
+      "sha256": "3942edef23e0441a85f4c7472a88b3c1dbe93a3c32f9f264dca3d3f67cab43ed"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Apartment/SignalDebt_Apartment.glb",
+      "bytes": 10504936,
+      "sha256": "8d9a9e73045fcbe529ac3cde16f04d4a664f9bb86d92496d3783d1789bd8adc1"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Apartment/SignalDebt_Apartment.mtl",
+      "bytes": 7235,
+      "sha256": "3a93e8aab4b6727b9c2bd150698a57299cef6e4a415cda7ba5f54da44132f37f"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Apartment/SignalDebt_Apartment.obj",
+      "bytes": 14685777,
+      "sha256": "2dc34c2c53d1104f17a32cab284765bcbcd010657a1115c975e0390f8631c8b0"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Apartment/Textures/Cotton_Blanket_BaseColor.png",
+      "bytes": 364262,
+      "sha256": "c4542464456e3ccd19a22db9d8ecfa9339d1e8ac624f3e541b0f2b37783cbb1b"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Apartment/Textures/Oak_Floor_BaseColor.png",
+      "bytes": 330754,
+      "sha256": "9ef3ced558487b47ddebf9a89822a473ca6ad584ef4ca1ed89e91edeab530513"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Apartment/Textures/Plaster_BaseColor.png",
+      "bytes": 282805,
+      "sha256": "ddfbf83fae75b0662a42e80ae8c45bd757dcb12e5893b80b6a927b17526b4491"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Apartment/Textures/Walnut_Desk_BaseColor.png",
+      "bytes": 316193,
+      "sha256": "dd780e48ea7aaa18b73a812b81774c3565ddccb0f02d50428b0876bc24d96abd"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Apartment/Textures/Walnut_Worktop_BaseColor.png",
+      "bytes": 255443,
+      "sha256": "33d258135a7b1638c2e396f53b9dc02a573d0bbab2e3bb61ef61fed66974a429"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Apartment/apartment_collision_plan.json",
+      "bytes": 10554,
+      "sha256": "78910503849b9a2f405764d65ca285df1ec4740bdbd3509aa58aaa8894668b46"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Characters/Judge.fbx",
+      "bytes": 785116,
+      "sha256": "f0ff25b1ca20b232749a73e2e4370af6a4352472830d435ebf6d809e159c6fd4"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Characters/Mara_Victim.fbx",
+      "bytes": 733612,
+      "sha256": "15f0feb85a317d103fd89aff8af03945e58248d7f1fd4f8bdb6be741af5f47da"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Characters/Patrol_Officer.fbx",
+      "bytes": 2154444,
+      "sha256": "d75374b6fa0a21733d28c69701190959ba2cef625b87ba0801755099770c67cf"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Characters/PlayerBody.fbx",
+      "bytes": 1938668,
+      "sha256": "23518169b985f4425c90d0cc11edb0f701b79992009874aeedbe1eef976d4b90"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Characters/README.md",
+      "bytes": 4116,
+      "sha256": "7b2ceef62325a1088712572bae4959231865a69c71f2fca8b9861d6d7f6577c4"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Characters/SWAT_Officer.fbx",
+      "bytes": 2487740,
+      "sha256": "7052c896491ad6890244c5faa28576d0e6c5d4de60c1aecf62798cfa510c469b"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Characters/character_stats.json",
+      "bytes": 1244,
+      "sha256": "36aa55e7400b44f95078f4e39489dafe7a59682fa3da4b920b4455d930812beb"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Characters/fbx_roundtrip_verification.json",
+      "bytes": 4667,
+      "sha256": "a2c8776d7b8d7aa587eaedf96ce61bfda6a15c09a591cd11eebd263cc95da6a6"
+    },
+    {
+      "path": "UnityProject/Assets/Art/Characters/rig_contract.json",
+      "bytes": 270071,
+      "sha256": "6249bca644163313ae18b2553a10c843e39c665ba55b12a44542d558add798ad"
+    },
+    {
+      "path": "UnityProject/Assets/Editor/SignalDebtAnimationBuilder.cs",
+      "bytes": 9616,
+      "sha256": "e66fdad253d9f6cde2089297d79b15ba284f996c76cbcd47812fbb25f6652c16"
+    },
+    {
+      "path": "UnityProject/Assets/Editor/SignalDebtDomainTests.cs",
+      "bytes": 5378,
+      "sha256": "2c98810506bd0fe7b4bb079668352c0a793dfb6c0725a48e814dd12c31c2a02f"
+    },
+    {
+      "path": "UnityProject/Assets/Editor/SignalDebtSceneBuilder.cs",
+      "bytes": 21421,
+      "sha256": "8c9673765e8e1029e7bf689f592fc3f01b8a478960caf6ecc58aaaf7a66ee70a"
+    },
+    {
+      "path": "UnityProject/Assets/Scripts/SignalDebtAnimationReview.cs",
+      "bytes": 11254,
+      "sha256": "fc52d3b340cc731845ca79dc2159a44cb8a9eab2f1be993dbe4d8d102b0cd6cd"
+    },
+    {
+      "path": "UnityProject/Assets/Scripts/SignalDebtBootstrap.cs",
+      "bytes": 9579,
+      "sha256": "14cea1cfa55dc7eb2ea9db2859905d74ce7138c2116629af4e81578b43ac0283"
+    },
+    {
+      "path": "UnityProject/Assets/Scripts/SignalDebtDoorProxy.cs",
+      "bytes": 167,
+      "sha256": "7a9ed86519c038aeee9d6819b8f7b815cd113c0c5364f75447cd20fbd6e51051"
+    },
+    {
+      "path": "UnityProject/Assets/Scripts/SignalDebtInteractable.cs",
+      "bytes": 1531,
+      "sha256": "a7ef12884677c6b1c1427b2ebcf2060863e4312bbf238de79ea8ad5dc7183a0e"
+    },
+    {
+      "path": "UnityProject/Assets/Scripts/SignalDebtNpcClient.cs",
+      "bytes": 28645,
+      "sha256": "b389729ae90dfa4fc769cc8131e1710e899c9c9918fe4e95db43e90e8453ee27"
+    },
+    {
+      "path": "UnityProject/Assets/Scripts/SignalDebtPlayer.cs",
+      "bytes": 27089,
+      "sha256": "49c6179459a6a6b2b1835b1494d2fd527046e55bd13316fdbef4ecb6d75b4b00"
+    },
+    {
+      "path": "UnityProject/Assets/Scripts/SignalDebtSaveData.cs",
+      "bytes": 5808,
+      "sha256": "ae6460a9f7a096e5145b231768e794a4712e60a9dfcb52902a0a854b3381b1ae"
+    },
+    {
+      "path": "UnityProject/Assets/Scripts/SignalDebtSaveStore.cs",
+      "bytes": 3829,
+      "sha256": "ae4c8d4b15c599a8e5103834a45d563ea4f3eb7185ecaa87d980280d194fba30"
+    },
+    {
+      "path": "UnityProject/Assets/Scripts/SignalDebtUI.cs",
+      "bytes": 25613,
+      "sha256": "9a5f2eb9f255e96ca9a1300595867ce82c951332c6d1a9811b49b58d88a48534"
+    },
+    {
+      "path": "UnityProject/Packages/manifest.json",
+      "bytes": 359,
+      "sha256": "63dc9862808b545eaceffcedf674d5e99ca19f3325f2b0282cecbb7804d12d6a"
+    },
+    {
+      "path": "UnityProject/ProjectSettings/ProjectVersion.txt",
+      "bytes": 85,
+      "sha256": "f55357417191efac9dcba2068adf2a05ab76ec0de30eae3402c257669e98b75e"
+    },
+    {
+      "path": "Validation/BUILD_STATUS.md",
+      "bytes": 7910,
+      "sha256": "a2d46e32ccb1120fa5ccb324ca3d496214981a2c2ca18384f8d3f91b95fd3cc4"
+    },
+    {
+      "path": "Validation/History/final_visual_review_before_v09.json",
+      "bytes": 9730,
+      "sha256": "91d3accd660834116754ceadb9671f7fc54a59e5262811b471e8bb15056a9ba5"
+    },
+    {
+      "path": "Validation/History/rig_controller_review_before_whole_body_fix.json",
+      "bytes": 141858,
+      "sha256": "a59690ac6c776f67e8234db843923d03a1cda4528869e15d18622ee36bba2924"
+    },
+    {
+      "path": "Validation/History/rig_controller_review_before_wrist_fix.json",
+      "bytes": 42332,
+      "sha256": "ae7a72cb0335dc93fc0bb280c91b505378bb0155258e57f90f8ed0c484730dee"
+    },
+    {
+      "path": "Validation/History/superseded_wrist_review_scope.json",
+      "bytes": 387,
+      "sha256": "929100a269ed1a452ad4e58068f88604b3e4471d16a7360cad4d206054d5256b"
+    },
+    {
+      "path": "Validation/History/wrist_grip_review_before_whole_body_fix.json",
+      "bytes": 119074,
+      "sha256": "cefda1300aa396bc0068b96fbc3991da9f72e0dd2e28f9b4420f9f8aaf72d3ad"
+    },
+    {
+      "path": "Validation/animation_motion_render.json",
+      "bytes": 8946,
+      "sha256": "31bd111c8e0ecf533fd6b7862a86ab7974a82d6054ea33b676683eb60010c1e4"
+    },
+    {
+      "path": "Validation/animation_preview_validation.json",
+      "bytes": 2953,
+      "sha256": "be836facd2a86effc4615bbd68d10be7f5ceeddfaa26315c506cef922a506ecc"
+    },
+    {
+      "path": "Validation/animation_stills_render.json",
+      "bytes": 1814,
+      "sha256": "ccc24138ffa3c296119d7478e0edac2d440434afce46d217ff33df04dc2c2d40"
+    },
+    {
+      "path": "Validation/api_smoke_result.json",
+      "bytes": 568,
+      "sha256": "6c66232c22ed972d945f6492e0609f8737eecd970d88180a843971beb931e19e"
+    },
+    {
+      "path": "Validation/arm_body_clearance.json",
+      "bytes": 340861,
+      "sha256": "9b2e6ffd37fb28bb8e26068f72eb543a5da358fc229f63f327b6abd5a15d2466"
+    },
+    {
+      "path": "Validation/base_character_reimport_independent.json",
+      "bytes": 4667,
+      "sha256": "a2c8776d7b8d7aa587eaedf96ce61bfda6a15c09a591cd11eebd263cc95da6a6"
+    },
+    {
+      "path": "Validation/character_art_preview_validation.json",
+      "bytes": 2269,
+      "sha256": "b06495f45714e84fa186104976842fdf80090fd42717f9d6578292820f4b7cf6"
+    },
+    {
+      "path": "Validation/character_roster_translation_fix.json",
+      "bytes": 15793,
+      "sha256": "1d05269286bc8083796546e4418ed1f95ac25aeecc0e82f791c1c9b8cdfe9c3b"
+    },
+    {
+      "path": "Validation/csharp_syntax.json",
+      "bytes": 2434,
+      "sha256": "b25a668639789f9e7a6e5c1ab8207dca148f3dd7326219b5bacc50001dfe976f"
+    },
+    {
+      "path": "Validation/document_qa.json",
+      "bytes": 2243,
+      "sha256": "763d32b474d3967449b224e496a94e3564a903fdce5b8e0a0232ee525b684e5a"
+    },
+    {
+      "path": "Validation/domain_tests.json",
+      "bytes": 845,
+      "sha256": "1e0b3ab0fa3619cefa4950acc243e731e310b0301c31d156ece0c1d1ff3f8d73"
+    },
+    {
+      "path": "Validation/final_visual_review.json",
+      "bytes": 4625,
+      "sha256": "5d59ed81595abbebc7a6a4f385a5f25504584c9e3aae6953a6fce16655070b1d"
+    },
+    {
+      "path": "Validation/garment_surface_crossings.json",
+      "bytes": 795016,
+      "sha256": "ce18090cdc25b578d7a674f3e967da0a7923534316379917ff8fdc6f5eac2b0d"
+    },
+    {
+      "path": "Validation/hand_chirality_independent.json",
+      "bytes": 11760,
+      "sha256": "a558d7e5b83ef2f8d69c5cd385f7b5a5b9f66ba3dfbefed6549dbb3ed3461904"
+    },
+    {
+      "path": "Validation/hand_preview_validation.json",
+      "bytes": 10614,
+      "sha256": "6892898066492685c32b998e258088750385a21121449dcd84895390fa2c1bdd"
+    },
+    {
+      "path": "Validation/kick_trajectory_retention.json",
+      "bytes": 2296,
+      "sha256": "33be437862aa9ff14fa4d9b92a5149b2d7f33afc659521b21d64be7320146d11"
+    },
+    {
+      "path": "Validation/live_relay_result.json",
+      "bytes": 646,
+      "sha256": "3ff629a2b8f4cc29a01432d58f61fdf1c3e37468fa5dee1fbdac39c9a9d4a546"
+    },
+    {
+      "path": "Validation/motion_delivery_review.json",
+      "bytes": 3620,
+      "sha256": "b22a34c1e77e3168e0c6c4108d9e84c6e42fd5e4cb8a5703108a76118c5ee89a"
+    },
+    {
+      "path": "Validation/nonpolice_geometry_regression.json",
+      "bytes": 1024,
+      "sha256": "7ebe662fff41598e3f4af0e0a9777bac5c6b7e389e753870d3593eed3db33ae5"
+    },
+    {
+      "path": "Validation/patrol_grip_render.json",
+      "bytes": 12937,
+      "sha256": "57f4f27504103d86bec73e6539f34431862e7cb581e5c718d7c91636eb533e75"
+    },
+    {
+      "path": "Validation/player_art_preservation.json",
+      "bytes": 6413,
+      "sha256": "05a92a2ba18072fd224d820da1eb6eaac458cdaa60064f08285b81b8369db8f6"
+    },
+    {
+      "path": "Validation/player_camera_review.json",
+      "bytes": 3256,
+      "sha256": "26f87ab2e7322059dbe3ce9df7e8cdaaa22624a9fb41d7d16517bd5ddb67531d"
+    },
+    {
+      "path": "Validation/player_pose_math.json",
+      "bytes": 4990,
+      "sha256": "83ce7341b152e6a4d2eb7d1b3a5a036ca76dbc35c002c29b533ba7e5f58f9b5d"
+    },
+    {
+      "path": "Validation/player_seam_normals_independent.json",
+      "bytes": 1996,
+      "sha256": "6c3b56df76c219236c265d26937dfb12f4509492d0e2eb553a697f71905ea59e"
+    },
+    {
+      "path": "Validation/police_equipment_review.json",
+      "bytes": 5937,
+      "sha256": "004550ec754620486228b51e03b1fc8dd12040991ccbc1a52673515e4f236210"
+    },
+    {
+      "path": "Validation/police_surface_orientation.json",
+      "bytes": 367,
+      "sha256": "763ce015f5178af0aa03fedc2b0645e39f000412a7aacb81e016aecb72ce0809"
+    },
+    {
+      "path": "Validation/relay_tests.json",
+      "bytes": 453,
+      "sha256": "5d21dc60eee0b9abf7c5f9d50720ed402cad9c96c2b1f247af12eaa57fe5b589"
+    },
+    {
+      "path": "Validation/rig_controller_review.json",
+      "bytes": 7746,
+      "sha256": "d47b1e114f3fc45482ffa0e86ecb32c13a0f12315e41542b81cb66a38c9b2609"
+    },
+    {
+      "path": "Validation/roster_translation_independent.json",
+      "bytes": 3005,
+      "sha256": "75f4ff1996c3675670c4591e209d6994190b003377de7d5c6a8a1f4462fd9d36"
+    },
+    {
+      "path": "Validation/unchanged_regression_sources.json",
+      "bytes": 1134,
+      "sha256": "ceb488690a4fecb5b3ee925b2950cc9bd8b970e2986a86a346ec1ad2eb05185a"
+    },
+    {
+      "path": "Validation/v09_unchanged_runtime.json",
+      "bytes": 927,
+      "sha256": "c86d5cea5b2cc1f77ef72b7fc0c8e96d540c2b5967f54f5b87e94c4b721e85f5"
+    },
+    {
+      "path": "Validation/whole_body_review.json",
+      "bytes": 16582,
+      "sha256": "26396ae50d910d2bbf307596e4736a3b39fbf69ae58a8b0a09236937bf7bda75"
+    },
+    {
+      "path": "Validation/wrist_grip_reimport.json",
+      "bytes": 116607,
+      "sha256": "a192aae68daa167b2d6ba6a6b33e0574cd53617690d429a619f31c4af836bdc6"
+    },
+    {
+      "path": "Validation/wrist_grip_review.json",
+      "bytes": 117233,
+      "sha256": "992b62aa84d88868e4991421194312a3f0c9dc8de9246712d1bebd303be6f939"
+    }
+  ]
+}

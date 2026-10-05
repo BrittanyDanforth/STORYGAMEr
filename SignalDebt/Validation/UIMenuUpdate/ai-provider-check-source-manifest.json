@@ -1,0 +1,174 @@
+{
+  "project": "/workspace/SignalDebt-setup/unity/ai-provider-check-project",
+  "runtime_source_count": 19,
+  "files": [
+    {
+      "path": "Assets/Scripts/SignalDebtSaveStore.cs",
+      "sha256": "19d35f9d6c75ad51c8eadd591866b0819d74a89b4f114d107044d3820e42f7a3"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtComputerDisplay.cs",
+      "sha256": "7cb583baf7ecb48814402e0a99d9ba81b7f2910e7a93fd0f8e28f269b8c9677c"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtNpcClient.cs",
+      "sha256": "7c1e8b49e25f50c825db5809bad046fb4189b64fb0e34cfe08d22af828c90ea1"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtSaveData.cs",
+      "sha256": "d073bf952558f9503f2fa2a45692c5db2a6943902c82767b5fee5dc1371303b9"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtBootstrap.cs",
+      "sha256": "722221523dfb33c7e8d1577a843eb502593725ebcd0af7d7c4f9fa1b66b2adb6"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtComputerSession.cs",
+      "sha256": "a760c39edc420800d82014a88f73238a957a6546f333ffd98dad3bacb0f54988"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtLocalFiles.cs",
+      "sha256": "f936158977404b1e509c7b598d0f6caad40e0dbb9ea505f9d0ca177812d1fbf5"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtShop.cs",
+      "sha256": "4a47afcf4188247b20a4866f7db8912da4764c6bb1ec776dfafa35fba72f4645"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtAiSettings.cs",
+      "sha256": "d312b8729073acbff5b0f8a9519dc38f39d65aa870309eda547130d773d167dc"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtInteractable.cs",
+      "sha256": "a7ef12884677c6b1c1427b2ebcf2060863e4312bbf238de79ea8ad5dc7183a0e"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtMainMenu.cs",
+      "sha256": "3cc63b5028909f7f78714192a85b7bd783202bf838b94b547ad9e8f3dc280ac7"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtAnimationReview.cs",
+      "sha256": "fc52d3b340cc731845ca79dc2159a44cb8a9eab2f1be993dbe4d8d102b0cd6cd"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtUI.cs",
+      "sha256": "f631564a4a1055f94899f385a3ba5b22a9bbabc4e22d9aead7985b9b5a4accea"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtApiKeyStore.cs",
+      "sha256": "d9a5265ac42725362e4b0a27c700c513159d2ba856f8ca0fb8e3da2a29c7994d"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtDesktopWindow.cs",
+      "sha256": "b2ad2fd6e63bc441aaad835af4daed4b45e39e7ec373992e04d69d0fa454217e"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtPlayer.cs",
+      "sha256": "f2b3b66f55ea18036f78fb35fffa4f01ddf7e1a36ff1fa4a90427c6037269d24"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtDoorProxy.cs",
+      "sha256": "7a9ed86519c038aeee9d6819b8f7b815cd113c0c5364f75447cd20fbd6e51051"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtStartupFailure.cs",
+      "sha256": "3c2304d668bfced535269b3ebae1849fe70107a269492bd2e2136f7ab2ad3b09"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtAiProvider.cs",
+      "sha256": "f0760531335a4c864319742e840efee87cd70a7a57789611b988779d35d38939"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtLocalFiles.cs.meta",
+      "sha256": "31b92e936178a73f26b9098c50ba8d1a9d811d75d592da273e1da1ce559c7cbd"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtSaveData.cs.meta",
+      "sha256": "7da76deb038d549281f94622e28997bf6f1673d32b91aa441f6c58891b32a87d"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtDoorProxy.cs.meta",
+      "sha256": "4fff7e0fd5ae7115b14fe06fbc4d4295a742a72018395b105158c277c412f24a"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtShop.cs.meta",
+      "sha256": "7397eedd032ec09d279ab86bcd71c7c7d2305ecac4ea3603bcb7393e0a8719de"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtAnimationReview.cs.meta",
+      "sha256": "06fb8ba507369b89b917619eb540ffe14ad0feb6fae4d2ee5b322242dd30e36c"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtStartupFailure.cs.meta",
+      "sha256": "e4722eccc2599e74a1eba91bce9894ff61534f6e13ad68fd18843fd1a5970b9c"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtAiProvider.cs.meta",
+      "sha256": "a257059d4efdf8aceba9d8cf181daae681b2a33e12bc282c8a4127af065cd607"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtBootstrap.cs.meta",
+      "sha256": "708a189693e16cca10d855fac9b0cf3c897a07cc7128ba04ed7dcd893a87df26"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtComputerSession.cs.meta",
+      "sha256": "8b8c944f7a141a45e7e9e17592e5e31eaa301b233009476e28e40374c77e0e35"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtPlayer.cs.meta",
+      "sha256": "fa1ed50556b3a124ebc8a71dab2a5fad2b7161c1e416327b09a2425e76d5c13c"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtNpcClient.cs.meta",
+      "sha256": "65f1794b4c934e6bcf22f8a65a5382efaae8305808dfd38701d3e20e34f58dc9"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtInteractable.cs.meta",
+      "sha256": "a138bc515c4311d12c2fde928d28fe4d0da2e53c0b1fde06dbe9c3664950cae9"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtMainMenu.cs.meta",
+      "sha256": "161617fc48a4048b58219b5580dcac443ad493b1b58b8340f7d2f40b553073ac"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtDesktopWindow.cs.meta",
+      "sha256": "d9820e6bb6d93f12734be12fc5e76e29f9e299d77accfeee0d427fe98e441a2f"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtSaveStore.cs.meta",
+      "sha256": "bf1d62f3af24097887e9a730bdac2481066405c11625a0a892e51a965518b5ae"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtComputerDisplay.cs.meta",
+      "sha256": "80463c1b409093da8fd288bad17e6f59f87ebceafadd6470b6fe772484ba8bef"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtAiSettings.cs.meta",
+      "sha256": "c50e44ab60c5155a280fb8c2abce02bd889ee58e42155e05d8ec7066f2ab4bf3"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtApiKeyStore.cs.meta",
+      "sha256": "dda2fa2947a509279111e6cd1f14d9ddaca6ce8d5a67df24ce6a66783b51fce5"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtUI.cs.meta",
+      "sha256": "9760135b16b2b8934016290c3104e229951af6696efcda4d6c1a7af386224227"
+    },
+    {
+      "path": "Assets/Editor/SignalDebtAiProviderChecks.cs",
+      "sha256": "70f0238f44ca1cbd61960f54b992d2f5a693df9f68a5966898feae57198bd0ac"
+    },
+    {
+      "path": "Packages/manifest.json",
+      "sha256": "63dc9862808b545eaceffcedf674d5e99ca19f3325f2b0282cecbb7804d12d6a"
+    },
+    {
+      "path": "Packages/packages-lock.json",
+      "sha256": "012cafa7ef5fdad3d3901d82910a49cc9bd89ae3a46087c1d3b3ead4a23814ba"
+    },
+    {
+      "path": "ProjectSettings/ProjectVersion.txt",
+      "sha256": "f55357417191efac9dcba2068adf2a05ab76ec0de30eae3402c257669e98b75e"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "status": "PASS",
+  "method": "Read-only comparison of source rig-space pose matrices at all61 authored kick frames against the delivered pre-shoulder-fix showcase. Captured baseline identifies old source SHA256; current source was not saved or modified by the check.",
+  "baseline_source_sha256": "0c068eb70de9be878a683a3d43202a30fac87731cf0490a7daf27123e543c988",
+  "current_source_sha256": "74a1a69a4d0c2e465ee6d7a38d6c8d96f096577df3d34f3b773f80ee1e6a9e01",
+  "frames_compared": 61,
+  "bones_compared": {
+    "Root": {
+      "max_matrix_component_difference": 0.0,
+      "max_joint_head_difference_m": 0.0
+    },
+    "Hips": {
+      "max_matrix_component_difference": 0.0,
+      "max_joint_head_difference_m": 0.0
+    },
+    "Spine": {
+      "max_matrix_component_difference": 0.0,
+      "max_joint_head_difference_m": 0.0
+    },
+    "Chest": {
+      "max_matrix_component_difference": 0.0,
+      "max_joint_head_difference_m": 0.0
+    },
+    "Neck": {
+      "max_matrix_component_difference": 0.0,
+      "max_joint_head_difference_m": 0.0
+    },
+    "Head": {
+      "max_matrix_component_difference": 0.0,
+      "max_joint_head_difference_m": 0.0
+    },
+    "LeftUpperLeg": {
+      "max_matrix_component_difference": 0.0,
+      "max_joint_head_difference_m": 0.0
+    },
+    "LeftLowerLeg": {
+      "max_matrix_component_difference": 0.0,
+      "max_joint_head_difference_m": 0.0
+    },
+    "LeftFoot": {
+      "max_matrix_component_difference": 0.0,
+      "max_joint_head_difference_m": 0.0
+    },
+    "LeftToes": {
+      "max_matrix_component_difference": 0.0,
+      "max_joint_head_difference_m": 0.0
+    },
+    "RightUpperLeg": {
+      "max_matrix_component_difference": 0.0,
+      "max_joint_head_difference_m": 0.0
+    },
+    "RightLowerLeg": {
+      "max_matrix_component_difference": 0.0,
+      "max_joint_head_difference_m": 0.0
+    },
+    "RightFoot": {
+      "max_matrix_component_difference": 0.0,
+      "max_joint_head_difference_m": 0.0
+    },
+    "RightToes": {
+      "max_matrix_component_difference": 0.0,
+      "max_joint_head_difference_m": 0.0
+    }
+  },
+  "scope": "Root, hips, spine, chest, neck, head and both full leg/foot/toe chains. Shoulder/arms intentionally changed. This proves retained authored lower-body motion, not Unity playback or collision behavior."
+}

@@ -1,0 +1,11 @@
+{
+  "error": "ConfigurationErrorsException: Failed to load configuration section for dataContractSerializer.",
+  "site": "DataContractJsonSerializer.WriteObject \u2192 SignalDebtApiKeyStore.LocalStore.TrySave \u2192 SignalDebtAiSettings.Connect",
+  "exception_occurrences": 3,
+  "ai_settings_file_exists": false,
+  "campaign_directory_exists": false,
+  "remaining_userdata_files": [],
+  "keylike_strings_found_in_log": false,
+  "request_started": false,
+  "request_started_basis": "Exception occurs synchronously before RefreshStorage/client.TestConnection; key input remains masked and uncleared."
+}

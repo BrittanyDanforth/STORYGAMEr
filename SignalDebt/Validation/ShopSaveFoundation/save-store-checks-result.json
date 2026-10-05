@@ -1,0 +1,10 @@
+{
+    "passed": true,
+    "assertions": 97,
+    "cases": 19,
+    "unity_version": "6000.0.62f1",
+    "failure": "",
+    "genuine_unity_json": true,
+    "real_temporary_files": true,
+    "scope": "Serialization, migration, purchase persistence and filesystem recovery; not shop scene or gameplay acceptance."
+}

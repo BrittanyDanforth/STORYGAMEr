@@ -1,0 +1,114 @@
+{
+  "status": "PASS for the bounded v0.9 shoulder, pose and equipment correction",
+  "recorded_utc": "2026-10-04T20:01:46.820740+00:00",
+  "source_sha256": {
+    "Blender/Characters.blend": "5d9cd3512cde24de6977878adbb251dbb880dc5a1f3b1fe4d9ddbeed59bd9f49",
+    "Blender/Character_Animation_Showcase.blend": "74a1a69a4d0c2e465ee6d7a38d6c8d96f096577df3d34f3b773f80ee1e6a9e01"
+  },
+  "root_inspected_final_stills": [
+    {
+      "file": "Blender/Renders/Characters_Roster.png",
+      "sha256": "360e7d5bc294a19576000cb8ed954f47bed51f7e1e0a7d221f6b9a2ef2f7994a",
+      "size": [
+        2400,
+        1450
+      ],
+      "full_decode": true
+    },
+    {
+      "file": "Blender/Renders/CharacterDetails/Patrol_Officer_UpperBody.png",
+      "sha256": "76f09826e41c7d46246be227dce33bcf7a1e5f773afa2f47145dbe4e1103030f",
+      "size": [
+        1440,
+        1440
+      ],
+      "full_decode": true
+    },
+    {
+      "file": "Blender/Renders/CharacterDetails/SWAT_Officer_Equipment.png",
+      "sha256": "e318e7d8677024375a4f33dd23e7f5188db1fefa2a61b2cabbba0a948bf5810b",
+      "size": [
+        1440,
+        1440
+      ],
+      "full_decode": true
+    },
+    {
+      "file": "Blender/Renders/Animation/Patrol_grip_detail.png",
+      "sha256": "f4cdc075912bd47bad4f1cd30b5765ba970f655ebd4c92d0d36eb893e594de20",
+      "size": [
+        600,
+        720
+      ],
+      "full_decode": true
+    },
+    {
+      "file": "Blender/Renders/Animation/Patrol_hold_001.png",
+      "sha256": "f32748f374ba7e219aafc20b95e71261855fdd24fc9d18faaff201d7aa8da2ef",
+      "size": [
+        600,
+        720
+      ],
+      "full_decode": true
+    },
+    {
+      "file": "Blender/Renders/Animation/Patrol_hold_046.png",
+      "sha256": "2d015843144aa6eb034650ee3a1273ef96090110c29a0ee088405c3f1bb086c8",
+      "size": [
+        600,
+        720
+      ],
+      "full_decode": true
+    },
+    {
+      "file": "Blender/Renders/Animation/SWAT_kick_025.png",
+      "sha256": "af5cf4125d8c608b93131dcd23177877702e7eb453ac2c9fc1356919b0142c1f",
+      "size": [
+        600,
+        720
+      ],
+      "full_decode": true
+    },
+    {
+      "file": "Blender/Renders/UpperBodyAudit/Attachment_LeftFront.png",
+      "sha256": "d69e8b316407bf0dae0f21bd29ced310b9b8d6594fb6b83cede4c7d49686ae52",
+      "size": [
+        720,
+        720
+      ],
+      "full_decode": true
+    },
+    {
+      "file": "Blender/Renders/UpperBodyAudit/Attachment_LeftRear.png",
+      "sha256": "a31ad84beccffd2125117231baa9121f809c5ddc9711be86518d81154c76cec2",
+      "size": [
+        720,
+        720
+      ],
+      "full_decode": true
+    }
+  ],
+  "independent_multiview_review": {
+    "report": "Validation/whole_body_review.json",
+    "sha256": "26396ae50d910d2bbf307596e4736a3b39fbf69ae58a8b0a09236937bf7bda75"
+  },
+  "animation_preview_validation": {
+    "report": "Validation/hand_preview_validation.json",
+    "sha256": "6892898066492685c32b998e258088750385a21121449dcd84895390fa2c1bdd"
+  },
+  "review_scope": "Actual Blender renders, full-frame numerical sampling, exact local mesh-intersection follow-up, and exported-asset readback. Key stills and contact strips are visually reviewed. Full GIF/MP4 decoding is not a claim of real-time or Unity playback review.",
+  "observations": [
+    "Patrol upper arms now extend forward from the shoulders with a visible elbow bend; the former shaft/chest penetration is corrected.",
+    "SWAT kick retains the lower-body trajectory while the shoulder, sleeve and equipment shapes are refined.",
+    "Wrist/finger pose continuity remains intact in the authored raised/lowered views.",
+    "The corrected cast roster separates all five characters; the display-only patrol offset does not alter exported geometry or animation."
+  ],
+  "known_limits": [
+    "A small patrol inner-armpit cloth attachment fold remains, with measured crossings bounded near the sleeve seam; see whole-body report for exact scope.",
+    "Close-range garment seams, facial animation, locomotion and production retopology still need further art work.",
+    "The player retains pre-existing hoodie shoulder creasing and a coarse upper-trouser fold under deep hip flexion; this police-focused pass does not claim to fix them.",
+    "These are stylized source assets and animation studies, not completed AAA production art.",
+    "Unity compilation, import behavior, Play Mode, transitions and target-GPU performance remain unverified."
+  ],
+  "previous_evidence": "Validation/History/final_visual_review_before_v09.json is historical. Apartment and runtime source remain unchanged; player geometry and camera contracts have a separate preservation report."
+}

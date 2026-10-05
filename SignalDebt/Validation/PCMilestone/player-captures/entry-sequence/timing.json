@@ -1,0 +1,58 @@
+[
+  {
+    "frame": "00.png",
+    "seconds_after_native_keydown": 0.245
+  },
+  {
+    "frame": "01.png",
+    "seconds_after_native_keydown": 0.537
+  },
+  {
+    "frame": "02.png",
+    "seconds_after_native_keydown": 0.823
+  },
+  {
+    "frame": "03.png",
+    "seconds_after_native_keydown": 1.12
+  },
+  {
+    "frame": "04.png",
+    "seconds_after_native_keydown": 1.312
+  },
+  {
+    "frame": "05.png",
+    "seconds_after_native_keydown": 1.521
+  },
+  {
+    "frame": "06.png",
+    "seconds_after_native_keydown": 1.692
+  },
+  {
+    "frame": "07.png",
+    "seconds_after_native_keydown": 1.792
+  },
+  {
+    "frame": "08.png",
+    "seconds_after_native_keydown": 1.89
+  },
+  {
+    "frame": "09.png",
+    "seconds_after_native_keydown": 1.945
+  },
+  {
+    "frame": "10.png",
+    "seconds_after_native_keydown": 2.09
+  },
+  {
+    "frame": "11.png",
+    "seconds_after_native_keydown": 2.209
+  },
+  {
+    "frame": "12.png",
+    "seconds_after_native_keydown": 2.289
+  },
+  {
+    "frame": "13.png",
+    "seconds_after_native_keydown": 2.344
+  }
+]

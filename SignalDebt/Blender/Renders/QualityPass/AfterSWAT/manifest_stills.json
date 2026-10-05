@@ -1,0 +1,34 @@
+{
+  "blender_version": "5.2.2 LTS",
+  "source": "/workspace/SignalDebt-setup/character-final-stage/SignalDebt/Blender/Character_Animation_Showcase.blend",
+  "source_sha256": "2193b84f69743159e2b50b8ae18e1a6a49e484b9b33f916f13bb7e1315c4d9d9",
+  "render_engine": "CYCLES",
+  "samples": 32,
+  "motion_frame_step": null,
+  "images": {
+    "SWATContact_Front.png": {
+      "frame": 25,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "104a684477f0a52f95a94f1cac79771eea0594eebaeb4b50aaa25123817de392"
+    },
+    "SWATContact_Side.png": {
+      "frame": 25,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "b705274986584ea6575a96661b9653bd962f5dfd8b12247c5969d3341f85b07d"
+    },
+    "SWATContact_Rear.png": {
+      "frame": 25,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "141c7a5a315347f8796407061d8485630e1d7c81327de186aabaf7e51228d68f"
+    },
+    "SWATContact_Top.png": {
+      "frame": 25,
+      "rig": "SWAT_Officer",
+      "action": "SWAT_DoorKick",
+      "sha256": "98dd9e8aa98e86c062f2f0ceb66bb20ee2212babdb6eebdd88e99febacf664ff"
+    }
+  }
+}

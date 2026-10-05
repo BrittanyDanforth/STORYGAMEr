@@ -1,0 +1,170 @@
+[
+  {
+    "file": "PlayerBody.fbx",
+    "file_sha256": "23518169b985f4425c90d0cc11edb0f701b79992009874aeedbe1eef976d4b90",
+    "meshes": 8,
+    "bones": 52,
+    "min_xyz": [
+      -0.43693816661834717,
+      -0.20709989964962006,
+      4.354227201019967e-08
+    ],
+    "max_xyz": [
+      0.43693816661834717,
+      0.19094999134540558,
+      1.7527755498886108
+    ],
+    "source_left_verified": true,
+    "orientation_markers": true,
+    "round_trip_pass": true,
+    "posed_hand_chirality": {
+      "Left": {
+        "thumb_centerward_m": 0.027549834921956062,
+        "index_curl_down_m": -0.012300055300368706
+      },
+      "Right": {
+        "thumb_centerward_m": 0.027549831196665764,
+        "index_curl_down_m": -0.012300038536562363
+      }
+    },
+    "unweighted_vertices": 0,
+    "max_weight_sum_error": 1.1920928955078125e-07,
+    "max_influences": 4,
+    "mixed_joint_vertices": {
+      "LeftLowerArm": 544,
+      "LeftLowerLeg": 651,
+      "RightLowerArm": 552,
+      "RightLowerLeg": 646
+    },
+    "elbow_max_displacement_m": 0.5822506017627646,
+    "finger_ordering_verified": true,
+    "exported_trouser_seam": {
+      "shared_vertices": 59,
+      "minimum_rest_normal_dot": 0.9999999212450348,
+      "maximum_rest_position_gap_m": 6.365778852490731e-08,
+      "maximum_weight_difference": 0,
+      "normal_helper_excluded_from_export": true,
+      "unity_import_normals": "Import; do not recalculate"
+    }
+  },
+  {
+    "file": "Mara_Victim.fbx",
+    "file_sha256": "15f0feb85a317d103fd89aff8af03945e58248d7f1fd4f8bdb6be741af5f47da",
+    "meshes": 16,
+    "bones": 52,
+    "min_xyz": [
+      -0.41305166482925415,
+      -0.21800000965595245,
+      -2.4666769604664296e-07
+    ],
+    "max_xyz": [
+      0.41305166482925415,
+      0.17299987375736237,
+      1.843018651008606
+    ],
+    "source_left_verified": true,
+    "orientation_markers": true,
+    "round_trip_pass": true,
+    "rigid_limb_movement_m": 0.0889277009811233
+  },
+  {
+    "file": "Judge.fbx",
+    "file_sha256": "f0ff25b1ca20b232749a73e2e4370af6a4352472830d435ebf6d809e159c6fd4",
+    "meshes": 16,
+    "bones": 52,
+    "min_xyz": [
+      -0.44995084404945374,
+      -0.21800000965595245,
+      -2.4666769604664296e-07
+    ],
+    "max_xyz": [
+      0.44995084404945374,
+      0.1868371069431305,
+      1.834999680519104
+    ],
+    "source_left_verified": true,
+    "orientation_markers": true,
+    "round_trip_pass": true,
+    "rigid_limb_movement_m": 0.09359617453230523
+  },
+  {
+    "file": "Patrol_Officer.fbx",
+    "file_sha256": "d75374b6fa0a21733d28c69701190959ba2cef625b87ba0801755099770c67cf",
+    "meshes": 8,
+    "bones": 52,
+    "min_xyz": [
+      -0.4599349796772003,
+      -0.21799993515014648,
+      -3.5601777881311136e-07
+    ],
+    "max_xyz": [
+      0.4599349796772003,
+      0.19350002706050873,
+      1.8499776124954224
+    ],
+    "source_left_verified": true,
+    "orientation_markers": true,
+    "round_trip_pass": true,
+    "posed_hand_chirality": {
+      "Left": {
+        "thumb_centerward_m": 0.02899988368153572,
+        "index_curl_down_m": -0.012947767986179137
+      },
+      "Right": {
+        "thumb_centerward_m": 0.028999896720051765,
+        "index_curl_down_m": -0.012947751222373682
+      }
+    },
+    "unweighted_vertices": 0,
+    "max_weight_sum_error": 2.384185791015625e-07,
+    "max_influences": 4,
+    "mixed_joint_vertices": {
+      "LeftLowerArm": 462,
+      "LeftLowerLeg": 651,
+      "RightLowerArm": 455,
+      "RightLowerLeg": 646
+    },
+    "elbow_max_displacement_m": 0.6128953430257489,
+    "finger_ordering_verified": true
+  },
+  {
+    "file": "SWAT_Officer.fbx",
+    "file_sha256": "7052c896491ad6890244c5faa28576d0e6c5d4de60c1aecf62798cfa510c469b",
+    "meshes": 8,
+    "bones": 52,
+    "min_xyz": [
+      -0.47521525621414185,
+      -0.24800007045269012,
+      -3.5601777881311136e-07
+    ],
+    "max_xyz": [
+      0.47521525621414185,
+      0.218500018119812,
+      1.8897058963775635
+    ],
+    "source_left_verified": true,
+    "orientation_markers": true,
+    "round_trip_pass": true,
+    "posed_hand_chirality": {
+      "Left": {
+        "thumb_centerward_m": 0.02899990789592266,
+        "index_curl_down_m": -0.012947788475290878
+      },
+      "Right": {
+        "thumb_centerward_m": 0.02899990975856781,
+        "index_curl_down_m": -0.012947788475290878
+      }
+    },
+    "unweighted_vertices": 0,
+    "max_weight_sum_error": 1.7881393432617188e-07,
+    "max_influences": 4,
+    "mixed_joint_vertices": {
+      "LeftLowerArm": 465,
+      "LeftLowerLeg": 651,
+      "RightLowerArm": 468,
+      "RightLowerLeg": 646
+    },
+    "elbow_max_displacement_m": 0.6128951576414381,
+    "finger_ordering_verified": true
+  }
+]

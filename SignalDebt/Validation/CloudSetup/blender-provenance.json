@@ -1,0 +1,11 @@
+{
+  "version": "5.2.2",
+  "channel": "LTS stable",
+  "official_download_page": "https://www.blender.org/download/",
+  "official_release_index": "https://download.blender.org/release/Blender5.2/",
+  "archive_url": "https://download.blender.org/release/Blender5.2/blender-5.2.2-linux-x64.tar.xz",
+  "checksum_url": "https://download.blender.org/release/Blender5.2/blender-5.2.2.sha256",
+  "sha256": "84098912789dc450e95697c4184fb8a90acbe5111c2ba4aede3fecb57806a168",
+  "release_date": "2026-09-15",
+  "verified_date": "2026-10-04"
+}

@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "source_blend_sha256": "5d9cd3512cde24de6977878adbb251dbb880dc5a1f3b1fe4d9ddbeed59bd9f49",
+  "closed_components_checked": 292,
+  "open_skin_region_components_not_volume_tested": 71,
+  "inward_closed_components": [],
+  "scope": "Rest-mesh signed volumes for closed connected components only; not a runtime deformation or collision guarantee."
+}

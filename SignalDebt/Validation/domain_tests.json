@@ -1,0 +1,21 @@
+{
+  "test": "Pure C# progression and economy domain",
+  "compiler": "Mono C# compiler 6.8",
+  "compilation_passed": true,
+  "assertions_passed": 148,
+  "coverage": [
+    "repair prerequisites and invalid actions",
+    "wrong service leaves state unchanged",
+    "repeated callbacks cannot duplicate payment or memory",
+    "rent clamped to funds and remaining debt",
+    "one-time extension and retained debt after rest",
+    "ordered ledger revisions",
+    "malformed saved-state rejection"
+  ],
+  "source_sha256": {
+    "UnityProject/Assets/Scripts/SignalDebtSaveData.cs": "ae6460a9f7a096e5145b231768e794a4712e60a9dfcb52902a0a854b3381b1ae",
+    "UnityProject/Assets/Editor/SignalDebtDomainTests.cs": "2c98810506bd0fe7b4bb079668352c0a793dfb6c0725a48e814dd12c31c2a02f"
+  },
+  "unity_engine_compilation": false,
+  "unity_runtime_tested": false
+}

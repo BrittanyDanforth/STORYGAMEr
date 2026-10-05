@@ -1,0 +1,85 @@
+{
+  "scope": "Explicit bounded proof reports plus seven root-reviewed native screenshots. Full route r2 and targeted final r3 evidence are separate. No player/campaign/settings files or logs. This index excludes its own hash.",
+  "artifacts": {
+    "README.md": {
+      "bytes": 3635,
+      "sha256": "2893e809fed8746b5fc00fe0a7b2ef0310efc618a06f56ba080296b263515df9"
+    },
+    "Screenshots/initial-proof.png": {
+      "bytes": 116625,
+      "sha256": "4e829fcf70c2ecda6ba894e59459993a6fdbc29bbe744f9de3285e13b522cd60"
+    },
+    "Screenshots/latest-offer-r3.png": {
+      "bytes": 102061,
+      "sha256": "6090a9743611d90f1b1887b9037f0711daa43266c1e05cc9f533a2882b25abc1"
+    },
+    "Screenshots/paid-maximized.png": {
+      "bytes": 109923,
+      "sha256": "d8946b6846e5daa0057f911570482d158dec725b1acb0749d4c2455516e45cde"
+    },
+    "Screenshots/paid-reloaded-r3.png": {
+      "bytes": 107980,
+      "sha256": "b882911f55e01ec0df21d5b781a7cdebee7b315942db79fb064a75a13a2eafc5"
+    },
+    "Screenshots/settings-no-key-r3.png": {
+      "bytes": 66701,
+      "sha256": "8e2cad2e7f44e67434fbf54f58965a621e2f68a2980cb9e0e8e418bca845460d"
+    },
+    "Screenshots/stand-physical-screen.png": {
+      "bytes": 402667,
+      "sha256": "aab4e158c85946de7c2a073f8fa58623921b990d16319096543620b0dace71c4"
+    },
+    "Screenshots/wrong-date-result.png": {
+      "bytes": 125907,
+      "sha256": "0dcb0c1127a43428031f0b5795f91ac8539071eb4a4282faf9ba79c2dbf72f0d"
+    },
+    "build-summary.json": {
+      "bytes": 3723,
+      "sha256": "a2439b56ed2b7fa7c1d2ccdfdb47d740d5409fabdf6238c89602238dda699f5e"
+    },
+    "commands.json": {
+      "bytes": 4876,
+      "sha256": "ffd09b3492cc420bc0f7f677194455d5095939ab453dbc3c2a4532673915b10a"
+    },
+    "conversation.json": {
+      "bytes": 12001,
+      "sha256": "326ef1c6e9241cb9f1b3c69098586e2d99c35db3f374248dec66b0ad327332f6"
+    },
+    "generated-scene-provenance.json": {
+      "bytes": 2786,
+      "sha256": "e0d7337161371769710b107f0fd65808a4e7eac4efd29e03f6f6343290311791"
+    },
+    "layout-summary.json": {
+      "bytes": 1145,
+      "sha256": "55d3bf19cf80cb94f8c638c36aa42ad5d37928b59fefe05805c31d78061a80f4"
+    },
+    "native-functional-r2.json": {
+      "bytes": 2447,
+      "sha256": "08bfc9f977421921e60688b0b17e57b247369ee6d0204f720d6de4fde2195a33"
+    },
+    "native-targeted-r3.json": {
+      "bytes": 1661,
+      "sha256": "34c77ed2b18979cac76a5164e8b9409893a87e9c14c646fcb120964ebfaf20be"
+    },
+    "provider.json": {
+      "bytes": 4792,
+      "sha256": "e0edb08dbd66a9c7f9585c7c1bd81b7c46ce7211e2a76932100e5997ac75abd8"
+    },
+    "retained-suite-applicability.json": {
+      "bytes": 3909,
+      "sha256": "0b23406a3703eadc6f93609aea8dbeecab6169899594621aa06d9b070e2cadd0"
+    },
+    "save-store.json": {
+      "bytes": 341,
+      "sha256": "9aa181b72a82186294647cdefa550b8b0cf4aa12c1370ab92bdcb24141c3c65b"
+    },
+    "source-manifest.json": {
+      "bytes": 23764,
+      "sha256": "7add79bb5638fa68e1076502cf9fa8ba629603377faa1a4ee4892a3fa26ac99c"
+    },
+    "validation-summary.json": {
+      "bytes": 4086,
+      "sha256": "aec522ee920d01332611dc65f884bee2b3bd240a42a0fbce4205afd7c2269950"
+    }
+  }
+}

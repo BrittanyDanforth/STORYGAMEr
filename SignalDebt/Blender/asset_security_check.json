@@ -1,0 +1,230 @@
+{
+  "blender_version": "4.0.2",
+  "inspection": "Read-only; factory startup, --disable-autoexec, use_scripts=False on each open; audit script makes no network requests and performs no renders.",
+  "files": [
+    {
+      "file": "SignalDebt_Apartment.blend",
+      "sha256": "3ee029e9c9747faeb6355b96343ab06ce37985541f3ff761ec8add71b040c5c9",
+      "unchanged": true,
+      "automatic_script_execution_enabled": false,
+      "autoexec_fail": false,
+      "autoexec_fail_message": "",
+      "embedded_text_count": 0,
+      "embedded_texts": [],
+      "registered_text_module_count": 0,
+      "driver_count": 0,
+      "scripted_driver_count": 0,
+      "drivers": [],
+      "shader_script_nodes": [],
+      "image_inventory": [
+        {
+          "name": "Cotton_Blanket_BaseColor.png",
+          "source": "FILE",
+          "packed_files": 1,
+          "filepath": "//../UnityProject/Assets/Art/Apartment/Textures/Cotton_Blanket_BaseColor.png"
+        },
+        {
+          "name": "Oak_Floor_BaseColor.png",
+          "source": "FILE",
+          "packed_files": 1,
+          "filepath": "//../UnityProject/Assets/Art/Apartment/Textures/Oak_Floor_BaseColor.png"
+        },
+        {
+          "name": "Plaster_BaseColor.png",
+          "source": "FILE",
+          "packed_files": 1,
+          "filepath": "//../UnityProject/Assets/Art/Apartment/Textures/Plaster_BaseColor.png"
+        },
+        {
+          "name": "Walnut_Desk_BaseColor.png",
+          "source": "FILE",
+          "packed_files": 1,
+          "filepath": "//../UnityProject/Assets/Art/Apartment/Textures/Walnut_Desk_BaseColor.png"
+        },
+        {
+          "name": "Walnut_Worktop_BaseColor.png",
+          "source": "FILE",
+          "packed_files": 1,
+          "filepath": "//../UnityProject/Assets/Art/Apartment/Textures/Walnut_Worktop_BaseColor.png"
+        }
+      ],
+      "load_handler_additions": {},
+      "linked_library_count": 0,
+      "image_count": 5,
+      "packed_image_count": 5,
+      "asset_path_references": [
+        {
+          "collection": "images",
+          "datablock": "Cotton_Blanket_BaseColor.png",
+          "property": "filepath",
+          "path": "//../UnityProject/Assets/Art/Apartment/Textures/Cotton_Blanket_BaseColor.png",
+          "resolved_path": "/workspace/scratch/68e39206e09e/SignalDebt/Blender/../UnityProject/Assets/Art/Apartment/Textures/Cotton_Blanket_BaseColor.png",
+          "packed_files": 1,
+          "exists_locally": true,
+          "network_reference": false
+        },
+        {
+          "collection": "images",
+          "datablock": "Cotton_Blanket_BaseColor.png",
+          "property": "filepath_raw",
+          "path": "//../UnityProject/Assets/Art/Apartment/Textures/Cotton_Blanket_BaseColor.png",
+          "resolved_path": "/workspace/scratch/68e39206e09e/SignalDebt/Blender/../UnityProject/Assets/Art/Apartment/Textures/Cotton_Blanket_BaseColor.png",
+          "packed_files": 1,
+          "exists_locally": true,
+          "network_reference": false
+        },
+        {
+          "collection": "images",
+          "datablock": "Oak_Floor_BaseColor.png",
+          "property": "filepath",
+          "path": "//../UnityProject/Assets/Art/Apartment/Textures/Oak_Floor_BaseColor.png",
+          "resolved_path": "/workspace/scratch/68e39206e09e/SignalDebt/Blender/../UnityProject/Assets/Art/Apartment/Textures/Oak_Floor_BaseColor.png",
+          "packed_files": 1,
+          "exists_locally": true,
+          "network_reference": false
+        },
+        {
+          "collection": "images",
+          "datablock": "Oak_Floor_BaseColor.png",
+          "property": "filepath_raw",
+          "path": "//../UnityProject/Assets/Art/Apartment/Textures/Oak_Floor_BaseColor.png",
+          "resolved_path": "/workspace/scratch/68e39206e09e/SignalDebt/Blender/../UnityProject/Assets/Art/Apartment/Textures/Oak_Floor_BaseColor.png",
+          "packed_files": 1,
+          "exists_locally": true,
+          "network_reference": false
+        },
+        {
+          "collection": "images",
+          "datablock": "Plaster_BaseColor.png",
+          "property": "filepath",
+          "path": "//../UnityProject/Assets/Art/Apartment/Textures/Plaster_BaseColor.png",
+          "resolved_path": "/workspace/scratch/68e39206e09e/SignalDebt/Blender/../UnityProject/Assets/Art/Apartment/Textures/Plaster_BaseColor.png",
+          "packed_files": 1,
+          "exists_locally": true,
+          "network_reference": false
+        },
+        {
+          "collection": "images",
+          "datablock": "Plaster_BaseColor.png",
+          "property": "filepath_raw",
+          "path": "//../UnityProject/Assets/Art/Apartment/Textures/Plaster_BaseColor.png",
+          "resolved_path": "/workspace/scratch/68e39206e09e/SignalDebt/Blender/../UnityProject/Assets/Art/Apartment/Textures/Plaster_BaseColor.png",
+          "packed_files": 1,
+          "exists_locally": true,
+          "network_reference": false
+        },
+        {
+          "collection": "images",
+          "datablock": "Walnut_Desk_BaseColor.png",
+          "property": "filepath",
+          "path": "//../UnityProject/Assets/Art/Apartment/Textures/Walnut_Desk_BaseColor.png",
+          "resolved_path": "/workspace/scratch/68e39206e09e/SignalDebt/Blender/../UnityProject/Assets/Art/Apartment/Textures/Walnut_Desk_BaseColor.png",
+          "packed_files": 1,
+          "exists_locally": true,
+          "network_reference": false
+        },
+        {
+          "collection": "images",
+          "datablock": "Walnut_Desk_BaseColor.png",
+          "property": "filepath_raw",
+          "path": "//../UnityProject/Assets/Art/Apartment/Textures/Walnut_Desk_BaseColor.png",
+          "resolved_path": "/workspace/scratch/68e39206e09e/SignalDebt/Blender/../UnityProject/Assets/Art/Apartment/Textures/Walnut_Desk_BaseColor.png",
+          "packed_files": 1,
+          "exists_locally": true,
+          "network_reference": false
+        },
+        {
+          "collection": "images",
+          "datablock": "Walnut_Worktop_BaseColor.png",
+          "property": "filepath",
+          "path": "//../UnityProject/Assets/Art/Apartment/Textures/Walnut_Worktop_BaseColor.png",
+          "resolved_path": "/workspace/scratch/68e39206e09e/SignalDebt/Blender/../UnityProject/Assets/Art/Apartment/Textures/Walnut_Worktop_BaseColor.png",
+          "packed_files": 1,
+          "exists_locally": true,
+          "network_reference": false
+        },
+        {
+          "collection": "images",
+          "datablock": "Walnut_Worktop_BaseColor.png",
+          "property": "filepath_raw",
+          "path": "//../UnityProject/Assets/Art/Apartment/Textures/Walnut_Worktop_BaseColor.png",
+          "resolved_path": "/workspace/scratch/68e39206e09e/SignalDebt/Blender/../UnityProject/Assets/Art/Apartment/Textures/Walnut_Worktop_BaseColor.png",
+          "packed_files": 1,
+          "exists_locally": true,
+          "network_reference": false
+        }
+      ],
+      "unpacked_external_asset_references": [],
+      "network_reference_count": 0,
+      "executable_risk_indicators": [],
+      "status": "PASS"
+    },
+    {
+      "file": "Characters.blend",
+      "sha256": "5d9cd3512cde24de6977878adbb251dbb880dc5a1f3b1fe4d9ddbeed59bd9f49",
+      "unchanged": true,
+      "automatic_script_execution_enabled": false,
+      "autoexec_fail": false,
+      "autoexec_fail_message": "",
+      "embedded_text_count": 0,
+      "embedded_texts": [],
+      "registered_text_module_count": 0,
+      "driver_count": 0,
+      "scripted_driver_count": 0,
+      "drivers": [],
+      "shader_script_nodes": [],
+      "image_inventory": [
+        {
+          "name": "Render Result",
+          "source": "VIEWER",
+          "packed_files": 0,
+          "filepath": ""
+        }
+      ],
+      "load_handler_additions": {},
+      "linked_library_count": 0,
+      "image_count": 1,
+      "packed_image_count": 0,
+      "asset_path_references": [],
+      "unpacked_external_asset_references": [],
+      "network_reference_count": 0,
+      "executable_risk_indicators": [],
+      "status": "PASS"
+    },
+    {
+      "file": "Character_Animation_Showcase.blend",
+      "sha256": "74a1a69a4d0c2e465ee6d7a38d6c8d96f096577df3d34f3b773f80ee1e6a9e01",
+      "unchanged": true,
+      "automatic_script_execution_enabled": false,
+      "autoexec_fail": false,
+      "autoexec_fail_message": "",
+      "embedded_text_count": 0,
+      "embedded_texts": [],
+      "registered_text_module_count": 0,
+      "driver_count": 0,
+      "scripted_driver_count": 0,
+      "drivers": [],
+      "shader_script_nodes": [],
+      "image_inventory": [
+        {
+          "name": "Render Result",
+          "source": "VIEWER",
+          "packed_files": 0,
+          "filepath": ""
+        }
+      ],
+      "load_handler_additions": {},
+      "linked_library_count": 0,
+      "image_count": 1,
+      "packed_image_count": 0,
+      "asset_path_references": [],
+      "unpacked_external_asset_references": [],
+      "network_reference_count": 0,
+      "executable_risk_indicators": [],
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS",
+  "runtime_note": "This audit reads local asset data only; no network call or external asset loading is part of the audit script.",
+  "scope_limit": "Inventory of Blender embedded executable content and referenced assets; not a Blender binary vulnerability audit."
+}

@@ -1,0 +1,109 @@
+{
+  "passed": true,
+  "revision": "npc-key-r2",
+  "utc_recorded_at": "2026-10-05T02:10:25.830051+00:00",
+  "validation_kind": "Minimal final artifact smoke in uninstrumented Linux Mono standalone, actual XTest input and framebuffer screenshots.",
+  "platform": "Linux x86_64 Mono",
+  "unity_version": "6000.0.62f1",
+  "renderer": "llvmpipe OpenGL4.5 software rendering",
+  "resolution": "1200x800",
+  "runtime_assembly_sha256": "642705667376151c7fedbed325a71f1389177e0b788c8a4f100f32f7faa74458",
+  "frozen_source_manifest": "/workspace/SignalDebt-setup/unity/npc-key-r2-source-manifest.json",
+  "frozen_source_manifest_sha256": "1e6488066507f0e5c0322e9f093b5137b39eee3f93e65ee5b6524c8b4fab1dd0",
+  "frozen_source_count": 165,
+  "production_files_changed_after_frozen_build": [],
+  "source_files_different_from_detailed_r1": [
+    "Assets/Scripts/SignalDebtAiProvider.cs"
+  ],
+  "prior_detailed_remember_proof": "/workspace/SignalDebt-setup/unity/npc-key-r1-native/acceptance-npc-key-r1.json",
+  "prior_detailed_proof_sha256": "5b966caa8886677bf8130639882b4d70faea041e2abbf2a0cbee6fdea04c62b7",
+  "build_report": "/workspace/SignalDebt-setup/unity/linux-npc-key-r2-build-result.json",
+  "checks": [
+    {
+      "id": "final_main_menu",
+      "passed": true,
+      "observed": "Final r2 native player opens actual title/menu with Continue for isolated paid campaign.",
+      "capture": "captures/01-final-launch-menu.png"
+    },
+    {
+      "id": "final_paid_inbox",
+      "passed": true,
+      "observed": "Continue preserves150/400. Natural walking/aim/E enters laptop and authored past-tense paid Inbox message is readable.",
+      "capture": "captures/02-final-paid-inbox.png"
+    },
+    {
+      "id": "final_no_key_send",
+      "passed": true,
+      "observed": "Native hello submission without any key yields separate Settings notice; campaign bytes remain identical across Continue and Send. No network request requested. Baseline was taken before Continue, which rewrites mtime, so this final smoke does not claim a separately measured Send-only mtime invariant.",
+      "capture": "captures/03-final-no-key-status.png"
+    },
+    {
+      "id": "final_stand_quit",
+      "passed": true,
+      "observed": "Stand returns first person and real laptop display; Pause Quit exits0.",
+      "capture": "captures/04-final-first-person-return.png"
+    },
+    {
+      "id": "final_build_bound",
+      "passed": true,
+      "observed": "All165 current source hashes match frozen final r2; only Provider source differs from detailed native r1. Original release116files and copied game hashes unchanged; releaseUserData absent."
+    }
+  ],
+  "check_count": 5,
+  "capture_count": 4,
+  "captures": [
+    "captures/01-final-launch-menu.png",
+    "captures/02-final-paid-inbox.png",
+    "captures/03-final-no-key-status.png",
+    "captures/04-final-first-person-return.png"
+  ],
+  "logs": [
+    "player.log"
+  ],
+  "player_exit_code": 0,
+  "all_owned_player_processes_stopped": true,
+  "release_build_files_unchanged": true,
+  "release_build_file_count": 116,
+  "copied_player_matches_release": true,
+  "release_build_userdata_created": false,
+  "save_before": {
+    "sha256": "33cc304c1b0a5fedb09bcc8c075a902ec730c209264567fbe7eb92809db26318",
+    "mtime_ns": 1791163647922214999
+  },
+  "save_after": {
+    "sha256": "33cc304c1b0a5fedb09bcc8c075a902ec730c209264567fbe7eb92809db26318",
+    "mtime_ns": 1791166170768721121
+  },
+  "final_campaign": {
+    "balance": 150,
+    "rentDue": 400,
+    "revision": 6,
+    "jobPaid": true
+  },
+  "environment_key_unset": true,
+  "key_file_present": false,
+  "network_requests_requested": 0,
+  "unexpected_exceptions_or_save_errors": [],
+  "keylike_values_in_retained_log": false,
+  "limits": [
+    "Detailed Remember/restart/Remove was exercised on frozen r1; corresponding key-store/UI sources unchanged in r2.",
+    "No real API credentials, successful generated dialogue/personality/insult response/fallible beliefs tested natively.",
+    "This minimal smoke does not repeat broader repair/save/archive/window acceptance.",
+    "Windows runtime, hardware audio and GPU performance untested; ALSA/FMOD fallback warnings expected."
+  ],
+  "evidence_allowlist": [
+    "captures/01-final-launch-menu.png",
+    "captures/02-final-paid-inbox.png",
+    "captures/03-final-no-key-status.png",
+    "captures/04-final-first-person-return.png",
+    "player.log"
+  ],
+  "evidence_sha256": {
+    "captures/01-final-launch-menu.png": "63e2a4d9318d1d7e8ec06a358b31c9de618af515a2c712a80f0dc7d9724a8049",
+    "captures/02-final-paid-inbox.png": "6965a5a4b6dbb641911cf60c7cdd2cf46780a0a80b437dc94f073ddaaea7bccb",
+    "captures/03-final-no-key-status.png": "00f7fb64513ab2054e10ae80eea6015a70defb9251bba489ec89e5180324fb0e",
+    "captures/04-final-first-person-return.png": "a89e087929d6977608c9750fa2927cf544f6ebc4e566b2cafe0fb1fb47f2c9ed",
+    "player.log": "b6ef1598459302b13017ab97e5f8ddd9a17fdf410fab7f2d6b0540de13d7ea76"
+  },
+  "save_observation_note": "The baseline precedes Continue; final SHA is identical, while mtime advances during normal Continue. Exact immediately-before/after Send SHA+mtime equality was measured in detailed r1, whose UI/store sources are unchanged."
+}

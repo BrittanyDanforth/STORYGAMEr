@@ -1,0 +1,101 @@
+{
+  "revision": "save-menu-r1",
+  "player_exit_code": 0,
+  "runtime_files_unchanged": 116,
+  "driver": "External X11 XTest input and actual framebuffer captures; uninstrumented Linux standalone, 1200x800, llvmpipe.",
+  "api_used": false,
+  "audio_verified": false,
+  "checks": {
+    "paid-load-checks": {
+      "paid_proof_loaded": true,
+      "credits": 360,
+      "recollect_disabled_and_save_unchanged": true,
+      "save_sha256": "0989b93f11120036b5c1854d78d8d6fe46c0c5e80d67b80ceeed47707ba56278"
+    },
+    "archive-load-checks": {
+      "previous_campaign_restored": true,
+      "new_campaign_preserved": true
+    },
+    "new-game-checks": {
+      "new_save_id": true,
+      "fresh_balance": 80,
+      "archive_contains_exact_previous": true,
+      "checkpoints_preserved": true,
+      "archives": 1
+    },
+    "failure-checks": {
+      "active_unchanged_after_checkpoint_failure": true,
+      "checkpoint_directory_restored": true,
+      "existing_checkpoints_preserved": true
+    },
+    "stale-checks": {
+      "active_unchanged_after_stale_confirmation": true,
+      "changed_test_metadata": "Game/UserData/Checkpoints/ca5bb22b45aa4392935e981897308864/checkpoint.json",
+      "checkpoint_count": 3
+    },
+    "recovered-checks": {
+      "recovered_balance": 360,
+      "recovered_proof_paid": true,
+      "archive_files_untouched": true
+    },
+    "restore-checks": {
+      "cancel_left_autosave_unchanged": true,
+      "earlier_checkpoint_restored": true,
+      "accepted_revision_preserved_as_safety_checkpoint": true,
+      "checkpoints_after_restore": 3,
+      "balance": 80,
+      "revision": 0
+    }
+  },
+  "visual_checks": [
+    "Fresh main menu and empty Load Game",
+    "Pause buttons fit; Escape closes modal before pause",
+    "Named checkpoint and no save on field blur",
+    "Seated load restores job state and physical laptop display without old-canvas ghost",
+    "Paged save cards and Refresh after stale selection",
+    "New game keeps former campaign and checkpoint history",
+    "Paid synthetic prior-play fixture restores read-only proof with360credits; collect is disabled",
+    "Recovered backup label and confirmation show selected backup time, not newer corrupt primary"
+  ],
+  "observed_defects": [
+    "Failure message obscured by page listing error; fixed in r2 source",
+    "Long labels silently clipped on cards; bounded presentation fix pending r2"
+  ],
+  "limitations": [
+    "No fresh end-to-end proof playthrough this increment; existing synthetic paid native campaign imported for restore regression",
+    "No live AI request or credentials; no Windows native execution",
+    "R1 source predates final two presentation fixes"
+  ],
+  "captures": [
+    "01-main-menu.png",
+    "02-empty-load.png",
+    "03-pause.png",
+    "03b-pause.png",
+    "04-named-checkpoint.png",
+    "05-back-still-paused.png",
+    "06-laptop.png",
+    "07-inbox.png",
+    "08-seated-checkpoints.png",
+    "09-load-confirmation.png",
+    "10-loaded-first-person.png",
+    "11-laptop-after-load.png",
+    "12-stand-after-load.png",
+    "13-pagination.png",
+    "14-stale-selection.png",
+    "15-refreshed.png",
+    "16-failed-save.png",
+    "17-new-game-confirm.png",
+    "18-new-game-archive.png",
+    "19-paid-fixture-list.png",
+    "20-paid-proof-after-load.png",
+    "21-max-name.png",
+    "21b-max-name.png",
+    "22-max-name-confirm.png",
+    "22b-max-name-confirm.png",
+    "23-recovered-list.png",
+    "23b-recovered-list.png",
+    "24-recovered-confirm.png"
+  ],
+  "runtime_assembly_sha256": "d0b512c96e6d82b63504548b9fcce90cf4119329045f31eabc99475cd198cd1e",
+  "source_manifest_sha256": "45b2f8a6f769ff1cc358eecfe2ccd3e1849c02c6c7db4830b953492ef7533b44"
+}

@@ -1,0 +1,47 @@
+{
+  "recorded_utc": "2026-10-04T20:55:41.255662+00:00",
+  "blender_version": "4.3.2",
+  "auto_execute_scripts_enabled": false,
+  "scope": "Data inspection only; no embedded script execution. This is not a malware-free guarantee.",
+  "files": [
+    {
+      "path": "Blender/SignalDebt_Apartment.blend",
+      "sha256": "3ee029e9c9747faeb6355b96343ab06ce37985541f3ff761ec8add71b040c5c9",
+      "objects": 945,
+      "meshes": 806,
+      "armatures": 0,
+      "actions": 0,
+      "text_blocks": [],
+      "drivers": [],
+      "linked_libraries": 0,
+      "packed_images": 5,
+      "external_images": 0
+    },
+    {
+      "path": "Blender/Characters.blend",
+      "sha256": "5d9cd3512cde24de6977878adbb251dbb880dc5a1f3b1fe4d9ddbeed59bd9f49",
+      "objects": 152,
+      "meshes": 63,
+      "armatures": 5,
+      "actions": 0,
+      "text_blocks": [],
+      "drivers": [],
+      "linked_libraries": 0,
+      "packed_images": 0,
+      "external_images": 0
+    },
+    {
+      "path": "Blender/Character_Animation_Showcase.blend",
+      "sha256": "74a1a69a4d0c2e465ee6d7a38d6c8d96f096577df3d34f3b773f80ee1e6a9e01",
+      "objects": 87,
+      "meshes": 53,
+      "armatures": 2,
+      "actions": 5,
+      "text_blocks": [],
+      "drivers": [],
+      "linked_libraries": 0,
+      "packed_images": 0,
+      "external_images": 0
+    }
+  ]
+}

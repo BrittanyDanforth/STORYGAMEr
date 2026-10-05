@@ -1,0 +1,125 @@
+{
+  "status": "PASS for the inspected geometry and mathematical checks",
+  "verification_kind": "Independent Blender FBX reimport and pure Python geometry; Unity import, C# execution, Play Mode and rendering were not exercised.",
+  "gait": {
+    "method": "Reimplemented current StepTarget and RequiredPelvisDrop equations using Player bone coordinates and chain lengths from rig_contract.json. Compared resulting target distances against Solve's lower/upper reach clamps.",
+    "limb_samples": 69696,
+    "phase_samples": 121,
+    "movement_headings": 16,
+    "crouch_blends": 9,
+    "modes": [
+      "walk",
+      "run"
+    ],
+    "gait_weight": 1,
+    "maximum_reach_clamp_target_error_m": 0,
+    "maximum_extra_pelvis_drop_m": 0.11877493839839959,
+    "limitation": "Checks reach feasibility and planted target height, not skin appearance, world-space foot sliding, quaternion rounding or actual Unity physics."
+  },
+  "seated_pose": {
+    "pelvis_drop_m": 0.4,
+    "pelvis_forward_m": 0.25,
+    "spine_lean_degrees": 26,
+    "measured_current_player_fbx_sole_min_m": 1.5602592995378473e-08,
+    "left_and_right_shoulder_to_wrist_distance_m": 0.4212020291587488,
+    "maximum_arm_reach_m": 0.48500963541696396,
+    "remaining_reach_m": 0.06380760625821513,
+    "wrist_above_keycap_top_m": 0.02824899999999997,
+    "note": "Final target is focus minus 111mm vertically, raised 3mm from prior revision. Uses actual FBX sole bound; wrist/keytop clearance is not a finger-mesh collision test.",
+    "keyboard_focus_to_wrist_vertical_offset_m": 0.111
+  },
+  "player_fbx_reimport": {
+    "source_forward": [
+      0,
+      -1,
+      4.3711395392165286e-08
+    ],
+    "source_up": [
+      0,
+      4.3711395392165286e-08,
+      1
+    ],
+    "left_upper_arm_dot_anatomical_right_m": -0.23560002446174622,
+    "palm_tip_from_wrist_left_m": [
+      2.086162567138672e-07,
+      -0.019949890673160553,
+      -0.06269919872283936
+    ],
+    "palm_back_from_wrist_left_m": [
+      1.7881393432617188e-07,
+      0.047500137239694595,
+      7.152557373046875e-07
+    ],
+    "source_bounds_height_m": 1.7527755342860178,
+    "nonzero_forward_up_markers": true,
+    "note": "Actual corrected Player FBX reimport passes proper-rotation typing-frame anatomy. Old rest-index-medial criterion was insufficient and is removed. No Unity importer execution.",
+    "sha256": "91e6157be52aabfa3395a8570fca3e771f41cb6d56f72eabc69828b52ed46db9",
+    "posed_hand_anatomy": {
+      "Left": {
+        "thumb_root_centerward_m": 0.027549918740987778,
+        "thumb_tip_centerward_m": 0.06780799478292465,
+        "dorsal_up_dot": 0.9999999403953591,
+        "declared_nail_normal_up_dot": 0.9529255165074275,
+        "index_nearest_thumb": true,
+        "finger_joint_bend_dot_dorsal": {
+          "Index": [
+            -0.150656932964921,
+            -0.14169490709900856
+          ],
+          "Middle": [
+            -0.13891121465712786,
+            -0.13515750505030155
+          ],
+          "Ring": [
+            -0.14661645889282227,
+            -0.13960634358227253
+          ],
+          "Little": [
+            -0.16628462634980679,
+            -0.14783774130046368
+          ]
+        }
+      },
+      "Right": {
+        "thumb_root_centerward_m": 0.027549918740987778,
+        "thumb_tip_centerward_m": 0.06780799478292465,
+        "dorsal_up_dot": 0.9999999403953591,
+        "declared_nail_normal_up_dot": 0.9529255165074275,
+        "index_nearest_thumb": true,
+        "finger_joint_bend_dot_dorsal": {
+          "Index": [
+            -0.150656932964921,
+            -0.14169490709900856
+          ],
+          "Middle": [
+            -0.13891121465712786,
+            -0.13515750505030155
+          ],
+          "Ring": [
+            -0.14661645889282227,
+            -0.13960634358227253
+          ],
+          "Little": [
+            -0.16628462634980679,
+            -0.14783774130046368
+          ]
+        }
+      }
+    }
+  },
+  "code_review": {
+    "uniform_body_scale_preserved": true,
+    "torso_and_head_hidden_by_renderer_shadow_mode_not_bone_deactivation": true,
+    "marker_distance_guards_present": true,
+    "complete_palm_direction_and_dorsal_normal_frame_present": true,
+    "animation_scrub_resume_fix_present": true,
+    "animation_events_cleared_by_importer": true,
+    "root_motion_application_disabled_in_review": true,
+    "gameplay_door_state_modified_by_animation_review": false,
+    "hips_renderer_visible_to_close_trouser_top": true,
+    "exported_custom_normals_imported": true
+  },
+  "artifact_lifecycle": "Latest Player export includes EyeView/HeadPivot markers, sleeve closures and cloth-only Blender normal transfer excluded from FBX. Actual FBX anatomy, camera markers and seam inputs pass. Limb IK equations/lengths unchanged. Standing/crouching camera now follows measured head rotation; final fresh pose visual acceptance remains with root.",
+  "recorded_utc": "2026-10-04T07:15:09.087327+00:00",
+  "camera_review_file": "Validation/player_camera_review.json"
+}

@@ -1,0 +1,4326 @@
+{
+  "status": "PASS within actual FBX wrist/grip/skin roundtrip scope; whole-body acceptance and residuals in whole_body_review.json",
+  "recorded_utc": "2026-10-04T19:43:56.618233+00:00",
+  "method": "Read-only Blender FBX reimport of all four corrected police clips, with anim_offset=0 and importer-inferred bone connections cleared to preserve the source unconnected-bone contract and keyed translations; compared with authored source at every integer frame. Technical bone/skin/pose checks only; art acceptance is recorded separately. Unity editor was not available.",
+  "source_sha256": {
+    "Blender/animate_characters.py": "da836a8fefa33a64e932ce45cf160cac58c5a979f94618478b8123c3b17d10d4",
+    "Blender/Character_Animation_Showcase.blend": "74a1a69a4d0c2e465ee6d7a38d6c8d96f096577df3d34f3b773f80ee1e6a9e01"
+  },
+  "files": [
+    {
+      "file": "UnityProject/Assets/Art/Animations/SWAT_DoorKick.fbx",
+      "sha256": "4f1e01a9fc68567ece45ebe9723a16fa212f65c78a2f039dddfa7388164901bf",
+      "rig": "SWAT_Officer_Rig",
+      "blender_inferred_connections_cleared_to_preserve_source_contract": [
+        "Hips",
+        "Chest",
+        "Head",
+        "LeftLowerArm",
+        "LeftIndexIntermediate",
+        "LeftIndexDistal",
+        "LeftMiddleIntermediate",
+        "LeftMiddleDistal",
+        "LeftRingIntermediate",
+        "LeftRingDistal",
+        "LeftLittleIntermediate",
+        "LeftLittleDistal",
+        "LeftThumbIntermediate",
+        "LeftThumbDistal",
+        "RightLowerArm",
+        "RightIndexIntermediate",
+        "RightIndexDistal",
+        "RightMiddleIntermediate",
+        "RightMiddleDistal",
+        "RightRingIntermediate",
+        "RightRingDistal",
+        "RightLittleIntermediate",
+        "RightLittleDistal",
+        "RightThumbIntermediate",
+        "RightThumbDistal",
+        "LeftLowerLeg",
+        "LeftToes",
+        "RightLowerLeg",
+        "RightToes"
+      ],
+      "import_anim_offset": 0,
+      "bones": 52,
+      "skinned_meshes": 8,
+      "armature_actions": 1,
+      "frames": [
+        1.0,
+        61.0
+      ],
+      "fps": 30.0,
+      "duration_seconds": 2.0,
+      "root_max_drift_m": 0.0,
+      "unweighted_vertices": 0,
+      "max_influences": 4,
+      "max_weight_sum_error": 1.7881393432617188e-07,
+      "source_pose_max_joint_head_error_m": 3.617300999865393e-06,
+      "source_pose_max_rotation_error_deg": 0.05595291023658669,
+      "source_evaluated_skin_max_nearest_vertex_error_m": 4.610145879269112e-06,
+      "forearm_palm_angle_range_deg": {
+        "Left": [
+          0.0,
+          0.0
+        ],
+        "Right": [
+          0.0,
+          0.0
+        ]
+      },
+      "sampled_pose_measurements": {
+        "1": {
+          "Left": {
+            "forearm_palm_angle_deg": 0.0,
+            "wrist_head": [
+              0.27000016,
+              -0.2899999,
+              1.27200007
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    0.2562575,
+                    -0.29412064,
+                    1.30959201
+                  ],
+                  [
+                    0.21763782,
+                    -0.29678237,
+                    1.31780422
+                  ],
+                  [
+                    0.19847713,
+                    -0.31181714,
+                    1.31074512
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  43.9834,
+                  23.3309
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    0.23699172,
+                    -0.32693017,
+                    1.32648492
+                  ],
+                  [
+                    0.20397773,
+                    -0.3368721,
+                    1.32985556
+                  ],
+                  [
+                    0.1901776,
+                    -0.31971309,
+                    1.31554425
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.916,
+                  45.1648
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    0.23872201,
+                    -0.33756477,
+                    1.31206596
+                  ],
+                  [
+                    0.20241778,
+                    -0.34957841,
+                    1.31656992
+                  ],
+                  [
+                    0.18615922,
+                    -0.33136842,
+                    1.30118835
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.216,
+                  44.6919
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    0.24054846,
+                    -0.34879023,
+                    1.29684579
+                  ],
+                  [
+                    0.20643772,
+                    -0.35942265,
+                    1.30059433
+                  ],
+                  [
+                    0.19181827,
+                    -0.34191334,
+                    1.28592634
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.673,
+                  45.007
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    0.24227872,
+                    -0.3594248,
+                    1.28242671
+                  ],
+                  [
+                    0.21328624,
+                    -0.36683446,
+                    1.28441262
+                  ],
+                  [
+                    0.20249125,
+                    -0.35095981,
+                    1.27140927
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  75.8897,
+                  45.7142
+                ]
+              }
+            }
+          },
+          "Right": {
+            "forearm_palm_angle_deg": 0.0,
+            "wrist_head": [
+              -0.27000016,
+              -0.2899999,
+              1.27200007
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    -0.2562575,
+                    -0.29412064,
+                    1.30959201
+                  ],
+                  [
+                    -0.21763782,
+                    -0.29678237,
+                    1.31780422
+                  ],
+                  [
+                    -0.19847713,
+                    -0.31181714,
+                    1.31074512
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  43.9834,
+                  23.3309
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    -0.23699172,
+                    -0.32693017,
+                    1.32648492
+                  ],
+                  [
+                    -0.20397773,
+                    -0.3368721,
+                    1.32985556
+                  ],
+                  [
+                    -0.1901776,
+                    -0.31971309,
+                    1.31554425
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.916,
+                  45.1648
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    -0.23872201,
+                    -0.33756477,
+                    1.31206596
+                  ],
+                  [
+                    -0.20241778,
+                    -0.34957841,
+                    1.31656992
+                  ],
+                  [
+                    -0.18615922,
+                    -0.33136842,
+                    1.30118835
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.216,
+                  44.6919
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    -0.24054846,
+                    -0.34879023,
+                    1.29684579
+                  ],
+                  [
+                    -0.20643772,
+                    -0.35942265,
+                    1.30059433
+                  ],
+                  [
+                    -0.19181827,
+                    -0.34191334,
+                    1.28592634
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.673,
+                  45.007
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    -0.24227872,
+                    -0.3594248,
+                    1.28242671
+                  ],
+                  [
+                    -0.21328624,
+                    -0.36683446,
+                    1.28441262
+                  ],
+                  [
+                    -0.20249125,
+                    -0.35095981,
+                    1.27140927
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  75.8897,
+                  45.7142
+                ]
+              }
+            }
+          }
+        },
+        "25": {
+          "Left": {
+            "forearm_palm_angle_deg": 0.0,
+            "wrist_head": [
+              0.29800051,
+              -0.33500004,
+              1.30740726
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    0.28553367,
+                    -0.33597195,
+                    1.3456521
+                  ],
+                  [
+                    0.24727812,
+                    -0.33890304,
+                    1.35534394
+                  ],
+                  [
+                    0.22837263,
+                    -0.35504392,
+                    1.35033774
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  43.9834,
+                  23.3309
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    0.26778406,
+                    -0.36757538,
+                    1.36612535
+                  ],
+                  [
+                    0.23520109,
+                    -0.37805125,
+                    1.37148571
+                  ],
+                  [
+                    0.22046401,
+                    -0.36268052,
+                    1.35611546
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.916,
+                  45.1648
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    0.26939517,
+                    -0.37945607,
+                    1.3526994
+                  ],
+                  [
+                    0.23362169,
+                    -0.39197782,
+                    1.35948718
+                  ],
+                  [
+                    0.21636435,
+                    -0.37572744,
+                    1.34303582
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.216,
+                  44.6919
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    0.27109581,
+                    -0.39199686,
+                    1.33852768
+                  ],
+                  [
+                    0.23744939,
+                    -0.40315482,
+                    1.34436393
+                  ],
+                  [
+                    0.22187218,
+                    -0.38749078,
+                    1.32863331
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.673,
+                  45.007
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    0.27270693,
+                    -0.40387762,
+                    1.32510209
+                  ],
+                  [
+                    0.24402374,
+                    -0.41185325,
+                    1.32871807
+                  ],
+                  [
+                    0.23236717,
+                    -0.39755756,
+                    1.31466866
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  75.8897,
+                  45.7142
+                ]
+              }
+            }
+          },
+          "Right": {
+            "forearm_palm_angle_deg": 0.0,
+            "wrist_head": [
+              -0.24200048,
+              -0.33499992,
+              1.3074075
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    -0.2295339,
+                    -0.33597183,
+                    1.34565198
+                  ],
+                  [
+                    -0.19127837,
+                    -0.33890289,
+                    1.35534382
+                  ],
+                  [
+                    -0.17237286,
+                    -0.35504383,
+                    1.35033774
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  43.9834,
+                  23.3309
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    -0.21178396,
+                    -0.36757529,
+                    1.36612558
+                  ],
+                  [
+                    -0.17920102,
+                    -0.37805116,
+                    1.37148595
+                  ],
+                  [
+                    -0.16446392,
+                    -0.36268052,
+                    1.3561157
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.916,
+                  45.1648
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    -0.21339509,
+                    -0.37945598,
+                    1.35269964
+                  ],
+                  [
+                    -0.17762157,
+                    -0.39197776,
+                    1.35948753
+                  ],
+                  [
+                    -0.16036429,
+                    -0.37572744,
+                    1.34303629
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.216,
+                  44.6919
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    -0.2150957,
+                    -0.39199677,
+                    1.33852792
+                  ],
+                  [
+                    -0.18144926,
+                    -0.40315461,
+                    1.34436417
+                  ],
+                  [
+                    -0.16587208,
+                    -0.38749054,
+                    1.32863343
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.673,
+                  45.007
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    -0.2167068,
+                    -0.40387756,
+                    1.32510233
+                  ],
+                  [
+                    -0.18802363,
+                    -0.41185328,
+                    1.3287183
+                  ],
+                  [
+                    -0.17636718,
+                    -0.39755771,
+                    1.31466913
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  75.8897,
+                  45.7142
+                ]
+              }
+            }
+          }
+        },
+        "30": {
+          "Left": {
+            "forearm_palm_angle_deg": 0.0,
+            "wrist_head": [
+              0.29206046,
+              -0.32510054,
+              1.30987239
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    0.27953121,
+                    -0.32493296,
+                    1.34810853
+                  ],
+                  [
+                    0.24124652,
+                    -0.32739502,
+                    1.35781538
+                  ],
+                  [
+                    0.22226575,
+                    -0.34357348,
+                    1.35323393
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  43.9834,
+                  23.3309
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    0.2615878,
+                    -0.35585678,
+                    1.36943305
+                  ],
+                  [
+                    0.22894318,
+                    -0.36601111,
+                    1.37503195
+                  ],
+                  [
+                    0.21430877,
+                    -0.35100356,
+                    1.35921109
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.916,
+                  45.1648
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    0.26315787,
+                    -0.36811849,
+                    1.35634923
+                  ],
+                  [
+                    0.22731005,
+                    -0.3802613,
+                    1.36342716
+                  ],
+                  [
+                    0.2101616,
+                    -0.36439198,
+                    1.34649694
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.216,
+                  44.6919
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    0.26481524,
+                    -0.3810614,
+                    1.34253871
+                  ],
+                  [
+                    0.23110296,
+                    -0.39187869,
+                    1.34863079
+                  ],
+                  [
+                    0.21563055,
+                    -0.37658387,
+                    1.33244014
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.673,
+                  45.0069
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    0.26638535,
+                    -0.39332312,
+                    1.3294549
+                  ],
+                  [
+                    0.23765598,
+                    -0.40104726,
+                    1.33324611
+                  ],
+                  [
+                    0.22609454,
+                    -0.38709292,
+                    1.31878114
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  75.8897,
+                  45.7141
+                ]
+              }
+            }
+          },
+          "Right": {
+            "forearm_palm_angle_deg": 0.0,
+            "wrist_head": [
+              -0.24794023,
+              -0.32510036,
+              1.30987203
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    -0.23541115,
+                    -0.32493252,
+                    1.34810805
+                  ],
+                  [
+                    -0.19712646,
+                    -0.32739437,
+                    1.35781503
+                  ],
+                  [
+                    -0.17814563,
+                    -0.3435728,
+                    1.35323346
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  43.9834,
+                  23.3309
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    -0.21746758,
+                    -0.35585654,
+                    1.36943281
+                  ],
+                  [
+                    -0.18482304,
+                    -0.36601093,
+                    1.37503183
+                  ],
+                  [
+                    -0.17018859,
+                    -0.35100338,
+                    1.35921097
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.916,
+                  45.1648
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    -0.21903765,
+                    -0.36811832,
+                    1.35634899
+                  ],
+                  [
+                    -0.18318979,
+                    -0.38026109,
+                    1.36342704
+                  ],
+                  [
+                    -0.16604131,
+                    -0.36439168,
+                    1.34649682
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.216,
+                  44.6919
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    -0.22069497,
+                    -0.3810612,
+                    1.34253836
+                  ],
+                  [
+                    -0.18698263,
+                    -0.39187831,
+                    1.34863031
+                  ],
+                  [
+                    -0.17151013,
+                    -0.37658349,
+                    1.33243966
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.673,
+                  45.0069
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    -0.22226505,
+                    -0.39332291,
+                    1.32945466
+                  ],
+                  [
+                    -0.19353569,
+                    -0.40104699,
+                    1.33324587
+                  ],
+                  [
+                    -0.18197426,
+                    -0.38709274,
+                    1.31878078
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  75.8897,
+                  45.7141
+                ]
+              }
+            }
+          }
+        },
+        "61": {
+          "Left": {
+            "forearm_palm_angle_deg": 0.0,
+            "wrist_head": [
+              0.27000016,
+              -0.2899999,
+              1.27200007
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    0.25625759,
+                    -0.29412138,
+                    1.30959249
+                  ],
+                  [
+                    0.217638,
+                    -0.29678309,
+                    1.31780481
+                  ],
+                  [
+                    0.1984774,
+                    -0.31181774,
+                    1.3107456
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  43.9834,
+                  23.3309
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    0.23699172,
+                    -0.32693017,
+                    1.32648492
+                  ],
+                  [
+                    0.20397773,
+                    -0.3368721,
+                    1.32985556
+                  ],
+                  [
+                    0.1901776,
+                    -0.31971309,
+                    1.31554425
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.916,
+                  45.1648
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    0.23872201,
+                    -0.33756477,
+                    1.31206596
+                  ],
+                  [
+                    0.20241778,
+                    -0.34957841,
+                    1.31656992
+                  ],
+                  [
+                    0.18615922,
+                    -0.33136842,
+                    1.30118835
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.216,
+                  44.6919
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    0.24054846,
+                    -0.34879023,
+                    1.29684579
+                  ],
+                  [
+                    0.20643772,
+                    -0.35942265,
+                    1.30059433
+                  ],
+                  [
+                    0.19181827,
+                    -0.34191334,
+                    1.28592634
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.673,
+                  45.007
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    0.24227872,
+                    -0.3594248,
+                    1.28242671
+                  ],
+                  [
+                    0.21328624,
+                    -0.36683446,
+                    1.28441262
+                  ],
+                  [
+                    0.20249125,
+                    -0.35095981,
+                    1.27140927
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  75.8897,
+                  45.7142
+                ]
+              }
+            }
+          },
+          "Right": {
+            "forearm_palm_angle_deg": 0.0,
+            "wrist_head": [
+              -0.27000016,
+              -0.2899999,
+              1.27200007
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    -0.25625783,
+                    -0.29412088,
+                    1.30959189
+                  ],
+                  [
+                    -0.21763812,
+                    -0.2967827,
+                    1.3178041
+                  ],
+                  [
+                    -0.19847746,
+                    -0.31181744,
+                    1.31074488
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  43.9834,
+                  23.3309
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    -0.23699172,
+                    -0.32693017,
+                    1.32648492
+                  ],
+                  [
+                    -0.20397773,
+                    -0.3368721,
+                    1.32985556
+                  ],
+                  [
+                    -0.1901776,
+                    -0.31971309,
+                    1.31554425
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.916,
+                  45.1648
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    -0.23872201,
+                    -0.33756477,
+                    1.31206596
+                  ],
+                  [
+                    -0.20241778,
+                    -0.34957841,
+                    1.31656992
+                  ],
+                  [
+                    -0.18615922,
+                    -0.33136842,
+                    1.30118835
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.216,
+                  44.6919
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    -0.24054846,
+                    -0.34879023,
+                    1.29684579
+                  ],
+                  [
+                    -0.20643772,
+                    -0.35942265,
+                    1.30059433
+                  ],
+                  [
+                    -0.19181827,
+                    -0.34191334,
+                    1.28592634
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  74.673,
+                  45.007
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    -0.24227872,
+                    -0.3594248,
+                    1.28242671
+                  ],
+                  [
+                    -0.21328624,
+                    -0.36683446,
+                    1.28441262
+                  ],
+                  [
+                    -0.20249125,
+                    -0.35095981,
+                    1.27140927
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  75.8897,
+                  45.7142
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "file": "UnityProject/Assets/Art/Animations/Patrol_LowReadyIdle.fbx",
+      "sha256": "eeb00742cf203073d0efef0aabdfac3ec74da738c1b1c92f7aa88a7be1966ae9",
+      "rig": "Patrol_Officer_Rig",
+      "blender_inferred_connections_cleared_to_preserve_source_contract": [
+        "Hips",
+        "Chest",
+        "Head",
+        "LeftHand",
+        "LeftIndexIntermediate",
+        "LeftIndexDistal",
+        "LeftMiddleIntermediate",
+        "LeftMiddleDistal",
+        "LeftRingIntermediate",
+        "LeftRingDistal",
+        "LeftLittleIntermediate",
+        "LeftLittleDistal",
+        "LeftThumbIntermediate",
+        "LeftThumbDistal",
+        "RightHand",
+        "RightIndexIntermediate",
+        "RightIndexDistal",
+        "RightMiddleIntermediate",
+        "RightMiddleDistal",
+        "RightRingIntermediate",
+        "RightRingDistal",
+        "RightLittleIntermediate",
+        "RightLittleDistal",
+        "RightThumbIntermediate",
+        "RightThumbDistal",
+        "LeftLowerLeg",
+        "LeftToes",
+        "RightLowerLeg",
+        "RightToes"
+      ],
+      "import_anim_offset": 0,
+      "bones": 52,
+      "skinned_meshes": 8,
+      "armature_actions": 1,
+      "frames": [
+        1.0,
+        61.0
+      ],
+      "fps": 30.0,
+      "duration_seconds": 2.0,
+      "root_max_drift_m": 0.0,
+      "unweighted_vertices": 0,
+      "max_influences": 4,
+      "max_weight_sum_error": 2.384185791015625e-07,
+      "source_pose_max_joint_head_error_m": 9.7030940936626e-07,
+      "source_pose_max_rotation_error_deg": 0.05595291023658669,
+      "source_evaluated_skin_max_nearest_vertex_error_m": 1.1151007583976025e-06,
+      "forearm_palm_angle_range_deg": {
+        "Left": [
+          21.7436,
+          21.7436
+        ],
+        "Right": [
+          27.159,
+          27.1591
+        ]
+      },
+      "sampled_pose_measurements": {
+        "1": {
+          "Left": {
+            "forearm_palm_angle_deg": 21.7436,
+            "wrist_head": [
+              0.04700007,
+              -0.46198595,
+              1.15925252
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    0.04000005,
+                    -0.49871209,
+                    1.1741246
+                  ],
+                  [
+                    0.0265325,
+                    -0.53491992,
+                    1.16554451
+                  ],
+                  [
+                    0.02398393,
+                    -0.55906332,
+                    1.15822291
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    0.02600003,
+                    -0.53236777,
+                    1.15401745
+                  ],
+                  [
+                    0.02600009,
+                    -0.55477339,
+                    1.12759566
+                  ],
+                  [
+                    0.00025159,
+                    -0.55540359,
+                    1.12246609
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  80.532,
+                  27.9773
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    0.02600004,
+                    -0.52476054,
+                    1.13770366
+                  ],
+                  [
+                    0.02600005,
+                    -0.55786544,
+                    1.11803949
+                  ],
+                  [
+                    -0.00269844,
+                    -0.55515599,
+                    1.11930299
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9173,
+                  25.6064
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    0.02600002,
+                    -0.51673079,
+                    1.12048399
+                  ],
+                  [
+                    0.02600012,
+                    -0.54761797,
+                    1.10213673
+                  ],
+                  [
+                    -0.00097334,
+                    -0.54507136,
+                    1.10332465
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9175,
+                  25.6062
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    0.02600009,
+                    -0.5091238,
+                    1.10417056
+                  ],
+                  [
+                    0.02600013,
+                    -0.53549635,
+                    1.0898912
+                  ],
+                  [
+                    0.00504983,
+                    -0.54539788,
+                    1.09071302
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  68.9832,
+                  34.6352
+                ]
+              }
+            }
+          },
+          "Right": {
+            "forearm_palm_angle_deg": 27.1591,
+            "wrist_head": [
+              -0.04700011,
+              -0.4531014,
+              1.17332578
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    -0.04000004,
+                    -0.48982754,
+                    1.18819797
+                  ],
+                  [
+                    -0.0265326,
+                    -0.52603537,
+                    1.17961824
+                  ],
+                  [
+                    -0.02398391,
+                    -0.55017871,
+                    1.17229664
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    -0.02600005,
+                    -0.52348322,
+                    1.16809058
+                  ],
+                  [
+                    -0.02600011,
+                    -0.5578869,
+                    1.16402638
+                  ],
+                  [
+                    -0.02600004,
+                    -0.58299744,
+                    1.15633476
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  10.2933,
+                  12.5433
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    -0.02600006,
+                    -0.51587605,
+                    1.15177715
+                  ],
+                  [
+                    -0.02600007,
+                    -0.54858571,
+                    1.13146257
+                  ],
+                  [
+                    -0.00209204,
+                    -0.56283975,
+                    1.12386227
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0386,
+                  55.7694
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    -0.02600008,
+                    -0.50784636,
+                    1.13455737
+                  ],
+                  [
+                    -0.02600017,
+                    -0.53836495,
+                    1.11560333
+                  ],
+                  [
+                    -0.00352903,
+                    -0.55176228,
+                    1.10846007
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0387,
+                  55.769
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    -0.02600013,
+                    -0.50023907,
+                    1.11824369
+                  ],
+                  [
+                    -0.02600017,
+                    -0.52602333,
+                    1.10292768
+                  ],
+                  [
+                    -0.01672106,
+                    -0.54528165,
+                    1.09394741
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  24.2331,
+                  77.8377
+                ]
+              }
+            }
+          }
+        },
+        "25": {
+          "Left": {
+            "forearm_palm_angle_deg": 21.7436,
+            "wrist_head": [
+              0.04699994,
+              -0.46198609,
+              1.16042805
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    0.03999958,
+                    -0.49871087,
+                    1.17530203
+                  ],
+                  [
+                    0.02653203,
+                    -0.53491873,
+                    1.16672194
+                  ],
+                  [
+                    0.02398338,
+                    -0.55906212,
+                    1.15940046
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    0.0259996,
+                    -0.53236878,
+                    1.15519273
+                  ],
+                  [
+                    0.02599966,
+                    -0.5547744,
+                    1.12877083
+                  ],
+                  [
+                    0.0002512,
+                    -0.55540454,
+                    1.12364101
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  80.532,
+                  27.9773
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    0.02599988,
+                    -0.52476054,
+                    1.13887846
+                  ],
+                  [
+                    0.02599989,
+                    -0.5578652,
+                    1.11921406
+                  ],
+                  [
+                    -0.00269861,
+                    -0.55515581,
+                    1.12047756
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9173,
+                  25.6064
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    0.0259998,
+                    -0.51673174,
+                    1.12166166
+                  ],
+                  [
+                    0.0259999,
+                    -0.54761893,
+                    1.1033144
+                  ],
+                  [
+                    -0.00097357,
+                    -0.54507238,
+                    1.10450208
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9175,
+                  25.6062
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    0.02600054,
+                    -0.50912392,
+                    1.10534716
+                  ],
+                  [
+                    0.02600058,
+                    -0.53549635,
+                    1.09106779
+                  ],
+                  [
+                    0.00505018,
+                    -0.54539788,
+                    1.09188962
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  68.9832,
+                  34.6352
+                ]
+              }
+            }
+          },
+          "Right": {
+            "forearm_palm_angle_deg": 27.1591,
+            "wrist_head": [
+              -0.04700002,
+              -0.45310137,
+              1.17450166
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    -0.03999856,
+                    -0.4898248,
+                    1.18937564
+                  ],
+                  [
+                    -0.02653097,
+                    -0.52603263,
+                    1.18079555
+                  ],
+                  [
+                    -0.02398233,
+                    -0.55017602,
+                    1.17347395
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    -0.02599959,
+                    -0.52348399,
+                    1.16926658
+                  ],
+                  [
+                    -0.02599963,
+                    -0.55788755,
+                    1.16520274
+                  ],
+                  [
+                    -0.02599955,
+                    -0.5829981,
+                    1.15751112
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  10.2933,
+                  12.5433
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    -0.02600003,
+                    -0.51587534,
+                    1.15295148
+                  ],
+                  [
+                    -0.02600002,
+                    -0.548585,
+                    1.13263679
+                  ],
+                  [
+                    -0.00209194,
+                    -0.56283909,
+                    1.12503648
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0386,
+                  55.7694
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    -0.02599995,
+                    -0.50784671,
+                    1.13573408
+                  ],
+                  [
+                    -0.02600003,
+                    -0.5383653,
+                    1.11678004
+                  ],
+                  [
+                    -0.00352893,
+                    -0.5517627,
+                    1.10963643
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0387,
+                  55.7691
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    -0.02600048,
+                    -0.50023901,
+                    1.11941946
+                  ],
+                  [
+                    -0.02600052,
+                    -0.52602327,
+                    1.10410357
+                  ],
+                  [
+                    -0.01672138,
+                    -0.54528153,
+                    1.09512329
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  24.2331,
+                  77.8377
+                ]
+              }
+            }
+          }
+        },
+        "30": {
+          "Left": {
+            "forearm_palm_angle_deg": 21.7436,
+            "wrist_head": [
+              0.04700005,
+              -0.46198601,
+              1.15946186
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    0.03999958,
+                    -0.49871045,
+                    1.17433608
+                  ],
+                  [
+                    0.02653196,
+                    -0.53491831,
+                    1.16575623
+                  ],
+                  [
+                    0.02398346,
+                    -0.55906171,
+                    1.15843463
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    0.02599967,
+                    -0.5323689,
+                    1.1542263
+                  ],
+                  [
+                    0.02599973,
+                    -0.55477452,
+                    1.12780452
+                  ],
+                  [
+                    0.00025122,
+                    -0.55540466,
+                    1.12267494
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  80.532,
+                  27.9773
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    0.02599999,
+                    -0.52476048,
+                    1.13791227
+                  ],
+                  [
+                    0.026,
+                    -0.55786526,
+                    1.11824799
+                  ],
+                  [
+                    -0.00269849,
+                    -0.55515587,
+                    1.11951149
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9173,
+                  25.6064
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    0.0259999,
+                    -0.51673174,
+                    1.12069559
+                  ],
+                  [
+                    0.026,
+                    -0.5476191,
+                    1.10234845
+                  ],
+                  [
+                    -0.00097347,
+                    -0.5450725,
+                    1.10353601
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9175,
+                  25.6062
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    0.02600075,
+                    -0.50912386,
+                    1.10438132
+                  ],
+                  [
+                    0.02600079,
+                    -0.53549641,
+                    1.09010196
+                  ],
+                  [
+                    0.0050504,
+                    -0.54539794,
+                    1.09092379
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  68.9832,
+                  34.6352
+                ]
+              }
+            }
+          },
+          "Right": {
+            "forearm_palm_angle_deg": 27.159,
+            "wrist_head": [
+              -0.04700005,
+              -0.45310119,
+              1.17353463
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    -0.0399983,
+                    -0.48982412,
+                    1.18840897
+                  ],
+                  [
+                    -0.02653078,
+                    -0.52603203,
+                    1.179829
+                  ],
+                  [
+                    -0.02398215,
+                    -0.55017531,
+                    1.17250752
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    -0.02599953,
+                    -0.52348411,
+                    1.16829956
+                  ],
+                  [
+                    -0.02599959,
+                    -0.55788773,
+                    1.16423547
+                  ],
+                  [
+                    -0.02599952,
+                    -0.58299828,
+                    1.15654373
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  10.2933,
+                  12.5433
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    -0.02600009,
+                    -0.51587498,
+                    1.15198433
+                  ],
+                  [
+                    -0.0260001,
+                    -0.54858458,
+                    1.13166976
+                  ],
+                  [
+                    -0.00209202,
+                    -0.56283861,
+                    1.12406945
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0386,
+                  55.7694
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    -0.02600001,
+                    -0.50784653,
+                    1.13476717
+                  ],
+                  [
+                    -0.02600011,
+                    -0.53836501,
+                    1.11581302
+                  ],
+                  [
+                    -0.003529,
+                    -0.55176228,
+                    1.10866976
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0387,
+                  55.769
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    -0.02600067,
+                    -0.5002389,
+                    1.11845279
+                  ],
+                  [
+                    -0.02600072,
+                    -0.52602315,
+                    1.10313678
+                  ],
+                  [
+                    -0.01672148,
+                    -0.54528135,
+                    1.09415638
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  24.2331,
+                  77.8377
+                ]
+              }
+            }
+          }
+        },
+        "61": {
+          "Left": {
+            "forearm_palm_angle_deg": 21.7436,
+            "wrist_head": [
+              0.04700007,
+              -0.46198595,
+              1.15925252
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    0.03999861,
+                    -0.4987078,
+                    1.17412961
+                  ],
+                  [
+                    0.02653092,
+                    -0.53491545,
+                    1.1655494
+                  ],
+                  [
+                    0.02398241,
+                    -0.55905879,
+                    1.15822768
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    0.02599947,
+                    -0.53236979,
+                    1.15401757
+                  ],
+                  [
+                    0.02599953,
+                    -0.55477548,
+                    1.12759578
+                  ],
+                  [
+                    0.00025101,
+                    -0.55540562,
+                    1.12246621
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  80.532,
+                  27.9773
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    0.0259998,
+                    -0.52475989,
+                    1.13770044
+                  ],
+                  [
+                    0.02599981,
+                    -0.55786455,
+                    1.11803603
+                  ],
+                  [
+                    -0.00269868,
+                    -0.55515516,
+                    1.11929953
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9173,
+                  25.6064
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    0.02599974,
+                    -0.51673245,
+                    1.12048852
+                  ],
+                  [
+                    0.02599984,
+                    -0.54761976,
+                    1.10214138
+                  ],
+                  [
+                    -0.00097362,
+                    -0.54507309,
+                    1.10332906
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9175,
+                  25.6062
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    0.02600149,
+                    -0.50912434,
+                    1.10417461
+                  ],
+                  [
+                    0.02600153,
+                    -0.53549683,
+                    1.08989525
+                  ],
+                  [
+                    0.00505123,
+                    -0.54539835,
+                    1.09071708
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  68.9832,
+                  34.6352
+                ]
+              }
+            }
+          },
+          "Right": {
+            "forearm_palm_angle_deg": 27.1591,
+            "wrist_head": [
+              -0.04700011,
+              -0.4531014,
+              1.17332578
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    -0.03999679,
+                    -0.48982149,
+                    1.18820202
+                  ],
+                  [
+                    -0.02652928,
+                    -0.52602947,
+                    1.17962205
+                  ],
+                  [
+                    -0.02398065,
+                    -0.55017281,
+                    1.17230046
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    -0.0259991,
+                    -0.52348542,
+                    1.16809034
+                  ],
+                  [
+                    -0.02599916,
+                    -0.55788904,
+                    1.16402626
+                  ],
+                  [
+                    -0.02599909,
+                    -0.58299959,
+                    1.15633452
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  10.2933,
+                  12.5433
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    -0.02600016,
+                    -0.51587397,
+                    1.15177321
+                  ],
+                  [
+                    -0.02600017,
+                    -0.54858351,
+                    1.13145852
+                  ],
+                  [
+                    -0.00209203,
+                    -0.56283754,
+                    1.12385809
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0386,
+                  55.7694
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    -0.02599994,
+                    -0.50784814,
+                    1.13456082
+                  ],
+                  [
+                    -0.02600004,
+                    -0.53836668,
+                    1.11560678
+                  ],
+                  [
+                    -0.00352895,
+                    -0.55176401,
+                    1.10846341
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0387,
+                  55.769
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    -0.02600153,
+                    -0.50023913,
+                    1.11824453
+                  ],
+                  [
+                    -0.02600157,
+                    -0.52602339,
+                    1.10292864
+                  ],
+                  [
+                    -0.01672236,
+                    -0.54528159,
+                    1.09394836
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  24.2331,
+                  77.8377
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "file": "UnityProject/Assets/Art/Animations/Patrol_LowReadyToAim.fbx",
+      "sha256": "682c45c221018c455aed224f8304359823128d8f79ac1276a7a17f6e1e50fc3f",
+      "rig": "Patrol_Officer_Rig",
+      "blender_inferred_connections_cleared_to_preserve_source_contract": [
+        "Hips",
+        "Chest",
+        "Head",
+        "LeftHand",
+        "LeftIndexIntermediate",
+        "LeftIndexDistal",
+        "LeftMiddleIntermediate",
+        "LeftMiddleDistal",
+        "LeftRingIntermediate",
+        "LeftRingDistal",
+        "LeftLittleIntermediate",
+        "LeftLittleDistal",
+        "LeftThumbIntermediate",
+        "LeftThumbDistal",
+        "RightHand",
+        "RightIndexIntermediate",
+        "RightIndexDistal",
+        "RightMiddleIntermediate",
+        "RightMiddleDistal",
+        "RightRingIntermediate",
+        "RightRingDistal",
+        "RightLittleIntermediate",
+        "RightLittleDistal",
+        "RightThumbIntermediate",
+        "RightThumbDistal",
+        "LeftLowerLeg",
+        "LeftToes",
+        "RightLowerLeg",
+        "RightToes"
+      ],
+      "import_anim_offset": 0,
+      "bones": 52,
+      "skinned_meshes": 8,
+      "armature_actions": 1,
+      "frames": [
+        1.0,
+        46.0
+      ],
+      "fps": 30.0,
+      "duration_seconds": 1.5,
+      "root_max_drift_m": 0.0,
+      "unweighted_vertices": 0,
+      "max_influences": 4,
+      "max_weight_sum_error": 2.384185791015625e-07,
+      "source_pose_max_joint_head_error_m": 1.0546783045837968e-06,
+      "source_pose_max_rotation_error_deg": 0.05595291023658669,
+      "source_evaluated_skin_max_nearest_vertex_error_m": 1.1511568800415262e-06,
+      "forearm_palm_angle_range_deg": {
+        "Left": [
+          17.0395,
+          24.7994
+        ],
+        "Right": [
+          23.3413,
+          29.8598
+        ]
+      },
+      "sampled_pose_measurements": {
+        "1": {
+          "Left": {
+            "forearm_palm_angle_deg": 21.7436,
+            "wrist_head": [
+              0.04700007,
+              -0.46198595,
+              1.15925252
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    0.04000005,
+                    -0.49871209,
+                    1.1741246
+                  ],
+                  [
+                    0.0265325,
+                    -0.53491992,
+                    1.16554451
+                  ],
+                  [
+                    0.02398393,
+                    -0.55906332,
+                    1.15822291
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    0.02600003,
+                    -0.53236777,
+                    1.15401745
+                  ],
+                  [
+                    0.02600009,
+                    -0.55477339,
+                    1.12759566
+                  ],
+                  [
+                    0.00025159,
+                    -0.55540359,
+                    1.12246609
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  80.532,
+                  27.9773
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    0.02600004,
+                    -0.52476054,
+                    1.13770366
+                  ],
+                  [
+                    0.02600005,
+                    -0.55786544,
+                    1.11803949
+                  ],
+                  [
+                    -0.00269844,
+                    -0.55515599,
+                    1.11930299
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9173,
+                  25.6064
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    0.02600002,
+                    -0.51673079,
+                    1.12048399
+                  ],
+                  [
+                    0.02600012,
+                    -0.54761797,
+                    1.10213673
+                  ],
+                  [
+                    -0.00097334,
+                    -0.54507136,
+                    1.10332465
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9175,
+                  25.6062
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    0.02600009,
+                    -0.5091238,
+                    1.10417056
+                  ],
+                  [
+                    0.02600013,
+                    -0.53549635,
+                    1.0898912
+                  ],
+                  [
+                    0.00504983,
+                    -0.54539788,
+                    1.09071302
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  68.9832,
+                  34.6352
+                ]
+              }
+            }
+          },
+          "Right": {
+            "forearm_palm_angle_deg": 27.1591,
+            "wrist_head": [
+              -0.04700011,
+              -0.4531014,
+              1.17332578
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    -0.04000004,
+                    -0.48982754,
+                    1.18819797
+                  ],
+                  [
+                    -0.0265326,
+                    -0.52603537,
+                    1.17961824
+                  ],
+                  [
+                    -0.02398391,
+                    -0.55017871,
+                    1.17229664
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    -0.02600005,
+                    -0.52348322,
+                    1.16809058
+                  ],
+                  [
+                    -0.02600011,
+                    -0.5578869,
+                    1.16402638
+                  ],
+                  [
+                    -0.02600004,
+                    -0.58299744,
+                    1.15633476
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  10.2933,
+                  12.5433
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    -0.02600006,
+                    -0.51587605,
+                    1.15177715
+                  ],
+                  [
+                    -0.02600007,
+                    -0.54858571,
+                    1.13146257
+                  ],
+                  [
+                    -0.00209204,
+                    -0.56283975,
+                    1.12386227
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0386,
+                  55.7694
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    -0.02600008,
+                    -0.50784636,
+                    1.13455737
+                  ],
+                  [
+                    -0.02600017,
+                    -0.53836495,
+                    1.11560333
+                  ],
+                  [
+                    -0.00352903,
+                    -0.55176228,
+                    1.10846007
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0387,
+                  55.769
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    -0.02600013,
+                    -0.50023907,
+                    1.11824369
+                  ],
+                  [
+                    -0.02600017,
+                    -0.52602333,
+                    1.10292768
+                  ],
+                  [
+                    -0.01672106,
+                    -0.54528165,
+                    1.09394741
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  24.2331,
+                  77.8377
+                ]
+              }
+            }
+          }
+        },
+        "23": {
+          "Left": {
+            "forearm_palm_angle_deg": 24.6907,
+            "wrist_head": [
+              0.04699984,
+              -0.51177937,
+              1.25728858
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    0.03999928,
+                    -0.54457831,
+                    1.27951944
+                  ],
+                  [
+                    0.02653159,
+                    -0.58178008,
+                    1.27870893
+                  ],
+                  [
+                    0.02398297,
+                    -0.6069212,
+                    1.27660358
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    0.02599983,
+                    -0.58169758,
+                    1.26690221
+                  ],
+                  [
+                    0.0259999,
+                    -0.60913789,
+                    1.24575603
+                  ],
+                  [
+                    0.00025137,
+                    -0.61082798,
+                    1.24087191
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  80.532,
+                  27.9773
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    0.02599976,
+                    -0.57767391,
+                    1.24935746
+                  ],
+                  [
+                    0.02599977,
+                    -0.61416167,
+                    1.23705888
+                  ],
+                  [
+                    -0.00269873,
+                    -0.61124784,
+                    1.23772717
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9173,
+                  25.6064
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    0.02599979,
+                    -0.5734272,
+                    1.23083961
+                  ],
+                  [
+                    0.02599989,
+                    -0.60747087,
+                    1.21936476
+                  ],
+                  [
+                    -0.0009736,
+                    -0.60473192,
+                    1.21999335
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9175,
+                  25.6062
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    0.02599994,
+                    -0.56940329,
+                    1.21329439
+                  ],
+                  [
+                    0.02599997,
+                    -0.59818059,
+                    1.20485187
+                  ],
+                  [
+                    0.00504959,
+                    -0.60769057,
+                    1.20772839
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  68.9832,
+                  34.6352
+                ]
+              }
+            }
+          },
+          "Right": {
+            "forearm_palm_angle_deg": 29.7699,
+            "wrist_head": [
+              -0.04699982,
+              -0.50014544,
+              1.26919031
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    -0.03999978,
+                    -0.53294402,
+                    1.29142094
+                  ],
+                  [
+                    -0.0265324,
+                    -0.57014579,
+                    1.29061067
+                  ],
+                  [
+                    -0.02398374,
+                    -0.59528685,
+                    1.28850532
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    -0.02599982,
+                    -0.57006341,
+                    1.27880418
+                  ],
+                  [
+                    -0.02599986,
+                    -0.60455549,
+                    1.28203213
+                  ],
+                  [
+                    -0.02599978,
+                    -0.63071966,
+                    1.27976739
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  10.2933,
+                  12.5433
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    -0.02599978,
+                    -0.56603968,
+                    1.26126003
+                  ],
+                  [
+                    -0.02599977,
+                    -0.60227728,
+                    1.24824286
+                  ],
+                  [
+                    -0.00209177,
+                    -0.61780673,
+                    1.24379468
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0385,
+                  55.7694
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    -0.02599977,
+                    -0.56179303,
+                    1.24274027
+                  ],
+                  [
+                    -0.02599985,
+                    -0.59560323,
+                    1.23059487
+                  ],
+                  [
+                    -0.00352874,
+                    -0.61019892,
+                    1.22641456
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0387,
+                  55.7691
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    -0.0259998,
+                    -0.55776954,
+                    1.22519588
+                  ],
+                  [
+                    -0.02599983,
+                    -0.58618879,
+                    1.21561658
+                  ],
+                  [
+                    -0.01672063,
+                    -0.60690033,
+                    1.21086681
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  24.2331,
+                  77.8377
+                ]
+              }
+            }
+          }
+        },
+        "25": {
+          "Left": {
+            "forearm_palm_angle_deg": 24.4147,
+            "wrist_head": [
+              0.04699994,
+              -0.51893187,
+              1.27091229
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    0.03999936,
+                    -0.55107117,
+                    1.29408669
+                  ],
+                  [
+                    0.0265316,
+                    -0.5882808,
+                    1.29435706
+                  ],
+                  [
+                    0.02398297,
+                    -0.61347246,
+                    1.29298306
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    0.02599997,
+                    -0.58854103,
+                    1.28255308
+                  ],
+                  [
+                    0.02600005,
+                    -0.61658406,
+                    1.26221275
+                  ],
+                  [
+                    0.00025159,
+                    -0.61841542,
+                    1.25737977
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  80.532,
+                  27.9773
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    0.0259999,
+                    -0.58502889,
+                    1.2648989
+                  ],
+                  [
+                    0.0259999,
+                    -0.62185854,
+                    1.25366533
+                  ],
+                  [
+                    -0.0026986,
+                    -0.61892653,
+                    1.2542485
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9173,
+                  25.6064
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    0.0259999,
+                    -0.58132184,
+                    1.24626517
+                  ],
+                  [
+                    0.02600001,
+                    -0.61568445,
+                    1.23578382
+                  ],
+                  [
+                    -0.00097345,
+                    -0.61292857,
+                    1.23633218
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9175,
+                  25.6062
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    0.02600002,
+                    -0.57780957,
+                    1.22861075
+                  ],
+                  [
+                    0.02600006,
+                    -0.60681999,
+                    1.2210077
+                  ],
+                  [
+                    0.00504973,
+                    -0.61624247,
+                    1.224159
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  68.9832,
+                  34.6352
+                ]
+              }
+            }
+          },
+          "Right": {
+            "forearm_palm_angle_deg": 29.532,
+            "wrist_head": [
+              -0.04699993,
+              -0.50695723,
+              1.28247154
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    -0.03999993,
+                    -0.53909618,
+                    1.30564535
+                  ],
+                  [
+                    -0.02653234,
+                    -0.57630569,
+                    1.30591595
+                  ],
+                  [
+                    -0.0239838,
+                    -0.60149747,
+                    1.30454195
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    -0.02599992,
+                    -0.57656646,
+                    1.29411268
+                  ],
+                  [
+                    -0.02599996,
+                    -0.61095017,
+                    1.29834127
+                  ],
+                  [
+                    -0.02599986,
+                    -0.63716918,
+                    1.29683781
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  10.2933,
+                  12.5433
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    -0.02599988,
+                    -0.57305402,
+                    1.27645898
+                  ],
+                  [
+                    -0.02599986,
+                    -0.60965437,
+                    1.2644999
+                  ],
+                  [
+                    -0.00209178,
+                    -0.62530637,
+                    1.26050484
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0385,
+                  55.7694
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    -0.0259999,
+                    -0.56934708,
+                    1.25782347
+                  ],
+                  [
+                    -0.02599998,
+                    -0.60349602,
+                    1.24666548
+                  ],
+                  [
+                    -0.00352892,
+                    -0.61820728,
+                    1.24291086
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0387,
+                  55.7691
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    -0.02599995,
+                    -0.56583512,
+                    1.24017
+                  ],
+                  [
+                    -0.02599997,
+                    -0.59452069,
+                    1.23142076
+                  ],
+                  [
+                    -0.01672078,
+                    -0.61536139,
+                    1.22727466
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  24.2331,
+                  77.8377
+                ]
+              }
+            }
+          }
+        },
+        "46": {
+          "Left": {
+            "forearm_palm_angle_deg": 17.0395,
+            "wrist_head": [
+              0.04699996,
+              -0.56900054,
+              1.36399984
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    0.03999877,
+                    -0.59599996,
+                    1.39299989
+                  ],
+                  [
+                    0.02653125,
+                    -0.63244146,
+                    1.40052557
+                  ],
+                  [
+                    0.02398266,
+                    -0.65741706,
+                    1.40409327
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    0.0259999,
+                    -0.63500077,
+                    1.38899851
+                  ],
+                  [
+                    0.02599996,
+                    -0.66647345,
+                    1.37452114
+                  ],
+                  [
+                    0.00025144,
+                    -0.66921258,
+                    1.37013841
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  80.532,
+                  27.9773
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    0.02599994,
+                    -0.63500035,
+                    1.37099922
+                  ],
+                  [
+                    0.02599994,
+                    -0.67331392,
+                    1.36716771
+                  ],
+                  [
+                    -0.00269855,
+                    -0.67032439,
+                    1.36716771
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9173,
+                  25.6064
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    0.0259999,
+                    -0.63500047,
+                    1.35200012
+                  ],
+                  [
+                    0.02599999,
+                    -0.67074782,
+                    1.34842539
+                  ],
+                  [
+                    -0.00097345,
+                    -0.66793764,
+                    1.34842563
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9175,
+                  25.6062
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    0.02600008,
+                    -0.63500011,
+                    1.33399987
+                  ],
+                  [
+                    0.02600011,
+                    -0.66493654,
+                    1.33220387
+                  ],
+                  [
+                    0.00504979,
+                    -0.67356288,
+                    1.33713353
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  68.9832,
+                  34.6352
+                ]
+              }
+            }
+          },
+          "Right": {
+            "forearm_palm_angle_deg": 23.3413,
+            "wrist_head": [
+              -0.04700002,
+              -0.55500084,
+              1.37300026
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    -0.03999994,
+                    -0.58199972,
+                    1.40199947
+                  ],
+                  [
+                    -0.02653234,
+                    -0.6184414,
+                    1.40952528
+                  ],
+                  [
+                    -0.02398394,
+                    -0.64341694,
+                    1.41309285
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    -0.02600002,
+                    -0.62100059,
+                    1.39799953
+                  ],
+                  [
+                    -0.02600007,
+                    -0.65389842,
+                    1.40885568
+                  ],
+                  [
+                    -0.02599998,
+                    -0.6799069,
+                    1.41249645
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  10.2933,
+                  12.5433
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    -0.02599994,
+                    -0.62100071,
+                    1.38
+                  ],
+                  [
+                    -0.02599994,
+                    -0.65923107,
+                    1.37541234
+                  ],
+                  [
+                    -0.00209179,
+                    -0.67536169,
+                    1.37454808
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0385,
+                  55.7694
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    -0.02599997,
+                    -0.62100095,
+                    1.36099994
+                  ],
+                  [
+                    -0.02600006,
+                    -0.65667057,
+                    1.35671961
+                  ],
+                  [
+                    -0.00352898,
+                    -0.67183161,
+                    1.35590744
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0387,
+                  55.7691
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    -0.02600003,
+                    -0.62100077,
+                    1.34299934
+                  ],
+                  [
+                    -0.02600008,
+                    -0.65084213,
+                    1.34001505
+                  ],
+                  [
+                    -0.01672083,
+                    -0.67209142,
+                    1.34001482
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  24.2331,
+                  77.8377
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "file": "UnityProject/Assets/Art/Animations/Patrol_AimToLowReady.fbx",
+      "sha256": "9ae71fce1b958efcb0bed37c22332599c2a76dbde2264fd6218e13a62afa6734",
+      "rig": "Patrol_Officer_Rig",
+      "blender_inferred_connections_cleared_to_preserve_source_contract": [
+        "Hips",
+        "Chest",
+        "Head",
+        "LeftHand",
+        "LeftIndexIntermediate",
+        "LeftIndexDistal",
+        "LeftMiddleIntermediate",
+        "LeftMiddleDistal",
+        "LeftRingIntermediate",
+        "LeftRingDistal",
+        "LeftLittleIntermediate",
+        "LeftLittleDistal",
+        "LeftThumbIntermediate",
+        "LeftThumbDistal",
+        "RightHand",
+        "RightIndexIntermediate",
+        "RightIndexDistal",
+        "RightMiddleIntermediate",
+        "RightMiddleDistal",
+        "RightRingIntermediate",
+        "RightRingDistal",
+        "RightLittleIntermediate",
+        "RightLittleDistal",
+        "RightThumbIntermediate",
+        "RightThumbDistal",
+        "LeftLowerLeg",
+        "LeftToes",
+        "RightLowerLeg",
+        "RightToes"
+      ],
+      "import_anim_offset": 0,
+      "bones": 52,
+      "skinned_meshes": 8,
+      "armature_actions": 1,
+      "frames": [
+        1.0,
+        46.0
+      ],
+      "fps": 30.0,
+      "duration_seconds": 1.5,
+      "root_max_drift_m": 0.0,
+      "unweighted_vertices": 0,
+      "max_influences": 4,
+      "max_weight_sum_error": 2.384185791015625e-07,
+      "source_pose_max_joint_head_error_m": 1.0277903102297534e-06,
+      "source_pose_max_rotation_error_deg": 0.05595291023658669,
+      "source_evaluated_skin_max_nearest_vertex_error_m": 1.1309185765639995e-06,
+      "forearm_palm_angle_range_deg": {
+        "Left": [
+          17.0395,
+          24.7994
+        ],
+        "Right": [
+          23.3413,
+          29.8598
+        ]
+      },
+      "sampled_pose_measurements": {
+        "1": {
+          "Left": {
+            "forearm_palm_angle_deg": 17.0395,
+            "wrist_head": [
+              0.04699996,
+              -0.56900054,
+              1.36399984
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    0.03999986,
+                    -0.59600049,
+                    1.39299977
+                  ],
+                  [
+                    0.02653231,
+                    -0.63244206,
+                    1.40052557
+                  ],
+                  [
+                    0.02398376,
+                    -0.65741765,
+                    1.40409327
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    0.0259999,
+                    -0.63500059,
+                    1.3889997
+                  ],
+                  [
+                    0.02599997,
+                    -0.66647315,
+                    1.37452245
+                  ],
+                  [
+                    0.00025145,
+                    -0.66921216,
+                    1.3701396
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  80.532,
+                  27.9773
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    0.02599992,
+                    -0.63500059,
+                    1.37099957
+                  ],
+                  [
+                    0.02599991,
+                    -0.67331409,
+                    1.36716807
+                  ],
+                  [
+                    -0.00269856,
+                    -0.67032462,
+                    1.36716795
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9173,
+                  25.6064
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    0.02599989,
+                    -0.63500053,
+                    1.35199964
+                  ],
+                  [
+                    0.02599998,
+                    -0.67074776,
+                    1.34842503
+                  ],
+                  [
+                    -0.00097346,
+                    -0.66793764,
+                    1.34842515
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9175,
+                  25.6062
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    0.02599996,
+                    -0.63500053,
+                    1.33399963
+                  ],
+                  [
+                    0.02599999,
+                    -0.66493684,
+                    1.33220351
+                  ],
+                  [
+                    0.00504968,
+                    -0.67356312,
+                    1.33713305
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  68.9832,
+                  34.6352
+                ]
+              }
+            }
+          },
+          "Right": {
+            "forearm_palm_angle_deg": 23.3413,
+            "wrist_head": [
+              -0.04700002,
+              -0.55500084,
+              1.37300026
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    -0.03999996,
+                    -0.58200091,
+                    1.40200019
+                  ],
+                  [
+                    -0.02653234,
+                    -0.6184426,
+                    1.40952611
+                  ],
+                  [
+                    -0.02398388,
+                    -0.64341813,
+                    1.41309392
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    -0.02599993,
+                    -0.62100101,
+                    1.39800012
+                  ],
+                  [
+                    -0.02599998,
+                    -0.65389884,
+                    1.40885639
+                  ],
+                  [
+                    -0.02599989,
+                    -0.67990726,
+                    1.41249728
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  10.2933,
+                  12.5433
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    -0.02599994,
+                    -0.62100101,
+                    1.38000011
+                  ],
+                  [
+                    -0.02599994,
+                    -0.65923136,
+                    1.37541246
+                  ],
+                  [
+                    -0.00209185,
+                    -0.67536211,
+                    1.37454832
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0385,
+                  55.7694
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    -0.02599997,
+                    -0.62100101,
+                    1.36100018
+                  ],
+                  [
+                    -0.02600006,
+                    -0.65667063,
+                    1.35671985
+                  ],
+                  [
+                    -0.00352896,
+                    -0.67183155,
+                    1.35590768
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0387,
+                  55.7691
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    -0.02600001,
+                    -0.62100095,
+                    1.34299994
+                  ],
+                  [
+                    -0.02600005,
+                    -0.65084225,
+                    1.34001565
+                  ],
+                  [
+                    -0.01672085,
+                    -0.67209148,
+                    1.34001553
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  24.2331,
+                  77.8377
+                ]
+              }
+            }
+          }
+        },
+        "23": {
+          "Left": {
+            "forearm_palm_angle_deg": 24.5738,
+            "wrist_head": [
+              0.04700004,
+              -0.51535046,
+              1.26410306
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    0.03999916,
+                    -0.54782289,
+                    1.28680849
+                  ],
+                  [
+                    0.02653157,
+                    -0.58503246,
+                    1.28653908
+                  ],
+                  [
+                    0.02398307,
+                    -0.61020166,
+                    1.28479981
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    0.02599987,
+                    -0.58512187,
+                    1.27473247
+                  ],
+                  [
+                    0.02599996,
+                    -0.61286658,
+                    1.25398755
+                  ],
+                  [
+                    0.00025145,
+                    -0.61462748,
+                    1.2491287
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  80.532,
+                  27.9773
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    0.02600014,
+                    -0.58135366,
+                    1.25713253
+                  ],
+                  [
+                    0.02600016,
+                    -0.61801624,
+                    1.24536574
+                  ],
+                  [
+                    -0.00269834,
+                    -0.61509293,
+                    1.24599135
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9173,
+                  25.6064
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    0.02600002,
+                    -0.57737571,
+                    1.23855245
+                  ],
+                  [
+                    0.02600014,
+                    -0.61158252,
+                    1.22757375
+                  ],
+                  [
+                    -0.00097332,
+                    -0.60883474,
+                    1.22816217
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9175,
+                  25.6062
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    0.02599998,
+                    -0.57360816,
+                    1.22095168
+                  ],
+                  [
+                    0.02600003,
+                    -0.60250521,
+                    1.21292853
+                  ],
+                  [
+                    0.00504969,
+                    -0.61197239,
+                    1.2159431
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  68.9832,
+                  34.6352
+                ]
+              }
+            }
+          },
+          "Right": {
+            "forearm_palm_angle_deg": 29.6696,
+            "wrist_head": [
+              -0.04699976,
+              -0.50354487,
+              1.27583408
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    -0.03999979,
+                    -0.5360167,
+                    1.29853952
+                  ],
+                  [
+                    -0.02653207,
+                    -0.57322639,
+                    1.29826999
+                  ],
+                  [
+                    -0.0239834,
+                    -0.59839559,
+                    1.2965306
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    -0.02599955,
+                    -0.57331622,
+                    1.2864641
+                  ],
+                  [
+                    -0.02599959,
+                    -0.60775787,
+                    1.29019332
+                  ],
+                  [
+                    -0.0259995,
+                    -0.6339522,
+                    1.28830922
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  10.2933,
+                  12.5433
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    -0.02599973,
+                    -0.56954819,
+                    1.26886356
+                  ],
+                  [
+                    -0.02599973,
+                    -0.60597122,
+                    1.25637448
+                  ],
+                  [
+                    -0.00209152,
+                    -0.62156337,
+                    1.25215256
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0385,
+                  55.7694
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    -0.02599969,
+                    -0.56557029,
+                    1.2502836
+                  ],
+                  [
+                    -0.02599978,
+                    -0.59955364,
+                    1.23863113
+                  ],
+                  [
+                    -0.00352864,
+                    -0.61420864,
+                    1.23466325
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0387,
+                  55.7691
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    -0.02599969,
+                    -0.56180245,
+                    1.23268211
+                  ],
+                  [
+                    -0.02599972,
+                    -0.59035796,
+                    1.22351742
+                  ],
+                  [
+                    -0.01672053,
+                    -0.61113626,
+                    1.21906912
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  24.2331,
+                  77.8377
+                ]
+              }
+            }
+          }
+        },
+        "25": {
+          "Left": {
+            "forearm_palm_angle_deg": 24.7655,
+            "wrist_head": [
+              0.04699988,
+              -0.50823295,
+              1.25049579
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    0.03999896,
+                    -0.5413512,
+                    1.27224827
+                  ],
+                  [
+                    0.02653133,
+                    -0.57853717,
+                    1.27089787
+                  ],
+                  [
+                    0.02398268,
+                    -0.60364503,
+                    1.26842761
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    0.02599967,
+                    -0.57828373,
+                    1.25909376
+                  ],
+                  [
+                    0.02599974,
+                    -0.60541421,
+                    1.23755145
+                  ],
+                  [
+                    0.00025124,
+                    -0.60703325,
+                    1.23264349
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  80.532,
+                  27.9773
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    0.02599995,
+                    -0.57400578,
+                    1.24161077
+                  ],
+                  [
+                    0.02599995,
+                    -0.61031121,
+                    1.22878397
+                  ],
+                  [
+                    -0.00269854,
+                    -0.60740733,
+                    1.22949433
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9173,
+                  25.6064
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    0.02599982,
+                    -0.56948978,
+                    1.22315383
+                  ],
+                  [
+                    0.02599992,
+                    -0.60336334,
+                    1.21118617
+                  ],
+                  [
+                    -0.00097354,
+                    -0.60063404,
+                    1.21185422
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9175,
+                  25.6062
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    0.02599982,
+                    -0.56521249,
+                    1.20567036
+                  ],
+                  [
+                    0.02599986,
+                    -0.59386426,
+                    1.19681108
+                  ],
+                  [
+                    0.00504953,
+                    -0.60341513,
+                    1.19954908
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  68.9832,
+                  34.6352
+                ]
+              }
+            }
+          },
+          "Right": {
+            "forearm_palm_angle_deg": 29.8331,
+            "wrist_head": [
+              -0.04699997,
+              -0.49677262,
+              1.26256502
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    -0.0399999,
+                    -0.5298903,
+                    1.28431761
+                  ],
+                  [
+                    -0.02653231,
+                    -0.56707644,
+                    1.28296745
+                  ],
+                  [
+                    -0.02398369,
+                    -0.59218436,
+                    1.28049743
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    -0.02599978,
+                    -0.56682312,
+                    1.27116358
+                  ],
+                  [
+                    -0.02599981,
+                    -0.60135835,
+                    1.2738905
+                  ],
+                  [
+                    -0.02599972,
+                    -0.62748706,
+                    1.27124619
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  10.2933,
+                  12.5433
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    -0.02599992,
+                    -0.56254548,
+                    1.25367987
+                  ],
+                  [
+                    -0.02599991,
+                    -0.5985902,
+                    1.24013817
+                  ],
+                  [
+                    -0.00209172,
+                    -0.61405331,
+                    1.23546529
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0385,
+                  55.7694
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    -0.02599987,
+                    -0.55802971,
+                    1.23522353
+                  ],
+                  [
+                    -0.02599996,
+                    -0.5916602,
+                    1.22258866
+                  ],
+                  [
+                    -0.00352878,
+                    -0.60619366,
+                    1.21819687
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0387,
+                  55.7691
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    -0.02599983,
+                    -0.55375206,
+                    1.21773887
+                  ],
+                  [
+                    -0.02599986,
+                    -0.5820294,
+                    1.20774841
+                  ],
+                  [
+                    -0.01672065,
+                    -0.60266972,
+                    1.20269847
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  24.2331,
+                  77.8377
+                ]
+              }
+            }
+          }
+        },
+        "46": {
+          "Left": {
+            "forearm_palm_angle_deg": 21.7436,
+            "wrist_head": [
+              0.04700018,
+              -0.46198601,
+              1.15925252
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    0.03999885,
+                    -0.49871221,
+                    1.17412448
+                  ],
+                  [
+                    0.02653132,
+                    -0.53491998,
+                    1.16554451
+                  ],
+                  [
+                    0.0239827,
+                    -0.55906337,
+                    1.15822279
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    0.02600016,
+                    -0.53236783,
+                    1.15401638
+                  ],
+                  [
+                    0.02600023,
+                    -0.55477351,
+                    1.12759459
+                  ],
+                  [
+                    0.00025177,
+                    -0.55540371,
+                    1.1224649
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  80.532,
+                  27.9773
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    0.02600018,
+                    -0.5247609,
+                    1.13770401
+                  ],
+                  [
+                    0.0260002,
+                    -0.55786562,
+                    1.11803973
+                  ],
+                  [
+                    -0.00269828,
+                    -0.55515617,
+                    1.11930311
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9173,
+                  25.6064
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    0.02600012,
+                    -0.51673037,
+                    1.1204834
+                  ],
+                  [
+                    0.02600022,
+                    -0.54761761,
+                    1.10213602
+                  ],
+                  [
+                    -0.00097324,
+                    -0.54507101,
+                    1.10332406
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  95.9175,
+                  25.6062
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    0.02600014,
+                    -0.50912392,
+                    1.1041714
+                  ],
+                  [
+                    0.02600019,
+                    -0.53549641,
+                    1.08989191
+                  ],
+                  [
+                    0.0050498,
+                    -0.54539794,
+                    1.09071374
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  68.9832,
+                  34.6351
+                ]
+              }
+            }
+          },
+          "Right": {
+            "forearm_palm_angle_deg": 27.1591,
+            "wrist_head": [
+              -0.04700011,
+              -0.4531014,
+              1.17332578
+            ],
+            "fingers": {
+              "Thumb": {
+                "joint_heads": [
+                  [
+                    -0.04,
+                    -0.48982671,
+                    1.18819821
+                  ],
+                  [
+                    -0.02653251,
+                    -0.52603459,
+                    1.17961836
+                  ],
+                  [
+                    -0.02398389,
+                    -0.55017793,
+                    1.17229688
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  14.5412,
+                  10.6458
+                ]
+              },
+              "Index": {
+                "joint_heads": [
+                  [
+                    -0.02600004,
+                    -0.52348292,
+                    1.16808975
+                  ],
+                  [
+                    -0.0260001,
+                    -0.5578866,
+                    1.16402566
+                  ],
+                  [
+                    -0.02600003,
+                    -0.58299696,
+                    1.1563338
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  10.2933,
+                  12.5433
+                ]
+              },
+              "Middle": {
+                "joint_heads": [
+                  [
+                    -0.02600018,
+                    -0.51587629,
+                    1.15177834
+                  ],
+                  [
+                    -0.02600018,
+                    -0.54858595,
+                    1.13146377
+                  ],
+                  [
+                    -0.00209207,
+                    -0.56283993,
+                    1.12386334
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0386,
+                  55.7694
+                ]
+              },
+              "Ring": {
+                "joint_heads": [
+                  [
+                    -0.02600005,
+                    -0.50784636,
+                    1.13455701
+                  ],
+                  [
+                    -0.02600015,
+                    -0.53836489,
+                    1.11560285
+                  ],
+                  [
+                    -0.00352895,
+                    -0.55176216,
+                    1.10845959
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  56.0387,
+                  55.769
+                ]
+              },
+              "Little": {
+                "joint_heads": [
+                  [
+                    -0.02600001,
+                    -0.50023919,
+                    1.11824274
+                  ],
+                  [
+                    -0.02600005,
+                    -0.52602345,
+                    1.10292685
+                  ],
+                  [
+                    -0.01672085,
+                    -0.54528165,
+                    1.09394646
+                  ]
+                ],
+                "inter_segment_angles_deg": [
+                  24.2331,
+                  77.8377
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "prop_contact_stability": {
+    "Patrol_LowReadyIdle": {
+      "joint_head_max_drift_relative_to_prop_m": 7.994275950835101e-06,
+      "joint_frame_max_roll_relative_to_prop_deg": 0.05595291023658669
+    },
+    "Patrol_LowReadyToAim": {
+      "joint_head_max_drift_relative_to_prop_m": 1.985436443514141e-06,
+      "joint_frame_max_roll_relative_to_prop_deg": 0.05595291023658669
+    },
+    "Patrol_AimToLowReady": {
+      "joint_head_max_drift_relative_to_prop_m": 1.9435598191330625e-06,
+      "joint_frame_max_roll_relative_to_prop_deg": 0.05595291023658669
+    }
+  },
+  "visual_review": {
+    "status": "Subsumed by whole_body_review.json",
+    "limitations": [
+      "Patrol has localized inner-axilla cloth folding at the joined sleeve/torso attachment: signed-envelope depth up to5.11mm; exact crossing triangle centroids within25.79mm of shared seam, farthest triangle corner30.81mm. Close-range seam shading and fit roughness remain. This is not a collision-free garment or final AAA art approval.",
+      "Key-view visual review is complemented by all-frame numeric sampling; no runtime blend, locomotion, collision solver or Unity PlayMode test.",
+      "No Unity editor compilation, executable build or target-GPU performance verification in this review.",
+      "Stylized early production source; facial animation, production topology and cloth deformation polish remain."
+    ]
+  }
+}

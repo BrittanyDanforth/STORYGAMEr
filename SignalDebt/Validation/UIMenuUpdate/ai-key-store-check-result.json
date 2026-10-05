@@ -1,0 +1,14 @@
+{
+    "passed": true,
+    "assertions": 13,
+    "unity_version": "6000.0.62f1",
+    "store_source_sha256": "d9a5265ac42725362e4b0a27c700c513159d2ba856f8ca0fb8e3da2a29c7994d",
+    "checks_source_sha256": "3950132e9f377eec845a72d87f05a41460ad2309eb841557bbbb2907b83bedb1",
+    "failure": "",
+    "actual_unity_runtime": true,
+    "actual_local_filesystem": true,
+    "actual_data_contract_serializer": true,
+    "real_credentials_accessed": false,
+    "provider_network_calls": 0,
+    "scope": "Isolated fabricated-data LocalStore session/no-write, remember, fresh-instance DataContract roundtrip, replacement and deletion under actual Unity Mono. Not live API or user settings acceptance."
+}

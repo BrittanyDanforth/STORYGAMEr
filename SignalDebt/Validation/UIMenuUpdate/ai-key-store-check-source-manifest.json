@@ -1,0 +1,17 @@
+{
+  "project": "/workspace/SignalDebt-setup/unity/ai-provider-check-project",
+  "files": [
+    {
+      "path": "Assets/Scripts/SignalDebtApiKeyStore.cs",
+      "sha256": "d9a5265ac42725362e4b0a27c700c513159d2ba856f8ca0fb8e3da2a29c7994d"
+    },
+    {
+      "path": "Assets/Scripts/SignalDebtLocalFiles.cs",
+      "sha256": "f936158977404b1e509c7b598d0f6caad40e0dbb9ea505f9d0ca177812d1fbf5"
+    },
+    {
+      "path": "Assets/Editor/SignalDebtApiKeyStoreChecks.cs",
+      "sha256": "3950132e9f377eec845a72d87f05a41460ad2309eb841557bbbb2907b83bedb1"
+    }
+  ]
+}

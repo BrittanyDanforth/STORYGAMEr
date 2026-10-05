@@ -1,0 +1,13 @@
+{
+  "objects": 968,
+  "mesh_objects": 821,
+  "base_polygons": 13584,
+  "materials": 41,
+  "renders": true,
+  "blender_version": "5.2.2 LTS",
+  "seed": 190426,
+  "quality_pass": "0.3.0",
+  "source_sha256": "945aa347a46fd2e37d98d746782a8509b3def12f4203f8e9d8a56dd7f69a74bc",
+  "preview_provenance_report": "Validation/apartment_quality_previews.json",
+  "geometry_validation_report": "Validation/apartment_quality_validation.json"
+}

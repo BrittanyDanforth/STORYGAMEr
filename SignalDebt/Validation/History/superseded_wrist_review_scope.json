@@ -1,0 +1,8 @@
+{
+  "records": [
+    "wrist_grip_review_before_whole_body_fix.json",
+    "rig_controller_review_before_whole_body_fix.json"
+  ],
+  "reason": "Previous focused wrist/finger review did not detect visible upper-arm/chest penetration. Retained only as historical limited-scope evidence; superseded for current police-body art by whole_body_review.json.",
+  "not_current_art_approval": true
+}

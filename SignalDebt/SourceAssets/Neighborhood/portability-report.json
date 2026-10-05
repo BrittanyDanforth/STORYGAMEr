@@ -1,0 +1,490 @@
+{
+  "blend": "Southbank_Neighborhood_Export_Review.blend",
+  "autoexec_enabled": false,
+  "images": [
+    {
+      "name": "Asphalt_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/Asphalt_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Asphalt_Normal",
+      "source": "FILE",
+      "path": "//Textures/Asphalt_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "BackPaving_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/BackPaving_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "BackPaving_Normal",
+      "source": "FILE",
+      "path": "//Textures/BackPaving_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "BrownBrick_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/BrownBrick_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "BrownBrick_Normal",
+      "source": "FILE",
+      "path": "//Textures/BrownBrick_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Cardboard_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/Cardboard_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Cardboard_Normal",
+      "source": "FILE",
+      "path": "//Textures/Cardboard_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "CivicStone_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/CivicStone_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "CivicStone_Normal",
+      "source": "FILE",
+      "path": "//Textures/CivicStone_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Cotton_Blanket_BaseColor.png",
+      "source": "FILE",
+      "path": "//../../STORYGAMEr/SignalDebt/UnityProject/Assets/Art/Apartment/Textures/Cotton_Blanket_BaseColor.png",
+      "packed": true,
+      "resolved_exists": false
+    },
+    {
+      "name": "Cream_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/Cream_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Cream_Normal",
+      "source": "FILE",
+      "path": "//Textures/Cream_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Curb_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/Curb_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Curb_Normal",
+      "source": "FILE",
+      "path": "//Textures/Curb_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "DoorPanel_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/DoorPanel_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "DoorPanel_Normal",
+      "source": "FILE",
+      "path": "//Textures/DoorPanel_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Leaves_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/Leaves_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Leaves_Normal",
+      "source": "FILE",
+      "path": "//Textures/Leaves_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "LightWood_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/LightWood_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "LightWood_Normal",
+      "source": "FILE",
+      "path": "//Textures/LightWood_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Oak_Floor_BaseColor.png",
+      "source": "FILE",
+      "path": "//../../STORYGAMEr/SignalDebt/UnityProject/Assets/Art/Apartment/Textures/Oak_Floor_BaseColor.png",
+      "packed": true,
+      "resolved_exists": false
+    },
+    {
+      "name": "Ochre_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/Ochre_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Ochre_Normal",
+      "source": "FILE",
+      "path": "//Textures/Ochre_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "PaleBrick_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/PaleBrick_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "PaleBrick_Normal",
+      "source": "FILE",
+      "path": "//Textures/PaleBrick_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Paper_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/Paper_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Paper_Normal",
+      "source": "FILE",
+      "path": "//Textures/Paper_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Paving_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/Paving_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Paving_Normal",
+      "source": "FILE",
+      "path": "//Textures/Paving_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Plaster_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/Plaster_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Plaster_BaseColor.png",
+      "source": "FILE",
+      "path": "//../../STORYGAMEr/SignalDebt/UnityProject/Assets/Art/Apartment/Textures/Plaster_BaseColor.png",
+      "packed": true,
+      "resolved_exists": false
+    },
+    {
+      "name": "Plaster_Normal",
+      "source": "FILE",
+      "path": "//Textures/Plaster_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Plastic_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/Plastic_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Plastic_Normal",
+      "source": "FILE",
+      "path": "//Textures/Plastic_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "PoliceBlue_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/PoliceBlue_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "PoliceBlue_Normal",
+      "source": "FILE",
+      "path": "//Textures/PoliceBlue_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "PrintRed_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/PrintRed_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "PrintRed_Normal",
+      "source": "FILE",
+      "path": "//Textures/PrintRed_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "RedBrick_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/RedBrick_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "RedBrick_Normal",
+      "source": "FILE",
+      "path": "//Textures/RedBrick_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Render Result",
+      "source": "VIEWER",
+      "path": "",
+      "packed": false,
+      "resolved_exists": false
+    },
+    {
+      "name": "RoadPaint_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/RoadPaint_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "RoadPaint_Normal",
+      "source": "FILE",
+      "path": "//Textures/RoadPaint_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "RoofSlate_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/RoofSlate_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "RoofSlate_Normal",
+      "source": "FILE",
+      "path": "//Textures/RoofSlate_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "RoofTile_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/RoofTile_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "RoofTile_Normal",
+      "source": "FILE",
+      "path": "//Textures/RoofTile_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "ShopFloor_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/ShopFloor_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "ShopFloor_Normal",
+      "source": "FILE",
+      "path": "//Textures/ShopFloor_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "ShopGreen_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/ShopGreen_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "ShopGreen_Normal",
+      "source": "FILE",
+      "path": "//Textures/ShopGreen_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Soil_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/Soil_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Soil_Normal",
+      "source": "FILE",
+      "path": "//Textures/Soil_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "StoneTrim_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/StoneTrim_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "StoneTrim_Normal",
+      "source": "FILE",
+      "path": "//Textures/StoneTrim_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Trim_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/Trim_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Trim_Normal",
+      "source": "FILE",
+      "path": "//Textures/Trim_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Viewer Node",
+      "source": "VIEWER",
+      "path": "",
+      "packed": false,
+      "resolved_exists": false
+    },
+    {
+      "name": "Walnut_Desk_BaseColor.png",
+      "source": "FILE",
+      "path": "//../../STORYGAMEr/SignalDebt/UnityProject/Assets/Art/Apartment/Textures/Walnut_Desk_BaseColor.png",
+      "packed": true,
+      "resolved_exists": false
+    },
+    {
+      "name": "Walnut_Worktop_BaseColor.png",
+      "source": "FILE",
+      "path": "//../../STORYGAMEr/SignalDebt/UnityProject/Assets/Art/Apartment/Textures/Walnut_Worktop_BaseColor.png",
+      "packed": true,
+      "resolved_exists": false
+    },
+    {
+      "name": "Wood_BaseColor",
+      "source": "FILE",
+      "path": "//Textures/Wood_BaseColor.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Wood_Normal",
+      "source": "FILE",
+      "path": "//Textures/Wood_Normal.png",
+      "packed": false,
+      "resolved_exists": true
+    },
+    {
+      "name": "Woven_Cotton_Normal.png",
+      "source": "FILE",
+      "path": "//../../STORYGAMEr/SignalDebt/UnityProject/Assets/Art/Apartment/Textures/Woven_Cotton_Normal.png",
+      "packed": true,
+      "resolved_exists": false
+    },
+    {
+      "name": "Woven_Cotton_Roughness.png",
+      "source": "FILE",
+      "path": "//../../STORYGAMEr/SignalDebt/UnityProject/Assets/Art/Apartment/Textures/Woven_Cotton_Roughness.png",
+      "packed": true,
+      "resolved_exists": false
+    }
+  ],
+  "fonts": [
+    {
+      "name": "Bfont Regular",
+      "source": "FONT",
+      "path": "<builtin>",
+      "packed": false,
+      "resolved_exists": false
+    },
+    {
+      "name": "DejaVu Sans Book",
+      "source": "FONT",
+      "path": "//../../../usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+      "packed": true,
+      "resolved_exists": false
+    }
+  ],
+  "libraries": [],
+  "relocation_check": {
+    "opened_blend": "/tmp/signaldebt-neighborhood-archive-portability/Southbank_Neighborhood_Export_Review.blend",
+    "autoexec_enabled": false,
+    "file_images_checked": 63,
+    "relative_images_loaded": 56,
+    "packed_images_loaded": 7,
+    "failures": [],
+    "linked_libraries": 0,
+    "packed_fonts": 1,
+    "passed": true
+  },
+  "archival_blend_changed": false
+}

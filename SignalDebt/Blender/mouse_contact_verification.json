@@ -1,0 +1,24 @@
+{
+  "surface_intersection_pairs": {
+    "Mouse_Cable_Core / Mouse_Left_Button": 30,
+    "Mouse_Cable_Core / Mouse_Right_Button": 30,
+    "Mouse_Cable_Core / Mouse_Cable_Strain_Relief_0": 40,
+    "Mouse_Cable_Core / Mouse_Cable": 23,
+    "Mouse_Cable / Mouse_Cable_Strain_Relief_3": 3,
+    "Mouse_Cable_Strain_Relief_0 / Mouse_Underside": 0,
+    "Mouse_Cable_Strain_Relief_0 / Mouse_Left_Button": 0,
+    "Mouse_Cable_Strain_Relief_0 / Mouse_Right_Button": 0
+  },
+  "cable_start_world": [
+    2.180000066757202,
+    1.784999966621399,
+    0.828499972820282
+  ],
+  "relief_to_shell_nearest_vertex_distance_metres": {
+    "Mouse_Underside": 0.0006420406862162054,
+    "Mouse_Left_Button": 0.00037424848414957523,
+    "Mouse_Right_Button": 0.000374318944523111
+  },
+  "status": "PASS",
+  "connection_note": "Recessed rubber core intersects both button shells, the first relief ring and the wire tube; relief rings need not directly intersect the shell."
+}

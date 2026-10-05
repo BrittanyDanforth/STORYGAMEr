@@ -1,0 +1,67 @@
+{
+  "check": "C# syntax parsing only; not Unity API compilation",
+  "files": [
+    {
+      "file": "UnityProject/Assets/Editor/SignalDebtAnimationBuilder.cs",
+      "sha256": "e66fdad253d9f6cde2089297d79b15ba284f996c76cbcd47812fbb25f6652c16",
+      "syntax_errors": []
+    },
+    {
+      "file": "UnityProject/Assets/Editor/SignalDebtDomainTests.cs",
+      "sha256": "2c98810506bd0fe7b4bb079668352c0a793dfb6c0725a48e814dd12c31c2a02f",
+      "syntax_errors": []
+    },
+    {
+      "file": "UnityProject/Assets/Editor/SignalDebtSceneBuilder.cs",
+      "sha256": "8c9673765e8e1029e7bf689f592fc3f01b8a478960caf6ecc58aaaf7a66ee70a",
+      "syntax_errors": []
+    },
+    {
+      "file": "UnityProject/Assets/Scripts/SignalDebtAnimationReview.cs",
+      "sha256": "fc52d3b340cc731845ca79dc2159a44cb8a9eab2f1be993dbe4d8d102b0cd6cd",
+      "syntax_errors": []
+    },
+    {
+      "file": "UnityProject/Assets/Scripts/SignalDebtBootstrap.cs",
+      "sha256": "14cea1cfa55dc7eb2ea9db2859905d74ce7138c2116629af4e81578b43ac0283",
+      "syntax_errors": []
+    },
+    {
+      "file": "UnityProject/Assets/Scripts/SignalDebtDoorProxy.cs",
+      "sha256": "7a9ed86519c038aeee9d6819b8f7b815cd113c0c5364f75447cd20fbd6e51051",
+      "syntax_errors": []
+    },
+    {
+      "file": "UnityProject/Assets/Scripts/SignalDebtInteractable.cs",
+      "sha256": "a7ef12884677c6b1c1427b2ebcf2060863e4312bbf238de79ea8ad5dc7183a0e",
+      "syntax_errors": []
+    },
+    {
+      "file": "UnityProject/Assets/Scripts/SignalDebtNpcClient.cs",
+      "sha256": "b389729ae90dfa4fc769cc8131e1710e899c9c9918fe4e95db43e90e8453ee27",
+      "syntax_errors": []
+    },
+    {
+      "file": "UnityProject/Assets/Scripts/SignalDebtPlayer.cs",
+      "sha256": "49c6179459a6a6b2b1835b1494d2fd527046e55bd13316fdbef4ecb6d75b4b00",
+      "syntax_errors": []
+    },
+    {
+      "file": "UnityProject/Assets/Scripts/SignalDebtSaveData.cs",
+      "sha256": "ae6460a9f7a096e5145b231768e794a4712e60a9dfcb52902a0a854b3381b1ae",
+      "syntax_errors": []
+    },
+    {
+      "file": "UnityProject/Assets/Scripts/SignalDebtSaveStore.cs",
+      "sha256": "ae4c8d4b15c599a8e5103834a45d563ea4f3eb7185ecaa87d980280d194fba30",
+      "syntax_errors": []
+    },
+    {
+      "file": "UnityProject/Assets/Scripts/SignalDebtUI.cs",
+      "sha256": "9a5f2eb9f255e96ca9a1300595867ce82c951332c6d1a9811b49b58d88a48534",
+      "syntax_errors": []
+    }
+  ],
+  "passed": true,
+  "unity_runtime_tested": false
+}

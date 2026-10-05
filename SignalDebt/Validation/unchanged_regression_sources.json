@@ -1,0 +1,30 @@
+{
+  "purpose": "Regression evidence for previously run domain and AI tests; source equality only, not a new runtime execution.",
+  "files": [
+    {
+      "path": "AI/relay.py",
+      "unchanged_from_previous_delivery": true,
+      "sha256": "1941fe1299d841815dcac52ab942b718a581a4de6c82960d0a1392594f1fcd19"
+    },
+    {
+      "path": "AI/test_relay.py",
+      "unchanged_from_previous_delivery": true,
+      "sha256": "42bf5c1d4181a80a880289309c87aae538706c25149df8bf5d38766ef226f61d"
+    },
+    {
+      "path": "UnityProject/Assets/Scripts/SignalDebtSaveData.cs",
+      "unchanged_from_previous_delivery": true,
+      "sha256": "ae6460a9f7a096e5145b231768e794a4712e60a9dfcb52902a0a854b3381b1ae"
+    },
+    {
+      "path": "UnityProject/Assets/Editor/SignalDebtDomainTests.cs",
+      "unchanged_from_previous_delivery": true,
+      "sha256": "2c98810506bd0fe7b4bb079668352c0a793dfb6c0725a48e814dd12c31c2a02f"
+    },
+    {
+      "path": "UnityProject/Assets/Scripts/SignalDebtNpcClient.cs",
+      "unchanged_from_previous_delivery": true,
+      "sha256": "b389729ae90dfa4fc769cc8131e1710e899c9c9918fe4e95db43e90e8453ee27"
+    }
+  ]
+}

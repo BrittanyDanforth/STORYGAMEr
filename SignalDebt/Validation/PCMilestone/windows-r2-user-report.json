@@ -1,0 +1,17 @@
+{
+  "reported_date": "2026-10-05",
+  "evidence_type": "User-reported Windows runtime result; not direct agent observation",
+  "delivery": "SignalDebt_PC_Milestone_Windows_r2.zip",
+  "archive_sha256": "c6847b7660082697527351c79c389edfc74b4f8ac7546dae22cb2f36bbb02fea",
+  "question": "When you run the Windows ZIP, does it launch and let you use the laptop, then return to first person? I can test the Linux game here, but need your PC for the Windows check.",
+  "answer": "Launches and works",
+  "supported_scope": [
+    "The delivered Windows r2 game launches on the user's PC.",
+    "The user reports the laptop and first-person return flow works."
+  ],
+  "limitations": [
+    "No Windows capture, log or hardware measurements were supplied.",
+    "This report does not validate the later schema-two save changes or r3 build.",
+    "No claim about audio, performance, exhaustive input paths or the full master-plan backlog."
+  ]
+}

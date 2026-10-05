@@ -1,0 +1,49 @@
+{
+  "passed_functional_route": true,
+  "revision": "proof-ui-r2",
+  "platform": "Linux x86_64 Mono / llvmpipe / 1200x800",
+  "input": "Actual XTest mouse and keyboard; actual standalone framebuffer captures",
+  "player_exit_code": 0,
+  "runtime_assembly_sha256": "7c6b1afbf538bdf11f15230c2e27f121c8900a3b9ce5de81035ec472a636b803",
+  "runtime_files_unchanged": true,
+  "copied_schema3_save_family_unchanged": true,
+  "paid_campaign_preserved_after_readonly_attempts_and_stand": true,
+  "final_state": {
+    "schema": 4,
+    "revision": 20,
+    "balance": 360,
+    "proof_paid": true,
+    "proof_receipts": 1,
+    "proof_versions": 6,
+    "owner_reads": 2,
+    "exports": 1,
+    "order1042_version": 2,
+    "order1043_prepared": false
+  },
+  "verified_scenarios": [
+    "Continue imports actual previously-played schema3 campaign without replacing originals or inventing proof acceptance",
+    "First-person approach, E seat transition and focus on explicitly bound physical laptop",
+    "Explicit separate160-credit acceptance; readable actual page/reference/history",
+    "Wrong-date version restored and owner returns DateMismatch with zero exports and no payment",
+    "Undo appends a new version of the prior missing-field draft; originals retained",
+    "Correct preserved version restored, real owner export references current v6",
+    "Two collection clicks produce one160 receipt and balance360",
+    "After settlement, select historical wrong-date page then attempt Restore/Undo/Collect: campaign bytes unchanged",
+    "Normal and maximized workspace visually reviewed without clipping",
+    "Stand returns to first person and physical screen keeps the real notice view",
+    "Esc Pause and Quit work; process exits0"
+  ],
+  "captured_defect": {
+    "issue": "Old Inbox scroll ratio hid latest160 offer when a session conversation was reconstructed",
+    "evidence": "captures/11-proof-offer.png",
+    "fix": "Ignore persisted Inbox ratio on load and serialize Inbox at bottom; in-session scroll retained",
+    "next_check": "Targeted native r3 legacy-scroll and paid reload acceptance"
+  },
+  "limits": [
+    "Windows runtime not run",
+    "No live API calls; child OPENAI_API_KEY removed and no AI settings copied",
+    "Not the full320-feature master plan or neighborhood acceptance",
+    "Owner task completed while Proofs was open; native offscreen scheduling not established here",
+    "No GPU performance/audio certification"
+  ]
+}
