@@ -1,0 +1,397 @@
+{
+  "status": "EXTERNAL PROTOTYPE DESIGN REVISION 2; not Unity/runtime or final art acceptance",
+  "date": "2026-10-05",
+  "coordinates": "Desired Unity world metres, X east/Y up/Z north; raw FBX conversion not assumed",
+  "review_extent_xz": {
+    "min": [
+      -56,
+      -24
+    ],
+    "max": [
+      64,
+      43
+    ]
+  },
+  "street": {
+    "main_straight_x": [
+      -36,
+      44
+    ],
+    "main_center_z": 10.6,
+    "back_center_z": -12,
+    "carriageway_width": 6.5,
+    "sidewalk_width": 3,
+    "minimum_unobstructed_walk_after_props": 2,
+    "corner_centerline_radius": 10,
+    "corner_centres_xz": [
+      [
+        -36,
+        0.6
+      ],
+      [
+        44,
+        0.6
+      ],
+      [
+        -36,
+        -2
+      ],
+      [
+        44,
+        -2
+      ]
+    ],
+    "side_link_x": [
+      -46,
+      54
+    ],
+    "side_link_z": [
+      -2,
+      0.6
+    ],
+    "circuit_centerline_length_m": 228.0319,
+    "crossings": [
+      {
+        "center_x": -2.1,
+        "width": 3
+      },
+      {
+        "center_x": 30,
+        "width": 3
+      }
+    ]
+  },
+  "levels": {
+    "sidewalk_and_interior_y": 0.02,
+    "proposed_road_y": -0.1,
+    "curb_height": 0.12,
+    "crossing_ramp_minimum_length": 1.2
+  },
+  "existing_constraints": {
+    "apartment_room_bounds_xz": {
+      "min": [
+        -3.2,
+        -2.6
+      ],
+      "max": [
+        3.2,
+        2.6
+      ]
+    },
+    "corridor_floor_x": [
+      -3.15,
+      -1.05
+    ],
+    "corridor_clear_x": [
+      -3.145,
+      -1.055
+    ],
+    "corridor_floor_end_z": 4.35,
+    "corridor_side_wall_end_z": 4.425,
+    "apartment_window_x": 3.29,
+    "apartment_door_trim_clear_width": 0.985,
+    "unit_03": "Ground-floor unit number; no invented elevation or stairs"
+  },
+  "plots": [
+    {
+      "id": "apartment_wrapper",
+      "bounds_xz": [
+        -10,
+        3.2,
+        -4.2,
+        4.35
+      ],
+      "state": "existing room inside proposed frontage wrapper",
+      "door_xyz": [
+        -2.1,
+        0.02,
+        4.35
+      ]
+    },
+    {
+      "id": "cafe",
+      "bounds_xz": [
+        -26,
+        -15,
+        -4.65,
+        4.35
+      ],
+      "state": "proposed",
+      "door_xyz": [
+        -21,
+        0.02,
+        4.35
+      ]
+    },
+    {
+      "id": "jon_parts",
+      "bounds_xz": [
+        -5.1,
+        0.9,
+        17.3,
+        25.5
+      ],
+      "state": "proposed replacement; not old blockout",
+      "door_xyz": [
+        -2.1,
+        0.02,
+        17.3
+      ],
+      "primary_room_size": [
+        5,
+        4
+      ],
+      "staff_access": "rear work/stock area, not public shortcut"
+    },
+    {
+      "id": "southbank_copy",
+      "bounds_xz": [
+        5,
+        16,
+        17.15,
+        26
+      ],
+      "state": "proposed separate first-repair-client location",
+      "door_xyz": [
+        8.2,
+        0.02,
+        17.15
+      ],
+      "primary_room_size": [
+        7,
+        5
+      ],
+      "device_requirement": "Same authoritative Order Folder device as remote repair"
+    },
+    {
+      "id": "police_station",
+      "bounds_xz": [
+        25,
+        41,
+        18.35,
+        32.35
+      ],
+      "state": "proposed civic destination",
+      "door_xyz": [
+        29.5,
+        0.02,
+        18.35
+      ],
+      "public": "front lobby and reception",
+      "staff": "controlled internal circulation to offices/interview/custody and rear yard"
+    },
+    {
+      "id": "police_secure_yard",
+      "bounds_xz": [
+        25,
+        43,
+        32.35,
+        38
+      ],
+      "state": "proposed private yard, visibly bounded"
+    },
+    {
+      "id": "future_court_reserve",
+      "bounds_xz": [
+        23,
+        40,
+        -4.65,
+        4.35
+      ],
+      "state": "future separate institution, not implemented",
+      "room_size": [
+        9,
+        7
+      ],
+      "circulation": "lateral lobby/consultation area beside courtroom; no public custody shortcut"
+    }
+  ],
+  "public_passages": [
+    {
+      "id": "apartment_east",
+      "bounds_xz": [
+        3.5,
+        6.5,
+        -5.75,
+        4.35
+      ],
+      "clear_width": 3,
+      "purpose": "preserve real apartment window and connect front/back sidewalks"
+    },
+    {
+      "id": "apartment_west",
+      "bounds_xz": [
+        -14,
+        -11,
+        -5.75,
+        4.35
+      ],
+      "clear_width": 3,
+      "purpose": "optional ordinary return route"
+    },
+    {
+      "id": "north_delivery",
+      "bounds_xz": [
+        1.3,
+        4.3,
+        16.85,
+        29.5
+      ],
+      "clear_width": 3,
+      "purpose": "common delivery route; shop stock rooms remain private"
+    },
+    {
+      "id": "north_rear_common",
+      "bounds_xz": [
+        1.3,
+        22.5,
+        26.5,
+        29.5
+      ],
+      "clear_width": 3,
+      "purpose": "Common delivery return behind Copy Shop; never station yard"
+    },
+    {
+      "id": "north_east_return",
+      "bounds_xz": [
+        19.5,
+        22.5,
+        16.85,
+        29.5
+      ],
+      "clear_width": 3,
+      "purpose": "Second public return to north sidewalk west of station"
+    }
+  ],
+  "npc_role_separation": [
+    "Jon is the used-parts shop clerk",
+    "Southbank Copy Shop clerk is current repair client",
+    "Mara is a different trader; no actor implemented here",
+    "Police public reception and staff/custody are distinct roles"
+  ],
+  "metrics": {
+    "current_walk_speed_m_s": 2.55,
+    "current_run_speed_m_s": 3.9,
+    "current_eye_height_m": 1.61405,
+    "current_vertical_fov_deg": 76,
+    "horizontal_fov_at_16_9_deg": 108.4947,
+    "street_straight_walk_seconds": 31.37,
+    "apartment_to_jon_distance_m": 12.95,
+    "apartment_to_jon_walk_seconds": 5.08,
+    "useful_home_shop_copy_police_bus_home_distance_m": 155.5,
+    "useful_loop_moving_seconds": 60.98,
+    "road_centerline_circuit_m": 228.0319,
+    "inner_sidewalk_centerline_circuit_m": 198.1868,
+    "outer_sidewalk_centerline_circuit_m": 257.877
+  },
+  "quality_gates": [
+    "Master and measured plan review before art",
+    "First-person first-pass critique plus reverse/side/window review",
+    "Visible supported map boundaries and no invisible road caps",
+    "Physical loop traversal and laptop regression after Unity integration",
+    "NPC handoffs, authority, memory and device state require later separate runtime checks"
+  ],
+  "old_blockout": "Historical only; no geometry or placement approved for reuse by this proposal",
+  "perimeter": {
+    "support_ground_xz": [
+      -72,
+      80,
+      -40,
+      60
+    ],
+    "visible_closed_runs": [
+      {
+        "id": "west_property_backs",
+        "bounds_xz": [
+          -56,
+          -53,
+          -24,
+          43
+        ],
+        "minimum_height": 2.4
+      },
+      {
+        "id": "east_property_backs",
+        "bounds_xz": [
+          61,
+          64,
+          -24,
+          43
+        ],
+        "minimum_height": 2.4
+      },
+      {
+        "id": "south_property_backs",
+        "bounds_xz": [
+          -53,
+          61,
+          -24,
+          -19
+        ],
+        "minimum_height": 2.4
+      },
+      {
+        "id": "north_property_backs",
+        "bounds_xz": [
+          -53,
+          61,
+          40,
+          43
+        ],
+        "minimum_height": 2.4
+      }
+    ],
+    "public_roads": "Complete loop; no road caps",
+    "gaps": "Closed by visible masonry/fence on same supported ground, never invisible walls"
+  },
+  "apartment_section": {
+    "source_immutable": true,
+    "prototype_copy_rotation_blender_z_degrees": 180,
+    "original_wall_outer_x": 3.38,
+    "window_outer_frame_x": 3.32,
+    "public_passage_x": [
+      3.5,
+      6.5
+    ],
+    "window_y_world": [
+      0.85,
+      2.35
+    ],
+    "east_ground_overlay": "NONE across original window",
+    "upper_wrapper_starts_y": 3.0,
+    "copied_only_cap_removed": [
+      "Corridor_End"
+    ],
+    "copied_only_fixtures_relocated": [
+      "Corridor_Fuse_Box",
+      "Corridor_Floor_Label"
+    ]
+  },
+  "police_reservation": {
+    "cell_xz": [
+      35.1,
+      38.1,
+      26.35,
+      29.75
+    ],
+    "cell_door": "south; 0.95 m clear",
+    "south_custody_corridor_xz": [
+      33.6,
+      38.1,
+      24.65,
+      26.15
+    ],
+    "clear_width": 1.5,
+    "wall_gap": 0.2,
+    "public_staff_door_xyz": [
+      31.5,
+      0.02,
+      22.9
+    ],
+    "not_modeled": "Custody/interview interiors are reserved only, no gameplay"
+  },
+  "route_purposes": {
+    "residential_back_loop": "Resident mail/delivery lockers and bicycle repair/maintenance alcove, clear of passage",
+    "north_common_loop": "Copy Shop rear delivery bay and Jon private stock door; lawful common lane, no private access"
+  }
+}

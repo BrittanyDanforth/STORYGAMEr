@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "assertions": 220,
+  "case_count": 13,
+  "cases": [
+    "fresh storage has no implicit disk write",
+    "session entry is trimmed, usable and never written",
+    "remember round trips JSON and replaces without backup",
+    "session remembered environment precedence and explicit forgetting",
+    "effective key persistence reflects session overrides and external file changes",
+    "validation failures preserve existing session and file",
+    "bounded parsing rejects malformed missing duplicate future and trailing JSON",
+    "standalone schema parser rejects ambiguous headers and unsupported JSON forms",
+    "exact key and file limits preserve standalone round trips",
+    "invalid file allows a usable environment fallback without rewriting",
+    "file as parent makes remember fail without losing session",
+    "publication failure cleans its stage and preserves session",
+    "unwritable folder preserves old remembered bytes and session"
+  ],
+  "runtime": ".NET 8.0.31",
+  "source_sha256": "2f2eeeb4f66a242692b9ea82488771a69408c80f71225112ce1056ee1718d03c",
+  "scope": "Pure bounded JSON reader/writer and isolated Linux filesystem; generated dummy keys only. Actual LocalFiles compiled against Unity CoreModule. No Unity player/UI/Windows validation."
+}

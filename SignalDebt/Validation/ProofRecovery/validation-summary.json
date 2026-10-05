@@ -1,0 +1,92 @@
+{
+  "recorded_utc": "2026-10-05T04:26:25.285982+00:00",
+  "checkpoint": "proof-ui-r3 / schema4 proof recovery",
+  "frozen_source_count": 179,
+  "genuine_unity_version": "6000.0.62f1",
+  "save_store": {
+    "passed": true,
+    "assertions": 358,
+    "cases": 51,
+    "process_exit_code": 0,
+    "executed_on": "proof-ui-r1",
+    "applies_to_r3": "Exact unchanged dependencies listed in retained-suite-applicability.json."
+  },
+  "conversation": {
+    "passed": true,
+    "assertions": 128,
+    "groups": 7,
+    "process_exit_code": 0,
+    "executed_on": "proof-ui-r3"
+  },
+  "provider": {
+    "passed": true,
+    "assertions": 73,
+    "groups": 6,
+    "process_exit_code": 0,
+    "network_calls": 0,
+    "executed_on": "proof-ui-r2"
+  },
+  "proof_layout": {
+    "passed": true,
+    "scenarios": 24,
+    "labels": 768,
+    "assertions": 613,
+    "process_exit_code": 0,
+    "command_calls_during_refresh": 0,
+    "executed_on": "proof-ui-r2"
+  },
+  "builds": {
+    "linux_passed": true,
+    "windows_passed": true,
+    "native_proof_gameplay_tested": true,
+    "windows_runtime_tested": false,
+    "neighborhood_included": false,
+    "revision": "proof-ui-r3",
+    "native_proof_functional_route_passed_on": "proof-ui-r2",
+    "native_targeted_r3_status": "passed"
+  },
+  "historical_failed_fixture": {
+    "original_report": "/workspace/SignalDebt-setup/unity/proof-ui-r1-conversation.json",
+    "original_report_sha256": "81d6ddc61c3f9b36efe88e42b93d194f1ce687878926b5d4e78b7aec5af3ab65",
+    "process_exit_code": 1,
+    "assertions_reached": 121,
+    "reason": "Legacy payment assertion expected three dialogue rows; valid new separate unaccepted 160-credit offer adds the fourth.",
+    "correction": "Fixture now requires payment plus separate offer, no new owner completion/current verification, and no proof acceptance/read/export. Production unchanged.",
+    "failed_evidence_preserved": true
+  },
+  "limits": [
+    "Full native proof route passed on r2; final r3 targeted Inbox/paid reload/read-only/settings checks passed in two exit0 sessions. Full route is not claimed rerun on r3.",
+    "Windows r3 player was built but not executed here.",
+    "No live AI requests in these checks; prior cloud probe returned HTTP401 and did not establish dialogue quality.",
+    "Frozen179-source input hashes and separately regenerated scene/marker are recorded; later shared-folder edits are outside these builds.",
+    "No new neighborhood assets in these snapshots, native offscreen task scheduling, audio or GPU performance certification, or full-master-plan completion claim."
+  ],
+  "native_functional_r2": {
+    "report": "native-functional-r2.json",
+    "sha256": "08bfc9f977421921e60688b0b17e57b247369ee6d0204f720d6de4fde2195a33",
+    "passed": true,
+    "exit_code": 0,
+    "runtime_assembly_sha256": "7c6b1afbf538bdf11f15230c2e27f121c8900a3b9ce5de81035ec472a636b803",
+    "full_route_repeated_on_r3": false,
+    "scope": "Schema3 migration, explicit160 acceptance, wrong restore/failed owner read, Undo, correct restore/export, once-only160 settlement, read-only attempts, maximize and Stand. Includes observed Inbox saved-scroll defect."
+  },
+  "r3_change": {
+    "file": "Assets/Scripts/SignalDebtUI.cs",
+    "reason": "Ignore historical saved Inbox scroll ratio when rebuilding conversation; persist Inbox at bottom while retaining in-session scroll position.",
+    "sole_production_delta_from_r2": true,
+    "targeted_native_acceptance": "passed"
+  },
+  "native_targeted_r3": {
+    "report": "native-targeted-r3.json",
+    "sha256": "34c77ed2b18979cac76a5164e8b9409893a87e9c14c646fcb120964ebfaf20be",
+    "passed": true,
+    "exit_codes": [
+      0,
+      0
+    ],
+    "runtime_assembly_sha256": "87d41f40286788ee0fcba5cac75bc39303cd7de0afeaa90969d962c46e001e83",
+    "runtime_files_unchanged": true,
+    "scope": "Legacy Inbox scroll=1 opens latest160 offer without acceptance/payment; actual r2 paid campaign reloads byte-identically; paid restore/undo/payment are no-ops; Settings/Back/Pause/Quit. Targeted checks, not a full-route replay.",
+    "live_api_calls": 0
+  }
+}

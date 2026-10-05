@@ -13,12 +13,17 @@ namespace SignalDebt
         public int day;
         public int worldRevision;
         public string utc;
+        public string actorId, deviceId, recordId;
+        public int deviceRevision;
+        public string documentRevisionId, exportId;
+        public int ownerCheckNumber;
     }
 
     [Serializable]
-    public sealed class SignalDebtSaveData
+    public sealed partial class SignalDebtSaveData
     {
-        public int schemaVersion = 1;
+        public const int CurrentSchemaVersion = 4;
+        public int schemaVersion = CurrentSchemaVersion;
         public string saveId = Guid.NewGuid().ToString("N");
         public int revision;
         public int balance = 80;
@@ -41,36 +46,21 @@ namespace SignalDebt
 
         public SignalDebtLedgerEvent AcceptRepair()
         {
-            if (jobAccepted) return null;
+            if (jobAccepted || clientDevice == null || !clientDevice.TryGrantRepairAccess(out _)) return null;
             jobAccepted = true;
             return Record("job_accepted", "Accepted the copy shop's authorized order-folder repair.", 0, "repair-job-accepted");
         }
 
         public SignalDebtLedgerEvent InspectRepair()
         {
-            if (!jobAccepted || serviceInspected) return null;
+            if (!jobAccepted || serviceInspected || clientDevice == null || !clientDevice.sessionOpen) return null;
             serviceInspected = true;
-            return Record("service_inspected", "Inspected Shop PC. Order Folder requires the Order Index service.", 0, "repair-service-inspected");
-        }
-
-        public SignalDebtLedgerEvent ConnectRepair(bool correct)
-        {
-            if (!jobAccepted || !serviceInspected || serviceConnected || !correct) return null;
-            serviceConnected = true;
-            return Record("service_connected", "Connected Order Folder to its permitted Order Index service.", 0, "repair-service-connected");
-        }
-
-        public SignalDebtLedgerEvent TestRepair()
-        {
-            if (!serviceConnected || serviceTestPassed) return null;
-            serviceTestPassed = true;
-            clientMemories.Add("copy_shop_client: the player restored our order folder and tested it with permission.");
-            return Record("service_test_passed", "Client opened today's order list successfully and resumed work.", 0, "repair-service-test");
+            return DeviceEvent("service_inspected", "Inspected the Order Folder records input and the workstation's service outputs.", "repair-service-inspected");
         }
 
         public SignalDebtLedgerEvent ClaimRepairPayment()
         {
-            if (!serviceTestPassed || jobPaid || HasEvent("repair-job-payment")) return null;
+            if (!CanClaimRepairPayment || !clientDevice.TrySettleRepairAccess(out _)) return null;
             balance += 120;
             jobPaid = true;
             clientMemories.Add("copy_shop_client: paid the agreed 120 credits; the job is complete.");
@@ -114,12 +104,58 @@ namespace SignalDebt
             return entry;
         }
 
+        // Gameplay commands use a detached candidate. Rejected writes must not
+        // leave live rewards, obligations, memories or day changes behind.
+        public bool TryCommitChange(Func<SignalDebtSaveData, SignalDebtLedgerEvent> change,
+            Func<SignalDebtSaveData, bool> persist, out SignalDebtLedgerEvent committed, out string reason)
+        {
+            committed = null;
+            reason = "";
+            if (change == null || persist == null || !Validate())
+            { reason = "This change could not be verified. Reload your saved game."; return false; }
+            SignalDebtSaveData candidate = Copy();
+            SignalDebtLedgerEvent entry = change(candidate);
+            if (entry == null)
+            { reason = "No changes were applied."; return false; }
+            if (!candidate.Validate())
+            { reason = "This change could not be recorded. Your saved commitments are unchanged."; return false; }
+            if (!persist(candidate))
+            { reason = "The change was not saved. Your money and commitments have not changed."; return false; }
+            PublishSavedCopy(candidate);
+            committed = entry;
+            return true;
+        }
+
+        private void PublishSavedCopy(SignalDebtSaveData candidate)
+        {
+            // Keep this campaign object: replacing it would make the dialogue
+            // client interpret each successful transaction as another load.
+            schemaVersion = candidate.schemaVersion;
+            saveId = candidate.saveId;
+            revision = candidate.revision;
+            balance = candidate.balance;
+            rentDue = candidate.rentDue;
+            day = candidate.day;
+            rentDeadlineDay = candidate.rentDeadlineDay;
+            extensionUsed = candidate.extensionUsed;
+            jobAccepted = candidate.jobAccepted;
+            serviceInspected = candidate.serviceInspected;
+            serviceConnected = candidate.serviceConnected;
+            serviceTestPassed = candidate.serviceTestPassed;
+            jobPaid = candidate.jobPaid;
+            ledger = candidate.ledger;
+            clientMemories = candidate.clientMemories;
+            shopPurchases = candidate.shopPurchases;
+            clientDevice = candidate.clientDevice;
+            proofDocument = candidate.proofDocument;
+            proofAccepted = candidate.proofAccepted;
+            proofPaid = candidate.proofPaid;
+        }
+
         public bool Validate()
         {
-            if (schemaVersion != 1 || balance < 0 || rentDue < 0 || day < 1 || rentDeadlineDay < 1) return false;
-            if (string.IsNullOrEmpty(saveId)) saveId = Guid.NewGuid().ToString("N");
-            if (ledger == null) ledger = new List<SignalDebtLedgerEvent>();
-            if (clientMemories == null) clientMemories = new List<string>();
+            if (schemaVersion != CurrentSchemaVersion || balance < 0 || rentDue < 0 || day < 1 || rentDeadlineDay < 1) return false;
+            if (string.IsNullOrEmpty(saveId) || ledger == null || clientMemories == null) return false;
             var ids = new HashSet<string>();
             int lastRevision = 0;
             foreach (SignalDebtLedgerEvent entry in ledger)
@@ -135,7 +171,7 @@ namespace SignalDebt
             if (serviceTestPassed && !serviceConnected) return false;
             if (serviceConnected && !serviceInspected) return false;
             if (serviceInspected && !jobAccepted) return false;
-            return true;
+            return ValidatePurchase() && ValidateClientRepair() && ValidateProofRecovery();
         }
     }
 

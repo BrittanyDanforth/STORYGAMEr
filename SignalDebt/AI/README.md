@@ -1,6 +1,8 @@
 # Signal Debt NPC dialogue relay
 
-This folder is the optional local dialogue layer for the first playable build. It uses Python 3.10 or later and only the standard library. The game continues with authored dialogue when this relay is absent, no key is configured, the provider is unavailable, or a reply fails validation.
+This folder preserves the older localhost relay for development and its tests. The current game uses **Settings → Connect** and direct Inbox dialogue; it does not require Python or a relay-enable button. See [the current in-game setup](../Documentation/UI_Menu_Update.md). The instructions below describe this older adapter.
+
+The relay uses Python 3.10 or later and only the standard library. It returns authored fallback when no key is configured, the provider is unavailable, or a reply fails validation. This is separate from the current Unity provider's visible connection-error feedback.
 
 The implementation has **durable NPC knowledge, bounded retrieval, dialogue validation and stale-reply protection**. It does not yet implement a city population planner, detective strategy, court decisions or autonomous agents. Unity remains authoritative for every event, reward and consequence.
 

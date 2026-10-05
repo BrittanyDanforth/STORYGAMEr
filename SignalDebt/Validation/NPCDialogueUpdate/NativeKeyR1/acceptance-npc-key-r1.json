@@ -1,0 +1,210 @@
+{
+  "passed": true,
+  "revision": "npc-key-r1",
+  "utc_recorded_at": "2026-10-05T02:07:59.359877+00:00",
+  "validation_kind": "Uninstrumented Linux Mono standalone with native XTest input, actual framebuffer screenshots and visual inspection.",
+  "platform": "Linux x86_64 Mono",
+  "unity_version": "6000.0.62f1",
+  "resolution": "1200x800",
+  "renderer": "llvmpipe software OpenGL4.5",
+  "runtime_assembly_sha256": "b85f21f57d5fd875cb7e553717d92b99bfcc8370e95a6acf4be26ab7661844d0",
+  "frozen_source_manifest": "/workspace/SignalDebt-setup/unity/npc-key-r1-source-manifest.json",
+  "frozen_source_manifest_sha256": "40fb4dd4559c4f315dd9f9b9e04772be7f0e7b5c39b8b0f872f68a0b3a3d98ea",
+  "frozen_source_count": 165,
+  "production_files_changed_after_frozen_build": [
+    "Assets/Scripts/SignalDebtAiProvider.cs"
+  ],
+  "source_scope_note": "Exact frozen NPC/key r1 proof. Parent is preparing prompt-only semantic revision r2; do not relabel this as r2 evidence.",
+  "build_report": "/workspace/SignalDebt-setup/unity/linux-npc-key-r1-build-result.json",
+  "historical_failure": "/workspace/SignalDebt-setup/unity/ui-menu-r2-settings-native/acceptance-r2-settings.json",
+  "checks": [
+    {
+      "id": "masked_opt_in",
+      "passed": true,
+      "observed": "Native fabricated input is masked; Remember explicitly checked.",
+      "capture": "settings/captures/02-masked-remember-selected.png"
+    },
+    {
+      "id": "native_remember",
+      "passed": true,
+      "observed": "Connect writes schema1 local settings file matching fabricated-input SHA, Unix0600; input clears and Saved in UserData appears. Previous standalone serializer exception is absent.",
+      "capture": "settings/captures/03-connect-result.png"
+    },
+    {
+      "id": "invalid_auth_feedback",
+      "passed": true,
+      "observed": "Exactly one Connect activation with a fabricated invalid noncredential returns The API key was not accepted. Check it in Settings. The accepted ASCII format excludes preflight invalid-key branches; production status mapping corresponds to HTTP401. Raw HTTP body/headers were not collected.",
+      "capture": "settings/captures/03-connect-result.png"
+    },
+    {
+      "id": "restart_remembered_blank",
+      "passed": true,
+      "observed": "Fresh native process with environment key unset shows Saved in UserData, blank password input, unchecked Remember; file SHA/mtime unchanged.",
+      "capture": "settings/captures/04-restarted-saved-blank.png"
+    },
+    {
+      "id": "remove_remembered",
+      "passed": true,
+      "observed": "Remove deletes settings file, shows No key set and Saved and session keys removed, disables Connect; no settings staging/backup remains.",
+      "capture": "settings/captures/05-removed-no-key.png"
+    },
+    {
+      "id": "settings_no_campaign",
+      "passed": true,
+      "observed": "The entire Settings-only case never creates UserData/Saves or a campaign."
+    },
+    {
+      "id": "past_tense_paid_inbox",
+      "passed": true,
+      "observed": "Separate paid150/400 campaign enters PC through native walking/aim/E; compact Inbox shows completed status and past-tense payment bubble. This is authored milestone copy, not generated dialogue.",
+      "capture": "inbox/captures/01-paid-milestone-inbox.png"
+    },
+    {
+      "id": "no_key_notice_save_invariant",
+      "passed": true,
+      "observed": "Sending hello without a key displays concise Settings instruction outside the NPC bubbles; no stuck reply state; campaign SHA,mtime and state exactly unchanged.",
+      "capture": "inbox/captures/02-no-key-status-separate.png"
+    },
+    {
+      "id": "stand_returns_first_person",
+      "passed": true,
+      "observed": "Stand returns first-person camera/E prompt and remounts actual Inbox on physical laptop.",
+      "capture": "inbox/captures/03-first-person-return.png"
+    },
+    {
+      "id": "immutable_release_and_fixture",
+      "passed": true,
+      "observed": "Both copied players retain release game hashes; original release116files and paid fixture bytes/mtime unchanged. No release UserData."
+    },
+    {
+      "id": "three_clean_exits",
+      "passed": true,
+      "observed": "Remember, restart/remove and Inbox processes each exited0 through actual Quit actions; owned player/Xvfb sessions stopped."
+    }
+  ],
+  "check_count": 11,
+  "capture_count": 8,
+  "captures": [
+    "inbox/captures/01-paid-milestone-inbox.png",
+    "inbox/captures/02-no-key-status-separate.png",
+    "inbox/captures/03-first-person-return.png",
+    "settings/captures/01-empty-settings.png",
+    "settings/captures/02-masked-remember-selected.png",
+    "settings/captures/03-connect-result.png",
+    "settings/captures/04-restarted-saved-blank.png",
+    "settings/captures/05-removed-no-key.png"
+  ],
+  "logs": [
+    "settings/remember-player.log",
+    "settings/restart-remove-player.log",
+    "inbox/player.log"
+  ],
+  "all_player_exit_codes": [
+    0,
+    0,
+    0
+  ],
+  "all_owned_player_processes_stopped": true,
+  "release_build_files_unchanged": true,
+  "release_build_file_count": 116,
+  "release_build_userdata_created": false,
+  "copied_players_match_release": {
+    "settings": true,
+    "inbox": true
+  },
+  "fixture_bytes_mtimes_preserved": true,
+  "settings_proof": {
+    "remember": {
+      "exists": true,
+      "campaign_directory_exists": false,
+      "file_sha256": "0703126e7f74910f52618b0fec3dce0ffd8f5301b58ad7abc0b89006359604d4",
+      "file_size": 73,
+      "mtime_ns": 1791165810313802530,
+      "mode_octal": "0o600",
+      "schema_version": 1,
+      "input_matches_fabricated_sha256": true
+    },
+    "restart": {
+      "exists": true,
+      "campaign_directory_exists": false,
+      "file_sha256": "0703126e7f74910f52618b0fec3dce0ffd8f5301b58ad7abc0b89006359604d4",
+      "mtime_ns": 1791165810313802530,
+      "unchanged_since_remember": true
+    },
+    "removed": {
+      "ai_settings_exists": false,
+      "campaign_directory_exists": false,
+      "remaining_userdata_files": []
+    }
+  },
+  "no_key_save_invariant": {
+    "passed": true,
+    "before_sha256": "33cc304c1b0a5fedb09bcc8c075a902ec730c209264567fbe7eb92809db26318",
+    "after_sha256": "33cc304c1b0a5fedb09bcc8c075a902ec730c209264567fbe7eb92809db26318",
+    "before_mtime_ns": 1791165919243300052,
+    "after_mtime_ns": 1791165919243300052,
+    "balance": 150,
+    "rentDue": 400,
+    "revision": 6
+  },
+  "network_scope": {
+    "connect_activations": 1,
+    "credential_origin": "Fabricated invalid noncredential; no real account key used or read.",
+    "environment_key_unset": true,
+    "visible_result": "The API key was not accepted. Check it in Settings.",
+    "result_mapping": "Production invalid_key mapping, corresponding to HTTP401 after accepted ASCII preflight.",
+    "raw_http_response_observed": false,
+    "successful_provider_generated_dialogue_tested": false
+  },
+  "unexpected_exceptions_or_save_errors": {
+    "settings/remember-player.log": [],
+    "settings/restart-remove-player.log": [],
+    "inbox/player.log": []
+  },
+  "keylike_values_in_retained_logs": {
+    "settings/remember-player.log": false,
+    "settings/restart-remove-player.log": false,
+    "inbox/player.log": false
+  },
+  "limits": [
+    "No real credentials, successful AI connection, generated personality/dialogue, insult response or fallible-belief behavior tested natively.",
+    "Session-only override of an already remembered key not exercised in this native pass; scope authorized one network request.",
+    "Full repair/archive/window matrix was not repeated.",
+    "Windows runtime and hardware audio/GPU performance untested.",
+    "Expected ALSA/FMOD no-device fallback messages are environment limitations."
+  ],
+  "evidence_allowlist": [
+    "inbox/captures/01-paid-milestone-inbox.png",
+    "inbox/captures/02-no-key-status-separate.png",
+    "inbox/captures/03-first-person-return.png",
+    "settings/captures/01-empty-settings.png",
+    "settings/captures/02-masked-remember-selected.png",
+    "settings/captures/03-connect-result.png",
+    "settings/captures/04-restarted-saved-blank.png",
+    "settings/captures/05-removed-no-key.png",
+    "settings/remember-player.log",
+    "settings/restart-remove-player.log",
+    "inbox/player.log",
+    "settings/fabricated-input-proof.json",
+    "settings/remember-files-proof.json",
+    "settings/restart-files-proof.json",
+    "settings/removed-files-proof.json"
+  ],
+  "evidence_sha256": {
+    "inbox/captures/01-paid-milestone-inbox.png": "ca81d44f5c98846cc4e710fbd9a140f23443504ffeba6185feb9aedcf28e7c65",
+    "inbox/captures/02-no-key-status-separate.png": "833c7cb52b69c899e324f193031784f48724cd74d41b615f9d65e8c7c18647f9",
+    "inbox/captures/03-first-person-return.png": "195d4407f6627a6e234aca8cccb1f8d7c563ee51cdf9a513f637cf4c3dbd8466",
+    "settings/captures/01-empty-settings.png": "1627d2a8088c254497aae4d4fa406fbd012915b44d46446cbf1626f2bd694415",
+    "settings/captures/02-masked-remember-selected.png": "f6105d80007086cfd9f6cc5eae31afc2b976f4575ae4d34c1b07950bca13a3b9",
+    "settings/captures/03-connect-result.png": "dcc4caa15273231525ab0fbc2ba33fa9c8cb95c2bea40b4d6df1e094fd8e2f0e",
+    "settings/captures/04-restarted-saved-blank.png": "de068b9c8ce8ef2b3ae561f8dc36f565b195897dd8446552a112886d56063e7f",
+    "settings/captures/05-removed-no-key.png": "7a0f78341cffd15b150f296c7ba2c2646c931f7d84ba6fa5c36982568e6dbb4c",
+    "settings/remember-player.log": "f2e47ad307af99938507dfde46e43a8dcb6d6d39b974371defce8bbff7c797ef",
+    "settings/restart-remove-player.log": "a059a7f894fdadc0ce99bc8c8c5b7c3c7da51fbd4d61bb7f2f133f98ab7106c9",
+    "inbox/player.log": "e69d86c3591aef4b98a4f9131b6ce8afbe7278a72c17104d45888f553419e297",
+    "settings/fabricated-input-proof.json": "811c335e746366d4fd881536606d71d330ad7880e398a9078e5279ca6e49b742",
+    "settings/remember-files-proof.json": "43cf885248fdb80f183b32449f05eff2775d15801a2263243de1ce6e30502567",
+    "settings/restart-files-proof.json": "5b99ae5bc128975ab8709c3902ef1ff40f455863b5c1cacc4c0c57f8e529362f",
+    "settings/removed-files-proof.json": "83b9ec8cb4e4c4b1bd7247a291c01e0ee66bc8f587ce89280e1016a76998bd62"
+  }
+}

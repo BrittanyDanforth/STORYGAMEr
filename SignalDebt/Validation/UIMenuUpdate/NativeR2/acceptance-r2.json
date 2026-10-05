@@ -1,0 +1,293 @@
+{
+  "passed": true,
+  "revision": "ui-menu-r2",
+  "utc_recorded_at": "2026-10-05T01:29:27.174078+00:00",
+  "validation_kind": "Genuine uninstrumented Linux standalone, native XTest input, actual framebuffer capture and visual review. Targeted follow-up to frozen r1 full UI acceptance.",
+  "unity_version": "6000.0.62f1",
+  "platform": "Linux x86_64 Mono",
+  "renderer": "llvmpipe OpenGL4.5 software rendering",
+  "resolution": "1200x800",
+  "runtime_assembly_sha256": "99a7821cada2b0907176958df6376ab78ad5bc69ba2f78e0b9cc4f0c60d022de",
+  "frozen_source_manifest": "/workspace/SignalDebt-setup/unity/ui-menu-r2-source-manifest.json",
+  "frozen_source_manifest_sha256": "0a0c341197076aff364c6b0374da707dacf8d94bc69a436c886ba6718050e684",
+  "frozen_source_count": 161,
+  "production_files_changed_after_frozen_build": [],
+  "build_report": "/workspace/SignalDebt-setup/unity/linux-ui-menu-r2-build-result.json",
+  "release_build_files_unchanged": true,
+  "release_build_file_count": 116,
+  "release_build_userdata_created": false,
+  "copied_players_game_files_match_release": {
+    "targeted": true,
+    "legacy-import": true
+  },
+  "all_player_exit_codes": [
+    0,
+    0
+  ],
+  "all_owned_player_processes_stopped": true,
+  "checks": [
+    {
+      "id": "seating_interrupted",
+      "passed": true,
+      "observed": "Native E begins seating; actual mid-transition capture precedes Escape at0.823seconds after E-down. Camera returns to room with Pause; Resume returns first person with interaction prompt.",
+      "capture": "targeted/captures/04-visible-seat-transition.png"
+    },
+    {
+      "id": "seating_reentry",
+      "passed": true,
+      "observed": "After interrupted entry, natural E enters the same physical laptop desktop.",
+      "capture": "targeted/captures/08-desktop-after-interruption.png"
+    },
+    {
+      "id": "inbox_without_key",
+      "passed": true,
+      "observed": "Native hello submission displays Add your API key in Settings, then Connect.; no stuck Replying status. Exact campaign save bytes, mtime and state unchanged before/after Send. OPENAI_API_KEY unset for launch; no key entered.",
+      "capture": "targeted/captures/10-send-no-key-status.png"
+    },
+    {
+      "id": "repair_after_no_key",
+      "passed": true,
+      "observed": "Repair accepts job and Inspect after missing-key response; current Connect stage remains usable.",
+      "capture": "targeted/captures/11-repair-usable-after-no-key.png"
+    },
+    {
+      "id": "pause_settings_resume",
+      "passed": true,
+      "observed": "Two native Pause \u2192 Settings \u2192 Back/Resume cycles restore the same Connect stage. First used Escape from Settings then Return; second used Back then Escape from Pause.",
+      "capture": "targeted/captures/15-repeat-resume.png"
+    },
+    {
+      "id": "new_game_confirmation_copy",
+      "passed": true,
+      "observed": "Current confirmation displays Your current save will be preserved. Back returns to menu; no new campaign created in this targeted run.",
+      "capture": "targeted/captures/16-current-new-game-confirm.png"
+    },
+    {
+      "id": "legacy_cold_menu",
+      "passed": true,
+      "observed": "Continue enabled from old AppData schema1 campaign while beside-binary UserData directory is still absent.",
+      "capture": "legacy-import/captures/01-legacy-cold-menu.png"
+    },
+    {
+      "id": "legacy_continue_import",
+      "passed": true,
+      "observed": "Continue writes local UserData/Saves schema2 with same save ID and every legacy field unchanged except schemaVersion; adds empty shopPurchases. Original and copied legacy primary/backup bytes and mtimes preserved.",
+      "capture": "legacy-import/captures/02-imported-room.png"
+    },
+    {
+      "id": "legacy_wallet_continuity",
+      "passed": true,
+      "observed": "Imported campaign shows150credits and400rent; revision6, six ledger events, one repair payment. No additional gameplay transactions during this run.",
+      "capture": "legacy-import/captures/05-imported-wallet.png"
+    },
+    {
+      "id": "history_readable",
+      "passed": true,
+      "observed": "History displays human activity names, day and amounts with pagination; no internal event IDs/client-memory strings visible.",
+      "capture": "legacy-import/captures/04-imported-history.png"
+    },
+    {
+      "id": "wallet_receipts",
+      "passed": true,
+      "observed": "Wallet View receipts opens receipt filter, showing only rent\u221250 and repair+120.",
+      "capture": "legacy-import/captures/06-imported-receipts.png"
+    },
+    {
+      "id": "receipt_detail",
+      "passed": true,
+      "observed": "Repair receipt opens a readable Day1,+120credits and human payment summary.",
+      "capture": "legacy-import/captures/07-repair-receipt-detail.png"
+    },
+    {
+      "id": "isolated_clean_exit",
+      "passed": true,
+      "observed": "Both copied players exited0 through their actual Quit actions; release116files unchanged and UserData exists only in external cases."
+    }
+  ],
+  "check_count": 13,
+  "capture_count": 23,
+  "captures": [
+    "legacy-import/captures/01-legacy-cold-menu.png",
+    "legacy-import/captures/02-imported-room.png",
+    "legacy-import/captures/03-imported-desktop.png",
+    "legacy-import/captures/04-imported-history.png",
+    "legacy-import/captures/05-imported-wallet.png",
+    "legacy-import/captures/06-imported-receipts.png",
+    "legacy-import/captures/07-repair-receipt-detail.png",
+    "targeted/captures/01-laptop-target.png",
+    "targeted/captures/02-before-seating-interruption.png",
+    "targeted/captures/03-interrupted-entry-paused.png",
+    "targeted/captures/04-visible-seat-transition.png",
+    "targeted/captures/05-transition-return-paused.png",
+    "targeted/captures/06-interruption-resume-room.png",
+    "targeted/captures/07-inbox.png",
+    "targeted/captures/08-desktop-after-interruption.png",
+    "targeted/captures/09-inbox-ready.png",
+    "targeted/captures/10-send-no-key-status.png",
+    "targeted/captures/11-repair-usable-after-no-key.png",
+    "targeted/captures/12-pause-settings-r2.png",
+    "targeted/captures/13-settings-resume-same-repair.png",
+    "targeted/captures/14-repeat-settings.png",
+    "targeted/captures/15-repeat-resume.png",
+    "targeted/captures/16-current-new-game-confirm.png"
+  ],
+  "logs": [
+    "targeted/player.log",
+    "legacy-import/player.log"
+  ],
+  "captured_ambiguities": [
+    "targeted/captures/02-before-seating-interruption.png shows standing HUD and is not mid-animation proof. Actual proof is04 plus its timing file.",
+    "targeted/captures/07-inbox.png is an early still-standing reentry attempt, not Inbox proof;09 and10 show actual Inbox."
+  ],
+  "save_verification": {
+    "no_key_send_before": {
+      "sha256": "2789c6acff680951b9a3097d96ae48637af390cff7e4ef6bdbb6ca211bf58ee2",
+      "mtime_ns": 1791163200162511088,
+      "revision": 0
+    },
+    "no_key_send_after": {
+      "sha256": "2789c6acff680951b9a3097d96ae48637af390cff7e4ef6bdbb6ca211bf58ee2",
+      "mtime_ns": 1791163200162511088,
+      "revision": 0
+    },
+    "no_key_send_unchanged": true,
+    "legacy_original_before": {
+      "signal-debt-save.json": {
+        "size": 2455,
+        "mtime_ns": 1791158688865325309,
+        "sha256": "e6d479e153a0189358e5df6cbab3f3aba7a0b52468930cf268b931bd2fd4e9aa"
+      },
+      "signal-debt-save.json.bak": {
+        "size": 2455,
+        "mtime_ns": 1791158621112326699,
+        "sha256": "e6d479e153a0189358e5df6cbab3f3aba7a0b52468930cf268b931bd2fd4e9aa"
+      }
+    },
+    "legacy_original_after": {
+      "signal-debt-save.json": {
+        "size": 2455,
+        "mtime_ns": 1791158688865325309,
+        "sha256": "e6d479e153a0189358e5df6cbab3f3aba7a0b52468930cf268b931bd2fd4e9aa"
+      },
+      "signal-debt-save.json.bak": {
+        "size": 2455,
+        "mtime_ns": 1791158621112326699,
+        "sha256": "e6d479e153a0189358e5df6cbab3f3aba7a0b52468930cf268b931bd2fd4e9aa"
+      }
+    },
+    "legacy_copy_before": {
+      "signal-debt-save.json": {
+        "size": 2455,
+        "mtime_ns": 1791158688865325309,
+        "sha256": "e6d479e153a0189358e5df6cbab3f3aba7a0b52468930cf268b931bd2fd4e9aa"
+      },
+      "signal-debt-save.json.bak": {
+        "size": 2455,
+        "mtime_ns": 1791158621112326699,
+        "sha256": "e6d479e153a0189358e5df6cbab3f3aba7a0b52468930cf268b931bd2fd4e9aa"
+      }
+    },
+    "legacy_copy_after": {
+      "signal-debt-save.json": {
+        "size": 2455,
+        "mtime_ns": 1791158688865325309,
+        "sha256": "e6d479e153a0189358e5df6cbab3f3aba7a0b52468930cf268b931bd2fd4e9aa"
+      },
+      "signal-debt-save.json.bak": {
+        "size": 2455,
+        "mtime_ns": 1791158621112326699,
+        "sha256": "e6d479e153a0189358e5df6cbab3f3aba7a0b52468930cf268b931bd2fd4e9aa"
+      }
+    },
+    "legacy_bytes_and_mtimes_preserved": true,
+    "legacy_field_differences": {
+      "schemaVersion": [
+        1,
+        2
+      ]
+    },
+    "new_schema_fields": {
+      "shopPurchases": []
+    },
+    "imported_state": {
+      "schemaVersion": 2,
+      "revision": 6,
+      "balance": 150,
+      "rentDue": 400,
+      "jobPaid": true,
+      "ledger_count": 6,
+      "job_payment_count": 1
+    }
+  },
+  "unexpected_csharp_or_save_errors": {
+    "targeted/player.log": [],
+    "legacy-import/player.log": []
+  },
+  "known_environment_messages": [
+    "ALSA/FMOD cannot initialize a hardware audio device and use emulated software output; audio not evaluated."
+  ],
+  "scope_limits": [
+    "Windows binary built but not run here.",
+    "No real API key, provider connection, generated dialogue or network-failure result tested; remembered-key persistence not exercised in native runs.",
+    "Direct component disable/re-enable lifecycle injection and old callback race not exercised; normal pause/settings flows only.",
+    "Full payment, backup/archive and malformed/future save matrix belongs to frozen r1 acceptance and was not repeated in r2.",
+    "No hardware GPU performance/FPS claim; software rendering only.",
+    "No full-game completion claim; this validates the current menu/PC slice."
+  ],
+  "evidence_allowlist": [
+    "legacy-import/captures/01-legacy-cold-menu.png",
+    "legacy-import/captures/02-imported-room.png",
+    "legacy-import/captures/03-imported-desktop.png",
+    "legacy-import/captures/04-imported-history.png",
+    "legacy-import/captures/05-imported-wallet.png",
+    "legacy-import/captures/06-imported-receipts.png",
+    "legacy-import/captures/07-repair-receipt-detail.png",
+    "targeted/captures/01-laptop-target.png",
+    "targeted/captures/02-before-seating-interruption.png",
+    "targeted/captures/03-interrupted-entry-paused.png",
+    "targeted/captures/04-visible-seat-transition.png",
+    "targeted/captures/05-transition-return-paused.png",
+    "targeted/captures/06-interruption-resume-room.png",
+    "targeted/captures/07-inbox.png",
+    "targeted/captures/08-desktop-after-interruption.png",
+    "targeted/captures/09-inbox-ready.png",
+    "targeted/captures/10-send-no-key-status.png",
+    "targeted/captures/11-repair-usable-after-no-key.png",
+    "targeted/captures/12-pause-settings-r2.png",
+    "targeted/captures/13-settings-resume-same-repair.png",
+    "targeted/captures/14-repeat-settings.png",
+    "targeted/captures/15-repeat-resume.png",
+    "targeted/captures/16-current-new-game-confirm.png",
+    "targeted/player.log",
+    "legacy-import/player.log",
+    "targeted/seating-confirmed-input-timing.json"
+  ],
+  "evidence_sha256": {
+    "legacy-import/captures/01-legacy-cold-menu.png": "63e2a4d9318d1d7e8ec06a358b31c9de618af515a2c712a80f0dc7d9724a8049",
+    "legacy-import/captures/02-imported-room.png": "5b87c82dd2bd031d6488ee60a0e1286e16c627a91700133f5af8813c30a07cf4",
+    "legacy-import/captures/03-imported-desktop.png": "df1376d22d8482ccd466b806e5d69d06297ad5c2f29ed39955cb984b732dc90a",
+    "legacy-import/captures/04-imported-history.png": "bc43a93222248e1f75d79449c3aca414c23825bc8150977e4d6272d2aff48712",
+    "legacy-import/captures/05-imported-wallet.png": "ff26e8936f532a347add1020a35bd2e2b90f0f9bd28e9ef030ac7b401c20883b",
+    "legacy-import/captures/06-imported-receipts.png": "620a052984dfb5df216c04165775edee243230b43eb9b5e60e5b2464486e3230",
+    "legacy-import/captures/07-repair-receipt-detail.png": "e452ef63b5d2e572b23cb91d16424a7417895624738f1a22ffc10b2d48d327f1",
+    "targeted/captures/01-laptop-target.png": "56e798bcb9cb0e5cd9528b2f1f67d7dc6cb836964edc8bd8ce11371f6e91fbc4",
+    "targeted/captures/02-before-seating-interruption.png": "748ed959d50b6dfd85d17c25bf6f0e6a22c204169874e63b6a2dfdf91a57d393",
+    "targeted/captures/03-interrupted-entry-paused.png": "e5131c14f37f685c360fe8f14c351510a4d2c0a1b26c3142b8dc5199d2e1e078",
+    "targeted/captures/04-visible-seat-transition.png": "1817f094fa2e584e0eda8db053f119c79e1c9afc9adadc9271864faa02fe5f68",
+    "targeted/captures/05-transition-return-paused.png": "31523fe37472e76acb57411b424b68f1ae4bb40c9d3007b465c6d03b9d6d3986",
+    "targeted/captures/06-interruption-resume-room.png": "1264092d9686956e2599bceefb5f782e4eb7e181b33e05f2254a0acd15774fb2",
+    "targeted/captures/07-inbox.png": "bee35a51b7a094882af4b54cff7efa913d2d1ef40b4cba2e6d8871c0fbb69037",
+    "targeted/captures/08-desktop-after-interruption.png": "dbadf7bd45e52f4974ea44664673fcf55cb1731ff52c1063db2ccf7b1d442b37",
+    "targeted/captures/09-inbox-ready.png": "d18105222f00c6783db75dc608fd86a8d8998b6441e388aa6177822305a78d1d",
+    "targeted/captures/10-send-no-key-status.png": "f5ad00df578d084308757c864644eb3708b67eea9fe3aee70ab69467290dc892",
+    "targeted/captures/11-repair-usable-after-no-key.png": "4ab363d612308cb424b7c109e0c2dead2363f15450e1050e3e85f02a16a6faf7",
+    "targeted/captures/12-pause-settings-r2.png": "d8adba4d3c9419a8595a9dc151a4a5d730b787166bc0ec0b19052502488740fb",
+    "targeted/captures/13-settings-resume-same-repair.png": "cbe83207330f70829c5c2c946c46078addd7637671eb75f6491e5bdaa7d4e75d",
+    "targeted/captures/14-repeat-settings.png": "bd358d685c04f343d101ad7a52a81910109e250a021c817c3f2b3b4f57ef0733",
+    "targeted/captures/15-repeat-resume.png": "7bfa035e25d4f25f00fbf8877ba63ad769f3691496d95d6863ed745f822d16bb",
+    "targeted/captures/16-current-new-game-confirm.png": "3e12f813c8a90634a0d2041d4332abf7ad9e8d7feea0158d59afa60de88a6e50",
+    "targeted/player.log": "57494f15d6569525b86e7e1bb94b33405b0c156ecb107ea014cb16a71ed79a74",
+    "legacy-import/player.log": "9b7bbb4edae6fc7056754e6c1e9906c58a10d93de61057b36cc7199afc004ac3",
+    "targeted/seating-confirmed-input-timing.json": "afec6818a645458320145c865d762d7ffad6e0947febdf00bf2f55ce1aedd28e"
+  }
+}

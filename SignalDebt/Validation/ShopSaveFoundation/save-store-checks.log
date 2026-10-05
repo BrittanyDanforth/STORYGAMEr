@@ -1,0 +1,473 @@
+Unity Editor version:    6000.0.62f1 (f99f05b3e950)
+Branch:                  6000.0/staging
+Build type:              Release
+Batch mode:              YES
+System name:             Linux
+Distro version:          #1 SMP Sat Sep 26 20:02:31 UTC 2026
+Kernel version:          6.18.44
+Architecture:            x86_64
+Available memory:        34087 MB
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Initialize udev device monitor.
+[Licensing::IpcConnector] Channel LicenseClient-agent doesn't exist
+[Licensing::Module] Successfully launched the LicensingClient (PId: 20923)
+
+COMMAND LINE ARGUMENTS:
+/workspace/.local/opt/unity6000/Editor/Unity
+-batchmode
+-nographics
+-projectPath
+/workspace/SignalDebt-setup/unity/json-probe
+-executeMethod
+SignalDebt.Editor.SignalDebtSaveStoreChecks.RunBatch
+-signalDebtSaveReport
+/workspace/SignalDebt-setup/unity/save-store-checks-result.json
+-logFile
+/workspace/SignalDebt-setup/unity/save-store-checks.log
+Successfully changed project path to: /workspace/SignalDebt-setup/unity/json-probe
+/workspace/SignalDebt-setup/unity/json-probe
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gfx=262144"
+Player connection [140547897746816]  Target information:
+
+Player connection [140547897746816]  * "[IP] 172.26.91.251 [Port] 55504 [Flags] 2 [Guid] 4290402423 [EditorId] 4290402423 [Version] 1048832 [Id] LinuxEditor(16,172.26.91.251) [Debug] 1 [PackageName] LinuxEditor [ProjectName] Editor" 
+
+Player connection [140547897746816]  * "[IP] 172.31.1.14 [Port] 55504 [Flags] 2 [Guid] 4290402423 [EditorId] 4290402423 [Version] 1048832 [Id] LinuxEditor(16,172.26.91.251) [Debug] 1 [PackageName] LinuxEditor [ProjectName] Editor" 
+
+Player connection [140547897746816]  * "[IP] 172.17.0.1 [Port] 55504 [Flags] 2 [Guid] 4290402423 [EditorId] 4290402423 [Version] 1048832 [Id] LinuxEditor(16,172.26.91.251) [Debug] 1 [PackageName] LinuxEditor [ProjectName] Editor" 
+
+Player connection [140547897746816] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [140547897746816] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+No logging will be generated. (ENOENT: no such file or directory, mkdir '/home/agent/.config/unity3d')
+[winston] Attempt to write logs with no transports, which can increase memory usage: {"message":"Command-line: /workspace/.local/opt/unity6000/Editor/Data/Resources/PackageManager/Server/UnityPackageManager -s 20910 -ipc -ipc-path /tmp/Unity-Upm-20910.sock -l 2","level":"info"}
+[winston] Attempt to write logs with no transports, which can increase memory usage: {"message":"Detected environment variables:\n  no_proxy=localhost,127.0.0.1,::1\n  https_proxy=http://proxy:8080\n  NO_PROXY=localhost,127.0.0.1,::1\n  HTTPS_PROXY=http://proxy:8080\n  HTTP_PROXY=http://proxy:8080\n  http_proxy=http://proxy:8080\n  UPM_CACHE_ROOT=/workspace/SignalDebt-setup/unity/upm-cache","level":"info"}
+[winston] Attempt to write logs with no transports, which can increase memory usage: {"message":"IPC server started (IPC path=/tmp/Unity-Upm-20910.sock).","level":"info"}
+[winston] Attempt to write logs with no transports, which can increase memory usage: {"message":"Hint: To connect to this UPM instance, launch Unity with the command-line parameter -upmIpcPath Upm-20910.","level":"info"}
+[Package Manager] Connected to IPC stream "Upm-20910" after 0.2 seconds.
+Library Redirect Path: Library/
+ALSA lib confmisc.c:855:(parse_card) cannot find card '0'
+ALSA lib conf.c:5205:(_snd_config_evaluate) function snd_func_card_inum returned error: No such file or directory
+ALSA lib confmisc.c:422:(snd_func_concat) error evaluating strings
+ALSA lib conf.c:5205:(_snd_config_evaluate) function snd_func_concat returned error: No such file or directory
+ALSA lib confmisc.c:1342:(snd_func_refer) error evaluating name
+ALSA lib conf.c:5205:(_snd_config_evaluate) function snd_func_refer returned error: No such file or directory
+ALSA lib conf.c:5728:(snd_config_expand) Evaluate error: No such file or directory
+ALSA lib pcm.c:2722:(snd_pcm_open_noupdate) Unknown PCM default
+FMOD failed to initialize the output device.: "Error initializing output device. " (60)
+Forced to initialize FMOD to to the device driver's system output rate 48000, this may impact performance and/or give inconsistent experiences compared to selected sample rate 48000
+ALSA lib confmisc.c:855:(parse_card) cannot find card '0'
+ALSA lib conf.c:5205:(_snd_config_evaluate) function snd_func_card_inum returned error: No such file or directory
+ALSA lib confmisc.c:422:(snd_func_concat) error evaluating strings
+ALSA lib conf.c:5205:(_snd_config_evaluate) function snd_func_concat returned error: No such file or directory
+ALSA lib confmisc.c:1342:(snd_func_refer) error evaluating name
+ALSA lib conf.c:5205:(_snd_config_evaluate) function snd_func_refer returned error: No such file or directory
+ALSA lib conf.c:5728:(snd_config_expand) Evaluate error: No such file or directory
+ALSA lib pcm.c:2722:(snd_pcm_open_noupdate) Unknown PCM default
+FMOD failed to initialize the output device.: "Error initializing output device. " (60)
+FMOD initialized on nosound output
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 6000.0.62f1 (f99f05b3e950)
+[Subsystems] Discovering subsystems at path /workspace/.local/opt/unity6000/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path /workspace/SignalDebt-setup/unity/json-probe/Assets
+Forcing GfxDevice: Null
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+NullGfxDevice:
+    Version:  NULL 1.0 [1.0]
+    Renderer: Null Device
+    Vendor:   Unity Technologies
+Initialize mono
+Mono path[0] = '/workspace/.local/opt/unity6000/Editor/Data/Managed'
+Mono path[1] = '/workspace/.local/opt/unity6000/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-linux'
+Mono config path = '/workspace/.local/opt/unity6000/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56910
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-agent" at "2026-10-05T00:31:47.003561Z"
+[SignatureVerifier] Application signature verification not supported on this platform.
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.17.2+ff71f16
+  Session Id:              b292e6eaf099433e903b88e2fe11cedb
+  Correlation Id:          83799605f1999785ec320870cb3fbed6
+  External correlation Id: 3146747850610100548
+  Machine Id:              HSfDcY8TYOsLF+Fc1eSelgog+jc=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-agent" (connect: 0.38s, validation: 0.10s, handshake: 0.00s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-agent-notifications" at "2026-10-05T00:31:47.102741Z"
+[Licensing::Module] Connected to LicensingClient (PId: 20923, launch time: 0.00, total connection time: 0.48s)
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Successfully updated license, isAsync: False, time: 0.03
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+[Licensing::Module] Licensing Background thread has ended after 0.51s
+Registering precompiled unity dll's ...
+Register platform support module: /workspace/.local/opt/unity6000/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Register platform support module: /workspace/.local/opt/unity6000/Editor/Data/PlaybackEngines/LinuxStandaloneSupport/UnityEditor.LinuxStandalone.Extensions.dll
+Registered in 0.001602 seconds.
+- Loaded All Assemblies, in  0.358 seconds
+Native extension for LinuxStandalone target not found
+Native extension for WindowsStandalone target not found
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.412 seconds
+Domain Reload Profiling: 769ms
+	BeginReloadAssembly (79ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (0ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (1ms)
+	RebuildCommonClasses (42ms)
+	RebuildNativeTypeToScriptingClass (9ms)
+	initialDomainReloadingComplete (58ms)
+	LoadAllAssembliesAndSetupDomain (169ms)
+		LoadAssemblies (78ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (166ms)
+			TypeCache.Refresh (165ms)
+				TypeCache.ScanAssembly (151ms)
+			BuildScriptInfoCaches (0ms)
+			ResolveRequiredComponents (0ms)
+	FinalizeReload (412ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (371ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (23ms)
+			SetLoadedEditorAssemblies (6ms)
+			BeforeProcessingInitializeOnLoad (81ms)
+			ProcessInitializeOnLoadAttributes (192ms)
+			ProcessInitializeOnLoadMethodAttributes (69ms)
+			AfterProcessingInitializeOnLoad (0ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (0ms)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+Application.AssetDatabase Initial Refresh Start
+Package Manager log level set to [2]
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 1 packages:
+  Built-in packages:
+    com.unity.modules.jsonserialize@1.0.0 (location: /workspace/.local/opt/unity6000/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.jsonserialize)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.01 seconds
+[ScriptCompilation] Requested script compilation because: Assetdatabase observed changes in script compilation related files
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+[40m[32minfo[39m[22m[49m: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://unix:/tmp/ilpp.sock-3e669520c61028d68f51092eb846dfe6
+[40m[32minfo[39m[22m[49m: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+[40m[32minfo[39m[22m[49m: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+[40m[32minfo[39m[22m[49m: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/SignalDebt-setup/unity/json-probe/
+[40m[32minfo[39m[22m[49m: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/Ping application/grpc -
+[40m[32minfo[39m[22m[49m: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'gRPC - /UnityILPP.PostProcessing/Ping'
+[40m[32minfo[39m[22m[49m: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'gRPC - /UnityILPP.PostProcessing/Ping'
+[40m[32minfo[39m[22m[49m: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/Ping application/grpc - - 200 - application/grpc 56.6694ms
+Starting: /workspace/.local/opt/unity6000/Editor/Data/bee_backend --ipc --defer-dag-verification --dagfile="Library/Bee/2400b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: /workspace/SignalDebt-setup/unity/json-probe
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+DisplayProgressbar: Compiling Scripts
+ExitCode: 0 Duration: 2s211ms
+[134/140    1s] Csc Library/Bee/artifacts/2400b0aE.dag/Assembly-CSharp.dll (+2 others)
+[135/140    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.dll
+[136/140    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.pdb
+[137/140    1s] Csc Library/Bee/artifacts/2400b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
+[138/140    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
+[139/140    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+*** Tundra build success (2.19 seconds), 6 items updated, 140 evaluated
+Total cache size 7642800
+AssetDatabase: script compilation time: 2.675887s
+Total cache size after purge 7642800, took 00:00:00.0185023
+Begin MonoManager ReloadAssembly
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+- Loaded All Assemblies, in  0.242 seconds
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Native extension for LinuxStandalone target not found
+Native extension for WindowsStandalone target not found
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.486 seconds
+Domain Reload Profiling: 728ms
+	BeginReloadAssembly (159ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (13ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (45ms)
+	RebuildCommonClasses (41ms)
+	RebuildNativeTypeToScriptingClass (9ms)
+	initialDomainReloadingComplete (23ms)
+	LoadAllAssembliesAndSetupDomain (10ms)
+		LoadAssemblies (63ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (7ms)
+			TypeCache.Refresh (4ms)
+				TypeCache.ScanAssembly (0ms)
+			BuildScriptInfoCaches (1ms)
+			ResolveRequiredComponents (0ms)
+	FinalizeReload (486ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (336ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (18ms)
+			SetLoadedEditorAssemblies (5ms)
+			BeforeProcessingInitializeOnLoad (126ms)
+			ProcessInitializeOnLoadAttributes (159ms)
+			ProcessInitializeOnLoadMethodAttributes (25ms)
+			AfterProcessingInitializeOnLoad (3ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (7ms)
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=124f6c5fae01973149e4262ce6df02c1): Total: 3.575 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=577 ms
+		Asset DB Callback time: managed=65 ms, native=8 ms
+		Scripting: domain reloads=1, domain reload time=242 ms, compile time=2678 ms, other=4 ms
+		Project Asset Count: scripts=24, non-scripts=2
+		Asset File Changes: new=0, changed=3, moved=0, deleted=0
+		Scan Filter Count: 1
+	InvokeCustomDependenciesCallbacks: 0.003ms
+	InvokePackagesCallback: 6.190ms
+	ApplyChangesToAssetFolders: 0.038ms
+	Scan: 40.204ms
+	OnSourceAssetsModified: 0.842ms
+	CategorizeAssetsWithTransientArtifact: 0.049ms
+	ProcessAssetsWithTransientArtifactChanges: 0.157ms
+	CategorizeAssets: 0.130ms
+	ImportOutOfDateAssets: 488.374ms (-2189.921ms without children)
+		CompileScripts: 2677.895ms
+		ReloadNativeAssets: 0.000ms
+		UnloadImportedAssets: 0.196ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.010ms
+		InitializingProgressBar: 0.000ms
+		PostProcessAllAssetNotificationsAddChangedAssets: 0.000ms
+		OnDemandSchedulerStart: 0.194ms
+	PostProcessAllAssets: 66.429ms
+	Hotreload: 0.521ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.000ms
+	UnloadStreamsBegin: 0.197ms
+	PersistCurrentRevisions: 0.004ms
+	UnloadStreamsEnd: 0.000ms
+	GenerateScriptTypeHashes: 0.001ms
+	Untracked: 2971.848ms
+
+Application.AssetDatabase Initial Refresh End
+Scanning for USB devices : 0.081ms
+Initializing Unity extensions:
+UpdateMenuTitleForLanguage: 10
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-json-probe
+Curl error 56: CONNECT tunnel failed, response 403
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 21 unused Assets / (0.7 MB). Loaded Objects now: 517.
+Memory consumption went from 72.6 MB to 72.0 MB.
+Total: 6.533957 ms (FindLiveObjects: 0.042730 ms CreateObjectMapping: 0.075100 ms MarkObjects: 5.925853 ms  DeleteObjects: 0.489473 ms)
+
+Save rejected: inconsistent game state
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:35)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+SignalDebt.SignalDebtSaveStore:SaveFailure (string) (at Assets/SignalDebtSaveStore.cs:219)
+SignalDebt.SignalDebtSaveStore:Save (SignalDebt.SignalDebtSaveData) (at Assets/SignalDebtSaveStore.cs:144)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:InvalidCandidates () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:295)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:Execute () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:67)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:RunBatch () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:48)
+
+(Filename: Assets/SignalDebtSaveStore.cs Line: 219)
+
+Save rejected: inconsistent game state
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:35)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+SignalDebt.SignalDebtSaveStore:SaveFailure (string) (at Assets/SignalDebtSaveStore.cs:219)
+SignalDebt.SignalDebtSaveStore:Save (SignalDebt.SignalDebtSaveData) (at Assets/SignalDebtSaveStore.cs:144)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:InvalidCandidates () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:296)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:Execute () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:67)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:RunBatch () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:48)
+
+(Filename: Assets/SignalDebtSaveStore.cs Line: 219)
+
+Save rejected: inconsistent game state
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:35)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+SignalDebt.SignalDebtSaveStore:SaveFailure (string) (at Assets/SignalDebtSaveStore.cs:219)
+SignalDebt.SignalDebtSaveStore:Save (SignalDebt.SignalDebtSaveData) (at Assets/SignalDebtSaveStore.cs:144)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:InvalidCandidates () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:301)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:Execute () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:67)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:RunBatch () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:48)
+
+(Filename: Assets/SignalDebtSaveStore.cs Line: 219)
+
+Could not save: The file '/tmp/SignalDebtSaveStoreChecks-f3fe3a35d0e44e94b69b16d4c26912dd/file-instead-of-parent/parent-is-a-file' already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:35)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+SignalDebt.SignalDebtSaveStore:SaveFailure (string) (at Assets/SignalDebtSaveStore.cs:219)
+SignalDebt.SignalDebtSaveStore:Save (SignalDebt.SignalDebtSaveData) (at Assets/SignalDebtSaveStore.cs:204)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:WriteFailures () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:311)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:Execute () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:68)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:RunBatch () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:48)
+
+(Filename: Assets/SignalDebtSaveStore.cs Line: 219)
+
+Could not save: Is a directory
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:35)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+SignalDebt.SignalDebtSaveStore:SaveFailure (string) (at Assets/SignalDebtSaveStore.cs:219)
+SignalDebt.SignalDebtSaveStore:Save (SignalDebt.SignalDebtSaveData) (at Assets/SignalDebtSaveStore.cs:204)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:WriteFailures () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:320)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:Execute () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:68)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:RunBatch () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:48)
+
+(Filename: Assets/SignalDebtSaveStore.cs Line: 219)
+
+Could not save: The file '/tmp/SignalDebtSaveStoreChecks-f3fe3a35d0e44e94b69b16d4c26912dd/failed-purchase-with-only-temporary/signal-debt-save-v2.json' already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:35)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+SignalDebt.SignalDebtSaveStore:SaveFailure (string) (at Assets/SignalDebtSaveStore.cs:219)
+SignalDebt.SignalDebtSaveStore:Save (SignalDebt.SignalDebtSaveData) (at Assets/SignalDebtSaveStore.cs:204)
+SignalDebt.SignalDebtSaveData:ConfirmUsedGpuPurchase (SignalDebt.SignalDebtShopQuote,System.Func`2<SignalDebt.SignalDebtSaveData, bool>,SignalDebt.SignalDebtLedgerEvent&,string&) (at Assets/SignalDebtShop.cs:97)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:WriteFailures () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:335)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:Execute () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:68)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:RunBatch () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:48)
+
+(Filename: Assets/SignalDebtSaveStore.cs Line: 219)
+
+Could not save: Is a directory
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:35)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+SignalDebt.SignalDebtSaveStore:SaveFailure (string) (at Assets/SignalDebtSaveStore.cs:219)
+SignalDebt.SignalDebtSaveStore:Save (SignalDebt.SignalDebtSaveData) (at Assets/SignalDebtSaveStore.cs:204)
+SignalDebt.SignalDebtSaveData:TryCommitChange (System.Func`2<SignalDebt.SignalDebtSaveData, SignalDebt.SignalDebtLedgerEvent>,System.Func`2<SignalDebt.SignalDebtSaveData, bool>,SignalDebt.SignalDebtLedgerEvent&,string&) (at Assets/SignalDebtSaveData.cs:133)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:RepairPaymentWriteFailure () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:353)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:Execute () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:69)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:RunBatch () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:48)
+
+(Filename: Assets/SignalDebtSaveStore.cs Line: 219)
+
+PASS: 97 real Unity save assertions across 19 cases. Report: /workspace/SignalDebt-setup/unity/save-store-checks-result.json
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:35)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:Execute () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:86)
+SignalDebt.Editor.SignalDebtSaveStoreChecks:RunBatch () (at Assets/Editor/SignalDebtSaveStoreChecks.cs:48)
+
+(Filename: Assets/Editor/SignalDebtSaveStoreChecks.cs Line: 86)
+
+[Physics::Module] Cleanup current backned.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input System polling thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-agent-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-agent channel disconnected successfully.
+AcceleratorClientConnectionCallback - disconnected - :0
+[40m[32minfo[39m[22m[49m: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+Cleanup mono
+debugger-agent: Unable to listen on 39
+[winston] Attempt to write logs with no transports, which can increase memory usage: {"message":"Received shutdown request (SIGINT), shutting down Unity Package Manager","level":"info"}
+[winston] Attempt to write logs with no transports, which can increase memory usage: {"message":"Exiting with exit code 130. Goodbye!","level":"info"}
+[Package Manager] Server process was shutdown
+Checking for leaked weakptr:
+  Found no leaked weakptrs.
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1791160312983,"processId":20910,"allocatedMemory":6548343,"memoryLabels":[{"Default":21685},{"Permanent":16177},{"Thread":1084616},{"Manager":18485},{"VertexData":8},{"Geometry":408},{"VFX":-104},{"Texture":160},{"Shader":79269},{"Material":24},{"GfxDevice":35968},{"Animation":456},{"Audio":4032},{"FontEngine":320},{"Physics":2081},{"Serialization":472},{"Input":26752},{"JobScheduler":33024},{"TextLib":160},{"Mono":32},{"ScriptingNativeRuntime":155096},{"BaseObject":1622832},{"Resource":1032},{"Renderer":2928},{"Transform":4678},{"File":828},{"WebCam":80},{"Culling":32},{"Terrain":11298},{"Wind":24},{"String":14043},{"DynamicArray":76868},{"HashMap":48617},{"Utility":2659104},{"PoolAlloc":1568},{"AI":72},{"TypeTree":5005},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7448},{"Director":8208},{"CloudService":8896},{"WebRequest":808},{"VR":45689},{"SceneManager":528},{"Video":64},{"LazyScriptCache":32},{"Camera":17},{"Secure":1},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57552},{"StaticSafetyDebugInfo":278528},{"Analytics":384},{"Hierarchy":832},{"Gui":80},{"EditorUtility":12172},{"VersionControl":4},{"Undo":979},{"AssetDatabase":133842},{"EditorGi":328},{"UnityConnect":24792},{"Upm":1852},{"DrivenProperties":72},{"LocalIPC":148},{"ProfilerEditor":9746},{"CoreBusinessMetrics":13131},{"Licensing":1096},{"AssetReference":32},{"IPCStream":32}]}

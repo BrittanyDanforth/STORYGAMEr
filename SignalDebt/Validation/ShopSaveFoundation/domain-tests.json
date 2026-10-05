@@ -1,0 +1,14 @@
+{
+  "sdk": "8.0.425",
+  "runtime": "8.0.31",
+  "target_framework": "net8.0",
+  "assertions_passed": 391,
+  "unity_runtime_exercised": false,
+  "external_package_sources": [],
+  "source_sha256": {
+    "Assets/Scripts/SignalDebtSaveData.cs": "d073bf952558f9503f2fa2a45692c5db2a6943902c82767b5fee5dc1371303b9",
+    "Assets/Scripts/SignalDebtShop.cs": "4a47afcf4188247b20a4866f7db8912da4764c6bb1ec776dfafa35fba72f4645",
+    "Assets/Editor/SignalDebtDomainTests.cs": "c56177eb68c71b14d122ac4a337f54502069b80ba4225a5fe402d17e37b9b177",
+    "Assets/Editor/SignalDebtShopTests.cs": "34c2a86e940ddb54334b5c70a702d4bd10227982e64feafea8ca05c6d5f3c99b"
+  }
+}

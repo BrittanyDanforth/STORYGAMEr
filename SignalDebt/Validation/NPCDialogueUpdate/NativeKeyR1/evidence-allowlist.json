@@ -1,0 +1,18 @@
+[
+  "acceptance-npc-key-r1.json",
+  "inbox/captures/01-paid-milestone-inbox.png",
+  "inbox/captures/02-no-key-status-separate.png",
+  "inbox/captures/03-first-person-return.png",
+  "settings/captures/01-empty-settings.png",
+  "settings/captures/02-masked-remember-selected.png",
+  "settings/captures/03-connect-result.png",
+  "settings/captures/04-restarted-saved-blank.png",
+  "settings/captures/05-removed-no-key.png",
+  "settings/remember-player.log",
+  "settings/restart-remove-player.log",
+  "inbox/player.log",
+  "settings/fabricated-input-proof.json",
+  "settings/remember-files-proof.json",
+  "settings/restart-files-proof.json",
+  "settings/removed-files-proof.json"
+]

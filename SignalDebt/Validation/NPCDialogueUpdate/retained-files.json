@@ -1,0 +1,398 @@
+{
+  "retained_utc": "2026-10-05T02:12:28.692095+00:00",
+  "retained_source_file_count": 62,
+  "copy_policy": "Explicit artifact allowlists only; no Game/UserData, key values, settings files or campaign fixtures. Original reports copied byte-for-byte. Fabricated-input proof contains length/hash only.",
+  "known_historical_defect": "ui-menu-r2 Linux standalone Remember+Connect fails inside DataContractJsonSerializer; earlier Editor/.NET checks did not exercise this standalone dependency.",
+  "current_key_codec_status": "Pure-C# codec passes 220 portable and 13 genuine Unity Editor assertions; npc-key-r1 native Remember/restart/remove regression passed with fabricated input and unchanged key-store source in r2. Windows execution not tested.",
+  "current_npc_semantic_status": "NOT RUN; nine-case rubric binds final npc-key-r2 Provider. Controlled live evaluation pending.",
+  "real_credentials_retained": false,
+  "text_credential_pattern_scan": "No key-shaped values, authorization header values or API/access-token assignments found in retained JSON/logs.",
+  "files": [
+    {
+      "path": "HistoricalRememberFailure/acceptance-r2-settings.json",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-settings-native/acceptance-r2-settings.json",
+      "bytes": 3975,
+      "sha256": "e846049d3846559e34d2a15d384e8cf064ffbe6789afd46c9b6e2ade193409cd"
+    },
+    {
+      "path": "HistoricalRememberFailure/captures/01-empty-settings.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-settings-native/captures/01-empty-settings.png",
+      "bytes": 62864,
+      "sha256": "1627d2a8088c254497aae4d4fa406fbd012915b44d46446cbf1626f2bd694415"
+    },
+    {
+      "path": "HistoricalRememberFailure/captures/02-masked-remember-selected.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-settings-native/captures/02-masked-remember-selected.png",
+      "bytes": 60702,
+      "sha256": "f6105d80007086cfd9f6cc5eae31afc2b976f4575ae4d34c1b07950bca13a3b9"
+    },
+    {
+      "path": "HistoricalRememberFailure/captures/03-connect-result.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-settings-native/captures/03-connect-result.png",
+      "bytes": 60677,
+      "sha256": "5ffc8d99f0bb5f81c1d331b8b378604ac11e6f4d44d63a97e1540b7e64f1d224"
+    },
+    {
+      "path": "HistoricalRememberFailure/captures/04-connect-after-held-click.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-settings-native/captures/04-connect-after-held-click.png",
+      "bytes": 60677,
+      "sha256": "5ffc8d99f0bb5f81c1d331b8b378604ac11e6f4d44d63a97e1540b7e64f1d224"
+    },
+    {
+      "path": "HistoricalRememberFailure/captures/05-keyboard-connect.png",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-settings-native/captures/05-keyboard-connect.png",
+      "bytes": 60677,
+      "sha256": "5ffc8d99f0bb5f81c1d331b8b378604ac11e6f4d44d63a97e1540b7e64f1d224"
+    },
+    {
+      "path": "HistoricalRememberFailure/remember-player.log",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-settings-native/remember-player.log",
+      "bytes": 26346,
+      "sha256": "289ea9c822daa00c32d1116e1676a61cf8a16840f2c3d04bfafd6a1e84b1a50f"
+    },
+    {
+      "path": "HistoricalRememberFailure/fabricated-input-proof.json",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-settings-native/fabricated-input-proof.json",
+      "bytes": 301,
+      "sha256": "41121fa574b58de774c4c39b11386810f6fb6c885a9e27380883545329e6c365"
+    },
+    {
+      "path": "HistoricalRememberFailure/failure-proof.json",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-settings-native/failure-proof.json",
+      "bytes": 600,
+      "sha256": "86375511e6c2fca8d65a7320644ddb76fe7612bcbb06a52ab060ed06a57c94c2"
+    },
+    {
+      "path": "HistoricalRememberFailure/evidence-allowlist.json",
+      "source": "/workspace/SignalDebt-setup/unity/ui-menu-r2-settings-native/evidence-allowlist.json",
+      "bytes": 320,
+      "sha256": "45268988358d2c74c6f1b2b28ae314ac971f3f85f37836c4d51263f0427c68cf"
+    },
+    {
+      "path": "key-store-portable-result.json",
+      "source": "/workspace/SignalDebt-setup/api-key-harness/bin/Release/net8.0/api-key-store-result.json",
+      "bytes": 1285,
+      "sha256": "226a8a603db5af8f44edefb811e2e12c3a3b229e2afb80197dde8fe98d26ceee"
+    },
+    {
+      "path": "npc-social-evaluation-cases.json",
+      "source": "/workspace/SignalDebt-setup/npc-social-evaluation-cases.json",
+      "bytes": 5943,
+      "sha256": "08e986260e1aa01be5cc6fdac80ce35fa9f8bd0962580b70ce2659e66cddc75e"
+    },
+    {
+      "path": "npc-key-r1-provider.json",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-provider.json",
+      "bytes": 4792,
+      "sha256": "f024ab2d7f95a535b9ab5089cb7bf3efd40ff0d0fb4ba0ffee228cc483aa91a2"
+    },
+    {
+      "path": "npc-key-r1-provider.log",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-provider.log",
+      "bytes": 27897,
+      "sha256": "4bf7eefb46f1d3715dfa41cf16a140b17c6bed250dfda65a17c3f8c14859e8fd"
+    },
+    {
+      "path": "npc-key-r1-key-store.json",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-key-store.json",
+      "bytes": 725,
+      "sha256": "ab47397ebd950d2cb7b083c67462983b2b08d08535375ad6debdfd100d1bf065"
+    },
+    {
+      "path": "npc-key-r1-key-store.log",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-key-store.log",
+      "bytes": 24710,
+      "sha256": "16e38df8eb890a126ccc731ef66ebabab148ce9a67321cc28100e07d6aa74594"
+    },
+    {
+      "path": "npc-key-r1-conversation.json",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-conversation.json",
+      "bytes": 5086,
+      "sha256": "3eaf3abccb99c06377beba1fdbe04d05717ad07ced695bbe8591bac6c54fb4c3"
+    },
+    {
+      "path": "npc-key-r1-conversation.log",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-conversation.log",
+      "bytes": 24690,
+      "sha256": "a4869fee19ecce6ae5a546b592005c2f9360f32cafe4c09aa49b29402eb13551"
+    },
+    {
+      "path": "npc-key-r1-source-manifest.json",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-source-manifest.json",
+      "bytes": 21175,
+      "sha256": "40fb4dd4559c4f315dd9f9b9e04772be7f0e7b5c39b8b0f872f68a0b3a3d98ea"
+    },
+    {
+      "path": "npc-key-r1-source-before-import.json",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-source-before-import.json",
+      "bytes": 19724,
+      "sha256": "5972d621dae2d7dbb3fb80e91cf2aa303e45f5d4444b767d168fc470be06051f"
+    },
+    {
+      "path": "npc-key-r1-validation.sh",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-validation.sh",
+      "bytes": 1801,
+      "sha256": "abec0b46fa443e38fef9dd24b30bddc460bb069224ed5e0bdc9b62d1ce77cf3d"
+    },
+    {
+      "path": "windows-npc-key-r1-build-result.json",
+      "source": "/workspace/SignalDebt-setup/unity/windows-npc-key-r1-build-result.json",
+      "bytes": 24016,
+      "sha256": "f199da7c425471b2bd9f4f68377ce9dd8082b09137d97661f2da6901c9230031"
+    },
+    {
+      "path": "windows-npc-key-r1-build.log",
+      "source": "/workspace/SignalDebt-setup/unity/windows-npc-key-r1-build.log",
+      "bytes": 245757,
+      "sha256": "fa6f47fa5664ab68175634504f385072d75dd3ec92775b85c7af45d3293034c2"
+    },
+    {
+      "path": "linux-npc-key-r1-build-result.json",
+      "source": "/workspace/SignalDebt-setup/unity/linux-npc-key-r1-build-result.json",
+      "bytes": 21062,
+      "sha256": "53c7cc6442b299d486299cb528dffd9fe82885b27296fee8142eb4ca3e9a6d1b"
+    },
+    {
+      "path": "linux-npc-key-r1-build.log",
+      "source": "/workspace/SignalDebt-setup/unity/linux-npc-key-r1-build.log",
+      "bytes": 202498,
+      "sha256": "df485c5e960771870575992f17e33c00cc3051a5358729bfba38244e84b4e43b"
+    },
+    {
+      "path": "npc-key-r1-command-history.json",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-command-history.json",
+      "bytes": 1601,
+      "sha256": "ea140d2baaee0dd82d5868a53a1d33d990c53d4329852aa3d0d9c877d2749a9c"
+    },
+    {
+      "path": "npc-social-evaluation-cases-r1-not-run.json",
+      "source": "Historical copy retained from earlier npc-key-r1 external planning snapshot; original path later revised for r2.",
+      "bytes": 4857,
+      "sha256": "c2b21a355a8a485416e98830109e6346eaa83eb9c836d87c5d3b5eb289952279"
+    },
+    {
+      "path": "npc-key-r2-source-manifest.json",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r2-source-manifest.json",
+      "bytes": 20734,
+      "sha256": "1e6488066507f0e5c0322e9f093b5137b39eee3f93e65ee5b6524c8b4fab1dd0"
+    },
+    {
+      "path": "npc-key-r2-provider.json",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r2-provider.json",
+      "bytes": 4792,
+      "sha256": "e0edb08dbd66a9c7f9585c7c1bd81b7c46ce7211e2a76932100e5997ac75abd8"
+    },
+    {
+      "path": "npc-key-r2-provider.log",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r2-provider.log",
+      "bytes": 26629,
+      "sha256": "2f4f47e3a39a0616cdefe778232ea96f2901e05673b295636413f73dec3d95fb"
+    },
+    {
+      "path": "npc-key-r2-conversation.json",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r2-conversation.json",
+      "bytes": 5086,
+      "sha256": "1fe95cafb4c96b4974100cbd21891854583b105d952a7874044719389a2deab9"
+    },
+    {
+      "path": "npc-key-r2-conversation.log",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r2-conversation.log",
+      "bytes": 24492,
+      "sha256": "f78722e95e4d60ced59556b5142d5958b6dd35ee6d56e53c18794139b710d597"
+    },
+    {
+      "path": "npc-key-r2-validation.sh",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r2-validation.sh",
+      "bytes": 1234,
+      "sha256": "bfb6fda181fa473a3b63c030899f82686da4c079d7cef557f19ae97e53b9667a"
+    },
+    {
+      "path": "npc-key-r2-command-history.json",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r2-command-history.json",
+      "bytes": 1601,
+      "sha256": "dd17ba775045352812c4ce563d1d00f742a9e75340fdcba8fc73600e05a9b3f3"
+    },
+    {
+      "path": "windows-npc-key-r2-build-result.json",
+      "source": "/workspace/SignalDebt-setup/unity/windows-npc-key-r2-build-result.json",
+      "bytes": 24016,
+      "sha256": "d0c77957511883e12ee6b1405a0e358f00aaf1e538d6901c4f513fd74c1489d1"
+    },
+    {
+      "path": "windows-npc-key-r2-build.log",
+      "source": "/workspace/SignalDebt-setup/unity/windows-npc-key-r2-build.log",
+      "bytes": 244656,
+      "sha256": "28b0aad5c736419cab16558d75641d9aff6f86fc0db931ef6d7f7d688bf87594"
+    },
+    {
+      "path": "linux-npc-key-r2-build-result.json",
+      "source": "/workspace/SignalDebt-setup/unity/linux-npc-key-r2-build-result.json",
+      "bytes": 21062,
+      "sha256": "dfc1a61c9887dae4ceef2d1a324923572fec379ba6b371e255661d5fcc4f9f1b"
+    },
+    {
+      "path": "linux-npc-key-r2-build.log",
+      "source": "/workspace/SignalDebt-setup/unity/linux-npc-key-r2-build.log",
+      "bytes": 200014,
+      "sha256": "60027bfadcd2e57afee5dd252c008453d6839eef1bc0afe82823119cde2d1474"
+    },
+    {
+      "path": "NativeKeyR1/acceptance-npc-key-r1.json",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-native/acceptance-npc-key-r1.json",
+      "bytes": 10092,
+      "sha256": "5b966caa8886677bf8130639882b4d70faea041e2abbf2a0cbee6fdea04c62b7"
+    },
+    {
+      "path": "NativeKeyR1/inbox/captures/01-paid-milestone-inbox.png",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-native/inbox/captures/01-paid-milestone-inbox.png",
+      "bytes": 79079,
+      "sha256": "ca81d44f5c98846cc4e710fbd9a140f23443504ffeba6185feb9aedcf28e7c65"
+    },
+    {
+      "path": "NativeKeyR1/inbox/captures/02-no-key-status-separate.png",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-native/inbox/captures/02-no-key-status-separate.png",
+      "bytes": 75970,
+      "sha256": "833c7cb52b69c899e324f193031784f48724cd74d41b615f9d65e8c7c18647f9"
+    },
+    {
+      "path": "NativeKeyR1/inbox/captures/03-first-person-return.png",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-native/inbox/captures/03-first-person-return.png",
+      "bytes": 381773,
+      "sha256": "195d4407f6627a6e234aca8cccb1f8d7c563ee51cdf9a513f637cf4c3dbd8466"
+    },
+    {
+      "path": "NativeKeyR1/settings/captures/01-empty-settings.png",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-native/settings/captures/01-empty-settings.png",
+      "bytes": 62864,
+      "sha256": "1627d2a8088c254497aae4d4fa406fbd012915b44d46446cbf1626f2bd694415"
+    },
+    {
+      "path": "NativeKeyR1/settings/captures/02-masked-remember-selected.png",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-native/settings/captures/02-masked-remember-selected.png",
+      "bytes": 60702,
+      "sha256": "f6105d80007086cfd9f6cc5eae31afc2b976f4575ae4d34c1b07950bca13a3b9"
+    },
+    {
+      "path": "NativeKeyR1/settings/captures/03-connect-result.png",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-native/settings/captures/03-connect-result.png",
+      "bytes": 69300,
+      "sha256": "dcc4caa15273231525ab0fbc2ba33fa9c8cb95c2bea40b4d6df1e094fd8e2f0e"
+    },
+    {
+      "path": "NativeKeyR1/settings/captures/04-restarted-saved-blank.png",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-native/settings/captures/04-restarted-saved-blank.png",
+      "bytes": 64021,
+      "sha256": "de068b9c8ce8ef2b3ae561f8dc36f565b195897dd8446552a112886d56063e7f"
+    },
+    {
+      "path": "NativeKeyR1/settings/captures/05-removed-no-key.png",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-native/settings/captures/05-removed-no-key.png",
+      "bytes": 66194,
+      "sha256": "7a0f78341cffd15b150f296c7ba2c2646c931f7d84ba6fa5c36982568e6dbb4c"
+    },
+    {
+      "path": "NativeKeyR1/settings/remember-player.log",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-native/settings/remember-player.log",
+      "bytes": 9799,
+      "sha256": "f2e47ad307af99938507dfde46e43a8dcb6d6d39b974371defce8bbff7c797ef"
+    },
+    {
+      "path": "NativeKeyR1/settings/restart-remove-player.log",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-native/settings/restart-remove-player.log",
+      "bytes": 9799,
+      "sha256": "a059a7f894fdadc0ce99bc8c8c5b7c3c7da51fbd4d61bb7f2f133f98ab7106c9"
+    },
+    {
+      "path": "NativeKeyR1/inbox/player.log",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-native/inbox/player.log",
+      "bytes": 9909,
+      "sha256": "e69d86c3591aef4b98a4f9131b6ce8afbe7278a72c17104d45888f553419e297"
+    },
+    {
+      "path": "NativeKeyR1/settings/fabricated-input-proof.json",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-native/settings/fabricated-input-proof.json",
+      "bytes": 258,
+      "sha256": "811c335e746366d4fd881536606d71d330ad7880e398a9078e5279ca6e49b742"
+    },
+    {
+      "path": "NativeKeyR1/settings/remember-files-proof.json",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-native/settings/remember-files-proof.json",
+      "bytes": 288,
+      "sha256": "43cf885248fdb80f183b32449f05eff2775d15801a2263243de1ce6e30502567"
+    },
+    {
+      "path": "NativeKeyR1/settings/restart-files-proof.json",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-native/settings/restart-files-proof.json",
+      "bytes": 214,
+      "sha256": "5b99ae5bc128975ab8709c3902ef1ff40f455863b5c1cacc4c0c57f8e529362f"
+    },
+    {
+      "path": "NativeKeyR1/settings/removed-files-proof.json",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-native/settings/removed-files-proof.json",
+      "bytes": 105,
+      "sha256": "83b9ec8cb4e4c4b1bd7247a291c01e0ee66bc8f587ce89280e1016a76998bd62"
+    },
+    {
+      "path": "NativeKeyR1/evidence-allowlist.json",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r1-native/evidence-allowlist.json",
+      "bytes": 678,
+      "sha256": "d54c36df5d33dc6821c6435bdf5096e498823e76f4661a35a7037a580b7605fe"
+    },
+    {
+      "path": "NativeFinalR2/acceptance-npc-key-r2.json",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r2-native/acceptance-npc-key-r2.json",
+      "bytes": 5200,
+      "sha256": "6121c7534d0fa840f3aeadd44d5821bcf48f20319795dcde3fdfa4ccf79aa9f5"
+    },
+    {
+      "path": "NativeFinalR2/captures/01-final-launch-menu.png",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r2-native/captures/01-final-launch-menu.png",
+      "bytes": 41564,
+      "sha256": "63e2a4d9318d1d7e8ec06a358b31c9de618af515a2c712a80f0dc7d9724a8049"
+    },
+    {
+      "path": "NativeFinalR2/captures/02-final-paid-inbox.png",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r2-native/captures/02-final-paid-inbox.png",
+      "bytes": 79107,
+      "sha256": "6965a5a4b6dbb641911cf60c7cdd2cf46780a0a80b437dc94f073ddaaea7bccb"
+    },
+    {
+      "path": "NativeFinalR2/captures/03-final-no-key-status.png",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r2-native/captures/03-final-no-key-status.png",
+      "bytes": 76001,
+      "sha256": "00f7fb64513ab2054e10ae80eea6015a70defb9251bba489ec89e5180324fb0e"
+    },
+    {
+      "path": "NativeFinalR2/captures/04-final-first-person-return.png",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r2-native/captures/04-final-first-person-return.png",
+      "bytes": 404095,
+      "sha256": "a89e087929d6977608c9750fa2927cf544f6ebc4e566b2cafe0fb1fb47f2c9ed"
+    },
+    {
+      "path": "NativeFinalR2/player.log",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r2-native/player.log",
+      "bytes": 9890,
+      "sha256": "b6ef1598459302b13017ab97e5f8ddd9a17fdf410fab7f2d6b0540de13d7ea76"
+    },
+    {
+      "path": "NativeFinalR2/evidence-allowlist.json",
+      "source": "/workspace/SignalDebt-setup/unity/npc-key-r2-native/evidence-allowlist.json",
+      "bytes": 216,
+      "sha256": "bd11bf94cc49224c914680268de2b6d6906a1e022d217b262e797f646f15a420"
+    }
+  ],
+  "updated_utc": "2026-10-05T02:16:20.204662+00:00",
+  "current_editor_checks": {
+    "provider": 73,
+    "key_store": 13,
+    "conversation": 55,
+    "unity": "6000.0.62f1",
+    "provider_network_calls": 0,
+    "scope": "Provider73 and conversation55 ran on final r2; key-store13 ran on source-identical r1. No provider calls."
+  },
+  "windows_build_status": "npc-key-r2 final Mono build passed; Windows execution not tested.",
+  "linux_build_status": "npc-key-r2 final Mono build and five-check native smoke passed; detailed key regression is separately scoped to r1 with unchanged key-store/UI source.",
+  "current_build_status": "npc-key-r2 Windows/Linux Mono builds passed against the same 165 production hashes. Final r2 Linux smoke passed five checks, four captures and one clean exit; no provider requests.",
+  "native_key_regression_scope": "npc-key-r1: 11 checks, 8 captures, 3 clean exits. Separate from final r2 prompt-only source; no generated AI dialogue or real credential tested.",
+  "final_native_scope": "npc-key-r2: menu, paid Inbox, no-key notice with campaign bytes unchanged, Stand/Quit, final source/build identity. Detailed remembered-key regression remains exact frozen r1 proof; corresponding key-store/UI sources unchanged in r2."
+}

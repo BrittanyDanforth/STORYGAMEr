@@ -53,9 +53,11 @@ namespace SignalDebt.Editor
         [MenuItem("Signal Debt/Build Apartment Scene")]
         public static void BuildApartmentScene() { Build(true); }
 
-        private static void Build(bool interactive)
+        public static bool BuildMasterScene() { return Build(true); }
+
+        private static bool Build(bool interactive)
         {
-            if (interactive && !Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            if (interactive && !Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return false;
             ConfigureInput();
             Directory.CreateDirectory("Assets/Scenes");
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
@@ -65,14 +67,22 @@ namespace SignalDebt.Editor
             FixUnsupportedMaterials(room);
             CollisionPlan plan = ReadPlan();
             Matrix4x4 mapping = MapPlanToImportedAnchors(room.transform, plan);
-            if (plan != null && imported != null) AddPlanColliders(room.transform, plan, mapping);
+            Transform apartmentCollision = null;
+            if (plan != null && imported != null) apartmentCollision = AddPlanColliders(room.transform, plan, mapping);
             else AddMeshColliders(room.transform);
+            // Capture the original apartment screen before other computers enter the scene.
+            MeshFilter[] screens = room.GetComponentsInChildren<MeshFilter>(true).Where(item => item.name == "Laptop_Screen").ToArray();
+            if (screens.Length > 1) throw new InvalidOperationException("The apartment has more than one Laptop_Screen binding.");
+            MeshFilter apartmentScreen = screens.FirstOrDefault();
+            bool neighborhood = SignalDebtNeighborhoodBuilder.AddIfAvailable(room, apartmentCollision, mapping, out Action configureDaylight);
 
             var runtimeObject = new GameObject("Signal Debt Runtime");
             var runtime = runtimeObject.AddComponent<SignalDebtBootstrap>();
             runtime.playerSpawn = GetAnchor(room.transform, "PlayerSpawn", mapping.MultiplyPoint3x4(new Vector3(0f, 0.035f, -1.8f)));
             runtime.deskSeat = GetAnchor(room.transform, "DeskSeat", mapping.MultiplyPoint3x4(new Vector3(-1.8f, 0.025f, 0.85f)));
             runtime.laptopFocus = GetAnchor(room.transform, "LaptopFocus", mapping.MultiplyPoint3x4(new Vector3(-1.8f, 1.04f, 1.72f)));
+            runtime.laptopScreen = apartmentScreen;
+            runtime.laptopArtworkRoot = room.transform;
             FacePoint(runtime.playerSpawn, runtime.laptopFocus.position);
             FacePoint(runtime.deskSeat, runtime.laptopFocus.position);
             // Authored from this apartment: key tops ~0.856 m, wrist centers ~0.884 m.
@@ -100,19 +110,24 @@ namespace SignalDebt.Editor
                 var proxy = doorHinge.gameObject.AddComponent<SignalDebtDoorProxy>();
                 proxy.controller = doorAction;
             }
-            AddLighting(mapping);
-            RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.10f, 0.12f, 0.16f);
-            RenderSettings.fog = false;
-            RenderSettings.skybox = null;
+            AddLighting(mapping, !neighborhood);
+            if (neighborhood) configureDaylight();
+            else
+            {
+                RenderSettings.ambientMode = AmbientMode.Flat;
+                RenderSettings.ambientLight = new Color(0.10f, 0.12f, 0.16f);
+                RenderSettings.fog = false;
+                RenderSettings.skybox = null;
+            }
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene, ScenePath);
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
-            File.WriteAllText(Marker, "Generated first-room scene. Rebuild explicitly using Signal Debt/Build Apartment Scene.\n");
+            File.WriteAllText(Marker, "Generated apartment" + (neighborhood ? " and neighborhood" : "") + " scene. Rebuild explicitly using Signal Debt/Build Apartment Scene.\n");
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Selection.activeGameObject = runtimeObject;
             Debug.Log("Signal Debt: Apartment scene created. Press Play. Imported model: " + (imported != null) + ". This build step is not a Play Mode validation.");
+            return true;
         }
 
         private static void FacePoint(Transform anchor, Vector3 point)
@@ -153,9 +168,9 @@ namespace SignalDebt.Editor
             return Basis(a.position, b.position, c.position, d.position) * source.inverse;
         }
 
-        private static void AddPlanColliders(Transform model, CollisionPlan plan, Matrix4x4 map)
+        private static Transform AddPlanColliders(Transform model, CollisionPlan plan, Matrix4x4 map)
         {
-            if (plan.colliders == null || plan.colliders.Length == 0) { AddMeshColliders(model); return; }
+            if (plan.colliders == null || plan.colliders.Length == 0) { AddMeshColliders(model); return null; }
             var root = new GameObject("Simple collision from Blender manifest").transform;
             Transform hinge = Find(model, "DoorHinge");
             foreach (CollisionPart part in plan.colliders)
@@ -181,6 +196,7 @@ namespace SignalDebt.Editor
                 }
                 node.isStatic = !part.dynamic;
             }
+            return root;
         }
 
         private static void AddMeshColliders(Transform root)
@@ -225,12 +241,15 @@ namespace SignalDebt.Editor
             return result;
         }
 
-        private static void AddLighting(Matrix4x4 map)
+        private static void AddLighting(Matrix4x4 map, bool moonlight)
         {
-            var key = new GameObject("Soft window moonlight", typeof(Light));
-            key.transform.rotation = Quaternion.Euler(36f, -48f, 0f);
-            Light sun = key.GetComponent<Light>(); sun.type = LightType.Directional;
-            sun.color = new Color(0.59f, 0.72f, 0.9f); sun.intensity = 0.45f; sun.shadows = LightShadows.Soft;
+            if (moonlight)
+            {
+                var key = new GameObject("Soft window moonlight", typeof(Light));
+                key.transform.rotation = Quaternion.Euler(36f, -48f, 0f);
+                Light sun = key.GetComponent<Light>(); sun.type = LightType.Directional;
+                sun.color = new Color(0.59f, 0.72f, 0.9f); sun.intensity = 0.45f; sun.shadows = LightShadows.Soft;
+            }
             var lamp = new GameObject("Desk practical glow", typeof(Light));
             lamp.transform.position = map.MultiplyPoint3x4(new Vector3(2.55f, 1.65f, 2.12f));
             Light warm = lamp.GetComponent<Light>(); warm.type = LightType.Point;

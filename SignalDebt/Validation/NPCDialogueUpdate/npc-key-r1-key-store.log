@@ -1,0 +1,367 @@
+Unity Editor version:    6000.0.62f1 (f99f05b3e950)
+Branch:                  6000.0/staging
+Build type:              Release
+Batch mode:              YES
+System name:             Linux
+Distro version:          #1 SMP Sat Sep 26 20:02:31 UTC 2026
+Kernel version:          6.18.44
+Architecture:            x86_64
+Available memory:        34087 MB
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Initialize udev device monitor.
+[Licensing::IpcConnector] Channel LicenseClient-agent doesn't exist
+[Licensing::Module] Successfully launched the LicensingClient (PId: 39559)
+
+COMMAND LINE ARGUMENTS:
+/workspace/.local/opt/unity6000/Editor/Unity
+-batchmode
+-nographics
+-quit
+-job-worker-count
+4
+-projectPath
+/workspace/SignalDebt-setup/unity/build-project
+-logFile
+/workspace/SignalDebt-setup/unity/npc-key-r1-key-store.log
+-executeMethod
+SignalDebt.Editor.SignalDebtApiKeyStoreChecks.RunBatch
+-signalDebtApiKeyStoreReport
+/workspace/SignalDebt-setup/unity/npc-key-r1-key-store.json
+Successfully changed project path to: /workspace/SignalDebt-setup/unity/build-project
+/workspace/SignalDebt-setup/unity/build-project
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gfx=262144"
+Player connection [140504533771648]  Target information:
+
+Player connection [140504533771648]  * "[IP] 172.26.91.251 [Port] 55504 [Flags] 2 [Guid] 498211841 [EditorId] 498211841 [Version] 1048832 [Id] LinuxEditor(16,172.26.91.251) [Debug] 1 [PackageName] LinuxEditor [ProjectName] Editor" 
+
+Player connection [140504533771648]  * "[IP] 172.31.1.14 [Port] 55504 [Flags] 2 [Guid] 498211841 [EditorId] 498211841 [Version] 1048832 [Id] LinuxEditor(16,172.26.91.251) [Debug] 1 [PackageName] LinuxEditor [ProjectName] Editor" 
+
+Player connection [140504533771648]  * "[IP] 172.17.0.1 [Port] 55504 [Flags] 2 [Guid] 498211841 [EditorId] 498211841 [Version] 1048832 [Id] LinuxEditor(16,172.26.91.251) [Debug] 1 [PackageName] LinuxEditor [ProjectName] Editor" 
+
+Player connection [140504533771648] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [140504533771648] Host joined alternative multi-casting on [225.0.0.222:34997]...
+JobSystem: Creating JobQueue using job-worker-count value 4
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+No logging will be generated. (ENOENT: no such file or directory, mkdir '/home/agent/.config/unity3d')
+[winston] Attempt to write logs with no transports, which can increase memory usage: {"message":"Command-line: /workspace/.local/opt/unity6000/Editor/Data/Resources/PackageManager/Server/UnityPackageManager -s 39551 -ipc -ipc-path /tmp/Unity-Upm-39551.sock -l 2","level":"info"}
+[winston] Attempt to write logs with no transports, which can increase memory usage: {"message":"Detected environment variables:\n  no_proxy=localhost,127.0.0.1,::1\n  https_proxy=http://proxy:8080\n  NO_PROXY=localhost,127.0.0.1,::1\n  HTTPS_PROXY=http://proxy:8080\n  HTTP_PROXY=http://proxy:8080\n  http_proxy=http://proxy:8080\n  UPM_CACHE_ROOT=/workspace/SignalDebt-setup/unity/upm-cache","level":"info"}
+[winston] Attempt to write logs with no transports, which can increase memory usage: {"message":"IPC server started (IPC path=/tmp/Unity-Upm-39551.sock).","level":"info"}
+[winston] Attempt to write logs with no transports, which can increase memory usage: {"message":"Hint: To connect to this UPM instance, launch Unity with the command-line parameter -upmIpcPath Upm-39551.","level":"info"}
+[Package Manager] Connected to IPC stream "Upm-39551" after 0.2 seconds.
+Library Redirect Path: Library/
+ALSA lib confmisc.c:855:(parse_card) cannot find card '0'
+ALSA lib conf.c:5205:(_snd_config_evaluate) function snd_func_card_inum returned error: No such file or directory
+ALSA lib confmisc.c:422:(snd_func_concat) error evaluating strings
+ALSA lib conf.c:5205:(_snd_config_evaluate) function snd_func_concat returned error: No such file or directory
+ALSA lib confmisc.c:1342:(snd_func_refer) error evaluating name
+ALSA lib conf.c:5205:(_snd_config_evaluate) function snd_func_refer returned error: No such file or directory
+ALSA lib conf.c:5728:(snd_config_expand) Evaluate error: No such file or directory
+ALSA lib pcm.c:2722:(snd_pcm_open_noupdate) Unknown PCM default
+FMOD failed to initialize the output device.: "Error initializing output device. " (60)
+Forced to initialize FMOD to to the device driver's system output rate 48000, this may impact performance and/or give inconsistent experiences compared to selected sample rate 48000
+ALSA lib confmisc.c:855:(parse_card) cannot find card '0'
+ALSA lib conf.c:5205:(_snd_config_evaluate) function snd_func_card_inum returned error: No such file or directory
+ALSA lib confmisc.c:422:(snd_func_concat) error evaluating strings
+ALSA lib conf.c:5205:(_snd_config_evaluate) function snd_func_concat returned error: No such file or directory
+ALSA lib confmisc.c:1342:(snd_func_refer) error evaluating name
+ALSA lib conf.c:5205:(_snd_config_evaluate) function snd_func_refer returned error: No such file or directory
+ALSA lib conf.c:5728:(snd_config_expand) Evaluate error: No such file or directory
+ALSA lib pcm.c:2722:(snd_pcm_open_noupdate) Unknown PCM default
+FMOD failed to initialize the output device.: "Error initializing output device. " (60)
+FMOD initialized on nosound output
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 6000.0.62f1 (f99f05b3e950)
+[Subsystems] Discovering subsystems at path /workspace/.local/opt/unity6000/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path /workspace/SignalDebt-setup/unity/build-project/Assets
+Forcing GfxDevice: Null
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+NullGfxDevice:
+    Version:  NULL 1.0 [1.0]
+    Renderer: Null Device
+    Vendor:   Unity Technologies
+Initialize mono
+Mono path[0] = '/workspace/.local/opt/unity6000/Editor/Data/Managed'
+Mono path[1] = '/workspace/.local/opt/unity6000/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-linux'
+Mono config path = '/workspace/.local/opt/unity6000/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56551
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-agent" at "2026-10-05T01:59:07.014401Z"
+[SignatureVerifier] Application signature verification not supported on this platform.
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.17.2+ff71f16
+  Session Id:              e94a59ae24524f10a19f73e7e9553e77
+  Correlation Id:          0a5f02aff8b7e32f0e33353ec9c808c4
+  External correlation Id: 5514403282873029426
+  Machine Id:              HSfDcY8TYOsLF+Fc1eSelgog+jc=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-agent" (connect: 0.38s, validation: 0.10s, handshake: 0.00s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-agent-notifications" at "2026-10-05T01:59:07.116538Z"
+[Licensing::Module] Connected to LicensingClient (PId: 39559, launch time: 0.00, total connection time: 0.48s)
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Successfully updated license, isAsync: False, time: 0.03
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+[Licensing::Module] Licensing Background thread has ended after 0.52s
+Registering precompiled unity dll's ...
+Register platform support module: /workspace/.local/opt/unity6000/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Register platform support module: /workspace/.local/opt/unity6000/Editor/Data/PlaybackEngines/LinuxStandaloneSupport/UnityEditor.LinuxStandalone.Extensions.dll
+Registered in 0.001641 seconds.
+- Loaded All Assemblies, in  0.353 seconds
+Native extension for LinuxStandalone target not found
+Native extension for WindowsStandalone target not found
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.414 seconds
+Domain Reload Profiling: 768ms
+	BeginReloadAssembly (79ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (0ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (1ms)
+	RebuildCommonClasses (42ms)
+	RebuildNativeTypeToScriptingClass (9ms)
+	initialDomainReloadingComplete (57ms)
+	LoadAllAssembliesAndSetupDomain (166ms)
+		LoadAssemblies (79ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (163ms)
+			TypeCache.Refresh (161ms)
+				TypeCache.ScanAssembly (148ms)
+			BuildScriptInfoCaches (0ms)
+			ResolveRequiredComponents (0ms)
+	FinalizeReload (415ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (373ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (24ms)
+			SetLoadedEditorAssemblies (6ms)
+			BeforeProcessingInitializeOnLoad (85ms)
+			ProcessInitializeOnLoadAttributes (189ms)
+			ProcessInitializeOnLoadMethodAttributes (69ms)
+			AfterProcessingInitializeOnLoad (0ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (0ms)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+Application.AssetDatabase Initial Refresh Start
+Package Manager log level set to [2]
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 8 packages:
+  Built-in packages:
+    com.unity.modules.animation@1.0.0 (location: /workspace/.local/opt/unity6000/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.animation)
+    com.unity.ugui@2.0.0 (location: /workspace/SignalDebt-setup/unity/build-project/Library/PackageCache/com.unity.ugui@7095b740fe96)
+    com.unity.modules.audio@1.0.0 (location: /workspace/.local/opt/unity6000/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.audio)
+    com.unity.modules.imgui@1.0.0 (location: /workspace/.local/opt/unity6000/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.imgui)
+    com.unity.modules.jsonserialize@1.0.0 (location: /workspace/.local/opt/unity6000/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.jsonserialize)
+    com.unity.modules.physics@1.0.0 (location: /workspace/.local/opt/unity6000/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.physics)
+    com.unity.modules.ui@1.0.0 (location: /workspace/.local/opt/unity6000/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.ui)
+    com.unity.modules.unitywebrequest@1.0.0 (location: /workspace/.local/opt/unity6000/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.unitywebrequest)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.00 seconds
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+[40m[32minfo[39m[22m[49m: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://unix:/tmp/ilpp.sock-f96c96dcb24d870232d76a433611f2a9
+[40m[32minfo[39m[22m[49m: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+[40m[32minfo[39m[22m[49m: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+[40m[32minfo[39m[22m[49m: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/SignalDebt-setup/unity/build-project/
+[40m[32minfo[39m[22m[49m: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/Ping application/grpc -
+[40m[32minfo[39m[22m[49m: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'gRPC - /UnityILPP.PostProcessing/Ping'
+[40m[32minfo[39m[22m[49m: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'gRPC - /UnityILPP.PostProcessing/Ping'
+[40m[32minfo[39m[22m[49m: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/Ping application/grpc - - 200 - application/grpc 53.2133ms
+Starting: /workspace/.local/opt/unity6000/Editor/Data/bee_backend --ipc --defer-dag-verification --dagfile="Library/Bee/2400b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: /workspace/SignalDebt-setup/unity/build-project
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+DisplayProgressbar: Compiling Scripts
+ExitCode: 0 Duration: 0s89ms
+*** Tundra build success (0.07 seconds), 0 items updated, 176 evaluated
+Total cache size 7642800
+AssetDatabase: script compilation time: 0.539119s
+Total cache size after purge 7642800, took 00:00:00.0208360
+Begin MonoManager ReloadAssembly
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+- Loaded All Assemblies, in  0.254 seconds
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Native extension for LinuxStandalone target not found
+Native extension for WindowsStandalone target not found
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.495 seconds
+Domain Reload Profiling: 753ms
+	BeginReloadAssembly (154ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (13ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (46ms)
+	RebuildCommonClasses (45ms)
+	RebuildNativeTypeToScriptingClass (9ms)
+	initialDomainReloadingComplete (25ms)
+	LoadAllAssembliesAndSetupDomain (21ms)
+		LoadAssemblies (63ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (17ms)
+			TypeCache.Refresh (11ms)
+				TypeCache.ScanAssembly (6ms)
+			BuildScriptInfoCaches (2ms)
+			ResolveRequiredComponents (2ms)
+	FinalizeReload (498ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (340ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (18ms)
+			SetLoadedEditorAssemblies (5ms)
+			BeforeProcessingInitializeOnLoad (130ms)
+			ProcessInitializeOnLoadAttributes (160ms)
+			ProcessInitializeOnLoadMethodAttributes (24ms)
+			AfterProcessingInitializeOnLoad (3ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (7ms)
+Asset Pipeline Refresh (id=336d8971275e18605ae237d16c9eda69): Total: 1.459 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=635 ms
+		Asset DB Callback time: managed=15 ms, native=4 ms
+		Scripting: domain reloads=1, domain reload time=254 ms, compile time=541 ms, other=6 ms
+		Project Asset Count: scripts=122, non-scripts=84
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 1
+	InvokeCustomDependenciesCallbacks: 0.002ms
+	InvokePackagesCallback: 4.901ms
+	ApplyChangesToAssetFolders: 0.083ms
+	Scan: 69.230ms
+	OnSourceAssetsModified: 0.002ms
+	CategorizeAssetsWithTransientArtifact: 1.265ms
+	ProcessAssetsWithTransientArtifactChanges: 7.561ms
+	CategorizeAssets: 1.390ms
+	ImportOutOfDateAssets: 499.700ms (-41.855ms without children)
+		CompileScripts: 540.926ms
+		ReloadNativeAssets: 0.000ms
+		UnloadImportedAssets: 0.281ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.045ms
+		InitializingProgressBar: 0.000ms
+		PostProcessAllAssetNotificationsAddChangedAssets: 0.000ms
+		OnDemandSchedulerStart: 0.302ms
+	PostProcessAllAssets: 15.627ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.001ms
+	UnloadStreamsBegin: 0.243ms
+	PersistCurrentRevisions: 0.009ms
+	UnloadStreamsEnd: 0.001ms
+	GenerateScriptTypeHashes: 0.001ms
+	Untracked: 858.988ms
+
+Application.AssetDatabase Initial Refresh End
+Scanning for USB devices : 0.085ms
+Initializing Unity extensions:
+UpdateMenuTitleForLanguage: 10
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-SIGNALDEBT
+Curl error 56: CONNECT tunnel failed, response 403
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Module] Error: 'com.unity.editor.headless' was not found.
+Unloading 387 unused Assets / (369.6 KB). Loaded Objects now: 888.
+Memory consumption went from 76.0 MB to 75.7 MB.
+Total: 6.396481 ms (FindLiveObjects: 0.059592 ms CreateObjectMapping: 0.014958 ms MarkObjects: 5.947413 ms  DeleteObjects: 0.373928 ms)
+
+PASS: 13 synthetic key-store compatibility assertions in Unity 6000.0.62f1. Report: /workspace/SignalDebt-setup/unity/npc-key-r1-key-store.json
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:35)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+SignalDebt.Editor.SignalDebtApiKeyStoreChecks:Execute () (at Assets/Editor/SignalDebtApiKeyStoreChecks.cs:107)
+SignalDebt.Editor.SignalDebtApiKeyStoreChecks:RunBatch () (at Assets/Editor/SignalDebtApiKeyStoreChecks.cs:41)
+
+(Filename: Assets/Editor/SignalDebtApiKeyStoreChecks.cs Line: 107)
+
+[Physics::Module] Cleanup current backned.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input System polling thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-agent-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-agent channel disconnected successfully.
+AcceleratorClientConnectionCallback - disconnected - :0
+[40m[32minfo[39m[22m[49m: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+Cleanup mono
+debugger-agent: Unable to listen on 39
+[winston] Attempt to write logs with no transports, which can increase memory usage: {"message":"Received shutdown request (SIGINT), shutting down Unity Package Manager","level":"info"}
+[winston] Attempt to write logs with no transports, which can increase memory usage: {"message":"Exiting with exit code 130. Goodbye!","level":"info"}
+[Package Manager] Server process was shutdown
+Checking for leaked weakptr:
+  Found no leaked weakptrs.
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1791165553039,"processId":39551,"allocatedMemory":6795819,"memoryLabels":[{"Default":21357},{"Permanent":16177},{"Thread":1084616},{"Manager":18485},{"VertexData":8},{"Geometry":408},{"VFX":-104},{"Texture":160},{"Shader":79269},{"Material":24},{"GfxDevice":35968},{"Animation":456},{"Audio":4032},{"FontEngine":320},{"Physics":2081},{"Serialization":472},{"Input":26752},{"JobScheduler":33024},{"TextLib":160},{"Mono":32},{"ScriptingNativeRuntime":155096},{"BaseObject":1622832},{"Resource":1032},{"Renderer":2928},{"Transform":4678},{"File":828},{"WebCam":80},{"Culling":32},{"Terrain":11298},{"Wind":24},{"String":13965},{"DynamicArray":86958},{"HashMap":48617},{"Utility":2659104},{"PoolAlloc":1568},{"AI":72},{"TypeTree":5005},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7448},{"Director":8208},{"CloudService":8896},{"WebRequest":808},{"VR":45689},{"SceneManager":528},{"Video":64},{"LazyScriptCache":32},{"Camera":17},{"Secure":1},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57552},{"StaticSafetyDebugInfo":278528},{"Analytics":384},{"Hierarchy":832},{"Gui":80},{"EditorUtility":12172},{"VersionControl":4},{"Undo":979},{"AssetDatabase":371634},{"EditorGi":328},{"UnityConnect":24792},{"Upm":1852},{"DrivenProperties":72},{"LocalIPC":148},{"ProfilerEditor":9746},{"CoreBusinessMetrics":13131},{"Licensing":1096},{"AssetReference":32},{"IPCStream":32}]}

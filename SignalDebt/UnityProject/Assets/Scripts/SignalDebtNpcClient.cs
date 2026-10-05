@@ -8,7 +8,8 @@ using UnityEngine.Networking;
 namespace SignalDebt
 {
     /// <summary>
-    /// Optional, local-only NPC relay transport. Never stores an OpenAI credential.
+    /// Automatic NPC dialogue using the player's locally configured API key.
+    /// The legacy loopback protocol remains available for development checks.
     /// All game state remains owned by the caller; replies are presentation proposals.
     /// </summary>
     [DisallowMultipleComponent]
@@ -36,6 +37,7 @@ namespace SignalDebt
         private bool lastSyncSucceeded;
         private int syncSequence;
         private int chatSequence;
+        private SignalDebtAiProvider directProvider;
 
         [Serializable]
         public sealed class SourceEvent
@@ -280,7 +282,29 @@ namespace SignalDebt
         private void OnGameEventCommitted(SignalDebtLedgerEvent entry)
         {
             EnsureCampaign();
+            if (chatting) CancelAllRequests();
             if (RelayEnabled && !syncing && campaignState != null) StartCoroutine(SyncLedger());
+        }
+
+        private SignalDebtAiProvider Provider()
+        {
+            if (directProvider == null) directProvider = GetComponent<SignalDebtAiProvider>();
+            if (directProvider == null) directProvider = gameObject.AddComponent<SignalDebtAiProvider>();
+            return directProvider;
+        }
+
+        public void TestConnection(Action<bool, string> completed)
+        {
+            StartCoroutine(Provider().TestConnection((success, message) =>
+            {
+                if (game != null && game.Ui != null) game.Ui.SetClientStatus(success ? "Connected" : "Connection unavailable", false);
+                completed?.Invoke(success, message);
+            }));
+        }
+
+        public void CancelConnectionTest()
+        {
+            if (directProvider != null) directProvider.CancelConnectionTest();
         }
 
         public void ToggleRelay()
@@ -295,12 +319,13 @@ namespace SignalDebt
             if (game == null) game = GetComponent<SignalDebtBootstrap>();
             if (game == null || game.State == null) return;
             EnsureCampaign();
+            if (string.IsNullOrWhiteSpace(playerText)) return;
             if (chatting)
             {
                 game.ShowToast("The clerk is still answering. You can keep moving.");
                 return;
             }
-            StartCoroutine(ClientChat(playerText ?? "How is the service looking?"));
+            StartCoroutine(ClientChat(Clip(playerText.Trim(), 600)));
         }
 
         private IEnumerator ClientChat(string playerText)
@@ -310,52 +335,60 @@ namespace SignalDebt
             int generation = cancellationGeneration;
             SignalDebtSaveData state = campaignState;
             int revision = state.revision;
-            string fallback = ClientFallback(state);
             try
             {
-                if (!RelayEnabled)
+                if (game.Ui != null) game.Ui.SetClientStatus("Replying…", true);
+                var facts = new List<SourceEvent>();
+                var factIds = new List<string>();
+                foreach (SignalDebtLedgerEvent entry in SelectClientEvents(state, revision))
                 {
-                    game.ShowToast("Clerk: " + fallback);
-                    yield break;
+                    facts.Add(new SourceEvent
+                    {
+                        event_id = entry.id, world_revision = entry.worldRevision,
+                        description = Clip(entry.summary, 1000), known_by = new[] { CopyShopNpcId },
+                        source = ClientEventSource(entry.type),
+                        tags = new[] { "repair", "job" }, status = "resolved"
+                    });
+                    factIds.Add(entry.id);
                 }
-                while (syncing && generation == cancellationGeneration) yield return null;
-                if (!SameScene(state, revision, generation)) yield break;
-                yield return SyncLedger();
-                if (!SameScene(state, revision, generation)) yield break;
-                if (!lastSyncSucceeded)
-                {
-                    game.ShowToast("Clerk: " + fallback);
-                    yield break;
-                }
-
-                var facts = new List<string>();
-                foreach (EventReportRequest entry in eventCopies.Values)
-                    if (entry.@event.world_revision <= revision && acknowledgedEvents.Contains(entry.@event.event_id) &&
-                        Array.IndexOf(entry.@event.known_by, CopyShopNpcId) >= 0)
-                        facts.Add(entry.@event.event_id);
                 var request = new DialogueRequest
                 {
                     campaign_id = campaignId, npc_id = CopyShopNpcId,
                     request_id = Guid.NewGuid().ToString("N"), world_revision = revision,
                     player_text = playerText,
-                    npc_context = new NpcContext
-                    {
-                        name = "Southbank Copy Shop clerk", role = "copy shop client",
-                        disposition = "Busy, practical, speaks casually in one or two short sentences.",
-                        goals = new[] { "Keep the shop's service working", "Describe only observed work and agreed commitments" },
-                        current_state = "At the copy shop counter. Use the supplied source-linked facts for repair history."
-                    },
-                    focus_tags = new[] { "repair", "job" }, PermittedFactIds = facts.ToArray()
+                    npc_context = SignalDebtNpcCharacter.CopyShop(state),
+                    focus_tags = new[] { "repair", "job" }, PermittedFactIds = factIds.ToArray()
                 };
-                yield return Ask(request,
-                    () => ReferenceEquals(game.State, state) ? game.WorldRevision : -1,
-                    fallback, result =>
+                // The same recent session conversation the player sees, including authored
+                // messages. The just-submitted player line is supplied separately above.
+                // This is bounded context, not durable social memory or a world-state update.
+                SignalDebtAiProvider.ChatLine[] history = game.Ui != null
+                    ? game.Ui.CaptureClientHistoryForAi(playerText) : new SignalDebtAiProvider.ChatLine[0];
+                yield return Provider().Ask(request, facts.ToArray(), history, result =>
                     {
-                        if (result.Accepted && SameScene(state, revision, generation))
-                            game.ShowToast("Clerk: " + result.Text);
+                        if (!SameScene(state, revision, generation) || game.Ui == null) return;
+                        if (result != null && result.Accepted && !result.IsFallback && !result.IsStale)
+                        {
+                            game.Ui.ShowClientReply(result.Text);
+                            game.Ui.SetClientStatus("Connected", false);
+                        }
+                        else
+                        {
+                            // A connection failure is visible rather than pretending
+                            // an authored line was produced by the model.
+                            game.Ui.SetClientStatus(SignalDebtAiProvider.FriendlyStatus(result == null ? "unavailable" : result.Status), false);
+                        }
                     });
             }
-            finally { if (sequence == chatSequence) chatting = false; }
+            finally
+            {
+                if (sequence == chatSequence)
+                {
+                    chatting = false;
+                    if (!SameScene(state, revision, generation) && game != null && game.Ui != null)
+                        game.Ui.SetClientStatus("The job changed. Send your message again.", false);
+                }
+            }
         }
 
         private bool SameScene(SignalDebtSaveData state, int revision, int generation)
@@ -392,7 +425,7 @@ namespace SignalDebt
                                 event_id = entry.id,
                                 world_revision = entry.worldRevision > 0 ? entry.worldRevision : Math.Min(i + 1, state.revision),
                                 description = Clip(entry.summary, 1600),
-                                source = entry.type == "job_accepted" ? "message" : (entry.type == "job_paid" ? "record" : "observed"),
+                                source = ClientEventSource(entry.type),
                                 known_by = clientKnows ? new[] { CopyShopNpcId } : new string[0],
                                 tags = clientKnows ? new[] { "repair", "job", entry.type } : new[] { "private_game_event" },
                                 commitment = false, status = "resolved"
@@ -432,7 +465,42 @@ namespace SignalDebt
         {
             // The clerk made the deal, opened their Order Folder for the test, and paid.
             // Inspection and reconnection happened privately and grant no clerk knowledge.
-            return type == "job_accepted" || type == "service_test_passed" || type == "job_paid";
+            return type == "job_accepted" || type == "service_test_passed" || type == "job_paid"
+                || type == "client_check_requested" || type == "client_check_failed"
+                || type == "proof_recovery_accepted" || type == "proof_check_requested"
+                || type == "proof_recovery_paid"
+                || (type != null && type.StartsWith("proof_owner_read_", StringComparison.Ordinal));
+        }
+
+        private static string ClientEventSource(string type)
+        {
+            if (type == "job_paid" || type == "proof_recovery_paid") return "record";
+            if (type == "job_accepted" || type == "client_check_requested"
+                || type == "proof_recovery_accepted" || type == "proof_check_requested") return "message";
+            return "observed";
+        }
+
+        // Keep the deal and settlement plus recent personally known outcomes. A
+        // long-lived workstation can be checked repeatedly; its complete history
+        // must not exceed the provider's bounded context and disable dialogue.
+        private static SignalDebtLedgerEvent[] SelectClientEvents(SignalDebtSaveData state, int revision)
+        {
+            var selected = new List<SignalDebtLedgerEvent>();
+            if (state == null || state.ledger == null) return selected.ToArray();
+            foreach (SignalDebtLedgerEvent entry in state.ledger)
+                if (entry != null && entry.worldRevision <= revision
+                    && (entry.id == "repair-job-accepted" || entry.id == "repair-job-payment"
+                        || entry.id == SignalDebtSaveData.ProofAcceptanceEventId || entry.id == SignalDebtSaveData.ProofPaymentEventId)) selected.Add(entry);
+            for (int index = state.ledger.Count - 1; index >= 0 && selected.Count < 24; index--)
+            {
+                SignalDebtLedgerEvent entry = state.ledger[index];
+                if (entry == null || entry.worldRevision > revision || !IsClientEvent(entry.type)
+                    || entry.type == "job_accepted" || entry.type == "job_paid"
+                    || entry.type == "proof_recovery_accepted" || entry.type == "proof_recovery_paid") continue;
+                selected.Add(entry);
+            }
+            selected.Sort((left, right) => left.worldRevision.CompareTo(right.worldRevision));
+            return selected.ToArray();
         }
 
         private static string ClientFallback(SignalDebtSaveData state)
@@ -493,8 +561,10 @@ namespace SignalDebt
             foreach (PendingRequest item in new List<PendingRequest>(pending))
                 item.AbortAndDispose();
             pending.Clear();
+            if (directProvider != null) directProvider.CancelAll();
             chatting = false;
             syncing = false;
+            if (game != null && game.Ui != null) game.Ui.SetClientStatus("", false);
         }
 
         private void OnDisable()

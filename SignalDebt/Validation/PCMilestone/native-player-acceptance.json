@@ -1,0 +1,305 @@
+{
+  "passed_for_tested_pc_apartment_scope": true,
+  "validation_kind": "Genuine uninstrumented standalone player with nativeX11input and actual framebuffer screenshots; human/agent reviewed bounded acceptance run,not fake API harness",
+  "unity_version": "6000.0.62f1",
+  "platform": "Linux x86_64 Mono",
+  "renderer": "llvmpipe OpenGL4.5 software rendering",
+  "resolutions": [
+    "1600x900",
+    "1200x900"
+  ],
+  "build_report": "linux-build-result.json",
+  "runtime_assembly_sha256": "adb0848f5ceef349ab8354e2e4a5ad19f36ec33fc27f3103cb1a759198df6163",
+  "runtime_source_manifest": "linux-build-source-manifest.json",
+  "native_input_tool": "automation/x11-player-tools.py",
+  "entry_frame_timing": "player-captures/entry-sequence/timing.json",
+  "checks": [
+    {
+      "id": "actual_player_startup",
+      "observed": true,
+      "evidence": "Uninstrumented Unity6000.0.62f1 Linux Mono player starts and renders actual imported apartment."
+    },
+    {
+      "id": "natural_room_controls",
+      "observed": true,
+      "evidence": "Native XTest W and mouse motion move/aim the first-person player; E prompt appears on physical laptop."
+    },
+    {
+      "id": "native_e_to_desktop",
+      "observed": true,
+      "evidence": "Native E enters seat and screen animation; actual frames show room approach, seated hands on keyboard, live screen and focused desktop."
+    },
+    {
+      "id": "same_live_screen",
+      "observed": true,
+      "evidence": "After leaving, physical laptop visibly retains the chosen application and game state."
+    },
+    {
+      "id": "escape_to_first_person",
+      "observed": true,
+      "evidence": "Native Escape returns to pre-computer first-person room view; subsequent look-down shows hands/legs/feet."
+    },
+    {
+      "id": "four_applications",
+      "observed": true,
+      "evidence": "Native pointer clicks open Inbox,Service,EXODISS,History with readable actual UI."
+    },
+    {
+      "id": "repair_order",
+      "observed": true,
+      "evidence": "Accepted job, inspected status, rejected wrong Print Queue, connected Order Index, tested and collected120credits through actual native clicks."
+    },
+    {
+      "id": "wallet_receipt",
+      "observed": true,
+      "evidence": "EXODISS showed200credits and+120receipt; persisted ledger contains exactlyone repair-job-payment."
+    },
+    {
+      "id": "rent_payment",
+      "observed": true,
+      "evidence": "Native Pay up to50 updates wallet to150credits and rent to400; both persist in production save."
+    },
+    {
+      "id": "native_scroll",
+      "observed": true,
+      "evidence": "Native mouse wheel exposes lower Service controls."
+    },
+    {
+      "id": "window_controls",
+      "observed": true,
+      "evidence": "Native minimize,taskbar restore,maximize,restore and titlebar drag operate."
+    },
+    {
+      "id": "fresh_process_save_reload",
+      "observed": true,
+      "evidence": "Native WM_DELETE_WINDOW exited first process0; fresh1200x900process restored completed job, money, History app and window layout."
+    },
+    {
+      "id": "four_by_three_layout",
+      "observed": true,
+      "evidence": "Actual1200x900desktop and all Service/History content render legibly; bars/windowcontrols stay accessible."
+    },
+    {
+      "id": "minimize_across_computer_exit",
+      "observed": true,
+      "evidence": "At4:3,minimized Service stayed minimized after Escape\u2192E; taskbar restored same application and dragged bounds."
+    },
+    {
+      "id": "interrupted_entry",
+      "observed": true,
+      "evidence": "Native E followed shortly by Escape returns to first-person room with live physical screen and working E prompt."
+    },
+    {
+      "id": "clean_shutdown",
+      "observed": true,
+      "evidence": "Both player runs closed via nativeWM_DELETE_WINDOW with process exit0; own Xvfb servers stopped."
+    }
+  ],
+  "save_after_restart": {
+    "balance": 150,
+    "rentDue": 400,
+    "jobPaid": true,
+    "ledger_events": 6,
+    "repair_payment_events": 1
+  },
+  "logs": [
+    {
+      "file": "linux-player.log",
+      "sha256": "459ca343ce2ef15acdf486022369b618f71ee4bf1010f1b4ac7f6f001052243a",
+      "csharp_exception_or_save_error_lines": [],
+      "fmod_audio_device_errors": 2
+    },
+    {
+      "file": "linux-player-restart.log",
+      "sha256": "cf02db5cc59d1b287394011c8b5ed303b1dce1e064d936750557ba803ee2b0f1",
+      "csharp_exception_or_save_error_lines": [],
+      "fmod_audio_device_errors": 2
+    }
+  ],
+  "limitations": [
+    "Windows executable built separately; Windows runtime not exercised.",
+    "Editor UI and graphicalbatch PlayMode blocked by Unity license; existing primitive PlayMode fixture not executed.",
+    "No cloud audio output device; FMOD audio initialization failed, audio not verified.",
+    "No target-GPU performance/FPS claim; screenshot capture timings are not framerate measurements.",
+    "No exhaustive collision/path/animation review, loaded-save corruption injection, or exact normalized-scroll telemetry.",
+    "This tests apartment/PC/first repair milestone,not the entire320feature game."
+  ],
+  "captures": [
+    {
+      "file": "player-captures/01-startup-room.png",
+      "sha256": "f1bf452f24c389d4596b8fa727efd368e24c9df38addc821554ba573a4bceb3b"
+    },
+    {
+      "file": "player-captures/02-approach.png",
+      "sha256": "73b4ca199e157919c3464e1432aaae0c27c811fe996de2cbd415ebdf650fa3e1"
+    },
+    {
+      "file": "player-captures/03-laptop-prompt.png",
+      "sha256": "08087d3122fdcd80e1c53a37c45f6fb978bee37d38f73af42516eb14f67623aa"
+    },
+    {
+      "file": "player-captures/04-aim.png",
+      "sha256": "c56e6119d9f2ba2066277a534be30570a26202bd0dc1b58ac705fb468f82d591"
+    },
+    {
+      "file": "player-captures/05-e-prompt.png",
+      "sha256": "ec34e305fafae3a8a88515cf453353469370d125a20e5f324f966b1428d14392"
+    },
+    {
+      "file": "player-captures/06-laptop-target.png",
+      "sha256": "328be5f0c1e44e88d0665b631b57bdf3d65ead9a45cace5fe6dc2c4f9ee884ef"
+    },
+    {
+      "file": "player-captures/07-sit-transition.png",
+      "sha256": "718781914d59861455900b6c8c5b4b703b5590bd601c43a7d8b9b9106cf7f8c6"
+    },
+    {
+      "file": "player-captures/08-focused-desktop.png",
+      "sha256": "a9ddfa2469793d1e44007cf7e34fbf1d889fe9194c5849ca0b65b7de0f556efc"
+    },
+    {
+      "file": "player-captures/09-return-first-person.png",
+      "sha256": "0ef5290a385656f02d0ac4bd782734ef0fed8c49d64141b0eba417a70668de12"
+    },
+    {
+      "file": "player-captures/10-inbox.png",
+      "sha256": "a5594c9d6de81ce6c846a73f00dde2716ee89e511c44758274ad3e26eacfb589"
+    },
+    {
+      "file": "player-captures/11-service-accepted.png",
+      "sha256": "77102ca2367146b06143fb4f34f6f7485b5a79a32a0155c48fe4767b0418251b"
+    },
+    {
+      "file": "player-captures/12-service-inspected.png",
+      "sha256": "8f30e0fcb1a03527192cdca024883fdc5ff49da92179bd81328b805cc947a1b3"
+    },
+    {
+      "file": "player-captures/13-wrong-resource-rejected.png",
+      "sha256": "0f5cb49b0b43171e1978098a0d38f04d8e5c225e8433fac74f10fd36e4d7ca6a"
+    },
+    {
+      "file": "player-captures/14-connected-scrolled.png",
+      "sha256": "1a8d0d05708705b9b33d9511065efc5253cadca881e79a82835e796a9b9d2b38"
+    },
+    {
+      "file": "player-captures/15-repair-complete.png",
+      "sha256": "d18e4d1cb33741885e98da72ce598bf6cdcb89b9b3895956a3db5c4089a7111a"
+    },
+    {
+      "file": "player-captures/16-wallet-paid.png",
+      "sha256": "17d273ed43b7600e5fa07be60bffe0d5ae0c80df6541080ec82abb66c799c7af"
+    },
+    {
+      "file": "player-captures/17-rent-payment.png",
+      "sha256": "3fe40301af8b52513ad3776461ef3eabf411d7106777b5021eb03f796c2bba4c"
+    },
+    {
+      "file": "player-captures/18-history.png",
+      "sha256": "a2d56c995e21b9fce069494d24f077b5093a8a0376119ba9d73bea4730027be1"
+    },
+    {
+      "file": "player-captures/19-maximized.png",
+      "sha256": "41e448df656a37dc9f73a0a5fc53fc68419be597d9b220f6c60fcc2846860072"
+    },
+    {
+      "file": "player-captures/20-body-first-person.png",
+      "sha256": "48d0af9bfb84dca5ab83f9d61a2d1917cf7d29b1605311e393346b570b6a9cad"
+    },
+    {
+      "file": "player-captures/21-look-down.png",
+      "sha256": "2fa0d3d2b4af08e6a91a586fa703901223006490786add991c40ae698d0e3acf"
+    },
+    {
+      "file": "player-captures/22-restart-4by3-room.png",
+      "sha256": "9682b3156fe65a5b42920757972891126137adbbdf2bb7a5cb4805fc296ae16f"
+    },
+    {
+      "file": "player-captures/23-restart-laptop-target.png",
+      "sha256": "10461eb0116ca2b919b7275c36ff652c240579d872920b01c840540e9a8bba7c"
+    },
+    {
+      "file": "player-captures/24-restart-aim.png",
+      "sha256": "a94e34a933f64219ac27cd7fdd082f7eb1b568b8dc0367c30ab08e113395a0b0"
+    },
+    {
+      "file": "player-captures/25-restarted-history-4by3.png",
+      "sha256": "8efd6c59f8375006756c5acb76893b8ed9f92f89307137f90c065f5b106af6ed"
+    },
+    {
+      "file": "player-captures/26-service-4by3.png",
+      "sha256": "cd65668d477413d5bbf3d8f9f4122b205d814f90086c7f69177b19e4058b2b7c"
+    },
+    {
+      "file": "player-captures/27-window-dragged.png",
+      "sha256": "247e20fdc176b31c42910e33033859deddb93f5ca8ef1da5556fe448e13d5bb8"
+    },
+    {
+      "file": "player-captures/28-minimized-persists.png",
+      "sha256": "c754d3a10fbc6b6815b5306e19ec1e7b9cee479dd034879fef750c8e766f3b23"
+    },
+    {
+      "file": "player-captures/29-restore-after-return.png",
+      "sha256": "f45436e7de2037d1d44c3052fa4e9bee11eca8f0cdf2dbc4b9d1d7a492b4bd22"
+    },
+    {
+      "file": "player-captures/30-interrupted-entry-returns-room.png",
+      "sha256": "9be48d74e7aed74236c5ed6e9335b212c2b04f6d62473c54d4025f0ca54899c8"
+    },
+    {
+      "file": "player-captures/entry-sequence/00.png",
+      "sha256": "68a3dd9c624905e51934dc6f6f472bea82623020cbbf90bbef4f5f1676e45df4"
+    },
+    {
+      "file": "player-captures/entry-sequence/01.png",
+      "sha256": "a297001e2a2d6aa297ef18a6608053d702be489db11d7e4c51a702258fcd4f2b"
+    },
+    {
+      "file": "player-captures/entry-sequence/02.png",
+      "sha256": "78aea087a40e4ce37475253b017c899db4d749d3a2235a1de206fd8d277ac08b"
+    },
+    {
+      "file": "player-captures/entry-sequence/03.png",
+      "sha256": "96822301af610de18ebcddd562b01b69f9c1d9444c16e365c52e1bafaf47d5ea"
+    },
+    {
+      "file": "player-captures/entry-sequence/04.png",
+      "sha256": "97bfadd02b01bd82b0276077e09e86b7aa67146066792c1d76d6c19758d51ce9"
+    },
+    {
+      "file": "player-captures/entry-sequence/05.png",
+      "sha256": "850da49a2238890d08d4f9e175302a0db9b9d928332c2b8196872ee0644b08c5"
+    },
+    {
+      "file": "player-captures/entry-sequence/06.png",
+      "sha256": "ec6fc252615085c7349f3a16a3e97ff902648d273f41749aa365bae4e840b2de"
+    },
+    {
+      "file": "player-captures/entry-sequence/07.png",
+      "sha256": "214f8f6bb7a1e47312b9b890082aefba301a0e6cb4e028ee2745acb203d5a9f1"
+    },
+    {
+      "file": "player-captures/entry-sequence/08.png",
+      "sha256": "214f8f6bb7a1e47312b9b890082aefba301a0e6cb4e028ee2745acb203d5a9f1"
+    },
+    {
+      "file": "player-captures/entry-sequence/09.png",
+      "sha256": "88e6d629817eaefec581c3d09c5fcc22a8519f92656eebf38fa4fa66e043de2d"
+    },
+    {
+      "file": "player-captures/entry-sequence/10.png",
+      "sha256": "88e6d629817eaefec581c3d09c5fcc22a8519f92656eebf38fa4fa66e043de2d"
+    },
+    {
+      "file": "player-captures/entry-sequence/11.png",
+      "sha256": "88e6d629817eaefec581c3d09c5fcc22a8519f92656eebf38fa4fa66e043de2d"
+    },
+    {
+      "file": "player-captures/entry-sequence/12.png",
+      "sha256": "88e6d629817eaefec581c3d09c5fcc22a8519f92656eebf38fa4fa66e043de2d"
+    },
+    {
+      "file": "player-captures/entry-sequence/13.png",
+      "sha256": "88e6d629817eaefec581c3d09c5fcc22a8519f92656eebf38fa4fa66e043de2d"
+    }
+  ]
+}

@@ -1,0 +1,378 @@
+{
+  "passed": true,
+  "revision": "ui-menu-r1",
+  "utc_recorded_at": "2026-10-05T01:11:44.513208+00:00",
+  "validation_kind": "Genuine uninstrumented Linux standalone with native XTest input and actual framebuffer screenshots; agent visual review.",
+  "unity_version": "6000.0.62f1",
+  "platform": "Linux x86_64 Mono",
+  "renderer": "llvmpipe OpenGL4.5 software rendering",
+  "resolution": "1200x800",
+  "runtime_assembly_sha256": "56fe5adc37179787b55e803c0f5bbce0291423183378ec069365ca197586fdfb",
+  "frozen_source_manifest": "/workspace/SignalDebt-setup/unity/ui-menu-r1-source-manifest.json",
+  "frozen_source_manifest_sha256": "48cb604cebbe1847c3c9907e9e9739b88214828eeda493263bf468b80c5de0b0",
+  "frozen_source_count": 157,
+  "production_files_changed_after_frozen_build": [
+    "Assets/Scripts/SignalDebtBootstrap.cs",
+    "Assets/Scripts/SignalDebtMainMenu.cs"
+  ],
+  "source_scope_note": "Evidence covers frozen ui-menu-r1, not newer Bootstrap lifecycle/settings-close fixes being prepared for r2.",
+  "build_report": "/workspace/SignalDebt-setup/unity/linux-ui-menu-r1-build-result.json",
+  "release_build_files_unchanged": true,
+  "release_build_userdata_created": false,
+  "copied_players_game_files_match_release": true,
+  "all_four_player_exit_codes": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "all_owned_player_processes_stopped": true,
+  "checks": [
+    {
+      "id": "cold_menu",
+      "passed": true,
+      "observed": "Cold launch shows title/menu before game. Continue disabled; no UserData or campaign created.",
+      "capture": "campaign/captures/01-cold-menu.png"
+    },
+    {
+      "id": "settings_empty",
+      "passed": true,
+      "observed": "Settings from menu: no key, empty masked input, Remember unchecked; disabled Connect inert.",
+      "capture": "campaign/captures/02-settings-empty.png"
+    },
+    {
+      "id": "settings_invalid",
+      "passed": true,
+      "observed": "Known invalid dummy text is visually masked and rejected locally with readable format feedback; no UserData created.",
+      "capture": "campaign/captures/06-settings-format-error.png"
+    },
+    {
+      "id": "new_game",
+      "passed": true,
+      "observed": "New Game enters apartment and writes schema2 at beside-binary UserData/Saves with80credits450rent.",
+      "capture": "campaign/captures/07-new-game-room.png"
+    },
+    {
+      "id": "inbox_compact",
+      "passed": true,
+      "observed": "Natural walking/mouse/E enters real laptop; Inbox client message,120credit action and composer visible without scrolling.",
+      "capture": "campaign/captures/09-inbox.png"
+    },
+    {
+      "id": "repair_inspect",
+      "passed": true,
+      "observed": "Accepted repair presents Inspect step and folder status.",
+      "capture": "campaign/captures/10-repair-inspect.png"
+    },
+    {
+      "id": "repair_wrong_choice",
+      "passed": true,
+      "observed": "Wrong Print Queue gives inline feedback; persisted revision2,2events,notconnected unchanged.",
+      "capture": "campaign/captures/12-wrong-choice.png"
+    },
+    {
+      "id": "repair_test",
+      "passed": true,
+      "observed": "Correct Order Index advances to Test with connected diagram.",
+      "capture": "campaign/captures/13-repair-test.png"
+    },
+    {
+      "id": "repair_collect",
+      "passed": true,
+      "observed": "Successful test advances to Collect; actual button awards120credits.",
+      "capture": "campaign/captures/15-repair-paid.png"
+    },
+    {
+      "id": "wallet_rent",
+      "passed": true,
+      "observed": "New wallet layout shows150credits400rent after native50credit rent action.",
+      "capture": "campaign/captures/17-wallet-rent-paid.png"
+    },
+    {
+      "id": "pause_at_computer",
+      "passed": true,
+      "observed": "Escape opens pause over the existing focused laptop instead of standing up.",
+      "capture": "campaign/captures/18-pause-at-pc.png"
+    },
+    {
+      "id": "settings_from_pause",
+      "passed": true,
+      "observed": "Pause Settings opens masked empty key UI; Escape returns only to pause.",
+      "capture": "campaign/captures/20-settings-back-to-pause.png"
+    },
+    {
+      "id": "resume_computer",
+      "passed": true,
+      "observed": "Return to game restores same wallet application150/400 and pointer interaction.",
+      "capture": "campaign/captures/21-resumed-same-wallet.png"
+    },
+    {
+      "id": "explicit_stand",
+      "passed": true,
+      "observed": "Explicit Stand up returns to first person, with physical laptop still displaying wallet.",
+      "capture": "campaign/captures/22-stand-first-person.png"
+    },
+    {
+      "id": "return_menu_continue",
+      "passed": true,
+      "observed": "Pause Main menu returns to launch screen, Continue reenters preserved campaign.",
+      "capture": "campaign/captures/25-continued-room.png"
+    },
+    {
+      "id": "new_game_back",
+      "passed": true,
+      "observed": "New Game confirmation Back leaves all UserData bytes,size,mtime unchanged.",
+      "capture": "campaign/captures/24-new-game-confirm.png"
+    },
+    {
+      "id": "process_restart",
+      "passed": true,
+      "observed": "Fresh process starts at menu; Continue and natural laptop interaction restore wallet150/400,revision6,sixledger events and exactlyone repairpayment.",
+      "capture": "campaign/captures/27-restarted-wallet.png"
+    },
+    {
+      "id": "new_game_archive",
+      "passed": true,
+      "observed": "Confirm New Game archives whole Saves directory exactly, keeps desktop outside backup, creates new saveId80/450.",
+      "capture": "campaign/captures/28-new-campaign-room.png"
+    },
+    {
+      "id": "malformed_menu",
+      "passed": true,
+      "observed": "Malformed current save Continue returns readable menu status and preserves all UserData exactly; menu Quit exits0.",
+      "capture": "malformed/captures/01-menu-status.png"
+    },
+    {
+      "id": "future_menu",
+      "passed": true,
+      "observed": "Future schema Continue returns readable menu status and preserves all UserData exactly; Escape stays on menu, Quit exits0.",
+      "capture": "future/captures/01-menu-status.png"
+    }
+  ],
+  "cold_menu": {
+    "cold_menu_userdata_exists": false,
+    "cold_menu_files": []
+  },
+  "invalid_settings": {
+    "userdata_exists_after_invalid_settings": false,
+    "files": []
+  },
+  "restart_state": {
+    "schemaVersion": 2,
+    "saveId": "ce2fa8f3cbdb4ca99e9fab1b5aab32f7",
+    "revision": 6,
+    "balance": 150,
+    "rentDue": 400,
+    "jobPaid": true,
+    "ledger_events": 6,
+    "job_payment_events": 1
+  },
+  "archive": {
+    "whole_save_folder_archived_exactly": true,
+    "backup_folder": "/workspace/SignalDebt-setup/unity/ui-menu-native/campaign/Game/UserData/Backups/Campaign-20261005-010828-5b7d5bb2",
+    "archived_files": [
+      "signal-debt-save-v2.json",
+      "signal-debt-save-v2.json.bak"
+    ],
+    "desktop_unchanged": true,
+    "no_ai_settings_file": true,
+    "new_save_id_differs": true,
+    "new_balance": 80,
+    "new_rentDue": 450,
+    "old_balance": 150,
+    "old_rentDue": 400
+  },
+  "blocked_saves": {
+    "malformed": {
+      "all_userdata_bytes_sizes_mtimes_preserved": true,
+      "before": {
+        "Saves/signal-debt-save-v2.json": {
+          "sha256": "1a7865afad9c535887da61b238519af6108766268e3593759c21e119e1cfc179",
+          "size": 31,
+          "mtime_ns": 1791162127715797695
+        }
+      },
+      "after": {
+        "Saves/signal-debt-save-v2.json": {
+          "sha256": "1a7865afad9c535887da61b238519af6108766268e3593759c21e119e1cfc179",
+          "size": 31,
+          "mtime_ns": 1791162127715797695
+        }
+      }
+    },
+    "future": {
+      "all_userdata_bytes_sizes_mtimes_preserved": true,
+      "before": {
+        "Saves/signal-debt-save-v2.json": {
+          "sha256": "5ea2fe05c5bd188b56912e7e3ced7a91f22f6eac30c214c9e9d50e174d1f8e62",
+          "size": 65,
+          "mtime_ns": 1791162127745576540
+        }
+      },
+      "after": {
+        "Saves/signal-debt-save-v2.json": {
+          "sha256": "5ea2fe05c5bd188b56912e7e3ced7a91f22f6eac30c214c9e9d50e174d1f8e62",
+          "size": 65,
+          "mtime_ns": 1791162127745576540
+        }
+      }
+    }
+  },
+  "logs": [
+    {
+      "file": "campaign/player.log",
+      "sha256": "efc34f6e074527e0a8fcc95e52e4a06c9354ea7ff5a0ff73f92e217d1da754a8",
+      "csharp_or_save_errors": [],
+      "fmod_audio_device_init_failures": 2
+    },
+    {
+      "file": "campaign/restart-player.log",
+      "sha256": "f5ff4475c8503d9edd99c7cefd1fd40ec51944bd8b2422ea3bf8dc8fbd0ed83c",
+      "csharp_or_save_errors": [],
+      "fmod_audio_device_init_failures": 2
+    },
+    {
+      "file": "future/player.log",
+      "sha256": "4ebbcb9a208932a998400374addab957bc2145f4d46763230e539d1807717cae",
+      "csharp_or_save_errors": [],
+      "fmod_audio_device_init_failures": 2
+    },
+    {
+      "file": "malformed/player.log",
+      "sha256": "a6a2c486a4ab85841f6cf46d6460579f29d87f906578a6cbab4f43c21f797dd2",
+      "csharp_or_save_errors": [],
+      "fmod_audio_device_init_failures": 2
+    }
+  ],
+  "captures": [
+    {
+      "file": "campaign/captures/01-cold-menu.png",
+      "sha256": "8d41afa9a692b87f5f83d8edb61a0c8288b4beba70b6e2ca332be55429545551"
+    },
+    {
+      "file": "campaign/captures/02-settings-empty.png",
+      "sha256": "1627d2a8088c254497aae4d4fa406fbd012915b44d46446cbf1626f2bd694415"
+    },
+    {
+      "file": "campaign/captures/03-settings-empty-after-disabled-click.png",
+      "sha256": "f42cc419c71f810d3ccc43c73b2144dc24532b2d65afb2dbf535fca99e2bf928"
+    },
+    {
+      "file": "campaign/captures/04-settings-empty-connect-inert.png",
+      "sha256": "f42cc419c71f810d3ccc43c73b2144dc24532b2d65afb2dbf535fca99e2bf928"
+    },
+    {
+      "file": "campaign/captures/05-settings-masked-input.png",
+      "sha256": "99ead46af57b9777792ceea410b9c5c33c35f3f4af15973aaa81407116666ce1"
+    },
+    {
+      "file": "campaign/captures/06-settings-format-error.png",
+      "sha256": "c1765f9eaaad4c8ca4d74acca4b072b9df5a092c834dc6aa31098d22094974ef"
+    },
+    {
+      "file": "campaign/captures/07-new-game-room.png",
+      "sha256": "3523f25c7b531ca677e9fcde5e6bfed845b125aa84b0f484b16fc7f887fb2bf5"
+    },
+    {
+      "file": "campaign/captures/08-enter-desktop.png",
+      "sha256": "4f26cfd87bb5a6b7b681e474feb79d50e537ce1fc8a909a32ba79276f00828c8"
+    },
+    {
+      "file": "campaign/captures/09-inbox.png",
+      "sha256": "adbd34d98867857f8675611eacfed3b26d4db7df65186d57e69795b2eb33ae51"
+    },
+    {
+      "file": "campaign/captures/10-repair-inspect.png",
+      "sha256": "8ba3b1e5d0aaf30369a5e70dffb7de6442443771a2e65429198db47a71d626ff"
+    },
+    {
+      "file": "campaign/captures/11-repair-connect.png",
+      "sha256": "a5e17e7fb8ba4fce205d39382672cdfd6b6a997b5607a18c6318e81273c6513a"
+    },
+    {
+      "file": "campaign/captures/12-wrong-choice.png",
+      "sha256": "eb792053bbf452c9a25971780843628ced172e78a189362d66e4c0d770ee17c7"
+    },
+    {
+      "file": "campaign/captures/13-repair-test.png",
+      "sha256": "45c5b248e0360aa52ecefaf33efe16a1051753298ab6add4d2a7cd9874d3dded"
+    },
+    {
+      "file": "campaign/captures/14-repair-collect.png",
+      "sha256": "6024ee8bc454034498a5e643e7227b090be2f6b0710363a43931781505d32876"
+    },
+    {
+      "file": "campaign/captures/15-repair-paid.png",
+      "sha256": "b7970f7ffe1e42ab0f922838590bc11d06d550959dc091c03013dea7d2ab0a9b"
+    },
+    {
+      "file": "campaign/captures/16-wallet.png",
+      "sha256": "4c5f2526099eca37bc1c21599673c4c722aee8e8b2bac6a677ef76a560392091"
+    },
+    {
+      "file": "campaign/captures/17-wallet-rent-paid.png",
+      "sha256": "16bc783f95c52056536d27c9bc9d45668d3a537d346911ba8c4373baa5ca872b"
+    },
+    {
+      "file": "campaign/captures/18-pause-at-pc.png",
+      "sha256": "131ca65bea31a90d36e6e69cd731469a8618db11063668af4e2e5d86621cf546"
+    },
+    {
+      "file": "campaign/captures/19-settings-from-pause.png",
+      "sha256": "84e6ee1453348807c51b5e16c584c717fbf3c1e3a0affcbd3de8a292f37f11e3"
+    },
+    {
+      "file": "campaign/captures/20-settings-back-to-pause.png",
+      "sha256": "5361b9f45630f9611e34532490d72cb43751adcf9bcca1f4ee78e4397c7012bd"
+    },
+    {
+      "file": "campaign/captures/21-resumed-same-wallet.png",
+      "sha256": "6d34ce492ba7a8ed83c4c330e5a0b540da61aef5516fe2fbcf3def3c144f67f0"
+    },
+    {
+      "file": "campaign/captures/22-stand-first-person.png",
+      "sha256": "81b449655f0e64fd4d68bbdbfa72027c32c2200a49a12f9e9c550790236b36e9"
+    },
+    {
+      "file": "campaign/captures/23-return-main-menu.png",
+      "sha256": "fe2fd163b230f540adaa1601b3ba95c18fb0ca8a5d5ae06793dfbaa532679b87"
+    },
+    {
+      "file": "campaign/captures/24-new-game-confirm.png",
+      "sha256": "c8ac6da267f659bd8cac011a94ebd97956f606350723fcc3090d364cb1ae2ae1"
+    },
+    {
+      "file": "campaign/captures/25-continued-room.png",
+      "sha256": "1e16d3cfba08ab7fa9e84a99b2a3530287c042f2b7141e90c48398720fabbe58"
+    },
+    {
+      "file": "campaign/captures/26-restart-menu.png",
+      "sha256": "63e2a4d9318d1d7e8ec06a358b31c9de618af515a2c712a80f0dc7d9724a8049"
+    },
+    {
+      "file": "campaign/captures/27-restarted-wallet.png",
+      "sha256": "f6059a5c833c8fb43fc206b240ebca26c339f8476f0671ad245e0a5eae18a60d"
+    },
+    {
+      "file": "campaign/captures/28-new-campaign-room.png",
+      "sha256": "3d6558cf480468305df96abd7fcf7af9397e09524b0546590d062015b4c939ad"
+    },
+    {
+      "file": "future/captures/01-menu-status.png",
+      "sha256": "b889e6bfa8c462df7c4b87ca8bc83b68a57a01f025e320a08d1cc8182631d682"
+    },
+    {
+      "file": "malformed/captures/01-menu-status.png",
+      "sha256": "f596295dc31fb99bdde2b8ea263dd0f90df0298a77cbadf698390fe9706835ed"
+    }
+  ],
+  "limitations": [
+    "Frozen r1 production snapshot only; later Bootstrap fixes require new build acceptance.",
+    "No live OpenAI connection or generated dialogue tested. OPENAI_API_KEY explicitly removed from each test process environment without reading it; only invalid dummy input used.",
+    "No remembered real-key persistence tested. No ai-settings.json created by these cases; existing-key archive exclusion has code/domain evidence separately.",
+    "Windows runtime not tested.",
+    "No cloud audio output; FMOD errors retained, sound unverified.",
+    "Software renderer only; no target-hardware performance claim.",
+    "No scene/editor instrumentation, no Unity Play Mode fixture run, no connected shop gameplay tested."
+  ]
+}

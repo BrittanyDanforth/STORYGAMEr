@@ -9,7 +9,11 @@ namespace SignalDebt
     {
         private const float StandingHeight = 1.78f, CrouchedHeight = 1.24f;
         public Camera View { get; private set; }
-        public bool IsSeated { get; private set; }
+        public bool IsSeated { get { return computerSession.IsAtDesk; } }
+        public bool IsTransitioning { get { return computerSession.IsTransitioning; } }
+        public bool CanUseComputer { get { return computerSession.CanUseDesktop; } }
+        public event Action ComputerReady;
+        public event Action ComputerClosed;
         public bool UiOpen { get; private set; }
         public float lookSensitivity = 1.7f;
         public string RigSummary { get; private set; }
@@ -39,6 +43,10 @@ namespace SignalDebt
         private Vector3 moveDirection, beforeSeatPosition, seatedLeftHand, seatedRightHand;
         private Quaternion beforeSeatRotation;
         private float beforeSeatPitch, beforeSeatHeight;
+        private readonly SignalDebtComputerSession computerSession = new SignalDebtComputerSession();
+        private Pose beforeSeatView, seatedView, focusedView, exitView, standStartView;
+        private Pose seatedBody, standStartBody;
+        private float seatBlend, standStartBlend;
 
         public void Initialize(Vector3 position, Quaternion rotation, GameObject bodyPrefab = null)
         {
@@ -72,7 +80,9 @@ namespace SignalDebt
 
         private void Update()
         {
-            if (View == null || UiOpen || IsSeated) return;
+            if (View == null) return;
+            if (IsSeated) { UpdateComputer(); return; }
+            if (UiOpen) return;
             float yaw = Input.GetAxisRaw("Mouse X") * lookSensitivity;
             pitch = Mathf.Clamp(pitch - Input.GetAxisRaw("Mouse Y") * lookSensitivity, -75f, 86f);
             transform.Rotate(0f, yaw, 0f);
@@ -107,41 +117,134 @@ namespace SignalDebt
 
         public void SetUi(bool open)
         {
+            if (open && IsTransitioning) return;
             UiOpen = open;
-            Cursor.lockState = open ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = open;
+            bool releaseCursor = open || !Application.isFocused;
+            Cursor.lockState = releaseCursor ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = releaseCursor;
         }
 
-        public void Sit(Transform seat, Transform focus)
+        public bool Sit(Transform seat, Transform focus, SignalDebtComputerDisplay display = null)
         {
-            if (IsSeated) return;
+            if (seat == null || focus == null || View == null || !computerSession.Enter()) return false;
             beforeSeatPosition = transform.position; beforeSeatRotation = transform.rotation;
             beforeSeatPitch = pitch; beforeSeatHeight = controller.height;
+            beforeSeatView = new Pose(View.transform.position, View.transform.rotation);
+            SetUi(false);
             controller.enabled = false;
             transform.SetPositionAndRotation(seat.position, Quaternion.Euler(0f, seat.eulerAngles.y, 0f));
             Vector3 horizontal = focus.position - transform.position; horizontal.y = 0f;
             if (horizontal.sqrMagnitude > 0.001f) transform.rotation = Quaternion.LookRotation(horizontal, Vector3.up);
-            View.transform.localPosition = new Vector3(0f, 1.18f, 0.34f);
-            Vector3 direction = focus.position - View.transform.position;
-            if (direction.sqrMagnitude > 0.001f) View.transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
+            seatedBody = new Pose(transform.position, transform.rotation);
+            Vector3 screenCenter = display != null ? display.ScreenCenter : focus.position;
+            Vector3 seatedEye = transform.TransformPoint(new Vector3(0f, 1.18f, 0.34f));
+            seatedView = new Pose(seatedEye, Quaternion.LookRotation(screenCenter - seatedEye, Vector3.up));
+            focusedView = display != null
+                ? new Pose(display.GetFocusedPosition(View), display.ViewRotation)
+                : new Pose(Vector3.Lerp(seatedEye, screenCenter, 0.7f), seatedView.rotation);
             // Focus is the display center. The keyboard front lies lower and toward the chair.
             Vector3 keyboard = focus.position - transform.forward * 0.26f - Vector3.up * 0.111f;
             Transform leftTarget = Find(focus.root, "KeyboardWristLeft"), rightTarget = Find(focus.root, "KeyboardWristRight");
             seatedLeftHand = transform.InverseTransformPoint(leftTarget != null ? leftTarget.position : keyboard - transform.right * 0.105f);
             seatedRightHand = transform.InverseTransformPoint(rightTarget != null ? rightTarget.position : keyboard + transform.right * 0.105f);
-            IsSeated = true; gaitWeight = 0f;
-            PoseBody(); SetUi(true);
+            gaitWeight = 0f; seatBlend = 0f;
+            transform.SetPositionAndRotation(beforeSeatPosition, beforeSeatRotation);
+            PoseBody();
+            // Moving the seated body must not teleport its child camera. Start from
+            // the exact first-person view, then sit before approaching the display.
+            View.transform.SetPositionAndRotation(beforeSeatView.position, beforeSeatView.rotation);
+            return true;
         }
 
         public void Stand()
         {
-            if (!IsSeated) { SetUi(false); return; }
+            bool wasSitting = computerSession.Phase == ComputerPhase.Sitting;
+            if (!computerSession.Exit()) return;
+            exitView = new Pose(View.transform.position, View.transform.rotation);
+            standStartView = wasSitting ? exitView : seatedView;
+            standStartBody = wasSitting ? new Pose(transform.position, transform.rotation) : seatedBody;
+            standStartBlend = wasSitting ? seatBlend : 1f;
+            SetUi(false);
+        }
+
+        private void UpdateComputer()
+        {
+            ComputerPhase previous = computerSession.Phase;
+            computerSession.Advance(Time.unscaledDeltaTime);
+            float t = computerSession.EasedProgress;
+            if (computerSession.IsAtDesk && (computerSession.IsTransitioning || previous != ComputerPhase.Desktop))
+            {
+                if (computerSession.Phase == ComputerPhase.Sitting)
+                {
+                    seatBlend = t;
+                    transform.SetPositionAndRotation(Vector3.Lerp(beforeSeatPosition, seatedBody.position, t),
+                        Quaternion.Slerp(beforeSeatRotation, seatedBody.rotation, t));
+                }
+                else if (computerSession.Phase == ComputerPhase.Standing)
+                {
+                    seatBlend = standStartBlend * (1f - t);
+                    transform.SetPositionAndRotation(Vector3.Lerp(standStartBody.position, beforeSeatPosition, t),
+                        Quaternion.Slerp(standStartBody.rotation, beforeSeatRotation, t));
+                }
+                else
+                {
+                    seatBlend = 1f;
+                    transform.SetPositionAndRotation(seatedBody.position, seatedBody.rotation);
+                }
+                PoseBody();
+            }
+            switch (computerSession.Phase)
+            {
+                case ComputerPhase.Sitting: BlendView(beforeSeatView, seatedView, t); break;
+                case ComputerPhase.Focusing: BlendView(seatedView, focusedView, t); break;
+                case ComputerPhase.Desktop:
+                    BlendView(focusedView, focusedView, 1f);
+                    if (previous != ComputerPhase.Desktop)
+                    {
+                        SetUi(true);
+                        ComputerReady?.Invoke();
+                    }
+                    break;
+                case ComputerPhase.Unfocusing: BlendView(exitView, seatedView, t); break;
+                case ComputerPhase.Standing: BlendView(standStartView, beforeSeatView, t); break;
+                case ComputerPhase.Walking: FinishStanding(); break;
+            }
+        }
+
+        private void BlendView(Pose from, Pose to, float t)
+        {
+            View.transform.SetPositionAndRotation(Vector3.Lerp(from.position, to.position, t),
+                Quaternion.Slerp(from.rotation, to.rotation, t));
+        }
+
+        private void FinishStanding()
+        {
+            computerSession.Reset();
+            seatBlend = 0f;
             transform.SetPositionAndRotation(beforeSeatPosition, beforeSeatRotation);
             pitch = beforeSeatPitch;
             controller.height = beforeSeatHeight; controller.center = Vector3.up * (beforeSeatHeight * 0.5f);
             crouchBlend = Mathf.InverseLerp(StandingHeight, CrouchedHeight, beforeSeatHeight);
-            controller.enabled = true; verticalSpeed = -2f; IsSeated = false;
+            controller.enabled = true; verticalSpeed = -2f;
             PoseBody(); UpdateEyeView(); SetUi(false);
+            ComputerClosed?.Invoke();
+        }
+
+        private void OnDisable()
+        {
+            if (controller != null && IsSeated) FinishStanding();
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+
+        public void CancelComputerImmediately()
+        {
+            if (controller != null && IsSeated) FinishStanding();
+        }
+
+        private void OnEnable()
+        {
+            if (View != null) SetUi(UiOpen);
         }
 
         private void PoseBody(bool running = false)
@@ -151,20 +254,21 @@ namespace SignalDebt
             if (spine != null) spine.localRotation = spineRest;
             if (head != null) head.localRotation = headRest;
             cameraGaitCompensation = 0f;
-            float pelvisDrop = IsSeated ? 0.40f : crouchBlend * 0.42f;
-            float pelvisForward = IsSeated ? 0.25f : -crouchBlend * 0.07f;
+            float pelvisDrop = Mathf.Lerp(crouchBlend * 0.42f, 0.40f, seatBlend);
+            float pelvisForward = Mathf.Lerp(-crouchBlend * 0.07f, 0.25f, seatBlend);
             body.localPosition = bodyRestPosition + new Vector3(0f, -pelvisDrop, pelvisForward);
             if (spine != null)
             {
                 Vector3 axis = spine.parent.InverseTransformDirection(transform.right);
-                spine.localRotation = Quaternion.AngleAxis(IsSeated ? 26f : crouchBlend * 15f, axis) * spineRest;
+                spine.localRotation = Quaternion.AngleAxis(Mathf.Lerp(crouchBlend * 15f, 26f, seatBlend), axis) * spineRest;
             }
             if (IsSeated)
             {
-                Solve(leftLeg, leftLeg.restTarget + Vector3.forward * 0.48f, Vector3.forward, false);
-                Solve(rightLeg, rightLeg.restTarget + Vector3.forward * 0.48f, Vector3.forward, false);
-                Solve(leftArm, seatedLeftHand, new Vector3(-0.7f, -0.3f, -0.3f), true);
-                Solve(rightArm, seatedRightHand, new Vector3(0.7f, -0.3f, -0.3f), true);
+                Vector3 handRestOffset = new Vector3(0f, -crouchBlend * 0.42f, crouchBlend * 0.13f);
+                Solve(leftLeg, leftLeg.restTarget + Vector3.forward * (0.48f * seatBlend), Vector3.forward, false);
+                Solve(rightLeg, rightLeg.restTarget + Vector3.forward * (0.48f * seatBlend), Vector3.forward, false);
+                Solve(leftArm, Vector3.Lerp(leftArm.restTarget + handRestOffset, seatedLeftHand, seatBlend), new Vector3(-0.7f, -0.3f, -0.3f), true);
+                Solve(rightArm, Vector3.Lerp(rightArm.restTarget + handRestOffset, seatedRightHand, seatBlend), new Vector3(0.7f, -0.3f, -0.3f), true);
                 return;
             }
             float length = Mathf.Lerp(running ? 0.37f : 0.31f, 0.21f, crouchBlend) * gaitWeight;
@@ -234,7 +338,7 @@ namespace SignalDebt
             {
                 Quaternion restFrame = Quaternion.LookRotation(transform.TransformDirection(limb.restEndDirection), transform.TransformDirection(limb.restPalmNormal));
                 Quaternion typingFrame = Quaternion.LookRotation(transform.forward, Vector3.up);
-                endRotation = typingFrame * Quaternion.Inverse(restFrame) * endRotation;
+                endRotation = Quaternion.Slerp(endRotation, typingFrame * Quaternion.Inverse(restFrame) * endRotation, seatBlend);
             }
             limb.end.rotation = endRotation;
         }

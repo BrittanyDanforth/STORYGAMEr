@@ -1,0 +1,18 @@
+{
+  "reason": "Commit the actual final Windows-generated scene, including explicit original laptop screen references, after native Linux acceptance of the same builder/scripts. Source edits remain distinct from generated scene identities.",
+  "copied": [
+    {
+      "path": "Assets/Scenes/Apartment.unity",
+      "previous_sha256": "f8b49b977ba20520418baf67994042ef5514d527f61d9ada96ffda903ef083c9",
+      "new_sha256": "b366ecdcd16219f35068c46f78bd2cc0fe0540aea05d5d3416be5e32141d9275"
+    },
+    {
+      "path": "Assets/Scenes/.signal-debt-built",
+      "previous_sha256": "478822984a9c59df8bd79f39819cd27f8b8628718ae6e4ed6eeb3950227f09df",
+      "new_sha256": "906e5a3a772a3ca031ad33b70d30a490a50839e45256eff0964388a669fe1c3d"
+    }
+  ],
+  "scene_meta_unchanged": true,
+  "materials_added": 0,
+  "guarded_copy": true
+}

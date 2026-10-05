@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "sensitivity_control_detected": true,
+  "unity_version": "6000.0.62f1",
+  "font_name": "LegacyRuntime",
+  "helper_sha256": "89e78b8dd9332c60e623c596ab076e90791737ee7760ba3d1756dec69a862787",
+  "probe_sha256": "2cf6fbfc9ca59dd79e3dfd9db5ae84463e3253168a214ca816b91808a383d9d5",
+  "failure": "",
+  "scope": "Actual Unity UGUI/LegacyRuntime measurements at 1067/1323 by 500 logical pixels; authenticated in-memory command-generated proof states, pagination, selection and save-failure feedback. Not native visual acceptance, disk-save acceptance, live AI or player execution. No campaign files or credentials accessed.",
+  "scenarios": 24,
+  "labels": 768,
+  "assertions": 613,
+  "command_calls_during_refresh": 0,
+  "actual_unity_process_exit_code": 0,
+  "external_probe_removed": true,
+  "production_source_changed": false,
+  "original_report": "/workspace/SignalDebt-proof-layout/report.json",
+  "original_report_sha256": "6bc80a18485d93b4ab13d9d20590a9a2cd95f42bd04c31c7f24e200cbe2431e3",
+  "cleanup_report_sha256": "5d41e81a577327026be7e79ed856d45dade2940acc820eb5eab5993aafe5d999",
+  "native_visual_acceptance": false
+}

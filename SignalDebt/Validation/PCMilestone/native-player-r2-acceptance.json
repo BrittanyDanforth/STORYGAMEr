@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "validation_kind": "Genuine uninstrumented Linux standalone native input and framebuffer captures",
+  "scope": "Latest UI wording-only r2 targeted acceptance; earlier native-player-acceptance.json retains broader preceding-source runtime scope.",
+  "unity_version": "6000.0.62f1",
+  "resolution": "1200x900",
+  "renderer": "llvmpipe OpenGL4.5",
+  "process_exit_code": 0,
+  "runtime_assembly_sha256": "9678eadfbcf5ee3eaf9c2d397c33fa667544b5620f651081c5b137d4046af963",
+  "observed": [
+    "Natural W/mouse/E interaction enters current built desktop.",
+    "Previously saved repair and window/app settings load.",
+    "History shows day plus readable summaries without internal event identifiers or client-memory strings.",
+    "EXODISS shows preserved150credits,400rent and separate+120/-50receipts.",
+    "Native WM_DELETE_WINDOW closes game cleanly."
+  ],
+  "save": {
+    "balance": 150,
+    "rentDue": 400,
+    "jobPaid": true,
+    "ledger_events": 6,
+    "repair_payment_events": 1
+  },
+  "log": {
+    "path": "linux-player-r2.log",
+    "sha256": "45c0fd8c33237d58810b9e55aa4a6898b70b9f4ab9576e26af302235ced2b7f1",
+    "csharp_exception_or_save_error_lines": [],
+    "fmod_audio_device_errors": 2
+  },
+  "captures": [
+    {
+      "file": "player-captures/33-r2-history-human-readable.png",
+      "sha256": "8fe93bcbbceea77ea95c6081ec5e910fce8fa229a2ecd4c96358d48eb31d7863"
+    },
+    {
+      "file": "player-captures/34-r2-wallet-save-continuity.png",
+      "sha256": "4dd18af41a7d7b036403d392976e82013d44040ce5c9f4f8a6154e699c477358"
+    }
+  ],
+  "limitations": [
+    "Linux runtime evidence only; final Windows build not run here.",
+    "No cloud audio output; sound not validated.",
+    "No target-hardware performance claim.",
+    "No additional broad regression tests after UI-only wording change."
+  ]
+}

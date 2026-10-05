@@ -1,0 +1,320 @@
+{
+  "passed": true,
+  "revision": "shop-foundation-r1",
+  "utc_recorded_at": "2026-10-05T00:45:45.089359+00:00",
+  "scope": "Native Linux schema2 migration/recovery plus apartment PC and current-build repair/payment regression. No connected shop or purchase UI acceptance.",
+  "validation_kind": "Genuine uninstrumented Linux standalone, native XTest keyboard/mouse, X11 clipboard, actual framebuffer captures; visuals reviewed by agent.",
+  "unity_version": "6000.0.62f1",
+  "resolution": "1280x800",
+  "renderer": "llvmpipe OpenGL4.5 software rendering",
+  "runtime_assembly_sha256": "761ae0a7f250b98248f8f26c8fff7b472d1fe7b192c38590de7fc0b723f780d9",
+  "source_manifest": "/workspace/SignalDebt-setup/unity/shop-foundation-r1-source-manifest.json",
+  "source_manifest_sha256": "e66a82d086063e1d3a4b8a273cd5e68b52ee15d569b2046dc762cbd17e4a31e2",
+  "source_count": 147,
+  "production_sources_changed_since_build": [],
+  "build_report": "/workspace/SignalDebt-setup/unity/linux-shop-foundation-r1-build-result.json",
+  "original_pc_milestone_campaign_unchanged": true,
+  "cases": {
+    "migration": {
+      "save_folder": "/workspace/SignalDebt-setup/unity/save-foundation-native/migration/config/unity3d/DefaultCompany/SIGNALDEBT",
+      "before": {
+        "signal-debt-save.json": {
+          "size": 2455,
+          "mtime_ns": 1791158688865325309,
+          "sha256": "e6d479e153a0189358e5df6cbab3f3aba7a0b52468930cf268b931bd2fd4e9aa"
+        },
+        "signal-debt-save.json.bak": {
+          "size": 2455,
+          "mtime_ns": 1791158621112326699,
+          "sha256": "e6d479e153a0189358e5df6cbab3f3aba7a0b52468930cf268b931bd2fd4e9aa"
+        }
+      },
+      "after": {
+        "signal-debt-save-v2.json": {
+          "size": 2480,
+          "mtime_ns": 1791160657565514596,
+          "sha256": "33cc304c1b0a5fedb09bcc8c075a902ec730c209264567fbe7eb92809db26318"
+        },
+        "signal-debt-save-v2.json.bak": {
+          "size": 2480,
+          "mtime_ns": 1791160638215504560,
+          "sha256": "33cc304c1b0a5fedb09bcc8c075a902ec730c209264567fbe7eb92809db26318"
+        },
+        "signal-debt-save.json": {
+          "size": 2455,
+          "mtime_ns": 1791158688865325309,
+          "sha256": "e6d479e153a0189358e5df6cbab3f3aba7a0b52468930cf268b931bd2fd4e9aa"
+        },
+        "signal-debt-save.json.bak": {
+          "size": 2455,
+          "mtime_ns": 1791158621112326699,
+          "sha256": "e6d479e153a0189358e5df6cbab3f3aba7a0b52468930cf268b931bd2fd4e9aa"
+        }
+      },
+      "state": {
+        "schemaVersion": 2,
+        "saveId": "ef7d1d6ce3be468199bc2d645a85ec8a",
+        "revision": 6,
+        "balance": 150,
+        "rentDue": 400,
+        "jobPaid": true,
+        "ledger_events": 6,
+        "repair_payment_events": 1
+      },
+      "native_room_laptop_escape_loop_observed": true,
+      "legacy_primary_and_backup_bytes_and_mtimes_preserved": true,
+      "all_legacy_fields_except_schemaVersion_equal_in_v2": true,
+      "native_wm_delete_player_exit_code": 0
+    },
+    "fresh": {
+      "save_folder": "/workspace/SignalDebt-setup/unity/save-foundation-native/fresh/config/unity3d/DefaultCompany/SIGNALDEBT",
+      "before": {},
+      "after": {
+        "signal-debt-save-v2.json": {
+          "size": 2480,
+          "mtime_ns": 1791161021215497062,
+          "sha256": "054abd36abf8d870f46d4ad3c7acc53709c74587af40820758b769b8e72f4baf"
+        },
+        "signal-debt-save-v2.json.bak": {
+          "size": 2480,
+          "mtime_ns": 1791160969048223331,
+          "sha256": "054abd36abf8d870f46d4ad3c7acc53709c74587af40820758b769b8e72f4baf"
+        }
+      },
+      "state": {
+        "schemaVersion": 2,
+        "saveId": "b287e1d16c6143069102d8d7e8032ea4",
+        "revision": 6,
+        "balance": 150,
+        "rentDue": 400,
+        "jobPaid": true,
+        "ledger_events": 6,
+        "repair_payment_events": 1
+      },
+      "native_room_laptop_escape_loop_observed": true,
+      "initial_fresh_state": {
+        "schemaVersion": 2,
+        "balance": 80,
+        "rentDue": 450,
+        "jobPaid": false,
+        "revision": 0
+      },
+      "native_repair_and_rent_sequence": [
+        "Accept120credit repair",
+        "Inspect Order Folder",
+        "Connect Order Index",
+        "Run folder test",
+        "Complete job120",
+        "Pay rent50"
+      ],
+      "same_case_restart_preserves_state": true,
+      "native_wm_delete_exit_codes": [
+        0,
+        0,
+        0
+      ]
+    },
+    "malformed": {
+      "save_folder": "/workspace/SignalDebt-setup/unity/save-foundation-native/malformed/config/unity3d/DefaultCompany/SIGNALDEBT",
+      "before": {
+        "signal-debt-save-v2.json": {
+          "size": 44,
+          "mtime_ns": 1791160541356253440,
+          "sha256": "e3f587ab13857db3e69cbc668583ff5d9ebf8fe1c2603816d1e5757c36267f34"
+        }
+      },
+      "after": {
+        "signal-debt-save-v2.json": {
+          "size": 44,
+          "mtime_ns": 1791160541356253440,
+          "sha256": "e3f587ab13857db3e69cbc668583ff5d9ebf8fe1c2603816d1e5757c36267f34"
+        }
+      },
+      "recovery_screen_visually_reviewed": true,
+      "copy_button_clicked_with_native_mouse": true,
+      "actual_x11_clipboard_equals_save_folder": true,
+      "native_escape_player_exit_code": 0,
+      "exact_save_directory_unchanged": true
+    },
+    "future": {
+      "save_folder": "/workspace/SignalDebt-setup/unity/save-foundation-native/future/config/unity3d/DefaultCompany/SIGNALDEBT",
+      "before": {
+        "signal-debt-save-v2.json": {
+          "size": 70,
+          "mtime_ns": 1791160541356717632,
+          "sha256": "a4d35ad78707cdd78a5a24f82fcc212915c445be4f72c0836b5f2384e981dfd1"
+        }
+      },
+      "after": {
+        "signal-debt-save-v2.json": {
+          "size": 70,
+          "mtime_ns": 1791160541356717632,
+          "sha256": "a4d35ad78707cdd78a5a24f82fcc212915c445be4f72c0836b5f2384e981dfd1"
+        }
+      },
+      "recovery_screen_visually_reviewed": true,
+      "copy_button_clicked_with_native_mouse": true,
+      "actual_x11_clipboard_equals_save_folder": true,
+      "native_escape_player_exit_code": 0,
+      "exact_save_directory_unchanged": true
+    }
+  },
+  "all_six_native_player_process_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "all_test_player_and_xvfb_processes_stopped": true,
+  "logs": [
+    {
+      "file": "fresh/player.log",
+      "sha256": "4238ee8635032d5585bb32260bdbb39c7fd20d42eea9af567543d112b35dd129",
+      "csharp_exception_or_save_error_lines": [],
+      "fmod_device_init_failures": 2
+    },
+    {
+      "file": "fresh/repair-player.log",
+      "sha256": "2a399141f1c3117d851f97676ccc14d52305316ac02fa160fc17b8cc9596d748",
+      "csharp_exception_or_save_error_lines": [],
+      "fmod_device_init_failures": 2
+    },
+    {
+      "file": "fresh/restart-player.log",
+      "sha256": "4a74445945735d7de84f097f1b15a8487114118c8395b993a4f3242d1f6c8005",
+      "csharp_exception_or_save_error_lines": [],
+      "fmod_device_init_failures": 2
+    },
+    {
+      "file": "future/player.log",
+      "sha256": "f1d3fab903d86148525b0d9b157599b531bd506f129968fe5bc90fb7716fd8f1",
+      "csharp_exception_or_save_error_lines": [],
+      "fmod_device_init_failures": 2
+    },
+    {
+      "file": "malformed/player.log",
+      "sha256": "34086ec3d7748551be4cba078eaa88695a8c9e7f4c9b76a8f813158f4b6ee017",
+      "csharp_exception_or_save_error_lines": [],
+      "fmod_device_init_failures": 2
+    },
+    {
+      "file": "migration/player.log",
+      "sha256": "c703b37c998eb49bba1831fda033e64f9f577f700f51c8114a88a8677bc5701e",
+      "csharp_exception_or_save_error_lines": [],
+      "fmod_device_init_failures": 2
+    }
+  ],
+  "captures": [
+    {
+      "file": "fresh/captures/01-startup.png",
+      "sha256": "e25cd4b225190b4fb58c5059ed2d11e0441ef7a91ab789b3b3e67d7988989fba"
+    },
+    {
+      "file": "fresh/captures/02-approach.png",
+      "sha256": "57598d85f41f85550b4a74cfa74327b3e6a9aa0544b4777fc2ab08ae98d662dd"
+    },
+    {
+      "file": "fresh/captures/03-laptop-prompt.png",
+      "sha256": "9a26a6a8b79066303469e6f315198b117d6edddbed4742cf60469c348849dc0b"
+    },
+    {
+      "file": "fresh/captures/04-first-person.png",
+      "sha256": "2833decb004d69c7b2acf419bea44240a8356da750837c9f0beb2bb13d1da375"
+    },
+    {
+      "file": "fresh/captures/05-return-first-person.png",
+      "sha256": "8cb95a095cd884aad1066cc0582991bc297ebbb7a31a09b59a14db6b8d13f3fc"
+    },
+    {
+      "file": "fresh/captures/06-repair-desktop.png",
+      "sha256": "ea108268a9d0a0fd487a83c191d4d50495415f5df37e011911c89ab7d1a9a931"
+    },
+    {
+      "file": "fresh/captures/07-inbox.png",
+      "sha256": "5797fdd5b9ae222315c0ef530afffe00f886609e49112dde8925c91efea38ddb"
+    },
+    {
+      "file": "fresh/captures/08-accepted.png",
+      "sha256": "009389a5f4481f3bab8faf20787387ca81844f52fa78c6d3b6199ce7d8847800"
+    },
+    {
+      "file": "fresh/captures/09-inspected.png",
+      "sha256": "bc1a1c7ba4737b87bc5231cef3992a036fa8ad7536dbc849d165f6150ddaec39"
+    },
+    {
+      "file": "fresh/captures/10-tested.png",
+      "sha256": "939d960ae7bd58abec62723a9e9b4070434cf9d0a75f63f6d4d4d633c2389426"
+    },
+    {
+      "file": "fresh/captures/11-paid-wallet.png",
+      "sha256": "ea37d882bf6c038a4349946e2e44cbb60eebdfea816ffc9e1e94667141750432"
+    },
+    {
+      "file": "fresh/captures/12-rent-paid.png",
+      "sha256": "f78cdc668b7446f089f21d8402fc140f1cdc14e6b15888902d940b9a883faf6b"
+    },
+    {
+      "file": "fresh/captures/13-restart-wallet.png",
+      "sha256": "413ddb007f446927381117cf38ab8e436f192e1734d5d6a2d38c9c8d1254c041"
+    },
+    {
+      "file": "fresh/captures/14-restarted-wallet.png",
+      "sha256": "5a0e8cf0ab7325844599621079473022e30a55a667931296a2a8c6470a5d891a"
+    },
+    {
+      "file": "future/captures/01-recovery.png",
+      "sha256": "ea6fe3a37ee9bc5b77b904cee512167f8180e0c3bd5bb52af88c1f2cf0d302d3"
+    },
+    {
+      "file": "future/captures/02-copied.png",
+      "sha256": "b93ee9814075f32e529bb2ba4d764d448fed4905a6388c7317a7a648b9fd85d3"
+    },
+    {
+      "file": "malformed/captures/01-recovery.png",
+      "sha256": "966153ce210de46ab15f26dd9e52052e1015bfe7495c565b6500f6ada830e561"
+    },
+    {
+      "file": "malformed/captures/02-copied.png",
+      "sha256": "154de90c723941a37e2a12e68807cddfb14770773428405e2ba6591e3559d819"
+    },
+    {
+      "file": "migration/captures/01-startup.png",
+      "sha256": "f3419d9bd3ae27a176d2dcacd79cbb9f48fb9d889cbaad9f7250b8d4b77f3d0a"
+    },
+    {
+      "file": "migration/captures/02-target.png",
+      "sha256": "6ba48d1c2ede9d87b546ab4b1d5ddc5cffeae0548e135740dbbbcd8499cd559f"
+    },
+    {
+      "file": "migration/captures/03-aim.png",
+      "sha256": "1445ed17ae88dd8194f38536f0ffd74042620965004a11953ed6b2ecd181b542"
+    },
+    {
+      "file": "migration/captures/04-prompt.png",
+      "sha256": "5c059e293f790909b0b0113197a7f48f3b8e5c444ee510ada1ff5061f4de814b"
+    },
+    {
+      "file": "migration/captures/05-laptop-prompt.png",
+      "sha256": "5ce9070d2d162073de92b29e73c1eb8b1175c5665cf7b5ab31e2c0d5bdbda148"
+    },
+    {
+      "file": "migration/captures/06-wallet.png",
+      "sha256": "c409cb84ad3e05b8b623a1a9b00b02db9d4bec7fe3b5b0c9e0ef2f08f3bb2798"
+    },
+    {
+      "file": "migration/captures/07-return-first-person.png",
+      "sha256": "9351a38586b943bdd8817c55d8f41e3f131b4e296855a1e5758f0e3a41cf69f5"
+    }
+  ],
+  "tool_note": "In the future-schema case, the Escape helper returned XIO1 while releasing the key because the game had already exited0 and its owned Xvfb had closed. This is a native automation teardown race, not a player failure.",
+  "limitations": [
+    "Linux runtime only; Windows build not run here.",
+    "Audio output unavailable in the cloud; FMOD device errors are retained and sound is unverified.",
+    "Software renderer only; no target-hardware performance result.",
+    "Recovery was checked at1280x800; long paths are horizontally clipped in the field but Copy returned each full path exactly.",
+    "No native shop purchase flow exists in this increment; purchase foundation/domain and Unity serializer tests have separate reports.",
+    "Legacy native player campaign was copied into isolated test storage; original campaign was never launched by the new player."
+  ]
+}

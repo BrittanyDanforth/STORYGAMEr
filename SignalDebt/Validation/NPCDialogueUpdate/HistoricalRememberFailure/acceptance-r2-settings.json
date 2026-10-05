@@ -1,0 +1,87 @@
+{
+  "passed": false,
+  "revision": "ui-menu-r2",
+  "utc_recorded_at": "2026-10-05T01:43:39.397406+00:00",
+  "purpose": "Additional real native Settings remember/restart/remove integration test, separate from earlier successful bounded UI acceptance.",
+  "validation_kind": "Uninstrumented Linux Mono player, native XTest input, actual screenshot captures.",
+  "runtime_assembly_sha256": "99a7821cada2b0907176958df6376ab78ad5bc69ba2f78e0b9cc4f0c60d022de",
+  "frozen_source_manifest_sha256": "0a0c341197076aff364c6b0374da707dacf8d94bc69a436c886ba6718050e684",
+  "real_credential_used": false,
+  "environment_key_unset": true,
+  "fabricated_input_reproduces_key_store_format": true,
+  "request_started": false,
+  "network_error_path_tested": false,
+  "result": {
+    "error": "ConfigurationErrorsException: Failed to load configuration section for dataContractSerializer.",
+    "site": "DataContractJsonSerializer.WriteObject \u2192 SignalDebtApiKeyStore.LocalStore.TrySave \u2192 SignalDebtAiSettings.Connect",
+    "exception_occurrences": 3,
+    "ai_settings_file_exists": false,
+    "campaign_directory_exists": false,
+    "remaining_userdata_files": [],
+    "keylike_strings_found_in_log": false,
+    "request_started": false,
+    "request_started_basis": "Exception occurs synchronously before RefreshStorage/client.TestConnection; key input remains masked and uncleared."
+  },
+  "checks": [
+    {
+      "id": "masked_input_and_explicit_opt_in",
+      "passed": true,
+      "observed": "Fabricated input masked; Remember checkbox explicitly selected."
+    },
+    {
+      "id": "native_remember",
+      "passed": false,
+      "observed": "Connect throws serializer ConfigurationErrorsException before writing key or starting request; no visible error."
+    },
+    {
+      "id": "restart_and_remove",
+      "passed": null,
+      "observed": "Blocked by native remember failure; no remembered file exists to reload or remove."
+    },
+    {
+      "id": "campaign_isolation",
+      "passed": true,
+      "observed": "No campaign was created."
+    }
+  ],
+  "player_exit_code": 0,
+  "player_stopped": true,
+  "release_files_unchanged": true,
+  "copied_game_files_unchanged": true,
+  "release_userdata_created": false,
+  "captures": [
+    "captures/01-empty-settings.png",
+    "captures/02-masked-remember-selected.png",
+    "captures/03-connect-result.png",
+    "captures/04-connect-after-held-click.png",
+    "captures/05-keyboard-connect.png"
+  ],
+  "logs": [
+    "remember-player.log"
+  ],
+  "evidence_allowlist": [
+    "captures/01-empty-settings.png",
+    "captures/02-masked-remember-selected.png",
+    "captures/03-connect-result.png",
+    "captures/04-connect-after-held-click.png",
+    "captures/05-keyboard-connect.png",
+    "remember-player.log",
+    "fabricated-input-proof.json",
+    "failure-proof.json"
+  ],
+  "evidence_sha256": {
+    "captures/01-empty-settings.png": "1627d2a8088c254497aae4d4fa406fbd012915b44d46446cbf1626f2bd694415",
+    "captures/02-masked-remember-selected.png": "f6105d80007086cfd9f6cc5eae31afc2b976f4575ae4d34c1b07950bca13a3b9",
+    "captures/03-connect-result.png": "5ffc8d99f0bb5f81c1d331b8b378604ac11e6f4d44d63a97e1540b7e64f1d224",
+    "captures/04-connect-after-held-click.png": "5ffc8d99f0bb5f81c1d331b8b378604ac11e6f4d44d63a97e1540b7e64f1d224",
+    "captures/05-keyboard-connect.png": "5ffc8d99f0bb5f81c1d331b8b378604ac11e6f4d44d63a97e1540b7e64f1d224",
+    "remember-player.log": "289ea9c822daa00c32d1116e1676a61cf8a16840f2c3d04bfafd6a1e84b1a50f",
+    "fabricated-input-proof.json": "41121fa574b58de774c4c39b11386810f6fb6c885a9e27380883545329e6c365",
+    "failure-proof.json": "86375511e6c2fca8d65a7320644ddb76fe7612bcbb06a52ab060ed06a57c94c2"
+  },
+  "limits": [
+    "No real provider key or generated dialogue tested.",
+    "Native save failure prevents restart/remove verification and prevents authorized fabricated-key HTTPS request.",
+    "Windows runtime not tested; platform scope of serializer defect not yet determined."
+  ]
+}

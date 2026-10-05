@@ -1,0 +1,79 @@
+{
+  "linux": {
+    "revision": "proof-ui-r3",
+    "unity_version": "6000.0.62f1",
+    "process_exit_code": 0,
+    "build_succeeded": true,
+    "build_target": "StandaloneLinux64",
+    "scripting_backend": "Mono",
+    "instrumented_runtime": false,
+    "player": "/workspace/SignalDebt-setup/unity/Linux-Proof-UI-r3/SIGNALDEBT.x86_64",
+    "game_execution_tested_by_this_report": false,
+    "source_snapshot_manifest": "/workspace/SignalDebt-setup/unity/linux-proof-ui-r3-source-manifest.json",
+    "source_manifest_sha256": "5fcfe7f778bb0b4af6268bbb9563260f599a4d0393afc5135aa87415aa38bf14",
+    "production_source_count": 179,
+    "shared_source_differences_from_frozen_at_start": [],
+    "shared_source_differences_from_frozen_at_end": [],
+    "snapshot_recorded_source_changed_during_build": [
+      "Assets/Scenes/.signal-debt-built",
+      "Assets/Scenes/Apartment.unity"
+    ],
+    "snapshot_added_files": [
+      "Assets/Editor/SignalDebtLinuxPlayerBuild.cs",
+      "Assets/Editor/SignalDebtLinuxPlayerBuild.cs.meta"
+    ],
+    "neighborhood_assets_in_frozen_snapshot": false,
+    "file_count": 116,
+    "total_bytes": 98015291,
+    "log_sha256": "5554c02d664a2a3fc21279a41199aed44e0e5145165c99c8ec2c112cd2941496",
+    "csharp_errors": [],
+    "generated_scene": {
+      "path": "Assets/Scenes/Apartment.unity",
+      "sha256": "be1e5d986afcb40f28d42a2a7d51698674e81e8f189a1f0168255feeb40bac69",
+      "bytes": 62975,
+      "source": "Actual SceneBuilder generation in frozen isolated project; shared repository scene untouched."
+    },
+    "runtime_assembly_sha256": "87d41f40286788ee0fcba5cac75bc39303cd7de0afeaa90969d962c46e001e83",
+    "runtime_assembly_bytes": 289792,
+    "original_report": "/workspace/SignalDebt-setup/unity/linux-proof-ui-r3-build-result.json",
+    "original_report_sha256": "131d35956c150655e4d7583d34d544651e6fa5327dcca14cbf3c6326ffb1de94"
+  },
+  "windows": {
+    "revision": "proof-ui-r3",
+    "unity_version": "6000.0.62f1",
+    "process_exit_code": 0,
+    "build_succeeded": true,
+    "build_target": "StandaloneWindows64",
+    "scripting_backend": "Mono",
+    "instrumented_runtime": false,
+    "player": "/workspace/SignalDebt-setup/unity/Windows-Proof-UI-r3/SIGNALDEBT.exe",
+    "game_execution_tested_by_this_report": false,
+    "source_snapshot_manifest": "/workspace/SignalDebt-setup/unity/windows-proof-ui-r3-source-manifest.json",
+    "source_manifest_sha256": "6556f46dcb6127189e8176c7abd18e2ab1ef4d4db670c8c9e20b486c8ce86805",
+    "production_source_count": 179,
+    "shared_source_differences_from_frozen_at_start": [],
+    "shared_source_differences_from_frozen_at_end": [],
+    "snapshot_recorded_source_changed_during_build": [
+      "Assets/Scenes/Apartment.unity"
+    ],
+    "snapshot_added_files": [
+      "Assets/Editor/SignalDebtLinuxPlayerBuild.cs",
+      "Assets/Editor/SignalDebtLinuxPlayerBuild.cs.meta"
+    ],
+    "neighborhood_assets_in_frozen_snapshot": false,
+    "file_count": 134,
+    "total_bytes": 103482651,
+    "log_sha256": "8ce1545b764050ce8ee5f5c139bab1a313d8cc5d1f77e8d12501c5e5dfe5cb2f",
+    "csharp_errors": [],
+    "generated_scene": {
+      "path": "Assets/Scenes/Apartment.unity",
+      "sha256": "b366ecdcd16219f35068c46f78bd2cc0fe0540aea05d5d3416be5e32141d9275",
+      "bytes": 62944,
+      "source": "Actual SceneBuilder generation in frozen isolated project; shared repository scene untouched."
+    },
+    "runtime_assembly_sha256": "1c84fd8ff34e1e33ff31a534614bf30d55d27373e843ca3e09da74e7006334b8",
+    "runtime_assembly_bytes": 289792,
+    "original_report": "/workspace/SignalDebt-setup/unity/windows-proof-ui-r3-build-result.json",
+    "original_report_sha256": "6e7fbcff134c237df1fd0f187aa85f827a4855d227dc94fd0047456e7cbc4a73"
+  }
+}

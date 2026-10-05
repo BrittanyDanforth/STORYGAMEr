@@ -1,0 +1,21 @@
+# Keep imported asset identities, scenes and project settings in source control.
+# Unity regenerates these machine-specific caches and build products.
+/Library/
+/Temp/
+/Obj/
+/Logs/
+/UserSettings/
+/UserData/
+/Build/
+/Builds/
+/MemoryCaptures/
+/Recordings/
+/.vs/
+/.idea/
+/*.csproj
+/*.sln
+/*.slnx
+/*.user
+/*.pidb
+/*.booproj
+/*.unityproj

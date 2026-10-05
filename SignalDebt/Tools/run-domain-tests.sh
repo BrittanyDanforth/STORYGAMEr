@@ -17,7 +17,7 @@ python3 - "$source_root" "$harness_root" <<'PY'
 from pathlib import Path
 import json,sys,xml.etree.ElementTree as ET
 root=Path(sys.argv[1]).resolve(); dest=Path(sys.argv[2])
-sources=[root/'Assets/Scripts/SignalDebtSaveData.cs',root/'Assets/Editor/SignalDebtDomainTests.cs']
+sources=[root/path for path in ('Assets/Scripts/SignalDebtSaveData.cs','Assets/Scripts/SignalDebtShop.cs','Assets/Scripts/SignalDebtClientDevice.cs','Assets/Scripts/SignalDebtClientRepair.cs','Assets/Scripts/SignalDebtProofDocument.cs','Assets/Scripts/SignalDebtProofRecovery.cs','Assets/Editor/SignalDebtDomainTests.cs','Assets/Editor/SignalDebtShopTests.cs')]
 for path in sources:
     if not path.is_file(): raise SystemExit('Missing harness source: '+str(path))
 project=ET.Element('Project',Sdk='Microsoft.NET.Sdk')
@@ -41,8 +41,8 @@ import hashlib,json,sys,re
 root=Path(sys.argv[1]).resolve(); setup=Path(sys.argv[2])
 output=(setup/'domain-tests.txt').read_text()
 match=re.search(r'^PASS: (\d+) domain assertions; no Unity runtime exercised\.$',output.strip())
-if not match: raise SystemExit('Unexpected domain test result; inspect domain-tests.txt')
-report={'sdk':'8.0.425','runtime':'8.0.31','target_framework':'net8.0','assertions_passed':int(match.group(1)),'unity_runtime_exercised':False,'external_package_sources':[],'source_sha256':{str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in [root/'Assets/Scripts/SignalDebtSaveData.cs',root/'Assets/Editor/SignalDebtDomainTests.cs']}}
+if not match or int(match.group(1)) <= 0: raise SystemExit('Unexpected or empty domain test result; inspect domain-tests.txt')
+report={'sdk':'8.0.425','runtime':'8.0.31','target_framework':'net8.0','assertions_passed':int(match.group(1)),'unity_runtime_exercised':False,'external_package_sources':[],'source_sha256':{str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in [root/path for path in ('Assets/Scripts/SignalDebtSaveData.cs','Assets/Scripts/SignalDebtShop.cs','Assets/Scripts/SignalDebtClientDevice.cs','Assets/Scripts/SignalDebtClientRepair.cs','Assets/Scripts/SignalDebtProofDocument.cs','Assets/Scripts/SignalDebtProofRecovery.cs','Assets/Editor/SignalDebtDomainTests.cs','Assets/Editor/SignalDebtShopTests.cs')]}}
 (setup/'domain-tests.json').write_text(json.dumps(report,indent=2)+'\n')
 print('Recorded '+str(setup/'domain-tests.json'))
 PY

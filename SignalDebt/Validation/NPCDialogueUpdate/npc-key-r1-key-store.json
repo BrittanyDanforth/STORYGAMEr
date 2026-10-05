@@ -1,0 +1,14 @@
+{
+    "passed": true,
+    "assertions": 13,
+    "unity_version": "6000.0.62f1",
+    "store_source_sha256": "2f2eeeb4f66a242692b9ea82488771a69408c80f71225112ce1056ee1718d03c",
+    "checks_source_sha256": "abad6f1256662afd9c01851afcdec16c48568d23abc23c55415541953a9e342e",
+    "failure": "",
+    "actual_unity_runtime": true,
+    "actual_local_filesystem": true,
+    "actual_pure_csharp_settings_codec": true,
+    "real_credentials_accessed": false,
+    "provider_network_calls": 0,
+    "scope": "Isolated fabricated-data LocalStore session/no-write, remember, fresh-instance pure-C# JSON codec roundtrip, replacement and deletion under actual Unity Editor Mono. Not standalone-player, live API or user settings acceptance."
+}

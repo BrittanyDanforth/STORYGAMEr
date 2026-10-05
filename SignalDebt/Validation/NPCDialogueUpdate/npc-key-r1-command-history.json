@@ -1,0 +1,48 @@
+{
+  "environment": "source /workspace/SignalDebt-setup/unity/unity-env.sh (preserves HOME)",
+  "editor_fixture_driver": [
+    "timeout",
+    "900",
+    "bash",
+    "/workspace/SignalDebt-setup/unity/npc-key-r1-validation.sh"
+  ],
+  "windows": [
+    "timeout",
+    "900",
+    "/workspace/.local/opt/unity6000/Editor/Unity",
+    "-batchmode",
+    "-nographics",
+    "-quit",
+    "-job-worker-count",
+    "4",
+    "-projectPath",
+    "/workspace/SignalDebt-setup/unity/build-project",
+    "-logFile",
+    "/workspace/SignalDebt-setup/unity/windows-npc-key-r1-build.log",
+    "-executeMethod",
+    "SignalDebt.Editor.SignalDebtMasterBuild.BuildWindows",
+    "-signalDebtOutput",
+    "/workspace/SignalDebt-setup/unity/Windows-Npc-Key-r1"
+  ],
+  "linux": [
+    "timeout",
+    "900",
+    "/workspace/.local/opt/unity6000/Editor/Unity",
+    "-batchmode",
+    "-nographics",
+    "-quit",
+    "-job-worker-count",
+    "4",
+    "-projectPath",
+    "/workspace/SignalDebt-setup/unity/build-project",
+    "-logFile",
+    "/workspace/SignalDebt-setup/unity/linux-npc-key-r1-build.log",
+    "-executeMethod",
+    "SignalDebt.CloudValidation.SignalDebtLinuxPlayerBuild.Build",
+    "-signalDebtLinuxOutput",
+    "/workspace/SignalDebt-setup/unity/Linux-Npc-Key-r1"
+  ],
+  "linux_helper": "/workspace/SignalDebt-setup/unity/SignalDebtLinuxPlayerBuild.cs copied only into snapshot Assets/Editor",
+  "snapshot_source_manifest": "/workspace/SignalDebt-setup/unity/npc-key-r1-source-manifest.json",
+  "note": "Executed command history, not permission to overwrite outputs. Preserve existing artifacts when reproducing."
+}

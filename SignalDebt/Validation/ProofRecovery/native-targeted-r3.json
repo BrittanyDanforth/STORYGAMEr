@@ -1,0 +1,43 @@
+{
+  "passed": true,
+  "revision": "proof-ui-r3",
+  "platform": "Native Linux Mono / llvmpipe /1200x800",
+  "runtime_assembly_sha256": "87d41f40286788ee0fcba5cac75bc39303cd7de0afeaa90969d962c46e001e83",
+  "runtime_files_unchanged": true,
+  "exit_codes": [
+    0,
+    0
+  ],
+  "targeted_checks": [
+    {
+      "id": "legacy_inbox_scroll",
+      "input": "Actual prior paid-first-repair campaign; synthetic legacy preference Inbox scroll=1",
+      "observed": "New160 offer visible on initial Inbox without scrolling; original repair payment also visible; no automatic proof acceptance or payment",
+      "capture": "Screenshots/latest-offer-r3.png",
+      "saved_inbox_position": 0.0
+    },
+    {
+      "id": "paid_proof_reload",
+      "input": "Actual r2 native paid recovery campaign",
+      "observed": "Schema4/revision20/balance360/currentv6/6versions/2reads/1export/one160receipt survives Continue; visible read-only proof",
+      "capture": "Screenshots/paid-reloaded-r3.png",
+      "campaign_byte_identical": true
+    },
+    {
+      "id": "readonly_and_settings",
+      "observed": "Historical version Restore/Undo and payment attempts remain no-ops; Esc Settings shows No key set; Back returns to Pause; Quit exits0",
+      "capture": "Screenshots/settings-no-key-r3.png"
+    }
+  ],
+  "runtime_exceptions_detected": [
+    false,
+    false
+  ],
+  "live_api_calls": 0,
+  "limits": [
+    "Targeted r3 checks; full proof route is separately recorded on r2 with identical domain/helper source",
+    "Windows compiled/packaged but not executed here",
+    "No neighborhood or whole-master-plan acceptance",
+    "No target-GPU performance or audio claims"
+  ]
+}

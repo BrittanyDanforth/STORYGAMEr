@@ -1,42 +1,65 @@
-# Signal Debt — apartment and character motion build
+# Signal Debt — current game project and editable asset sources
 
-The current cloud continuation is documented in [Quality pass — 4 October 2026](Documentation/Quality_Pass_2026-10-04.md). It uses verified official Blender **5.2.2 LTS**. Fresh environment and import checks are in `Validation/CloudSetup`; the original delivery reports below describe the earlier build unless explicitly regenerated.
+The game opens to a main menu and includes the apartment, physical laptop, persistent client workstation, a paid service repair, notice recovery and local saves. Sit at the laptop to animate into its screen, then stand up to return to first person. The [shared-folder work plan](Documentation/AI_WORK_SPLIT.md) assigns UI/save/build work to Codex and world/deeper gameplay work to the other AI. The full 320-feature backlog remains the target and is **not complete**.
+
+The current proof-recovery checkpoint passed Unity compilation, save, conversation-boundary and layout checks, followed by Linux and Windows builds. The actual recovery/payment route was played on Linux; a final pass verified the corrected Inbox view and paid-campaign reload. See [current validation](Validation/ProofRecovery/README.md) for the exact revisions and scope, and [the evidence index](Validation/README.md) for historical results. The last live dialogue attempt returned HTTP 401, so natural-response quality remains unverified. Windows execution, audio output and target-PC performance are not established by cloud Linux testing.
+
+The [shop and save foundation](Documentation/Shop_Save_Foundation.md) provides versioned migration, purchase receipts and save-before-publish money changes. Its domain/save checks are separate from the shop encounter and art, which are still to be built. There is no playable shop in this increment.
+
+The earlier art continuation is documented in [Quality pass — 4 October 2026](Documentation/Quality_Pass_2026-10-04.md). The official Blender **5.2.2 LTS** toolchain is now restored in the cloud workspace; its CPU render, native save and FBX export smoke checks passed. This establishes tool readiness, not final art acceptance. Historical environment, import and delivery reports describe their recorded source unless explicitly regenerated.
 
 [Open the labelled comparisons, updated GIFs and apartment previews](REVIEW.md).
 
-This package starts the game with the apartment and the first paid repair. It contains actual Blender scene files and exports, a Unity 6 source project, and an optional local NPC dialogue relay. The courtroom, interrogation room, jail cell, shops, and larger city are the next environment milestones in the master plan.
+This source package includes editable Blender scenes and exports. [Neighborhood work in progress](SourceAssets/Neighborhood/README.md) contains the newer street/shop/police art, source scripts, baked maps and reviewed images outside Unity's import folder. Its remaining export/import defects are documented; it is not yet a playable map. Institutional gameplay and the larger city remain unfinished.
 
 The supplied 68-page master plan v0.9 is included in `Documentation/Hacker_Game_Master_Plan.docx` and `.pdf`; all 320 backlog features remain. Read [Validation/README.md](Validation/README.md) for current evidence. `Validation/BUILD_STATUS.md` records the earlier upload's checks and Unity acceptance plan.
 
-`Documentation/SECURITY.md` records the runtime network boundary and security review: offline gameplay, optional loopback NPC relay, and the fixed OpenAI endpoint. Model replies are plain text with no authority to execute commands or alter game state.
+[The security notes](Documentation/SECURITY.md) describe the direct OpenAI request boundary and local key storage. The authored repair works offline. Model replies are plain text with no authority to execute commands, award money or alter game state.
 
-**This is a source project, not a Windows executable. Unity compilation and Play Mode still need to be checked in Unity on your computer.** The included validation report distinguishes the checks run here from those remaining in the editor.
+**This folder is the editable source project. Runnable players are built separately with Unity 6000.0.62f1.** See the [menu update](Documentation/UI_Menu_Update.md) for current behavior and validation boundaries; a successful source package or earlier build does not certify a final player.
 
 ## Open the game project
 
 1. Unzip the whole package into a writable folder.
 2. In Unity Hub, choose **Add project from disk** and select `UnityProject`. The project records Unity `6000.0.62f1`; use that Unity 6 version or a compatible newer Unity 6 LTS editor. Let package import finish.
-3. In the editor, choose **Signal Debt > Build Apartment Scene** if the scene has not already been created. Open `Assets/Scenes/Apartment.unity`, then press **Play**.
+3. In the editor, choose **Signal Debt > Build Apartment Scene** if the scene has not already been created. Open `Assets/Scenes/Apartment.unity`, then press **Play** to open the main menu.
 
 The first scene uses the Built-in Render Pipeline with Standard materials. The production plan retains a measured URP comparison before expanding the lighting pipeline. No paid asset pack, Cinemachine package, or AI account is needed for the offline repair loop.
 
 ## What to try first
 
+- Choose **New Game**, or **Continue** when a saved campaign is available. Starting over asks for confirmation and archives the existing local campaign.
 - Walk around the room and look down at the visible arms, legs, and feet.
-- Look at the laptop and press **E** to sit and use it.
-- Read the copy-shop message, accept the job, inspect the service status, restore the correct connection, and test it.
-- Close the completed repair and receive the agreed **120 credits once**.
+- Look at the laptop and press **E** to sit; the camera moves into the ASTER desktop.
+- Open **Inbox**, read the copy-shop message and accept the job. The desktop also has **Client PC**, **Proofs**, **EXODISS** and **History**.
+- In **Client PC**, open the authorized session, inspect the Order Folder's input and compare the service outputs. Connections persist, including wrong ones; Undo and Unplug change the saved wiring. Ask the client to use the folder, then collect **120 credits once**. A successful owner check prepares order 1042 and leaves 1043 unchanged.
+- Accept the separate **160-credit notice-recovery offer** in Inbox. In **Proofs**, compare actual saved pages with the owner's reference, restore a version, and ask the owner to export the current notice. Incorrect drafts remain recoverable; all versions are preserved. Only a verified current export permits payment, after which the document becomes read-only.
 - Open **EXODISS** to inspect the receipt and make a partial rent payment.
-- Leave the desk, inspect the rent notice, open the entrance, or rest at the bed.
-- Stop and restart Play Mode to check that the repair, money, rent, and client history persist.
+- Choose **Stand up** to animate out of the laptop and return to first person. Inspect the rent notice, open the entrance, or rest at the bed.
+- Quit and use **Continue** on the next launch to resume the saved repair, money, rent and event history. Recent chat is kept only during the current game session.
 
-Movement uses WASD, mouse look, Shift to move faster, and Ctrl or C to crouch. E interacts with the focused object. Esc leaves the laptop or opens the pause interface. The editor builder creates the required legacy input axes. Input must be set to **Input Manager (Old)** or **Both** if you change project input settings later.
+Movement uses WASD, mouse look, Shift to move faster, and Ctrl or C to crouch. E interacts with the focused object. Esc opens Pause; Resume at the focused laptop returns to that desktop. Settings can be opened from the main menu or Pause, and Back/Esc closes Settings first. The editor builder creates the required legacy input axes. Input must be set to **Input Manager (Old)** or **Both** if you change project input settings later.
+
+## Local files and starting over
+
+Extract the entire player folder to a writable location. The game creates `UserData` beside the executable; in the editor it uses `UnityProject/UserData`.
+
+| Path | Contents |
+| --- | --- |
+| `UserData/Saves/` | Campaign progress and supported recovery files. |
+| `UserData/Backups/Campaign-…/` | The local campaign archived by New Game. |
+| `UserData/desktop.json` | Desktop preferences. |
+| `UserData/ai-settings.json` | Optional readable plaintext key, created only when explicitly saved in Settings. |
+
+Continue can import a supported older campaign from Unity's application-data folder when no local campaign exists. It preserves the old files and saves the imported campaign locally. Unrecoverable or newer-format local save families show an error instead of silently starting over. New Game archives local Saves while keeping desktop and AI settings separate; a failed archive/save prevents replacement. See the [menu update](Documentation/UI_Menu_Update.md) for migration details. Do not include personal `UserData` in shared builds or source packages.
+
+The current campaign filename is `signal-debt-save-v4.json`. Versions 1–3 migrate without replacing their original files. Old first-repair receipts remain paid, and migration starts the separate proof job unaccepted rather than inventing recovery work.
 
 ## Edit the apartment in Blender
 
 Open `Blender/SignalDebt_Apartment.blend`. It contains the room, furniture, named interaction anchors, materials, and preview cameras. The room is 6.4 by 5.2 meters with a 2.8-meter ceiling. Keep the door, bed, and workstation in their clear corner arrangement when iterating.
 
-`Blender/build_apartment.py` regenerates the scene and exports. With Blender available on your PATH:
+Use Blender **5.2.2 LTS**. In the cloud workspace, `source Tools/blender-env.sh` activates the verified pinned installation; `Tools/install-blender.sh` restores it if needed. `Blender/build_apartment.py` regenerates the scene and exports. With that version available on your PATH:
 
 ```powershell
 blender --background --factory-startup --disable-autoexec --python-exit-code 1 --threads 4 --python Blender/build_apartment.py -- --samples 64
@@ -60,15 +83,17 @@ In Unity, choose **Signal Debt > Build Animation Review Scene**, then press Play
 
 ## Optional NPC dialogue
 
-The offline game works first. To enable the optional relay, see `AI/README.md`, run `python AI/relay.py`, then enable the local relay through the client-chat interface. The relay listens at `127.0.0.1:8765` and reads `OPENAI_API_KEY` from its own process environment. No key belongs in Unity assets or a save file.
+Open **Settings** from the main menu or Pause, enter an OpenAI API key in the masked field, then choose **Connect**. Connect applies the key and sends one small connection test; provider charges may apply. The default keeps the key for the current session. **Save key in UserData folder** explicitly saves readable plaintext to `UserData/ai-settings.json` for later launches. Keep that file private. A session-only replacement leaves an older saved key unchanged; **Remove saved key** clears saved and session keys when removal succeeds.
 
-The configured primary is GPT-6 Luna, with reasoning explicitly off for short replies. GPT-6.1 Sol is an optional, separately enabled escalation candidate. NPC memories come from source-linked saved events, not the model's ability to retain this development conversation. The first client's knowledge includes their contract, the successful test they witnessed, and the payment; private rent events remain excluded.
+Once a key is available, **Inbox Send** uses the fixed OpenAI Responses endpoint directly. There is no relay toggle or Python service to start for this flow. Opening the game or Settings alone sends no AI request; Send and Connect are the explicit request actions. Missing keys or connection failures show status text, and the authored job, repair and wallet remain available.
 
-The included tests cover memory persistence, knowledge filtering, relevant-history retrieval, stale responses, duplicate events and requests, cancellation, fallback, and limits. A live provider smoke-test result is included separately; it is not a substitute for testing a full campaign.
+The configured model is GPT-6 Luna with reasoning off. Requests include the clerk's personality, current concern and up to 12 recent visible dialogue lines, alongside source-linked job events the clerk knows. Private notices and rent events are excluded. Instructions distinguish reacting to an insult or joke from knowing whether a player's claim is true. This is recent conversational context, not persistent relationships or an autonomous NPC schedule. Replies change dialogue wording, not campaign state. An optional cloud `OPENAI_API_KEY` binding is separate from entering a key on the player's PC and must be supplied through secure environment settings.
+
+The retained relay tests and historical live-provider smoke report cover the older relay implementation. They do not validate this direct provider. The user reported that direct AI replies worked but felt generic. Contract, context and key-store tests do not establish the revised dialogue's behavioral quality; its live semantic evaluation remains separate. See the [NPC dialogue update](Documentation/NPC_Dialogue_Update.md) for the current test scope.
 
 ## Next construction milestones
 
-1. Validate movement, seating, material import, the repair, save/load, and optional dialogue in the Unity editor.
+1. Review the revised dialogue on the user's PC and complete remaining Windows, camera/body and performance acceptance. Preserve the passing native menu, local-save and key-storage behavior.
 2. Tune the revised body and animation clips in Unity, then add the nearby shop and its clerk.
 3. Connect a later criminal choice to victim discovery and a supported investigation.
 4. Build the interrogation, court, and custody sets from the master-plan inventories.

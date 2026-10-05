@@ -1,0 +1,10 @@
+{
+  "exists": true,
+  "campaign_directory_exists": false,
+  "file_sha256": "0703126e7f74910f52618b0fec3dce0ffd8f5301b58ad7abc0b89006359604d4",
+  "file_size": 73,
+  "mtime_ns": 1791165810313802530,
+  "mode_octal": "0o600",
+  "schema_version": 1,
+  "input_matches_fabricated_sha256": true
+}

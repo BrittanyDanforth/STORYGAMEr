@@ -1,6 +1,6 @@
 # Apartment and character motion milestone — 4 October 2026
 
-This delivery contains editable Blender assets and Unity project source. It is not a compiled Windows game. No Unity editor is installed in the build environment, so Unity API compilation, asset import, Play Mode, and GTX 1080 Ti performance have not been verified.
+This document records the earlier apartment/character delivery below. **Current update:** Unity 6000.0.62f1 is installed; actual SIGNALDEBT asset import, C# compilation and the Windows player build have succeeded. The native Linux apartment/PC/first-repair sequence and save/reload have been tested. Graphical Editor Play Mode licensing failed; Windows execution, audio and GTX 1080 Ti performance remain unverified. See [the PC interaction milestone](../Documentation/PC_Interaction_Milestone.md) for the current gameplay continuation. Historical Blender checks below keep their original scope.
 
 The v0.9 body pass corrects the patrol elbow plane and police shoulder weighting, revises garment fit, and refines SWAT and patrol equipment. It preserves the earlier wrist/finger work while reviewing the arms against the actual torso and carrier surfaces. See `whole_body_review.json` for the current evidence and its explicit limits. The previous focused wrist approval did not establish shoulder clearance. Gameplay source and the apartment remain unchanged; character assets and the master plan are updated.
 

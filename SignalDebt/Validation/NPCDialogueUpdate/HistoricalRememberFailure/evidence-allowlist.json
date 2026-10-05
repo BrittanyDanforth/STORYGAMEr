@@ -1,0 +1,11 @@
+[
+  "acceptance-r2-settings.json",
+  "captures/01-empty-settings.png",
+  "captures/02-masked-remember-selected.png",
+  "captures/03-connect-result.png",
+  "captures/04-connect-after-held-click.png",
+  "captures/05-keyboard-connect.png",
+  "remember-player.log",
+  "fabricated-input-proof.json",
+  "failure-proof.json"
+]
